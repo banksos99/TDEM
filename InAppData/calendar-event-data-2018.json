@@ -1,0 +1,214 @@
+{
+    "status": "200",
+    "version": "1.0.0",
+    "meta": {
+        "request_date": "2018-02-22 00:00:00",
+        "next_year_having": "true"
+    },
+    "data": {
+        "calendar_id": "21563778989689542185",
+        "company_location": "TQ",
+        "holidays": [{
+            "month": "1",
+            "days": [
+                {
+                    "date": "2018-01-01",
+                    "day_of_week": "1",
+                    "special_holiday": "Y",
+                    "events": [
+                        {
+                            "event_id": "215637789889877878789",
+                            "title": "New Year1",
+                            "description": "",
+                            "all_day": "Y",
+                            "time_start": "2018-05-01 00:00",
+                            "time_end": "2018-05-01 23:59"
+                        }
+                    ]
+                }, {
+                    "date": "2018-01-06",
+                    "day_of_week": "1",
+                    "special_holiday": "Y",
+                    "events": [
+                        {
+                            "event_id": "215637789889877878789",
+                            "title": "Happy World2",
+                            "description": "",
+                            "all_day": "Y",
+                            "time_start": "2018-05-01 00:00",
+                            "time_end": "2018-05-01 23:59"
+                        }
+                    ]
+                },
+                {
+                    "date": "2018-01-11",
+                    "day_of_week": "1",
+                    "special_holiday": "N",
+                    "events": [
+                        {
+                            "event_id": "215637789889877878789",
+                            "title": "Emergency Day3",
+                            "description": "",
+                            "all_day": "Y",
+                            "time_start": "2018-05-11 00:00",
+                            "time_end": "2018-05-11 23:59"
+                        }
+                    ]
+                },
+                {
+                    "date": "2018-01-23",
+                    "day_of_week": "1",
+                    "special_holiday": "N",
+                    "events": [
+                        {
+                            "event_id": "215637789889877878789",
+                            "title": "Greeting Day4",
+                            "description": "",
+                            "all_day": "Y",
+                            "time_start": "2018-05-11 00:00",
+                            "time_end": "2018-05-11 23:59"
+                        },
+                        {
+                            "event_id": "215637789889877878789",
+                            "title": "Bye9",
+                            "description": "",
+                            "all_day": "Y",
+                            "time_start": "2018-05-11 00:00",
+                            "time_end": "2018-05-11 23:59"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "month": "2",
+            "days": [
+                {
+                    "date": "2018-02-02",
+                    "day_of_week": "2",
+                    "special_holiday": "Y",
+                    "events": [
+                        {
+                            "event_id": "215637789889877878789",
+                            "title": "New Year5",
+                            "description": "",
+                            "all_day": "Y",
+                            "time_start": "2018-02-01 00:00",
+                            "time_end": "2018-02-01 23:59"
+                        }
+                    ]
+                }, {
+                    "date": "2018-02-06",
+                    "day_of_week": "1",
+                    "special_holiday": "Y",
+                    "events": [
+                        {
+                            "event_id": "215637789889877878789",
+                            "title": "Happy World6",
+                            "description": "",
+                            "all_day": "Y",
+                            "time_start": "2018-02-06 00:00",
+                            "time_end": "2018-02-06 23:59"
+                        }
+                    ]
+                },
+                {
+                    "date": "2018-02-11",
+                    "day_of_week": "1",
+                    "special_holiday": "N",
+                    "events": [
+                        {
+                            "event_id": "215637789889877878789",
+                            "title": "Emergency Day",
+                            "description": "",
+                            "all_day": "Y",
+                            "time_start": "2018-02-11 00:00",
+                            "time_end": "2018-02-11 23:59"
+                        }
+                    ]
+                },
+                {
+                    "date": "2018-02-23",
+                    "day_of_week": "1",
+                    "special_holiday": "N",
+                    "events": [
+                        {
+                            "event_id": "215637789889877878789",
+                            "title": "Greeting Day7",
+                            "description": "",
+                            "all_day": "Y",
+                            "time_start": "2018-02-11 00:00",
+                            "time_end": "2018-02-11 23:59"
+                        },
+                        {
+                            "event_id": "215637789889877878789",
+                            "title": "Bye",
+                            "description": "",
+                            "all_day": "Y",
+                            "time_start": "2018-02-11 00:00",
+                            "time_end": "2018-02-11 23:59"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "month": "5",
+            "days": [
+                {
+                    "date": "2018-05-05",
+                    "day_of_week": "2",
+                    "special_holiday": "Y",
+                    "events": [
+                        {
+                            "event_id": "215637789889877878789",
+                            "title": "New Year5",
+                            "description": "",
+                            "all_day": "Y",
+                            "time_start": "2018-05-05 00:00",
+                            "time_end": "2018-05-05 23:59"
+                        }
+                    ]
+                }, 
+                {
+                    "date": "2018-05-10",
+                    "day_of_week": "1",
+                    "special_holiday": "N",
+                    "events": [
+                        {
+                            "event_id": "215637789889877878789",
+                            "title": "Emergency Day",
+                            "description": "",
+                            "all_day": "Y",
+                            "time_start": "2018-05-10 00:00",
+                            "time_end": "2018-05-10 23:59"
+                        }
+                    ]
+                },
+                {
+                    "date": "2018-05-21",
+                    "day_of_week": "1",
+                    "special_holiday": "N",
+                    "events": [
+                        {
+                            "event_id": "215637789889877878789",
+                            "title": "Greeting Day7",
+                            "description": "",
+                            "all_day": "Y",
+                            "time_start": "2018-05-21 00:00",
+                            "time_end": "2018-05-21 23:59"
+                        },
+                        {
+                            "event_id": "215637789889877878789",
+                            "title": "Bye",
+                            "description": "",
+                            "all_day": "Y",
+                            "time_start": "2018-05-21 00:00",
+                            "time_end": "2018-05-21 23:59"
+                        }
+                    ]
+                }
+            ]
+        }]
+    }
+}

@@ -1,0 +1,95 @@
+[
+    {
+        "status": "200",
+        "version": "1.0.0",
+        "meta": {
+            "request_date": "2018-03-15"
+        },
+        "data": {
+            "org_code": "50000100",
+            "org_name": "TOYOTA MOTOR THAILAND CO.,LTD.",
+            "org_level": "1",
+            "org_lst": [
+                {
+                    "org_code": "60318380",
+                    "org_name": "MANUFACTURING DIVISION",
+                    "org_level": "10",
+                    "next_level": "true"
+                },
+                {
+                    "org_code": "50000217",
+                    "org_name": "CORPORATE STRATEGIC PLANNING DIVISION",
+                    "org_level": "10",
+                    "next_level": "false"
+                }
+            ]
+        }
+    },
+    {
+        "status": "200",
+        "version": "1.0.0",
+        "meta": {
+            "request_date": "2018-03-15"
+        },
+        "data": [
+            {
+                "employee_id": "000000001",
+                "employee_name": "Name Lastname1",
+                "employee_position": "Position 1"
+            },
+            {
+                "employee_id": "000000002",
+                "employee_name": "Name Lastname2",
+                "employee_position": "Position 2"
+            },
+            {
+                "employee_id": "0000000013",
+                "employee_name": "Name Lastname3",
+                "employee_position": "Position 3"
+            }
+        ]
+    },
+    {
+        "status": "200",
+        "version": "1.0.0",
+        "meta": {
+            "request_date": "2018-03-15"
+        },
+        "data": {
+            "org_code": "50000100",
+            "org_name": "TOYOTA MOTOR THAILAND CO.,LTD.",
+            "org_level": "1",
+            "org_emp": [
+                {
+                    "employee_id": "000000001",
+                    "employee_name": "Name Lastname1",
+                    "employee_position": "Position 1"
+                },
+                {
+                    "employee_id": "000000002",
+                    "employee_name": "Name Lastname2",
+                    "employee_position": "Position 2"
+                },
+                {
+                    "employee_id": "0000000013",
+                    "employee_name": "Name Lastname3",
+                    "employee_position": "Position 3"
+                }
+            ],
+            "org_lst": [
+                {
+                    "org_code": "60318380",
+                    "org_name": "MANUFACTURING DIVISION",
+                    "org_level": "10",
+                    "next_level": "true"
+                },
+                {
+                    "org_code": "50000217",
+                    "org_name": "CORPORATE STRATEGIC PLANNING DIVISION",
+                    "org_level": "10",
+                    "next_level": "false"
+                }
+            ]
+        }
+    }
+]
