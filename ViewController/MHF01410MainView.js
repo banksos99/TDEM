@@ -38,7 +38,7 @@ let initannouncementType = 'All';
 let initannouncementTypetext = 'All';
 let initannouncementStatus = 'All';
 let initannouncementStatustext = 'All'
-let page = 0;
+// let page = 0;
 
 export default class HMF01011MainView extends Component {
 
@@ -56,12 +56,19 @@ export default class HMF01011MainView extends Component {
             loadmore: false,
             announcepage: 0,
             enddragannounce: false,
-            annrefresh: false
+            annrefresh: false,
+            username: SharedPreference.profileObject.employee_name,
+            page: 0
         }
+        console.log("MainView ====> profileObject : ", SharedPreference.profileObject)
 
     }
 
     componentDidMount() {
+        this.setState({
+            page: 0
+        })
+        this.redertabview()
         NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectivityChange);
     }
 
@@ -852,19 +859,19 @@ export default class HMF01011MainView extends Component {
     /******************************************************************** */
 
     redertabview() {
-        if (page === 0) {
+        if (this.state.page === 0) {
             return (
                 <View style={{ flex: 1 }}>
                     {this.renderhomeview()}
                 </View>
             )
-        } else if (page === 1) {
+        } else if (this.state.page === 1) {
             return (
                 <View style={{ flex: 1 }}>
                     {this.renderannouncementview()}
                 </View>
             )
-        } else if (page === 2) {
+        } else if (this.state.page === 2) {
 
             return (
                 <View style={{ flex: 1 }}>
@@ -872,7 +879,7 @@ export default class HMF01011MainView extends Component {
                 </View>
 
             )
-        } else if (page === 3) {
+        } else if (this.state.page === 3) {
 
             return (
                 <View style={{ flex: 1 }}>
@@ -890,13 +897,13 @@ export default class HMF01011MainView extends Component {
 
             //load data befor open announcement screen in first time
             if (announcementData.length) {
-                page = tabnumber;
+                this.state.page = tabnumber;
                 this.setState({
 
 
                 });
             } else {
-                page = tabnumber;
+                this.state.page = tabnumber;
                 this.setState({
 
                     isscreenloading: true,
@@ -910,7 +917,7 @@ export default class HMF01011MainView extends Component {
 
 
         } else {
-            page = tabnumber;
+            this.state.page = tabnumber;
             this.setState({
 
 
@@ -1227,7 +1234,7 @@ export default class HMF01011MainView extends Component {
                                     <Text style={[styles.userTitleText, { fontFamily: "Prompt-Bold" }]}>Welcome</Text>
                                 </View>
                                 <View style={{ flex: 1, }}>
-                                    <Text style={styles.usernameText}>KhunCharnthep</Text>
+                                    <Text style={styles.usernameText}>{this.state.username}</Text>
                                 </View>
                                 <View style={{ flex: 1, }} />
                             </View>
@@ -1985,7 +1992,7 @@ export default class HMF01011MainView extends Component {
                 <TouchableOpacity style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }} onPress={() => { this.settabscreen(2) }}>
 
                     <Image
-                        style={page === 2 ?
+                        style={this.state.page === 2 ?
                             { width: ICON_SIZE, height: ICON_SIZE, tintColor: Colors.redTextColor } :
                             { width: ICON_SIZE, height: ICON_SIZE, tintColor: Colors.lightGrayTextColor }
                         }
@@ -2018,7 +2025,7 @@ export default class HMF01011MainView extends Component {
 
                         <TouchableOpacity style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }} onPress={() => { this.settabscreen(0) }}>
                             <Image
-                                style={page === 0 ?
+                                style={this.state.page === 0 ?
                                     { width: ICON_SIZE, height: ICON_SIZE, tintColor: Colors.redTextColor } :
                                     { width: ICON_SIZE, height: ICON_SIZE, tintColor: Colors.lightGrayTextColor }
                                 }
@@ -2031,7 +2038,7 @@ export default class HMF01011MainView extends Component {
 
                         <TouchableOpacity style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }} onPress={() => { this.settabscreen(1) }}>
                             <Image
-                                style={page === 1 ?
+                                style={this.state.page === 1 ?
                                     { width: ICON_SIZE, height: ICON_SIZE, tintColor: Colors.redTextColor } :
                                     { width: ICON_SIZE, height: ICON_SIZE, tintColor: Colors.lightGrayTextColor }
                                 }
@@ -2058,7 +2065,7 @@ export default class HMF01011MainView extends Component {
 
                             <Image
 
-                                style={page === 3 ?
+                                style={this.state.page === 3 ?
                                     { width: ICON_SIZE, height: ICON_SIZE, tintColor: Colors.redTextColor } :
                                     { width: ICON_SIZE, height: ICON_SIZE, tintColor: Colors.lightGrayTextColor }
                                 }

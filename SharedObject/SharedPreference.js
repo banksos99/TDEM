@@ -25,8 +25,7 @@ export default {
     SET_PIN_API: HOST + '/api/' + VERSION + '/pin',
     // 
     profileObject: null,
+    initmaster: null,
     EMP_INFO_CAREERPATH_API: HOST + '/api/' + VERSION + '/employee/11111101',
-
-
 }
 

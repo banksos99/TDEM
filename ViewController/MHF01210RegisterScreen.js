@@ -9,6 +9,9 @@ import SharedPreference from "../SharedObject/SharedPreference";
 import StringText from "../SharedObject/StringText";
 import SavePIN from "../constants/SavePIN"
 
+var DeviceInfo = require('react-native-device-info');
+
+
 export default class RegisterActivity extends Component {
 
     savePIN = new SavePIN()
@@ -26,8 +29,19 @@ export default class RegisterActivity extends Component {
             username: '',
             password: ''
         }
+
+        // this.getDeviceInformation()
+
     }
 
+    getDeviceInformation() {
+        // const appName = DeviceInfo.getApplicationName(); // "Learnium Mobile"
+        // Console.log("getDeviceInformation appName : ", appName)
+        // const brand = DeviceInfo.getBrand();
+        // Console.log("getDeviceInformation brand : ", brand)
+        // const bundleId = DeviceInfo.getBundleId(); 
+        // Console.log("getDeviceInformation bundleId : ", bundleId)
+    }
     onRegister = async () => {
         Keyboard.dismiss()
 
@@ -38,10 +52,8 @@ export default class RegisterActivity extends Component {
 
         if (code.SUCCESS == data.code) {
             this.setState({
-                showCreatePin: true,
-                keyboardHeight: 0
+                showCreatePin: true
             })
-
         } else {
             Alert.alert(
                 StringText.SERVER_ERROR_TITLE,
@@ -53,6 +65,7 @@ export default class RegisterActivity extends Component {
             )
         }
     }
+
 
     onSetPin = async () => {
         console.log("Register SetPin : ", this.state.pin2)
@@ -80,12 +93,14 @@ export default class RegisterActivity extends Component {
             )
         }
     }
+
     onClosePIN = () => {
         console.log("onClosePIN")
         this.setState({
             showCreatePin: false
         })
     }
+
 
     componentWillMount() {
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow.bind(this));
@@ -156,9 +171,9 @@ export default class RegisterActivity extends Component {
                             {
                                 text: 'OK', onPress: () => {
                                     this.setState({
-                                        pin: '',
-                                        pin1: '',
-                                        pin2: '',
+                                        pin: [],
+                                        pin1: [],
+                                        pin2: [],
                                         pintitle: 'Create Pin',
                                     })
                                 }
@@ -166,10 +181,14 @@ export default class RegisterActivity extends Component {
                         ],
                         { cancelable: false }
                     )
+
                 }
             }
         }
+
+
     }
+
 
     onBack() {
         console.log("onBack")
@@ -190,9 +209,7 @@ export default class RegisterActivity extends Component {
                 <View style={styles.alertDialogContainer}>
                     <View style={styles.emptyDialogContainer}>
                         <View style={[styles.navContainer, { backgroundColor: 'white' }]}>
-                            <TouchableOpacity style={styles.navLeftContainer}
-                                onPress={() => { this.onClosePIN() }}>
-                                >
+                            <TouchableOpacity style={styles.navLeftContainer} onPress={() => { this.onClosePIN.bind(this) }} >
                                 <Image
                                     style={[styles.navBackButton, { tintColor: Colors.grayColor }]}
                                     source={require('../resource/images/Back.png')}
@@ -362,7 +379,7 @@ export default class RegisterActivity extends Component {
                             <View style={styles.registTextContainer}>
                                 <Image style={styles.registetImageContainer}
                                     source={require('../resource/regist/regist_location.png')} />
-                                <Text style={[styles.registTitleText, { color: Colors.grayTextColor }]}>TDEM</Text>
+                                <Text style={[styles.registLocationText, { color: Colors.grayTextColor }]}>TDEM</Text>
                             </View>
                             <View style={styles.registLine} />
 

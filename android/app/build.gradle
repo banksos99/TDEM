@@ -94,6 +94,14 @@ def enableSeparateBuildPerCPUArchitecture = false
  */
 def enableProguardInReleaseBuilds = false
 
+
+//MYAPP_RELEASE_STORE_FILE=tdemconnect.jks
+//MYAPP_RELEASE_KEY_ALIAS=tdemconnect-alias
+//MYAPP_RELEASE_STORE_PASSWORD='1234@tdemdevelop'
+//MYAPP_RELEASE_KEY_PASSWORD='1234@tdemconnect'
+
+
+
 android {
     // because of firestore:
     dexOptions {
@@ -102,7 +110,7 @@ android {
     compileSdkVersion 27
 
     defaultConfig {
-        applicationId "com.toyotaasia.tdemconnect"
+        applicationId "com.toyotaasia.tdem.tdemconnect"
         minSdkVersion 16
         targetSdkVersion 22
         versionCode 1
@@ -112,6 +120,16 @@ android {
         }
         // because of firestore:
         multiDexEnabled true
+    }
+    signingConfigs {
+//        release {
+//            if (project.hasProperty(MYAPP_RELEASE_STORE_FILE)) {
+//                storeFile file(MYAPP_RELEASE_STORE_FILE)
+//                storePassword MYAPP_RELEASE_STORE_PASSWORD
+//                keyAlias MYAPP_RELEASE_KEY_ALIAS
+//                keyPassword MYAPP_RELEASE_KEY_PASSWORD
+//            }
+//        }
     }
     splits {
         abi {
@@ -125,6 +143,7 @@ android {
         release {
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+//            signingConfig signingConfigs.release
         }
         debug {
             minifyEnabled false

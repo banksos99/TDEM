@@ -8,6 +8,7 @@ import SavePIN from "../constants/SavePIN"
 import SharedPreference from "../SharedObject/SharedPreference";
 
 export default class PinActivity extends Component {
+    
     savePIN = new SavePIN()
 
     constructor(props) {
@@ -19,8 +20,6 @@ export default class PinActivity extends Component {
             savePin: ''
         }
     }
-
-
 
     getPINFromDevice = async () => {
         pin = await this.savePIN.getPin()

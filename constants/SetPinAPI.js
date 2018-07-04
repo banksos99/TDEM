@@ -40,10 +40,9 @@ export default async function getRestAPI(pin) {
     })
         .then((response) => response.json())
         .then((responseJson) => {
-            console.log("callback success : ", responseJson)
+            console.log("callback success22222 : ", responseJson)
             let object
             if (responseJson.status == code.SUCCESS) {
-                SharedPreference.profileObject = responseJson.data
                 object = [code, {
                     code: responseJson.status,
                     data: responseJson.data
