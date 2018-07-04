@@ -17,20 +17,20 @@ export default class RegisterActivity extends Component {
         super(props);
         this.state = {
             keyboardHeight: 0,
-            pin: '',
-            pin1: '',
-            pin2: '',
+            pin: [],
+            pin1: [],
+            pin2: [],
             showCreatePin: false,
             showCreatePinSuccess: false,
             pintitle: 'Create Pin',
             username: '',
             password: ''
         }
-
-       
     }
 
     onRegister = async () => {
+        Keyboard.dismiss()
+
         console.log("username : ", this.state.username, ", password : ", this.state.password)
         let data = await RegisterAPI(this.state.username, this.state.password)
         code = data[0]
@@ -38,8 +38,10 @@ export default class RegisterActivity extends Component {
 
         if (code.SUCCESS == data.code) {
             this.setState({
-                showCreatePin: true
+                showCreatePin: true,
+                keyboardHeight: 0
             })
+
         } else {
             Alert.alert(
                 StringText.SERVER_ERROR_TITLE,
@@ -52,18 +54,16 @@ export default class RegisterActivity extends Component {
         }
     }
 
-
     onSetPin = async () => {
-        console.log("SetPin : ", this.state.pin2)
+        console.log("Register SetPin : ", this.state.pin2)
         let data = await SetPinAPI(this.state.pin2)
         code = data[0]
         data = data[1]
 
         if (code.SUCCESS == data.code) {
-
             await this.savePIN.setPin(this.state.pin2)
             const pinID = await this.savePIN.getPin()
-            console.log("PIN get : ", pinID)
+            console.log("Register PINget : ", pinID)
 
             this.setState({
                 showCreatePinSuccess: true,
@@ -86,7 +86,6 @@ export default class RegisterActivity extends Component {
             showCreatePin: false
         })
     }
-
 
     componentWillMount() {
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow.bind(this));
@@ -111,12 +110,7 @@ export default class RegisterActivity extends Component {
     }
 
     setPIN(num) {
-        let origin
-        if (this.state.pin1.length == 6) {
-            origin = this.state.pin2
-        } else {
-            origin = this.state.pin1
-        }
+        let origin = this.state.pin
 
         if (num == "-") {
             origin = origin.slice(0, -1);
@@ -124,63 +118,58 @@ export default class RegisterActivity extends Component {
             origin = origin + num
         }
 
-        if (this.state.pin1.length == 6) {
-            if ((this.state.pin.length == 6)) {
+        console.log("origin origin origin : ", origin)
+
+        this.setState({
+            pin: origin
+        })
+        this.state.pin = origin
+        console.log("pin ====> ", this.state.pin)
+
+        if (this.state.pin.length == 6) {
+            if (this.state.pin1.length == 0) {
                 this.setState({
-                    pin: origin,
-                    pin2: origin,
+                    pin: [],
+                    pin1: origin,
                     pintitle: 'Confirm Pin'
                 })
+                this.state.pin = []
+                this.state.pin1 = origin
+                this.state.pintitle = 'Confirm Pin'
             } else {
                 this.setState({
-                    pin: origin,
-                    pin2: origin
+                    pin: [],
+                    pin2: origin,
                 })
-                this.state.pin = origin
+                this.state.pin = []
                 this.state.pin2 = origin
-                if (this.state.pin2.length == 6) {
-                    //TODO When fill success 
+
+                if (this.state.pin1 == this.state.pin2) {
+                    this.onSetPin()
+                } else {
                     console.log("========> pin1 : ", this.state.pin1)
-                    console.log("========> pin2 : ", this.state.pin2)
-
-                    if (this.state.pin1 == this.state.pin2) {
-                        this.onSetPin()
-                    } else {
-                        console.log("========> pin1 : ", this.state.pin1)
-
-                        //TODO Alert
-                        Alert.alert(
-                            StringText.REGISTER_PIN_ERROR_TITLE,
-                            StringText.REGISTER_PIN_ERROR_DESC,
-                            [
-                                {
-                                    text: 'OK', onPress: () => {
-                                        this.setState({
-                                            pin: '',
-                                            pin1: '',
-                                            pin2: '',
-                                            pintitle: 'Create Pin',
-                                        })
-                                    }
-                                },
-                            ],
-                            { cancelable: false }
-                        )
-
-                    }
+                    //TODO Alert
+                    Alert.alert(
+                        StringText.REGISTER_PIN_ERROR_TITLE,
+                        StringText.REGISTER_PIN_ERROR_DESC,
+                        [
+                            {
+                                text: 'OK', onPress: () => {
+                                    this.setState({
+                                        pin: '',
+                                        pin1: '',
+                                        pin2: '',
+                                        pintitle: 'Create Pin',
+                                    })
+                                }
+                            },
+                        ],
+                        { cancelable: false }
+                    )
                 }
             }
-        } else {
-            this.setState({
-                pin: origin,
-                pin1: origin
-            })
-            this.state.pin = origin
-            this.state.pin1 = origin
         }
     }
-
-
 
     onBack() {
         console.log("onBack")
@@ -201,7 +190,9 @@ export default class RegisterActivity extends Component {
                 <View style={styles.alertDialogContainer}>
                     <View style={styles.emptyDialogContainer}>
                         <View style={[styles.navContainer, { backgroundColor: 'white' }]}>
-                            <TouchableOpacity style={styles.navLeftContainer} onPress={() => { this.onClosePIN.bind(this) }} >
+                            <TouchableOpacity style={styles.navLeftContainer}
+                                onPress={() => { this.onClosePIN() }}>
+                                >
                                 <Image
                                     style={[styles.navBackButton, { tintColor: Colors.grayColor }]}
                                     source={require('../resource/images/Back.png')}
@@ -371,7 +362,7 @@ export default class RegisterActivity extends Component {
                             <View style={styles.registTextContainer}>
                                 <Image style={styles.registetImageContainer}
                                     source={require('../resource/regist/regist_location.png')} />
-                                <Text style={[styles.registLocationText, { color: Colors.grayTextColor }]}>TDEM</Text>
+                                <Text style={[styles.registTitleText, { color: Colors.grayTextColor }]}>TDEM</Text>
                             </View>
                             <View style={styles.registLine} />
 

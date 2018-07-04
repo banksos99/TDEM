@@ -6,9 +6,6 @@ import {
     Platform, Dimensions
 } from "react-native";
 import { styles } from "./../SharedObject/MainStyles";
-// import HomeScreen from './TabMenu/MainMenuActivity';
-// import AnnouncementScreen from './TabMenu/MHF02011AnnouncementListView';
-// import RootNavigation from '../navigation/RootNavigation';
 import Colors from "./../SharedObject/Colors"
 import SharedPreference from "./../SharedObject/SharedPreference"
 
@@ -1772,9 +1769,9 @@ export default class HMF01011MainView extends Component {
 
                 <View style={{ flex: 1, justifyContent: 'center', borderBottomWidth: 0.5, borderBottomColor: Colors.lightGrayTextColor }}>
                     <TouchableOpacity
-                    // onPress={(this.select_announce_status.bind(this))}
+                        onPress={(this.select_sign_out.bind(this))}
                     >
-                        <Text style={styles.settingleftredtext}>Sing Out</Text>
+                        <Text style={styles.settingleftredtext}>Sign Out</Text>
                     </TouchableOpacity>
                 </View>
                 <View style={{ flex: 8 }}>
@@ -1784,6 +1781,13 @@ export default class HMF01011MainView extends Component {
             </View>
         )
 
+    }
+
+    select_sign_out() {
+        console.log("select_sign_out")
+
+        SharedPreference.profileObject = null
+        this.props.navigation.navigate('RegisterScreen')
     }
 
     renderpickerview() {

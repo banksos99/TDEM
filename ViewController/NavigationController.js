@@ -35,8 +35,8 @@ import pinScreen from "./MHF01310PINScreen";
 
 
 const AppNavigator = createSwitchNavigator({
-    // RegisterScreen: { screen: registerScreen },
-    // PinScreen: { screen: pinScreen },
+    RegisterScreen: { screen: registerScreen },
+    PinScreen: { screen: pinScreen },
     HomeScreen: { screen: homeScreen },
     EmployeeInfoDetail: { screen: empInfoDetail },
     NonPayrollList: { screen: nonPayrollList },

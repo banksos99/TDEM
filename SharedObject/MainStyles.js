@@ -16,7 +16,7 @@ export const styles = StyleSheet.create({
         backgroundColor: 'white'
     },
 
-    statusbarcontainer:{
+    statusbarcontainer: {
         ...Platform.select({
             ios: {
                 height: 20,
@@ -119,7 +119,7 @@ export const styles = StyleSheet.create({
         flexDirection: 'column'
     },
     navLeftContainer: {
-         ...Platform.select({
+        ...Platform.select({
             ios: {
                 paddingTop: 20,
             },
@@ -495,14 +495,14 @@ export const styles = StyleSheet.create({
         backgroundColor: Colors.calendarLocationBoxColor,
         height: scale * 55,
         marginBottom: 1,
-        flex: 3, 
-        justifyContent: 'center', 
+        flex: 3,
+        justifyContent: 'center',
         flexDirection: 'column'
     },
     leavequotaLine: {
         height: 1, backgroundColor: Colors.lightGrayTextColor
     },
-     leavequotaContainer: {
+    leavequotaContainer: {
         flex: 1, flexDirection: 'row'
     },
     leavequotalisttextbold: {
@@ -851,7 +851,7 @@ export const styles = StyleSheet.create({
         fontFamily: font_medium
 
     },
-    
+
     otsummaryheaderredtext: {
         color: Colors.redTextColor,
         fontSize: 17 * scale,
@@ -885,8 +885,8 @@ export const styles = StyleSheet.create({
         fontFamily: font_medium
 
     },
-    
-    
+
+
     otsummarydetailredtext: {
         color: Colors.redTextColor,
         fontSize: 15 * scale,
@@ -899,7 +899,7 @@ export const styles = StyleSheet.create({
         color: Colors.grayTextColor,
         marginTop: 20,
         fontFamily: font_medium
-    
+
     },//NONPAYROLL
     tabbarSelectYearContainer: {
         height: 50,
@@ -926,7 +926,7 @@ export const styles = StyleSheet.create({
     nonPayRollDetailContainer: {
         flex: 1, justifyContent: 'center', alignItems: 'center'
     },
-     nonPayRollitem: {
+    nonPayRollitem: {
         flex: 1,
         margin: 2,
         borderRadius: 5,
@@ -961,7 +961,7 @@ export const styles = StyleSheet.create({
     },
     registetImageContainer: {
         marginRight: 10,
-        alignItems:'center'
+        alignItems: 'center'
     },
     registTextContainer: {
         flexDirection: 'row',
@@ -978,7 +978,11 @@ export const styles = StyleSheet.create({
         color: Colors.lightGrayTextColor,
         flex: 1,
         height: 45
-
+    },
+    registTitleText: {
+        fontSize: 12,
+        color: Colors.lightGrayTextColor,
+        flex: 1,
     },
     registBackground: {
         alignSelf: 'center',
@@ -1028,14 +1032,14 @@ export const styles = StyleSheet.create({
         fontSize: 15,
         marginLeft: 10,
         textAlign: 'left',
-        color:Colors.grayTextColor,
+        color: Colors.grayTextColor,
         fontFamily: font_medium
 
     }, payslipDetailTextLeft: {
         fontSize: 15,
         marginLeft: 10,
         textAlign: 'left',
-        color:Colors.lightGrayTextColor,
+        color: Colors.lightGrayTextColor,
         fontFamily: font_medium
 
     }, payslipDetailTextRight: {
@@ -1089,6 +1093,14 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
         height: 50,
         width: Layout.window.width,
+        ...Platform.select({
+            ios: {
+                marginBottom: 0
+            },
+            android: {
+                marginBottom: 20
+            }
+        })
     },
     registPinSuccessContainer: {
         flex: 1,
@@ -1135,33 +1147,33 @@ export const styles = StyleSheet.create({
         height: Layout.window.height,
         backgroundColor: Colors.redColor
     },
-    clockinoutdaytext:{
+    clockinoutdaytext: {
 
         color: Colors.grayTextColor,
         fontSize: 35 * scale,
         fontFamily: font_medium,
     },
-    clockinoutdayredtext:{
+    clockinoutdayredtext: {
         color: Colors.redTextColor,
         fontSize: 35 * scale,
         fontFamily: font_medium,
     },
-    clockinoutdaybluetext:{
+    clockinoutdaybluetext: {
         color: Colors.blueTextColor,
         fontSize: 35 * scale,
         fontFamily: font_medium,
     },
-    clockinoutweakdaytext:{
+    clockinoutweakdaytext: {
         color: Colors.grayTextColor,
         fontSize: 12 * scale,
         fontFamily: font_medium,
     },
-    clockinoutweakdayredtext:{
+    clockinoutweakdayredtext: {
         color: Colors.redTextColor,
         fontSize: 12 * scale,
         fontFamily: font_medium,
     },
-    clockinoutweakdaybluetext:{
+    clockinoutweakdaybluetext: {
         color: Colors.blueTextColor,
         fontSize: 12 * scale,
         fontFamily: font_medium,
@@ -1171,10 +1183,10 @@ export const styles = StyleSheet.create({
         color: Colors.redTextColor,
         width: '100%',
         fontFamily: font_medium,
-        
-    
+
+
     },
-     empinfoTitleText: {
+    empinfoTitleText: {
         color: Colors.grayTextColor,
         marginLeft: 20,
         fontFamily: font_medium
@@ -1190,7 +1202,7 @@ export const styles = StyleSheet.create({
         marginLeft: 20,
         fontFamily: font_medium
     },
-     empinfocareerLeftText: {
+    empinfocareerLeftText: {
         fontSize: 9 * scale,
         marginRight: 10,
         color: Colors.grayText,
@@ -1198,7 +1210,7 @@ export const styles = StyleSheet.create({
         fontFamily: font_medium
 
     },
-     empinfocareerRightText: {
+    empinfocareerRightText: {
         fontSize: 11 * scale,
         marginRight: 10,
         color: Colors.grayText,
@@ -1228,6 +1240,6 @@ export const styles = StyleSheet.create({
         fontFamily: font_medium
 
     }
-    
+
 
 })
