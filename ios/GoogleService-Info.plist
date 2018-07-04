@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>AD_UNIT_ID_FOR_BANNER_TEST</key>
+	<string>ca-app-pub-3940256099942544/2934735716</string>
+	<key>AD_UNIT_ID_FOR_INTERSTITIAL_TEST</key>
+	<string>ca-app-pub-3940256099942544/4411468910</string>
+	<key>CLIENT_ID</key>
+	<string>317451656624-qt1rsp0oijv1s409lf743b3haalro8fb.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.317451656624-qt1rsp0oijv1s409lf743b3haalro8fb</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAPGi6MxFMIpRyRMOU-qiDMeHsK-NYAPBY</string>
+	<key>GCM_SENDER_ID</key>
+	<string>317451656624</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.toyotaasia.tdemconnect</string>
+	<key>PROJECT_ID</key>
+	<string>tdemconnect</string>
+	<key>STORAGE_BUCKET</key>
+	<string>tdemconnect.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<true></true>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<false></false>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:317451656624:ios:c4efca517c12a3e2</string>
+	<key>DATABASE_URL</key>
+	<string>https://tdemconnect.firebaseio.com</string>
+</dict>
+</plist>
