@@ -16,6 +16,8 @@ const _formatTime = 'hh:mm A'
 import StringText from './../SharedObject/StringText'
 import SharedPreference from './../SharedObject/SharedPreference'
 
+import RestAPI from "../constants/RestAPI"
+
 
 export default class calendarEventDetailView extends Component {
 
@@ -34,6 +36,7 @@ export default class calendarEventDetailView extends Component {
             monthObject: this.props.navigation.getParam("monthObject", ""),
             monthText: this.props.navigation.getParam("month", ""),
             dataResponse: this.props.navigation.getParam("dataResponse", ""),
+            location: this.props.navigation.getParam("location", ""),
             isLoading: false
         }
 
@@ -102,11 +105,12 @@ export default class calendarEventDetailView extends Component {
 
     onBack() {
         let year = moment(this.state.monthText).format(_formatYear)
-        console.log("WorkingCalendar : onBack year ==> ",year)
-        console.log("WorkingCalendar : onBack dataResponse ==> ",this.state.dataResponse)
+        console.log("WorkingCalendar : onBack year ==> ", year)
+        console.log("WorkingCalendar : onBack dataResponse ==> ", this.state.dataResponse)
         this.props.navigation.navigate('calendarYearView', {
             selectYear: year,
-            dataResponse: this.state.dataResponse
+            dataResponse: this.state.dataResponse,
+            location: this.state.location
         });
         // back
     }
@@ -169,9 +173,9 @@ export default class calendarEventDetailView extends Component {
     }
 
     onPressToday() {//TODO
-
+        console.log("onPressToday")
         this.setState({ isLoading: true })
-        this.onLoadCalendarAPI(new Date().getFullYear(), '')
+        this.onLoadCalendarAPI(new Date().getFullYear(), this.state.location)
     }
 
     renderProgressView() {
@@ -187,7 +191,57 @@ export default class calendarEventDetailView extends Component {
             )
         }
     }
-    onLoadCalendarAPI = async (year, company) => {
+
+    onLoadCalendarAPI = async (year, location) => {
+
+        console.log("onLoadCalendarAPI ==> year : ", year, " , location : ", location)
+
+        let data = await RestAPI(SharedPreference.CALENDER_YEAR_API + year + '&location=' + location)
+        code = data[0]
+        data = data[1]
+
+        console.log("calendarCallback : ", data.code)
+
+        if (code.SUCCESS == data.code) {
+            let monthArray = data.data.holidays
+            //console.log("responseJson ======> monthArray.length ===> ", monthArray.length);
+
+            let today = new Date()
+            let _format = 'M'
+            const selectedMonth = moment(today).format(_format);
+
+            for (let index = 0; index < monthArray.length; index++) {
+                const element = monthArray[index];
+                if (element.month == selectedMonth) {
+                    let formatdate = 'YYYY-MM-DD'
+                    const monthText = moment(today).format(formatdate);
+
+                    this.setState({
+                        monthObject: element,
+                        monthText: monthText,
+                        isLoading: false
+                    })
+                    this.getDataOnView()
+                }
+            }
+        } else {
+            Alert.alert(
+                StringText.ALERT_CANNOT_CONNECT_TITLE,
+                StringText.ALERT_CANNOT_CONNECT_DESC,
+                [{
+                    text: 'OK', onPress: () => {
+                        this.setState({
+                            isLoading: false
+                        })
+                    }
+                },
+                ],
+                { cancelable: false }
+            )
+        }
+    }
+
+    onLoadCalendarAPI11 = async (year, company) => {
         ////console.log("onLoadCalendarAPI : ", year, ' , company : ', company)
         return fetch(SharedPreference.HOST_API + '/api/' + SharedPreference.API_VERSION + '/calendar?year=' + year)
             .then((response) => response.json())
@@ -378,7 +432,8 @@ export default class calendarEventDetailView extends Component {
                 date: date,
                 monthObject: this.state.monthObject,
                 monthText: this.state.monthText,
-                dataResponse:this.state.dataResponse
+                dataResponse: this.state.dataResponse,
+                location: this.state.location
             });
     }
 
@@ -422,7 +477,9 @@ export default class calendarEventDetailView extends Component {
                             />
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.navRightContainer} onPress={(this.onPressToday.bind(this))}>
-                            <Text style={styles.calendarTitleRightText} >{StringText.CALENDER_YEARVIEW_YEAR_TODAY_BUTTON}</Text>
+                            <View style={{ margin: 10 }}>
+                                <Text style={styles.calendarTitleRightText} >{StringText.CALENDER_YEARVIEW_YEAR_TODAY_BUTTON}</Text>
+                            </View>
                         </TouchableOpacity>
                     </View>
                     <View style={{ flex: 1 }}>
@@ -441,7 +498,6 @@ export default class calendarEventDetailView extends Component {
                     </View>
                 </View>
                 {this.renderProgressView()}
-
             </View>
         );
     }

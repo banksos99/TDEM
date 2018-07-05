@@ -201,7 +201,7 @@ export const styles = StyleSheet.create({
         color: Colors.redTextColor,
     },
     calendarLocationText: {
-        fontSize: 20,
+        fontSize: 18,
         textAlign: 'right',
         color: Colors.redTextColor,
     },
@@ -216,7 +216,7 @@ export const styles = StyleSheet.create({
         borderRadius: 5,
         borderColor: Colors.calendarLocationBorderBoxColor,
         borderWidth: 2,
-        justifyContent: 'flex-end'
+        justifyContent: 'flex-end',
     },
     calendarLocationBox: {
         width: 120, marginTop: 10, marginBottom: 10, backgroundColor: Colors.calendarLocationBoxColor,
@@ -765,12 +765,12 @@ export const styles = StyleSheet.create({
         borderRadius: 5,
     },
     alertDialogBoxText: {
-        // marginLeft: 20,
-        // marginTop: 10,
-        // textAlign: 'left',
-        // color: 'black',
-        // fontSize: 18,
-        // fontWeight: 'bold',
+        marginLeft: 20,
+        marginTop: 10,
+        textAlign: 'left',
+        color: 'black',
+        fontSize: 18,
+        fontWeight: 'bold',
     },
     announcementitemRead: {
         flexDirection: 'row',

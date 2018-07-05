@@ -60,8 +60,8 @@ export default class HMF01011MainView extends Component {
             username: SharedPreference.profileObject.employee_name,
             page: 0
         }
-        console.log("MainView ====> profileObject : ", SharedPreference.profileObject)
-
+        console.log("MainView ====> profileObject 11111 : ", SharedPreference.profileObject)
+        console.log("initmaster : ",SharedPreference.initmaster)
     }
 
     componentDidMount() {
@@ -580,8 +580,10 @@ export default class HMF01011MainView extends Component {
 
         this.props.navigation.navigate('calendarYearView', {
             dataResponse: data,
-            selectYear: new Date().getFullYear()
+            selectYear: new Date().getFullYear(),
+            location:SharedPreference.profileObject.location
         });
+
     }
 
     // loadHandbooklistfromAPI = async () => {
@@ -636,41 +638,13 @@ export default class HMF01011MainView extends Component {
 
     // }
 
-    loadOrgStructerfromAPI(url) {
+    loadOrgStructerfromAPI = async () => {
 
-        return fetch('https://randomuser.me/api/?results=2')
-            .then((response) => response.json())
-            .then((responseJson) => {
+        let today = new Date();
 
-                try {
-                    this.setState({
+        let url = SharedPreference.ORGANIZ_STRUCTURE_API + '60162305'
 
-                        dataSource: responseJson,
-
-                    }, function () {
-
-                        this.props.navigation.navigate('OrgStructure', {
-                            DataResponse: DataResponse.dataSource,
-                        });
-
-                    });
-
-
-                } catch (error) {
-
-                }
-            })
-            .catch((error) => {
-
-                Alert.alert(
-                    'MHF00002ACRI',
-                    'System Error (API). Please contact system administrator.',
-                    [
-                        { text: 'OK', onPress: () => console.log('OK Pressed') },
-                    ],
-                    { cancelable: false }
-                )
-            });
+        this.APICallback(await RestAPI(url), 'OrganizationStruct',0)
 
 
     }
@@ -704,7 +678,7 @@ export default class HMF01011MainView extends Component {
             this.setState(this.renderloadingscreen())
             this.loadOrgStructerfromAPI()
         });
-
+//OrganizationStruct
     }
 
     onOpenAnnouncement() {

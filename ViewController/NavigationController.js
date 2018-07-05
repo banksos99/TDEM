@@ -22,7 +22,7 @@ import handbookList from "./MHF0A011HandbookListView";
 import handbookDetail from "./MHF0A012HandbookDetailView";
 
 
-import OrganizationStruct from "./OrganizationStruct";
+import OrganizationStruct from "./MHF0B011OrganizationStruct";
 
 import calendarYearView from "./MHF03111WorkingCalendarYearView";
 import calendarMonthView from "./MHF03112WorkingCalendarMonthView";
@@ -49,7 +49,7 @@ const AppNavigator = createSwitchNavigator({
     Handbooklist: { screen: handbookList },
     HandbookDetail: { screen: handbookDetail },
 
-    OrgStructure: { screen: OrganizationStruct },
+    OrganizationStruct: { screen: OrganizationStruct },
 
     calendarYearView: { screen: calendarYearView },
     calendarMonthView: { screen: calendarMonthView },

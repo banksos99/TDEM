@@ -3,6 +3,7 @@ import { View, Image, Text, TextInput, Keyboard, TouchableOpacity, Alert } from 
 import { styles } from "./../SharedObject/MainStyles";
 import Colors from './../SharedObject/Colors';
 import RegisterAPI from './../constants/RegisterAPI';
+import RestAPI from './../constants/RestAPI';
 import SetPinAPI from './../constants/SetPinAPI';
 
 import SharedPreference from "../SharedObject/SharedPreference";
@@ -14,7 +15,6 @@ var DeviceInfo = require('react-native-device-info');
 
 export default class RegisterActivity extends Component {
 
-    savePIN = new SavePIN()
 
     constructor(props) {
         super(props);
@@ -30,9 +30,25 @@ export default class RegisterActivity extends Component {
             password: ''
         }
 
-        // this.getDeviceInformation()
-
     }
+
+    savePIN = new SavePIN()
+
+    getPINFromDevice = async () => {
+        pin = await this.savePIN.getPin()
+        console.log("PinActivity ==> getPINFromDevice ==>pin : ", pin)
+        console.log("PinActivity ==> getPINFromDevice ==>pin.length : ", pin.length)
+
+        if (pin.length > 0) {
+            console.log("Go to pin Activity")
+            this.onOpenPinActivity()
+        }
+    }
+
+    async componentWillMount() {
+        await this.getPINFromDevice()
+    }
+
 
     getDeviceInformation() {
         // const appName = DeviceInfo.getApplicationName(); // "Learnium Mobile"
@@ -51,6 +67,48 @@ export default class RegisterActivity extends Component {
         data = data[1]
 
         if (code.SUCCESS == data.code) {
+            // this.setState({
+            //     showCreatePin: true
+            // })
+
+            this.onLoadInitialMaster()
+
+        } else {
+            Alert.alert(
+                StringText.SERVER_ERROR_TITLE,
+                StringText.SERVER_ERROR_DESC,
+                [
+                    { text: 'OK', onPress: () => console.log('OK Pressed') },
+                ],
+                { cancelable: false }
+            )
+        }
+    }
+
+    onLoadInitialMaster = async () => {
+        console.log()
+        let data = await RestAPI(SharedPreference.INITIAL_MASTER_API)
+        code = data[0]
+        data = data[1]
+        if (code.SUCCESS == data.code) {
+            console.log("onLoadInitialMaster data code : ", data.code)
+            console.log("onLoadInitialMaster data data : ", data.data)
+
+            array = data.data
+            for (let index = 0; index < array.length; index++) {
+                const element = array[index];
+                console.log("onLoadInitialMaster element : ", element.master_key)
+                if (element.master_key == 'NOTIFICATION_CATEGORY') {
+                    SharedPreference.NOTIFICATION_CATEGORY = element.master_data
+                } else if (element.master_key == 'READ_TYPE') {
+                    SharedPreference.READ_TYPE = element.master_data
+                } else if (element.master_key == 'COMPANY_LOCATION') {
+                    SharedPreference.COMPANY_LOCATION = element.master_data
+                } else {
+                    SharedPreference.TB_M_LEAVETYPE = element.TB_M_LEAVETYPE
+                }
+            }
+
             this.setState({
                 showCreatePin: true
             })

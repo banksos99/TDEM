@@ -9,8 +9,9 @@ import {
     Alert,
     ActivityIndicator,
     Platform,
-    PermissionsAndroid,
-    AsyncStorage
+    FlatList,
+    SectionList,
+    ScrollView
 } from 'react-native';
 
 import { Calendar, LocaleConfig } from 'react-native-calendars';
@@ -30,51 +31,6 @@ import StringText from '../SharedObject/StringText'
 
 import RestAPI from "../constants/RestAPI"
 import EventCalendar from "../constants/EventCalendar"
-import CalendarEvents from 'react-native-calendar-events';
-
-
-const locationObject = [
-    {
-        label: 'Samrong (Admin)',
-        value: 'TA',
-    },
-    {
-        label: 'Samrong (Marketing)',
-        value: 'TS',
-    },
-    {
-        label: 'Bang Bo',
-        value: 'TQ',
-    },
-    {
-        label: 'Banpho',
-        value: 'TO',
-    },
-    {
-        label: 'TPCAP',
-        value: 'TP',
-    },
-    {
-        label: 'Samrong (Manu)',
-        value: 'TM',
-    },
-    {
-        label: 'Gateway',
-        value: 'TG',
-    },
-    {
-        label: 'Bangkok Office',
-        value: 'TB',
-    },
-    {
-        label: 'Gateway2',
-        value: 'TK',
-    },
-    {
-        label: 'TAW',
-        value: 'TT',
-    }
-];
 
 export default class calendarYearView extends Component {
 
@@ -94,10 +50,10 @@ export default class calendarYearView extends Component {
             //
             selectYear: this.props.navigation.getParam("selectYear", ""),
             selectDownloadYear: '',
-            selectLocation: '',
+            selectLocation: this.props.navigation.getParam("location","TA"),
 
             showYear: '',
-            showLocation: 'Bang Bo',
+            showLocation: '',
 
             yearPickerForDownloadPDFFileView: '',
             yearsPickerView: '',
@@ -107,21 +63,42 @@ export default class calendarYearView extends Component {
             calendarEventData: '',
 
             // data
-            locationPicker: locationObject,
+            locationPicker: '',
             today: new Date(),
             dataResponse: this.props.navigation.getParam("dataResponse", ""),
 
             havePermission: false
 
         }
+        console.log("setNewPicker index ==>  SharedPreference.COMPANY_LOCATION  ")
 
         this.LocaleConfig()
         this.onPressCalendar = this.onPressCalendar.bind(this)
         this.getYearSelect()
+        this.setNewPicker()
+    }
+
+    setNewPicker() {
+
+        // console.log(" SharedPreference.COMPANY_LOCATION  : " + SharedPreference.COMPANY_LOCATION)
+        array = SharedPreference.COMPANY_LOCATION
+        // loactionArray = locationPicker
+        locationArray = []
+
+        for (let index = 0; index < array.length; index++) {
+            const element = array[index];
+            locationArray.push({
+                label: element.value,
+                value: element.key
+            })
+            console.log("setNewPicker index ==>  : ", locationArray[index])
+        }
+
+        console.log("setNewPicker locationArray : ", locationArray)
+        this.state.locationPicker = locationArray
     }
 
     componentDidMount() {
-        ////////console.log("this.state.selectYear : ",this.state.selectYear)
         this.getYearSelect()
         // if (this.state.connectWithServer == true) {
         //     if (this.state.selectYear == '') {
@@ -163,12 +140,13 @@ export default class calendarYearView extends Component {
     }
 
     onLoadCalendarAPI = async (year, location) => {
+        console.log("onLoadCalendarAPI ====> start")
 
         let data = await RestAPI(SharedPreference.CALENDER_YEAR_API + year + '&location=' + location)
         code = data[0]
         data = data[1]
 
-       console.log("calendarCallback1111 : ", data.code)
+        console.log("calendarCallback1111 : ", data.code)
         // this.props.navigation.navigate('calendarYearView', {
         //     dataResponse: data,
         //     selectYear: new Date().getFullYear()
@@ -206,30 +184,30 @@ export default class calendarYearView extends Component {
         this.getYearView(year, calendarEventData)
     }
 
-    getYearView(year, calendarEventData) {
+    getYearView = async (year, calendarEventData) =>  {
 
-        console.log("getYearView : year ==> ",year)
-        console.log("getYearView : calendarEventData ==> ",calendarEventData)
+        console.log("getYearView : year ==> ", year)
+        console.log("getYearView : calendarEventData ==> ", calendarEventData)
 
         let monthYear = 12
         const original = [];
-        
-        if(calendarEventData.code == 200){
-           
+
+        if (calendarEventData.code == 200) {
             for (let index = 0; index < monthYear; index++) {
                 let object = this.getMonthEvent((index + 1), calendarEventData)
                 original[index] = object
             }
-    
         }
+        showLocation = await this.getFullLocation(this.state.selectLocation)
 
         this.setState({
             yearObject: original,
             showYear: year,
             isLoading: false,
-            calendarEventData: calendarEventData
+            calendarEventData: calendarEventData,
+            showLocation: showLocation
         })
-      
+
     }
 
     getMonthEvent(month, calendarEventData) {
@@ -373,18 +351,18 @@ export default class calendarYearView extends Component {
     }
 
     checkSpecialHoliday(selectedDateMonth) {
-       //console.log("selectedDateMonth : ", selectedDateMonth)
+        //console.log("selectedDateMonth : ", selectedDateMonth)
         try {
             const month = moment(selectedDateMonth).format('M');
-           //console.log("month : ", month)
+            //console.log("month : ", month)
             let checkObject = this.state.yearObject[(month - 1)]
-           //console.log("checkObject : ", checkObject)
+            //console.log("checkObject : ", checkObject)
 
             if (checkObject == []) {
                 return false
             }
             let objectMonth = checkObject.days
-           //console.log("objectMonth : ", objectMonth)
+            //console.log("objectMonth : ", objectMonth)
 
             for (let index = 0; index < objectMonth.length; index++) {
                 let date = objectMonth[index].date
@@ -420,129 +398,299 @@ export default class calendarYearView extends Component {
     }
 
     resetCalendar() {
-       //console.log("resetCalendar ==> this.state.selectYear : ", this.state.selectYear);
-       //console.log("resetCalendar ==> this.state.showYear : ", this.state.showYear);
+        console.log("resetCalendar ==> this.state.selectYear : ", this.state.selectYear);
+        console.log("resetCalendar ==> this.state.selectLocation : ", this.state.selectLocation);
+        //console.log("resetCalendar ==> this.state.showYear : ", this.state.showYear);
 
-        // if (this.state.selectYear != '') {
         if (this.state.connectWithServer == true) {
             this.loadDataFromAPI(this.state.selectYear, this.state.selectLocation)
         } else {
             this.getLocalYearView(this.state.selectYear)
         }
-        // }
     }
 
     onPressCalendar(datetime) {
-       //console.log("datetime : ", datetime)
+        //console.log("datetime : ", datetime)
         const month = moment(datetime).format('M');
         let monthObject = this.state.yearObject[(month - 1)]
         this.props.navigation.navigate('calendarMonthView',
             {
                 month: datetime,
                 monthObject: monthObject,
-                dataResponse: this.state.dataResponse
+                dataResponse: this.state.dataResponse,
+                location: this.state.selectLocation
             });
 
     }
 
+    onPressSelectYear(year) {
+        console.log("onPressSelectYear index : ", year)
+        this.setState({
+            selectYear: year
+        })
+    }
+
+    onPressLocation(locationFull, locationShort) {
+        console.log("onPressSelectLocation location : ", locationFull)
+        console.log("onPressSelectLocation locationS : ", locationShort)
+
+        this.setState({
+            selectLocation: locationShort
+        })
+    }
+
+    getShortLocation = async (fullLocation) => {
+        array = this.state.locationPicker
+        for (let index = 0; index < array.length; index++) {
+            const element = array[index];
+            console.log("fullLocation fullLocation : ", fullLocation)
+            console.log("fullLocation element label : ", element.label)
+            if (fullLocation == element.label) {
+                return element.value
+            }
+        }
+        return
+    }
+
+    getFullLocation = async (shortLocation) => {
+        array = this.state.locationPicker
+        for (let index = 0; index < array.length; index++) {
+            const element = array[index];
+            console.log("shortLocation shortLocation : ", shortLocation)
+            console.log("shortLocation element label : ", element.label)
+            if (shortLocation == element.value) {
+                return element.label
+            }
+        }
+        return
+    }
+
+    getLocation = async () => {
+        let location = await this.getFullLocation(this.state.selectLocation)
+        console.log("getLocation ==> location : ", location)
+        this.setState({
+            locationPickerView: false,
+            showLocation: location
+        })
+
+        this.resetCalendar()
+    }
+
     renderDialog() {
         if (this.state.yearviewPicker) {
-            return (
-                <View style={styles.alertDialogContainer}>
-                    {/* bg */}
-                    <View style={styles.alertDialogBackgroudAlpha} />
-                    {/* bg */}
+            if (Platform.OS === 'android') {
+                // console.log("this.state.yearsPickerArray : ", this.state.yearsPickerArray)
+                return (
                     <View style={styles.alertDialogContainer}>
-                        <View style={styles.alertDialogBoxContainer}>
-                            <Text style={[styles.alertDialogBoxText, { style: Text }]}>{StringText.CALENDER_YEARVIEW_SELECT_YEAR_TITLE}</Text>
-                            <Picker
-                                selectedValue={this.state.selectYear}
-                                onValueChange={(itemValue, itemIndex) => this.setState({ selectYear: itemValue })}>
-                                {this.state.yearsPickerArray.map((i, index) => (
-                                    <Picker.Item key={index} color={Colors.redTextColor} selec label={i.label} value={i.value} />
-                                ))}
-                            </Picker>
-                            <View style={styles.alertDialogBox}>
-                                <TouchableOpacity style={styles.button}
-                                    onPress={() => {
-                                        this.setState({ yearviewPicker: false }),
-                                            this.resetCalendar()
-                                    }}>
-                                    <Text style={[styles.alertDialogBoxText, { style: Text }]}>{StringText.CALENDER_YEARVIEW_SELECT_YEAR_BUTTON}</Text>
-                                </TouchableOpacity>
+                        {/* bg */}
+                        <View style={styles.alertDialogBackgroudAlpha} />
+                        {/* bg */}
+                        <View style={styles.alertDialogContainer}>
+                            <View style={styles.alertDialogBoxContainer}>
+                                <Text style={[styles.alertDialogBoxText, {
+                                    style: Text,
+                                }]}>{StringText.CALENDER_YEARVIEW_SELECT_YEAR_TITLE}</Text>
+                                <ScrollView style={{ height: '40%' }}>
+                                    {
+                                        this.state.yearsPickerArray.map((i, index) => (
+                                            <TouchableOpacity style={styles.button}
+                                                onPress={() => { this.onPressSelectYear(i.label) }}
+                                                key={index + 100}>
+                                                <View style={{ justifyContent: 'center', height: 40, alignItems: 'center', }} key={index + 200}>
+                                                    <Text style={{ textAlign: 'center', fontSize: 18, width: '100%', height: 30, alignItems: 'center' }}> {i.label}</Text>
+                                                </View>
+                                            </TouchableOpacity>))}
+                                </ScrollView>
+                                <View style={styles.alertDialogBox}>
+                                    <TouchableOpacity style={styles.button}
+                                        onPress={() => {
+                                            this.setState({ yearviewPicker: false }),
+                                                this.resetCalendar()
+                                        }}>
+                                        <Text style={[styles.alertDialogBoxText, { style: Text }]}>{StringText.CALENDER_YEARVIEW_SELECT_YEAR_BUTTON}</Text>
+                                    </TouchableOpacity>
+                                </View>
                             </View>
                         </View>
-                    </View>
-                </View >
-            )
+                    </View >
+                )
+            } else {
+                return (
+                    <View style={styles.alertDialogContainer}>
+                        {/* bg */}
+                        <View style={styles.alertDialogBackgroudAlpha} />
+                        {/* bg */}
+                        <View style={styles.alertDialogContainer}>
+                            <View style={styles.alertDialogBoxContainer}>
+                                <Text style={[styles.alertDialogBoxText, { style: Text }]}>{StringText.CALENDER_YEARVIEW_SELECT_YEAR_TITLE}</Text>
+                                <Picker
+                                    selectedValue={this.state.selectYear}
+                                    onValueChange={(itemValue, itemIndex) => this.setState({ selectYear: itemValue })}>
+                                    {this.state.yearsPickerArray.map((i, index) => (
+                                        <Picker.Item key={index} color={Colors.redTextColor} label={i.label} value={i.value} />
+                                    ))}
+                                </Picker>
+                                <View style={styles.alertDialogBox}>
+                                    <TouchableOpacity style={styles.button}
+                                        onPress={() => {
+                                            this.setState({ yearviewPicker: false }),
+                                                this.resetCalendar()
+                                        }}>
+                                        <Text style={[styles.alertDialogBoxText, { style: Text }]}>{StringText.CALENDER_YEARVIEW_SELECT_YEAR_BUTTON}</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </View>
+                    </View >
+                )
+            }
         }
 
         if (this.state.yearPickerForDownloadPDFFileView) {
-            return (
-                <View style={styles.alertDialogContainer}>
-                    {/* bg */}
-                    <View style={styles.alertDialogBackgroudAlpha} />
-                    {/* bg */}
+            if (Platform.OS === 'android') {
+                return (
                     <View style={styles.alertDialogContainer}>
-                        <View style={styles.alertDialogBoxContainer}>
-                            <Text style={[styles.alertDialogBoxText, { style: Text }]}>{StringText.CALENDER_YEARVIEW_DOWNLOAD_PDF_TITLE}</Text>
-                            <Picker
-                                selectedValue={this.state.selectYear}
-                                onValueChange={(itemValue, itemIndex) => this.setState({ selectYear: itemValue })}>
-                                {this.state.yearsPickerArray.map((i, index) => (
-                                    <Picker.Item key={index} color={Colors.redTextColor} selec label={i.label} value={i.value} />
-                                ))}
-                            </Picker>
-                            <View style={styles.alertDialogBox}>
-                                <TouchableOpacity style={styles.button}
-                                    onPress={() => {
-                                        this.setState({
-                                            yearPickerForDownloadPDFFileView: false,
-                                            isLoading: true
-                                        })
-                                        this.onloadPDFFile();
-                                    }}>
-                                    <Text style={[styles.alertDialogBoxText, { style: Text }]}>{StringText.CALENDER_YEARVIEW_DOWNLOAD_PDF_BUTTON}</Text>
-                                </TouchableOpacity>
+                        {/* bg */}
+                        <View style={styles.alertDialogBackgroudAlpha} />
+                        {/* bg */}
+                        <View style={styles.alertDialogContainer}>
+                            <View style={styles.alertDialogBoxContainer}>
+                                <Text style={[styles.alertDialogBoxText, {
+                                    style: Text,
+                                }]}>{StringText.CALENDER_YEARVIEW_SELECT_YEAR_TITLE}</Text>
+                                <ScrollView style={{ height: '40%' }}>
+                                    {
+                                        this.state.yearsPickerArray.map((i, index) => (
+                                            <TouchableOpacity style={styles.button}
+                                                onPress={() => { this.onPressSelectYear(i.label) }}
+                                                key={index + 100}>
+                                                <View style={{ justifyContent: 'center', height: 40, alignItems: 'center', }} key={index + 200}>
+                                                    <Text style={{ textAlign: 'center', fontSize: 18, width: '100%', height: 30, alignItems: 'center' }}> {i.label}</Text>
+                                                </View>
+                                            </TouchableOpacity>))}
+                                </ScrollView>
+                                <View style={styles.alertDialogBox}>
+                                    <TouchableOpacity style={styles.button}
+                                        onPress={() => {
+                                            this.setState({
+                                                yearPickerForDownloadPDFFileView: false,
+                                                isLoading: true
+                                            })
+                                            this.onloadPDFFile();
+                                        }}>
+                                        <Text style={[styles.alertDialogBoxText, { style: Text }]}>{StringText.CALENDER_YEARVIEW_SELECT_YEAR_BUTTON}</Text>
+                                    </TouchableOpacity>
+                                </View>
                             </View>
                         </View>
-                    </View>
-                </View >
-            )
+                    </View >
+                )
+            } else {
+
+                return (
+                    <View style={styles.alertDialogContainer}>
+                        {/* bg */}
+                        <View style={styles.alertDialogBackgroudAlpha} />
+                        {/* bg */}
+                        <View style={styles.alertDialogContainer}>
+                            <View style={styles.alertDialogBoxContainer}>
+                                <Text style={[styles.alertDialogBoxText, { style: Text }]}>{StringText.CALENDER_YEARVIEW_DOWNLOAD_PDF_TITLE}</Text>
+                                <Picker
+                                    selectedValue={this.state.selectYear}
+                                    onValueChange={(itemValue, itemIndex) => this.setState({ selectYear: itemValue })}>
+                                    {this.state.yearsPickerArray.map((i, index) => (
+                                        <Picker.Item key={index} color={Colors.redTextColor} selec label={i.label} value={i.value} />
+                                    ))}
+                                </Picker>
+                                <View style={styles.alertDialogBox}>
+                                    <TouchableOpacity style={styles.button}
+                                        onPress={() => {
+                                            this.setState({
+                                                yearPickerForDownloadPDFFileView: false,
+                                                isLoading: true
+                                            })
+                                            this.onloadPDFFile();
+                                        }}>
+                                        <Text style={[styles.alertDialogBoxText, { style: Text }]}>{StringText.CALENDER_YEARVIEW_DOWNLOAD_PDF_BUTTON}</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </View>
+                    </View >
+                )
+            }
+
         }
 
         if (this.state.locationPickerView) {
-            return (
-                <View style={styles.alertDialogContainer}>
-                    {/* bg */}
-                    <View style={styles.alertDialogBackgroudAlpha} />
-                    {/* bg */}
+            if (Platform.OS === 'android') {
+                return (
                     <View style={styles.alertDialogContainer}>
-                        <View style={styles.alertDialogBoxContainer}>
-                            <Text style={[styles.alertDialogBoxText, { style: Text }]}>{StringText.CALENDER_YEARVIEW_LOCATION_TITLE}</Text>
-                            <Picker
-                                selectedValue={this.state.selectLocation}
-                                onValueChange={(itemValue, itemIndex) => this.setState({ selectLocation: itemValue })}>
-                                {this.state.locationPicker.map((i, index) => (
-                                    <Picker.Item key={index} numberOfLines={1} color={Colors.redTextColor} label={i.label} value={i.label} />
-                                ))}
-                            </Picker>
-                            <View style={styles.alertDialogBox}>
-                                <TouchableOpacity style={styles.button}
-                                    onPress={() => {
-                                        this.setState({
-                                            locationPickerView: false,
-                                            showLocation: this.state.selectLocation
-                                        })
-                                        //Edit
-                                    }}>
-                                    <Text style={[styles.alertDialogBoxText, { style: Text }]}>{StringText.CALENDER_YEARVIEW_ALERT_LOCATION_BUTTON}</Text>
-                                </TouchableOpacity>
+                        {/* bg */}
+                        <View style={styles.alertDialogBackgroudAlpha} />
+                        {/* bg */}
+                        <View style={styles.alertDialogContainer}>
+                            <View style={styles.alertDialogBoxContainer}>
+                                <Text style={[styles.alertDialogBoxText, {
+                                    style: Text,
+                                }]}>{StringText.CALENDER_YEARVIEW_LOCATION_TITLE}</Text>
+                                <ScrollView style={{ height: '40%' }}>
+                                    {
+                                        this.state.locationPicker.map((i, index) => (
+                                            <TouchableOpacity style={styles.button}
+                                                onPress={() => { this.onPressLocation(i.label, i.value) }}
+                                                key={index + 100}>
+                                                <View style={{ justifyContent: 'center', height: 40, alignItems: 'center', }} key={index + 200}>
+                                                    <Text style={{ textAlign: 'center', fontSize: 18, width: '100%', height: 30, alignItems: 'center' }}> {i.label}</Text>
+                                                </View>
+                                            </TouchableOpacity>))}
+                                </ScrollView>
+                                <View style={styles.alertDialogBox}>
+                                    <TouchableOpacity style={styles.button}
+                                        onPress={() => {
+                                            this.getLocation()
+                                        }}>
+                                        <Text style={[styles.alertDialogBoxText, { style: Text }]}>{StringText.CALENDER_YEARVIEW_ALERT_LOCATION_BUTTON}</Text>
+                                    </TouchableOpacity>
+                                </View>
                             </View>
                         </View>
-                    </View>
-                </View >
-            )
+                    </View >
+                )
+            } else {
+                return (
+                    <View style={styles.alertDialogContainer}>
+                        {/* bg */}
+                        <View style={styles.alertDialogBackgroudAlpha} />
+                        {/* bg */}
+                        <View style={styles.alertDialogContainer}>
+                            <View style={styles.alertDialogBoxContainer}>
+                                <Text style={[styles.alertDialogBoxText, { style: Text }]}>{StringText.CALENDER_YEARVIEW_LOCATION_TITLE}</Text>
+                                <Picker
+                                    selectedValue={this.state.selectLocation}
+                                    onValueChange={(itemValue, itemIndex) => this.setState({ selectLocation: itemValue })}>
+                                    {this.state.locationPicker.map((i, index) => (
+                                        <Picker.Item key={index} numberOfLines={1} color={Colors.redTextColor} label={i.label} value={i.label} />
+                                    ))}
+                                </Picker>
+                                <View style={styles.alertDialogBox}>
+                                    <TouchableOpacity style={styles.button}
+                                        onPress={() => {
+                                            location = this.getFullLocation(this.state.selectLocation)
+                                            this.setState({
+                                                locationPickerView: false,
+                                                showLocation: location
+                                            })
+                                            // this.resetCalendar()
+                                        }}>
+                                        <Text style={[styles.alertDialogBoxText, { style: Text }]}>{StringText.CALENDER_YEARVIEW_ALERT_LOCATION_BUTTON}</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </View>
+                    </View >
+                )
+            }
         }
     }
 
@@ -578,7 +726,7 @@ export default class calendarYearView extends Component {
                         let pdfPath = responseJson.data[0].link
                         let filename = responseJson.data[0].filename
 
-                       //console.log("responseJson filename  pdfPath : ", pdfPath, " , filename : ", filename)
+                        //console.log("responseJson filename  pdfPath : ", pdfPath, " , filename : ", filename)
                         this.loadPdfFile(pdfPath, filename)
                     }
 
@@ -679,13 +827,13 @@ export default class calendarYearView extends Component {
     }
 
     addEventOnCalendar = async () => {
-       console.log("addEventOnCalendar")
+        console.log("addEventOnCalendar")
 
         await this.eventCalendar._deleteEventCalendar()
-       console.log("deleteEventCalendar")
+        console.log("deleteEventCalendar")
 
         // await this.eventCalendar._removeEventCalendar()
-       console.log("removeEventCalendar")
+        console.log("removeEventCalendar")
 
         this.setState({
             isLoading: true
@@ -695,7 +843,7 @@ export default class calendarYearView extends Component {
         //console.log("this.state.calendarEventData : ", this.state.calendarEventData)
 
         let holidayArray = this.state.calendarEventData.data.holidays;
-        console.log("this.state.calendarEventData : ",holidayArray.length)
+        console.log("this.state.calendarEventData : ", holidayArray.length)
 
         for (let index = 0; index < holidayArray.length; index++) {
             const daysArray = holidayArray[index].days
@@ -733,9 +881,9 @@ export default class calendarYearView extends Component {
                         eventObject = copy
                     }
 
-                   //console.log("addEventOnCalendar ==> eventObject : ", eventObject);
+                    //console.log("addEventOnCalendar ==> eventObject : ", eventObject);
                     await this.eventCalendar.synchronizeCalendar(eventObject, 'EDEM');
-                   //console.log("==============Success==============")
+                    //console.log("==============Success==============")
                 }
             }
         }

@@ -17,15 +17,28 @@ export default {
     LEAVE_QUOTA_API: HOST + '/api/' + VERSION + '/leavequota/summary',
     NONPAYROLL_SUMMARY_API: HOST + '/api/' + VERSION + '/nonpayroll/summary',
     CALENDER_YEAR_API: HOST + '/api/' + VERSION + '/calendar?year=',
+
     NON_PAYROLL_DETAIL_API: HOST + '/api/' + VERSION + '/nonpayroll?month=',
+
     CLOCK_IN_OUT_API: HOST + '/api/' + VERSION + '/clockinout?empcode=00000001&',
     CALENDAR_PDF_YEAR_API: HOST + '/api/' + VERSION + '/calendar/file?year=',
     CALENDAR_NAME: 'Toyota',
     REGISTER_API: HOST + '/api/' + VERSION + '/auth',
     SET_PIN_API: HOST + '/api/' + VERSION + '/pin',
-    // 
-    profileObject: null,
-    initmaster: null,
+
+    CLOCK_IN_OUT_MANAGER_API: HOST + '/api/' + VERSION + '/clockinout?empcode=',
     EMP_INFO_CAREERPATH_API: HOST + '/api/' + VERSION + '/employee/11111101',
+    EMP_INFO_MANAGER_API: HOST + '/api/' + VERSION + '/employee/',
+    ORGANIZ_STRUCTURE_API: HOST + '/api/' + VERSION + '/organization?type=CE&org_code=',
+    APPLICATION_INFO_API: HOST + '/api/' + VERSION + '/appinfo',
+
+    // 
+    profileObject: {},
+    initmaster: {},
+    
+    NOTIFICATION_CATEGORY: [],
+    READ_TYPE: [],
+    COMPANY_LOCATION: [],
+    TB_M_LEAVETYPE: []
 }
 

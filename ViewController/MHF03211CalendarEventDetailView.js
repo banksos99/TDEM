@@ -19,22 +19,20 @@ export default class calendarMonthView extends Component {
             monthText: this.props.navigation.getParam("monthText", ""),
             dateTime: this.props.navigation.getParam("dateTime", ""),
             date: this.props.navigation.getParam("date", ""),
-            dataResponse : this.props.navigation.getParam("dataResponse", ""),
+            dataResponse: this.props.navigation.getParam("dataResponse", ""),
+            location: this.props.navigation.getParam("location", ""),
         }
-        // //console.log("eventObject : ",this.state.eventObject)
-        // //console.log("type : ",this.state.type)
-        // //console.log("monthText : ",this.state.monthText)
-        // //console.log("monthObject : ",this.state.monthObject)
 
     }
 
     onBackPrevious() {
-        console.log("calendarMonthView dataResponse : ",this.state.dataResponse)
+        console.log("calendarMonthView dataResponse : ", this.state.dataResponse)
         this.props.navigation.navigate('calendarMonthView',
             {
                 month: this.state.monthText,
                 monthObject: this.state.monthObject,
-                dataResponse : this.state.dataResponse
+                dataResponse: this.state.dataResponse,
+                location : this.state.location
             });
     }
 

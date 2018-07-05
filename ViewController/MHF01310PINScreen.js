@@ -109,6 +109,7 @@ export default class PinActivity extends Component {
             <Image style={[styles.registPinImageSubContainer, { tintColor: 'white' }]} source={this.state.pin.length >= 6 ? require('../resource/circleEnable.png') : require('../resource/circle.png')} resizeMode="center" />
         </View>)
     }
+    
 
     renderFailPin() {
         if (this.state.failPin > 0) {
