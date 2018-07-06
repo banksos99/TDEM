@@ -3,18 +3,12 @@ import { View, Image, Text, TextInput, Keyboard, TouchableOpacity, Alert } from 
 import { styles } from "./../SharedObject/MainStyles";
 import Colors from './../SharedObject/Colors';
 import RegisterAPI from './../constants/RegisterAPI';
-import RestAPI from './../constants/RestAPI';
 import SetPinAPI from './../constants/SetPinAPI';
-
-import SharedPreference from "../SharedObject/SharedPreference";
 import StringText from "../SharedObject/StringText";
-import SavePIN from "../constants/SavePIN"
-
-var DeviceInfo = require('react-native-device-info');
-
+import SavePIN from "./../constants/SavePIN"
 
 export default class RegisterActivity extends Component {
-
+    savePIN = new SavePIN()
 
     constructor(props) {
         super(props);
@@ -29,26 +23,13 @@ export default class RegisterActivity extends Component {
             username: '',
             password: ''
         }
-
     }
 
-    savePIN = new SavePIN()
 
-    getPINFromDevice = async () => {
-        pin = await this.savePIN.getPin()
-        console.log("PinActivity ==> getPINFromDevice ==>pin : ", pin)
-        console.log("PinActivity ==> getPINFromDevice ==>pin.length : ", pin.length)
-
-        if (pin.length > 0) {
-            console.log("Go to pin Activity")
-            this.onOpenPinActivity()
-        }
-    }
-
-    async componentWillMount() {
-        await this.getPINFromDevice()
-    }
-
+    // async componentWillMount() {
+    //     console.log("componentWillMount")
+    //     await this.getPINFromDevice()
+    // }
 
     getDeviceInformation() {
         // const appName = DeviceInfo.getApplicationName(); // "Learnium Mobile"
@@ -58,6 +39,7 @@ export default class RegisterActivity extends Component {
         // const bundleId = DeviceInfo.getBundleId(); 
         // Console.log("getDeviceInformation bundleId : ", bundleId)
     }
+
     onRegister = async () => {
         Keyboard.dismiss()
 
@@ -67,51 +49,10 @@ export default class RegisterActivity extends Component {
         data = data[1]
 
         if (code.SUCCESS == data.code) {
-            // this.setState({
-            //     showCreatePin: true
-            // })
-
-            this.onLoadInitialMaster()
-
-        } else {
-            Alert.alert(
-                StringText.SERVER_ERROR_TITLE,
-                StringText.SERVER_ERROR_DESC,
-                [
-                    { text: 'OK', onPress: () => console.log('OK Pressed') },
-                ],
-                { cancelable: false }
-            )
-        }
-    }
-
-    onLoadInitialMaster = async () => {
-        console.log()
-        let data = await RestAPI(SharedPreference.INITIAL_MASTER_API)
-        code = data[0]
-        data = data[1]
-        if (code.SUCCESS == data.code) {
-            console.log("onLoadInitialMaster data code : ", data.code)
-            console.log("onLoadInitialMaster data data : ", data.data)
-
-            array = data.data
-            for (let index = 0; index < array.length; index++) {
-                const element = array[index];
-                console.log("onLoadInitialMaster element : ", element.master_key)
-                if (element.master_key == 'NOTIFICATION_CATEGORY') {
-                    SharedPreference.NOTIFICATION_CATEGORY = element.master_data
-                } else if (element.master_key == 'READ_TYPE') {
-                    SharedPreference.READ_TYPE = element.master_data
-                } else if (element.master_key == 'COMPANY_LOCATION') {
-                    SharedPreference.COMPANY_LOCATION = element.master_data
-                } else {
-                    SharedPreference.TB_M_LEAVETYPE = element.TB_M_LEAVETYPE
-                }
-            }
-
             this.setState({
                 showCreatePin: true
             })
+
         } else {
             Alert.alert(
                 StringText.SERVER_ERROR_TITLE,
@@ -123,18 +64,23 @@ export default class RegisterActivity extends Component {
             )
         }
     }
-
 
     onSetPin = async () => {
         console.log("Register SetPin : ", this.state.pin2)
         let data = await SetPinAPI(this.state.pin2)
         code = data[0]
         data = data[1]
+        console.log("Register code : ", code.SUCCESS)
+        console.log("Register data : ", data.code)
 
         if (code.SUCCESS == data.code) {
+            console.log("Register code :  ")
+
             await this.savePIN.setPin(this.state.pin2)
+            console.log("Register setPin ")
+
             const pinID = await this.savePIN.getPin()
-            console.log("Register PINget : ", pinID)
+            console.log("Register getPin : ", pinID)
 
             this.setState({
                 showCreatePinSuccess: true,
@@ -155,8 +101,12 @@ export default class RegisterActivity extends Component {
     onClosePIN = () => {
         console.log("onClosePIN")
         this.setState({
-            showCreatePin: false
+            showCreatePin: false,
+            pin: [],
+            pin1: [],
+            pin2: [],
         })
+        // this.state.showCreatePin = false
     }
 
 
@@ -198,6 +148,7 @@ export default class RegisterActivity extends Component {
         })
         this.state.pin = origin
         console.log("pin ====> ", this.state.pin)
+        console.log("pin length ====> ", this.state.pin.length)
 
         if (this.state.pin.length == 6) {
             if (this.state.pin1.length == 0) {
@@ -216,11 +167,14 @@ export default class RegisterActivity extends Component {
                 })
                 this.state.pin = []
                 this.state.pin2 = origin
+                console.log("========> pin1 : ", this.state.pin1)
+                console.log("========> pin2 : ", this.state.pin1)
 
                 if (this.state.pin1 == this.state.pin2) {
+                    console.log("========> pin ===> same ")
                     this.onSetPin()
                 } else {
-                    console.log("========> pin1 : ", this.state.pin1)
+                    console.log("========> pin ===> not same ")
                     //TODO Alert
                     Alert.alert(
                         StringText.REGISTER_PIN_ERROR_TITLE,
@@ -248,10 +202,6 @@ export default class RegisterActivity extends Component {
     }
 
 
-    onBack() {
-        console.log("onBack")
-    }
-
     onOpenPinActivity() {
         console.log("PinScreen")
         this.props.navigation.navigate('PinScreen')
@@ -267,7 +217,7 @@ export default class RegisterActivity extends Component {
                 <View style={styles.alertDialogContainer}>
                     <View style={styles.emptyDialogContainer}>
                         <View style={[styles.navContainer, { backgroundColor: 'white' }]}>
-                            <TouchableOpacity style={styles.navLeftContainer} onPress={() => { this.onClosePIN.bind(this) }} >
+                            <TouchableOpacity style={styles.navLeftContainer} onPress={() => { this.onClosePIN() }} >
                                 <Image
                                     style={[styles.navBackButton, { tintColor: Colors.grayColor }]}
                                     source={require('../resource/images/Back.png')}

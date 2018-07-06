@@ -33,8 +33,9 @@ import clockInOutSelfView from "./MHF07011ClockInOutSelfViewView";
 import registerScreen from "./MHF01210RegisterScreen";
 import pinScreen from "./MHF01310PINScreen";
 
+import SavePIN from "../constants/SavePIN"
 
-const AppNavigator = createSwitchNavigator({
+const AppNavigatorPin = createSwitchNavigator({
     RegisterScreen: { screen: registerScreen },
     PinScreen: { screen: pinScreen },
     HomeScreen: { screen: homeScreen },
@@ -48,16 +49,13 @@ const AppNavigator = createSwitchNavigator({
     OTSummarySelfView: { screen: OTSummarySelfView },
     Handbooklist: { screen: handbookList },
     HandbookDetail: { screen: handbookDetail },
-
     OrganizationStruct: { screen: OrganizationStruct },
-
     calendarYearView: { screen: calendarYearView },
     calendarMonthView: { screen: calendarMonthView },
     calendarEventDetailView: { screen: calendarEventDetailView },
-
     ClockInOutSelfView: { screen: clockInOutSelfView }
-
 }, {
+        initialRouteName: 'PinScreen',
         headerMode: 'none',
         transitionConfig: () => ({
             transitionSpec: {
@@ -70,12 +68,69 @@ const AppNavigator = createSwitchNavigator({
 );
 
 
-
+const AppNavigatorRegister = createSwitchNavigator({
+    RegisterScreen: { screen: registerScreen },
+    PinScreen: { screen: pinScreen },
+    HomeScreen: { screen: homeScreen },
+    EmployeeInfoDetail: { screen: empInfoDetail },
+    NonPayrollList: { screen: nonPayrollList },
+    NonPayrollDetail: { screen: nonPayrollDetail },
+    PayslipList: { screen: payslipList },
+    PayslipDetail: { screen: payslipDetail },
+    LeavequotaList: { screen: leavequotaList },
+    LeavequotaDetail: { screen: leavequotaDetail },
+    OTSummarySelfView: { screen: OTSummarySelfView },
+    Handbooklist: { screen: handbookList },
+    HandbookDetail: { screen: handbookDetail },
+    OrganizationStruct: { screen: OrganizationStruct },
+    calendarYearView: { screen: calendarYearView },
+    calendarMonthView: { screen: calendarMonthView },
+    calendarEventDetailView: { screen: calendarEventDetailView },
+    ClockInOutSelfView: { screen: clockInOutSelfView }
+}, {
+        initialRouteName: 'RegisterScreen',
+        headerMode: 'none',
+        transitionConfig: () => ({
+            transitionSpec: {
+                duration: 0,
+                timing: Animated.timing,
+                easing: Easing.step0
+            }
+        })
+    }
+);
 export default class rootNavigation extends Component {
-    render() {
-        return (
-            <AppNavigator />
+    savePIN = new SavePIN()
+    constructor(props) {
+        super(props);
+        this.state = {
+            hasPin: false
+        };
+    }
 
-        );
+    async componentWillMount() {
+        number = await this.getPINFromDevice()
+    }
+
+    getPINFromDevice = async () => {
+        pin = await this.savePIN.getPin()
+        if (pin.length > 0) {
+            this.setState({
+                hasPin: true
+            })
+        }
+    }
+
+    render() {
+        if (this.state.hasPin == false) {
+            return (
+                <AppNavigatorRegister />
+            );
+        } else {
+            return (
+                <AppNavigatorPin />
+            );
+        }
+
     }
 }

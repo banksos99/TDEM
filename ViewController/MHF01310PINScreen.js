@@ -1,14 +1,15 @@
 import React, { Component } from "react";
 import { View, Image, Text, TouchableOpacity, Alert } from "react-native";
-
 import { styles } from "./../SharedObject/MainStyles";
 import Colors from "./../SharedObject/Colors"
 import StringText from './../SharedObject/StringText'
 import SavePIN from "../constants/SavePIN"
 import SharedPreference from "../SharedObject/SharedPreference";
+import RestAPI from "../constants/RestAPI"
+
 
 export default class PinActivity extends Component {
-    
+
     savePIN = new SavePIN()
 
     constructor(props) {
@@ -18,6 +19,43 @@ export default class PinActivity extends Component {
             pin: '',
             failPin: 0,
             savePin: ''
+        }
+    }
+
+    onLoadInitialMaster = async () => {
+        console.log("onLoadInitialMaster")
+        let data = await RestAPI(SharedPreference.INITIAL_MASTER_API)
+        code = data[0]
+        data = data[1]
+        if (code.SUCCESS == data.code) {
+            console.log("onLoadInitialMaster data code : ", data.code)
+            console.log("onLoadInitialMaster data data : ", data.data)
+
+            array = data.data
+            for (let index = 0; index < array.length; index++) {
+                const element = array[index];
+                console.log("onLoadInitialMaster element : ", element.master_key)
+                if (element.master_key == 'NOTIFICATION_CATEGORY') {
+                    SharedPreference.NOTIFICATION_CATEGORY = element.master_data
+                } else if (element.master_key == 'READ_TYPE') {
+                    SharedPreference.READ_TYPE = element.master_data
+                } else if (element.master_key == 'COMPANY_LOCATION') {
+                    SharedPreference.COMPANY_LOCATION = element.master_data
+                } else {
+                    SharedPreference.TB_M_LEAVETYPE = element.TB_M_LEAVETYPE
+                }
+            }
+            this.props.navigation.navigate('HomeScreen')
+
+        } else {
+            Alert.alert(
+                StringText.SERVER_ERROR_TITLE,
+                StringText.SERVER_ERROR_DESC,
+                [
+                    { text: 'OK', onPress: () => console.log('OK Pressed') },
+                ],
+                { cancelable: false }
+            )
         }
     }
 
@@ -50,12 +88,14 @@ export default class PinActivity extends Component {
         this.state.pin = origin
 
         if (this.state.pin.length == 6) {
-            // console.log("pin ===> 6")
-            // console.log("pin ===> pin ==> ", this.state.pin)
-            // console.log("pin ===> pin ==> ", this.state.savePin)
+            console.log("pin ===> 6")
+            console.log("pin ===> pin ==> ", this.state.pin)
+            console.log("pin ===> pin ==> ", this.state.savePin)
 
             if (this.state.pin == this.state.savePin) {
-                this.props.navigation.navigate('HomeScreen')
+                console.log("pin ===> onLoadInitialMaster")
+                await this.onLoadInitialMaster()
+                // this.props.navigation.navigate('HomeScreen')
 
             } else {
 
@@ -94,8 +134,6 @@ export default class PinActivity extends Component {
                     )
                 }
             }
-
-
         }
     }
 
@@ -109,7 +147,6 @@ export default class PinActivity extends Component {
             <Image style={[styles.registPinImageSubContainer, { tintColor: 'white' }]} source={this.state.pin.length >= 6 ? require('../resource/circleEnable.png') : require('../resource/circle.png')} resizeMode="center" />
         </View>)
     }
-    
 
     renderFailPin() {
         if (this.state.failPin > 0) {
@@ -119,7 +156,6 @@ export default class PinActivity extends Component {
                 </Text>
             </View>)
         }
-
     }
 
     onResetPIN() {
@@ -145,21 +181,17 @@ export default class PinActivity extends Component {
         return (
             <View style={styles.alertDialogContainer}>
                 <View style={styles.emptyDialogContainer}>
-
                     <View style={[styles.pinContainer, { paddingTop: 60, backgroundColor: Colors.redColor }]}>
                         <Image
                             style={styles.pinImage}
                             source={require('../resource/regist/regist_lock_white.png')}
                             resizeMode="cover" />
-
                         <Text style={[styles.pinText, { color: 'white' }]}>{this.state.pintitle}</Text>
                         {this.renderImagePin()}
-
                         <TouchableOpacity onPress={() => { this.onResetPIN() }}>
                             <Text style={styles.registPinForgotContainer}>Reset PIN ?</Text>
                         </TouchableOpacity>
                         {this.renderFailPin()}
-
                     </View>
 
                     <View style={styles.registPinNumRowContainer}>

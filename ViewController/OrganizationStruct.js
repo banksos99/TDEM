@@ -26,13 +26,9 @@ export default class OrganizationStruct extends Component {
 
     constructor(props) {
         super(props);
-
         this.state = {
-
             temparray:[],
- 
         };
-
         this.checkDataFormat(this.props.navigation.getParam("DataResponse", ""));
     }
     checkDataFormat(DataResponse) {

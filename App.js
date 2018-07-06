@@ -12,13 +12,14 @@ import PINScreen from './ViewController/MHF01310PINScreen';
 import firebase  from './SharedObject/Firebase';
 import registerscreenView from "./ViewController/MHF01210RegisterScreen";
 
+import SavePIN from "./constants/SavePIN"
+
 export default class mainview extends Component {
-  
+
+  savePIN = new SavePIN()
 
   constructor(props) {
-
     super(props);
-
     this.state = {
       inactive: false,
       showpin:false,
@@ -38,6 +39,7 @@ export default class mainview extends Component {
       console.log('onTokenRefresh :',token)
         this._onChangeToken(token)
     });
+
 
     AsyncStorage.getItem("myKey").then((value) => {
 
@@ -149,15 +151,7 @@ export default class mainview extends Component {
     }
   }
   render() {
-    // try {
-    //   const value = await AsyncStorage.getItem('@client_ID:key');
-    //   if (value !== null) {
-    //     // We have data!!
-    //     console.log('client_ID :',value);
-    //   }
-    // } catch (error) {
-    //   // Error retrieving data
-    // }
+ 
 
     if (this.state.inactive) {
 

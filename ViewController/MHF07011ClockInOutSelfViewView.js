@@ -30,6 +30,9 @@ import RestAPI from "../constants/RestAPI"
 let MONTH_LIST = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 let firstday;
 let daymonth;
+let currentday;
+let currentmonth;
+let initannouncementtype;
 
 export default class ClockInOutSelfView extends Component {
 
@@ -40,7 +43,10 @@ export default class ClockInOutSelfView extends Component {
         let ds = new ListView.DataSource({
             rowHasChanged: (r1, r2) => r1 !== r2
         });
-
+        let today = new Date();
+        
+        currentday = today.getDay();
+        currentmonth = today.getMonth();
         this.state = {
             isscreenloading: false,
             dataSource: ds,
@@ -63,25 +69,24 @@ export default class ClockInOutSelfView extends Component {
             initialyear: 0,
             initialmonth: 0,
             yearselected: 0,
-            monthselected: 0,
+            monthselected: today.getMonth()+1,
             dateselected: 0,
             tfirstday: 0
            
         }
 
         this.checkDataFormat(this.props.navigation.getParam("DataResponse", ""));
-
-        let today = new Date();
         let birthday = new Date(MONTH_LIST[this.state.initialmonth + 1] + '1,' + this.state.initialyear);
         firstday = birthday.getDay() + 1;
+        
 
     }
 
     checkDataFormat(DataResponse) {
 
         console.log('DataResponse :', DataResponse);
-
-
+        console.log('monthselected :', this.state.monthselected);
+        //console.log('initialmonth :', this.state.initialmonth);
         // if (DataResponse) {
 
         let today = new Date();
@@ -89,7 +94,7 @@ export default class ClockInOutSelfView extends Component {
         this.state.initialyear = today.getFullYear();
         this.state.initialmonth = parseInt(today.getMonth() - 1);
         this.state.announcementTypetext = MONTH_LIST[this.state.initialmonth + 1] + ' ' + this.state.initialyear;
-        for (let i = this.state.initialmonth + 13; i > this.state.initialmonth; i--) {
+        for (let i = this.state.initialmonth + 13; i > this.state.initialmonth+1; i--) {
 
             if (i === 11) {
 
@@ -100,7 +105,7 @@ export default class ClockInOutSelfView extends Component {
 
         var monthnow = new Date(this.state.initialyear, this.state.initialmonth + 1, 1);
         var monthnext = new Date(this.state.initialyear, this.state.initialmonth + 2, 1);
-
+        console.log('monthnow :', this.state.initialmonth);
         var date1_ms = monthnow.getTime();
         var date2_ms = monthnext.getTime();
 
@@ -376,6 +381,7 @@ export default class ClockInOutSelfView extends Component {
                     mdate = i;
                 }
             }
+            console.log('month select  : ', mdate)
             console.log('year : ', tdate[1])
 
             this.setState(this.renderloadingscreen())
@@ -418,7 +424,7 @@ export default class ClockInOutSelfView extends Component {
                 <View style={{ height: '100%', width: '100%', justifyContent: 'center', alignItems: 'center', position: 'absolute', }} >
                     <View style={{ width: '80%', backgroundColor: 'white' }}>
                         <View style={{ height: 50, width: '100%', justifyContent: 'center', }}>
-                            <Text style={{ marginLeft: 20, marginTop: 10, textAlign: 'left', color: 'black', fontSize: 18, fontWeight: 'bold' }}>Select Date</Text>
+                            <Text style={{ marginLeft: 20, marginTop: 10, textAlign: 'left', color: 'black', fontSize: 18, fontWeight: 'bold' }}>Select Month and Year</Text>
                         </View>
                         <Picker
                             selectedValue={this.state.announcementType}
@@ -475,57 +481,85 @@ export default class ClockInOutSelfView extends Component {
 
     }
     renderdetail() {
+        console.log('weakday : ', (firstday + 1) % 7)
+        let offsety = 0;
+        if(this.state.initialmonth + 2 === this.state.monthselected){
+            offsety = ((currentday * 90) - 220)
+        }
 
-    
-            return (
-                <View style={{ flex: 16, backgroundColor: Colors.calendarLocationBoxColor, }}>
-                    <ScrollView ref="scrollView"
-                        onContentSizeChange={(width, height) => this.refs.scrollView.scrollTo({ y: 500 })}
-                        
-                        >
-                        {
-                            this.state.tdataSource.map((item, index) => (
+        return (
+            <View style={{ flex: 16, backgroundColor: Colors.calendarLocationBoxColor, }}>
+                <ScrollView ref="scrollView"
+                    onContentSizeChange={(width, height) => this.refs.scrollView.scrollTo({ y: offsety })}
+                >
+                    {
+                        this.state.tdataSource.map((item, index) => (
 
-                                <View key={item.id} style={{ height: 90 }} key={index + 500}>
-                                    <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', }}>
-                                        <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
-                                            <Text style={item.type === 'Y' ?
+                            <View key={item.id} style={index === currentday && (this.state.initialmonth + 2 === this.state.monthselected) ?
+                                { height: 90, backgroundColor: '#f9eded' } :
+                                { height: 90 }} key={index + 500}>
+                                <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', }}>
+                                    <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
+                                        <Text style={item.type === 0 ?
+                                            ((firstday + index) % 7) === 0 | ((firstday + index) % 7) === 6 ?
+                                                styles.clockinoutdayredtext : styles.clockinoutdaytext
+                                            : item.type === 'Y' ?
                                                 styles.clockinoutdaybluetext :
-                                                item.type === 'N' ? styles.clockinoutdayredtext : styles.clockinoutdaytext}>
-                                                {index + 1}
-                                            </Text >
-                                            <Text style={item.type === 'Y' ?
-                                                styles.clockinoutweakdaybluetext :
-                                                item.type === 'N' ? styles.clockinoutweakdayredtext : styles.clockinoutweakdaytext}
-                                            >
-                                            {Months.dayNamesShortMonthView[(firstday + index) % 7]}</Text>
-                                        </View>
-                                        <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
-                                            <Text style={styles.otsummarybody}>WORK</Text>
-                                            <Text style={styles.otsummarybody} />
-                                            <Text style={styles.otsummarybody}>ACTUAL</Text>
-                                        </View>
-                                        <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                                        <Text style={styles.otsummarybody}>{item.workstart}</Text>
-                                        <Text style={styles.otsummarybody} />
-                                        <Text style={item.late === 1?styles.otsummarybodyredtext:styles.otsummarybody}>{item.actualstart}</Text>
-                                        </View>
-                                        <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                                        <Text style={styles.otsummarybody}>{item.workend}</Text>
-                                        <Text style={styles.otsummarybody} />
-                                        <Text style={item.early === 1?styles.otsummarybodyredtext:styles.otsummarybody}>{item.actualend}</Text>
-                                        </View>
-                                    </View>
-                                    <View style={{ height: 1, backgroundColor: Colors.lightGrayTextColor, }} />
-                                </View>
-                            ))
-                        }
+                                                item.type === 'N' ? styles.clockinoutdayredtext : styles.clockinoutdaytext
 
-                    </ScrollView>
-                </View>
-            );
-        
-    
+                                        }
+
+                                        >
+                                            {index + 1}
+                                        </Text >
+                                        <Text style={item.type === 0 ?
+                                            ((firstday + index) % 7) === 0 | ((firstday + index) % 7) === 6 ?
+                                                styles.clockinoutweakdayredtext : styles.clockinoutweakdaytext
+                                            : item.type === 'Y' ?
+                                                styles.clockinoutweakdaybluetext :
+                                                item.type === 'N' ? styles.clockinoutweakdayredtext : styles.clockinoutweakdaytext
+                                        }>
+                                            {Months.dayNamesShortMonthView[(firstday + index) % 7]}</Text>
+                                    </View>
+                                    <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
+                                        <Text style={styles.clockinoutweakdayalphatext}>WORK</Text>
+                                        <Text style={styles.clockinoutweakdayalphatext} />
+                                        <Text style={styles.clockinoutweakdayalphatext}>ACTUAL</Text>
+                                    </View>
+                                    <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                                        <Text style={styles.clockinoutbodytext}>{item.workstart}</Text>
+                                        <Text style={styles.clockinoutweakdayalphatext} />
+                                        <Text style={index > currentday?styles.clockinoutbodyhidetext: item.actualstart === '-' && item.workstart != '-' ?
+                                            styles.clockinoutbodyredtext :
+                                            item.late === 1 ? styles.clockinoutbodyredtext : styles.clockinoutbodytext}>
+
+                                            {item.actualstart}</Text>
+                                    </View>
+                                    <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                                        <Text style={styles.clockinoutbodytext}>{item.workend}</Text>
+                                        <Text style={styles.clockinoutweakdayalphatext} />
+                                        <Text style={item.actualend === '-' && item.workend != '-' ?
+                                            styles.clockinoutbodyredtext :
+                                            item.early === 1 ? styles.clockinoutbodyredtext : styles.clockinoutbodytext}>
+
+                                            {item.actualend}</Text>
+                                    </View>
+                                </View>
+                                <View style={{ height: 1, backgroundColor: Colors.lightGrayTextColor, }} />
+                                <View style={index > currentday && (this.state.initialmonth + 2 === this.state.monthselected) ?
+                                { height: 90, width: '100%', justifyContent: 'center', alignItems: 'center', position: 'absolute', backgroundColor: 'white', opacity: 0.7 }:
+                                { height: 90, width: '100%', justifyContent: 'center', alignItems: 'center', position: 'absolute', backgroundColor: 'white', opacity: 0 }
+                                } >
+                                </View>
+                            </View>
+                        ))
+                    }
+
+                </ScrollView>
+            </View>
+        );
+
+
 
     }
 
