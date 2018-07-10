@@ -34,14 +34,14 @@ export default class Handbookctivity extends Component {
     }
     checkDataFormat(DataResponse) {
 
-        if (DataResponse) {
+        if (DataResponse.data) {
             console.log('Handbookctivity DataResponse :',DataResponse)
             // dataSource = DataResponse.data;
             dataSource = DataResponse;
            
         } else {
             console.log('inappdata :',inappdata.dataSource.data.detail)
-            // dataSource = inappdata.dataSource.data.detail.items;
+            dataSource = inappdata.dataSource.data.detail.items;
             
         }
 

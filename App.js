@@ -159,7 +159,6 @@ export default class mainview extends Component {
 
         <View style={{ flex: 1, }}>
           <RootViewController />
-
         </View>
 
       );

@@ -196,7 +196,7 @@ export default class calendarEventDetailView extends Component {
 
         console.log("onLoadCalendarAPI ==> year : ", year, " , location : ", location)
 
-        let data = await RestAPI(SharedPreference.CALENDER_YEAR_API + year + '&location=' + location)
+        let data = await RestAPI(SharedPreference.CALENDER_YEAR_API + year + '&company=' + location)
         code = data[0]
         data = data[1]
 

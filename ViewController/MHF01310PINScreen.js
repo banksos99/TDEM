@@ -7,10 +7,12 @@ import SavePIN from "../constants/SavePIN"
 import SharedPreference from "../SharedObject/SharedPreference";
 import RestAPI from "../constants/RestAPI"
 
+import SaveProfile from "../constants/SaveProfile"
 
 export default class PinActivity extends Component {
 
     savePIN = new SavePIN()
+    saveProfile = new SaveProfile()
 
     constructor(props) {
         super(props);
@@ -22,8 +24,10 @@ export default class PinActivity extends Component {
         }
     }
 
+   
     onLoadInitialMaster = async () => {
         console.log("onLoadInitialMaster")
+        SharedPreference.profileObject = await this.saveProfile.getProfile()
         let data = await RestAPI(SharedPreference.INITIAL_MASTER_API)
         code = data[0]
         data = data[1]
@@ -45,6 +49,8 @@ export default class PinActivity extends Component {
                     SharedPreference.TB_M_LEAVETYPE = element.TB_M_LEAVETYPE
                 }
             }
+
+        //    await this.onLoadProfile()
             this.props.navigation.navigate('HomeScreen')
 
         } else {

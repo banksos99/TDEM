@@ -25,6 +25,8 @@ import handbookDetail from "./MHF0A012HandbookDetailView";
 import OrganizationStruct from "./MHF0B011OrganizationStruct";
 
 import calendarYearView from "./MHF03111WorkingCalendarYearView";
+import calendarYearView2 from "./MHF03111WorkingCalendarYearView2";
+
 import calendarMonthView from "./MHF03112WorkingCalendarMonthView";
 import calendarEventDetailView from "./MHF03211CalendarEventDetailView";
 
@@ -51,6 +53,7 @@ const AppNavigatorPin = createSwitchNavigator({
     HandbookDetail: { screen: handbookDetail },
     OrganizationStruct: { screen: OrganizationStruct },
     calendarYearView: { screen: calendarYearView },
+    calendarYearView2: { screen: calendarYearView2 },
     calendarMonthView: { screen: calendarMonthView },
     calendarEventDetailView: { screen: calendarEventDetailView },
     ClockInOutSelfView: { screen: clockInOutSelfView }
@@ -84,6 +87,7 @@ const AppNavigatorRegister = createSwitchNavigator({
     HandbookDetail: { screen: handbookDetail },
     OrganizationStruct: { screen: OrganizationStruct },
     calendarYearView: { screen: calendarYearView },
+    calendarYearView2: { screen: calendarYearView2 },
     calendarMonthView: { screen: calendarMonthView },
     calendarEventDetailView: { screen: calendarEventDetailView },
     ClockInOutSelfView: { screen: clockInOutSelfView }

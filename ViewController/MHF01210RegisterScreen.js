@@ -7,8 +7,13 @@ import SetPinAPI from './../constants/SetPinAPI';
 import StringText from "../SharedObject/StringText";
 import SavePIN from "./../constants/SavePIN"
 
+import SaveProfile from "./../constants/SaveProfile"
+import SharedPreference from "../SharedObject/SharedPreference";
+
+
 export default class RegisterActivity extends Component {
     savePIN = new SavePIN()
+    SaveProfile = new SaveProfile()
 
     constructor(props) {
         super(props);
@@ -25,21 +30,6 @@ export default class RegisterActivity extends Component {
         }
     }
 
-
-    // async componentWillMount() {
-    //     console.log("componentWillMount")
-    //     await this.getPINFromDevice()
-    // }
-
-    getDeviceInformation() {
-        // const appName = DeviceInfo.getApplicationName(); // "Learnium Mobile"
-        // Console.log("getDeviceInformation appName : ", appName)
-        // const brand = DeviceInfo.getBrand();
-        // Console.log("getDeviceInformation brand : ", brand)
-        // const bundleId = DeviceInfo.getBundleId(); 
-        // Console.log("getDeviceInformation bundleId : ", bundleId)
-    }
-
     onRegister = async () => {
         Keyboard.dismiss()
 
@@ -49,6 +39,10 @@ export default class RegisterActivity extends Component {
         data = data[1]
 
         if (code.SUCCESS == data.code) {
+            //TODO 
+            this.SaveProfile.setProfile(data.data)
+            SharedPreference.profileObject = await this.SaveProfile.getProfile()
+            console.log("Register ==> profileObject : ", SharedPreference.profileObject)
             this.setState({
                 showCreatePin: true
             })

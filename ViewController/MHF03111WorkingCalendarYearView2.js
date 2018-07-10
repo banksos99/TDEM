@@ -494,7 +494,8 @@ export default class calendarYearView extends Component {
 
         this.setState({
             locationPickerView: false,
-            isLoading: true
+            isLoading:true
+
         })
 
         // this.state.showLocation = location
@@ -518,11 +519,12 @@ export default class calendarYearView extends Component {
 
         if (code.SUCCESS == data.code) {
             console.log("onLoadCalendarAPI ====> SUCCESS")
-            this.props.navigation.navigate('calendarYearView2', {
+            this.props.navigation.navigate('calendarYearView', {
                 dataResponse: data,
                 selectYear: this.state.selectYear,
                 location: this.state.selectLocation
             });
+
         } else {
             Alert.alert(
                 StringText.ALERT_CANNOT_CONNECT_TITLE,

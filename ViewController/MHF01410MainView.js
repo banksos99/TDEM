@@ -60,13 +60,15 @@ export default class HMF01011MainView extends Component {
             username: SharedPreference.profileObject.employee_name,
             page: 0
         }
-        console.log("MainView ====> profileObject 11111 : ", SharedPreference.profileObject)
-        console.log("initmaster : ",SharedPreference.initmaster)
+        console.log("MainView ====> profileObject ==> ", SharedPreference.profileObject)
+        console.log("MainView ====> profileObject ==> employee_name ==> ", SharedPreference.profileObject.employee_name)
+    
     }
+
 
     componentDidMount() {
         this.setState({
-            page: 0
+            page: 0,
         })
         this.redertabview()
         NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectivityChange);
@@ -462,8 +464,10 @@ export default class HMF01011MainView extends Component {
 
     }
     loadHandbooklistfromAPI = async () => {
+         console.log("loadHandbooklistfromAPI")
 
-        this.APICallback(await RestAPI(SharedPreference.HANDBOOK_LIST), 'Handbooklist')
+        // this.APICallback(await RestAPI(SharedPreference.HANDBOOK_LIST), 'Handbooklist')
+        this.props.navigation.navigate('Handbooklist');
 
     }
 
@@ -569,8 +573,9 @@ export default class HMF01011MainView extends Component {
     }
 
     loadCalendarfromAPI = async (location) => {
+        console.log("location : ",location)
         let year = new Date().getFullYear()
-        this.calendarCallback(await RestAPI(SharedPreference.CALENDER_YEAR_API + year + '&location=' + location))
+        this.calendarCallback(await RestAPI(SharedPreference.CALENDER_YEAR_API + year + '&company=' + SharedPreference.profileObject.location))
     }
 
     calendarCallback(data) {
@@ -581,7 +586,7 @@ export default class HMF01011MainView extends Component {
         this.props.navigation.navigate('calendarYearView', {
             dataResponse: data,
             selectYear: new Date().getFullYear(),
-            location:SharedPreference.profileObject.location
+            location: SharedPreference.profileObject.location
         });
 
     }
@@ -644,7 +649,7 @@ export default class HMF01011MainView extends Component {
 
         let url = SharedPreference.ORGANIZ_STRUCTURE_API + '60162305'
 
-        this.APICallback(await RestAPI(url), 'OrganizationStruct',0)
+        this.APICallback(await RestAPI(url), 'OrganizationStruct', 0)
 
 
     }
@@ -678,7 +683,7 @@ export default class HMF01011MainView extends Component {
             this.setState(this.renderloadingscreen())
             this.loadOrgStructerfromAPI()
         });
-//OrganizationStruct
+        //OrganizationStruct
     }
 
     onOpenAnnouncement() {
