@@ -21,8 +21,8 @@ import OTSummarySelfView from "./MHF08011OTSummarySelfViewView";
 import handbookList from "./MHF0A011HandbookListView";
 import handbookDetail from "./MHF0A012HandbookDetailView";
 
-
 import OrganizationStruct from "./MHF0B011OrganizationStruct";
+
 
 import calendarYearView from "./MHF03111WorkingCalendarYearView";
 import calendarYearView2 from "./MHF03111WorkingCalendarYearView2";
@@ -36,6 +36,13 @@ import registerScreen from "./MHF01210RegisterScreen";
 import pinScreen from "./MHF01310PINScreen";
 
 import SavePIN from "../constants/SavePIN"
+
+
+// OTLineChartView
+import OTLineChartView from "./MHF08013OTSummaryLineGraphView";
+import OTBarChartView from "./MHF08014OTSummaryBarGraphView";
+import OrganizationOTStruct from "./MHF0B010OrganizationStruct";
+
 
 const AppNavigatorPin = createSwitchNavigator({
     RegisterScreen: { screen: registerScreen },
@@ -52,11 +59,15 @@ const AppNavigatorPin = createSwitchNavigator({
     Handbooklist: { screen: handbookList },
     HandbookDetail: { screen: handbookDetail },
     OrganizationStruct: { screen: OrganizationStruct },
+    OrgStructure: { screen: OrganizationStruct },
     calendarYearView: { screen: calendarYearView },
     calendarYearView2: { screen: calendarYearView2 },
     calendarMonthView: { screen: calendarMonthView },
     calendarEventDetailView: { screen: calendarEventDetailView },
-    ClockInOutSelfView: { screen: clockInOutSelfView }
+    ClockInOutSelfView: { screen: clockInOutSelfView },
+    OTLineChartView: { screen: OTLineChartView },
+    OTBarChartView: { screen: OTBarChartView },
+    OrganizationOTStruct: { screen: OrganizationOTStruct },
 }, {
         initialRouteName: 'PinScreen',
         headerMode: 'none',
@@ -86,11 +97,15 @@ const AppNavigatorRegister = createSwitchNavigator({
     Handbooklist: { screen: handbookList },
     HandbookDetail: { screen: handbookDetail },
     OrganizationStruct: { screen: OrganizationStruct },
+    OrgStructure: { screen: OrganizationStruct },
     calendarYearView: { screen: calendarYearView },
     calendarYearView2: { screen: calendarYearView2 },
     calendarMonthView: { screen: calendarMonthView },
     calendarEventDetailView: { screen: calendarEventDetailView },
-    ClockInOutSelfView: { screen: clockInOutSelfView }
+    ClockInOutSelfView: { screen: clockInOutSelfView },
+    OTLineChartView: { screen: OTLineChartView },
+    OTBarChartView: { screen: OTBarChartView },
+    OrganizationOTStruct: { screen: OrganizationOTStruct },
 }, {
         initialRouteName: 'RegisterScreen',
         headerMode: 'none',

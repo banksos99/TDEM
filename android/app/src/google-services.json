@@ -1,35 +1,35 @@
 {
   "project_info": {
-    "project_number": "166754553752",
-    "firebase_url": "https://tdem-connect.firebaseio.com",
-    "project_id": "tdem-connect",
-    "storage_bucket": "tdem-connect.appspot.com"
+    "project_number": "317451656624",
+    "firebase_url": "https://tdemconnect.firebaseio.com",
+    "project_id": "tdemconnect",
+    "storage_bucket": "tdemconnect.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:166754553752:android:8d41d5753ad7812b",
+        "mobilesdk_app_id": "1:317451656624:android:c4efca517c12a3e2",
         "android_client_info": {
-          "package_name": "com.toyotaasia.tdem.tdemconnect"
+          "package_name": "com.toyotaasia.tdemconnect"
         }
       },
       "oauth_client": [
         {
-          "client_id": "166754553752-t66j71mm2kuo15sd5g4bk7fgpujte8pr.apps.googleusercontent.com",
+          "client_id": "317451656624-8uii92gbkukgcr5sclir023r55qfb62c.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.toyotaasia.tdem.tdemconnect",
-            "certificate_hash": "99c5ecee13b369bf0a19c8dba9f20f127c306784"
+            "package_name": "com.toyotaasia.tdemconnect",
+            "certificate_hash": "17204fef631e0b4ded5f54fe19eb8cf373a86710"
           }
         },
         {
-          "client_id": "166754553752-grmpsrjdja2u3dhp27cltug6jki904k0.apps.googleusercontent.com",
+          "client_id": "317451656624-qpn64cgm9ploen9edpao7c3pno4v3s4i.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCjhfYoY2LxK2Y6xs-9nb26LvynUrzZwuk"
+          "current_key": "AIzaSyDODMEExmnTJOexq5aoZQOqNQM061aopHk"
         }
       ],
       "services": {
@@ -40,8 +40,15 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "166754553752-grmpsrjdja2u3dhp27cltug6jki904k0.apps.googleusercontent.com",
+              "client_id": "317451656624-qpn64cgm9ploen9edpao7c3pno4v3s4i.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "317451656624-qt1rsp0oijv1s409lf743b3haalro8fb.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.toyotaasia.tdemconnect"
+              }
             }
           ]
         },

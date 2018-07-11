@@ -3,20 +3,20 @@ package com.toyotaasia.tdemconnect;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
-import com.learnium.RNDeviceInfo.RNDeviceInfo;
+import com.rnziparchive.RNZipArchivePackage;
+import com.horcrux.svg.SvgPackage;
+import com.futurepress.staticserver.FPStaticServerPackage;
+import com.github.yamill.orientation.OrientationPackage;
 import com.rnfs.RNFSPackage;
-import com.RNFetchBlob.RNFetchBlobPackage;
-import com.calendarevents.CalendarEventsPackage;
-import com.rnfs.RNFSPackage;
-import com.RNFetchBlob.RNFetchBlobPackage;
-import com.calendarevents.CalendarEventsPackage;
 import io.invertase.firebase.RNFirebasePackage;
+import com.RNFetchBlob.RNFetchBlobPackage;
+import com.learnium.RNDeviceInfo.RNDeviceInfo;
+import com.calendarevents.CalendarEventsPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
 
-import io.invertase.firebase.RNFirebasePackage;
 // optional packages - add/remove as appropriate
 import io.invertase.firebase.admob.RNFirebaseAdMobPackage; //Firebase AdMob
 import io.invertase.firebase.analytics.RNFirebaseAnalyticsPackage; // Firebase Analytics
@@ -47,11 +47,16 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
         new MainReactPackage(),
-            new RNDeviceInfo(),
-            new RNFSPackage(),
-            new RNFetchBlobPackage(),
-            new CalendarEventsPackage(),
-            new RNFirebasePackage(),
+        new SvgPackage(),
+        new RNZipArchivePackage(),
+        new FPStaticServerPackage(),
+        new OrientationPackage(),
+        new RNDeviceInfo(),
+        new RNFSPackage(),
+        new RNFetchBlobPackage(),
+        new CalendarEventsPackage(),
+        new RNFirebasePackage(),
+
         // add/remove these packages as appropriate
         new RNFirebaseAdMobPackage(),
         new RNFirebaseAnalyticsPackage(),

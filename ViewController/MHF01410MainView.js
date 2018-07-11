@@ -38,7 +38,9 @@ let initannouncementType = 'All';
 let initannouncementTypetext = 'All';
 let initannouncementStatus = 'All';
 let initannouncementStatustext = 'All'
-// let page = 0;
+let page = 0;
+let orgcode = 60162305;
+
 
 export default class HMF01011MainView extends Component {
 
@@ -58,11 +60,11 @@ export default class HMF01011MainView extends Component {
             enddragannounce: false,
             annrefresh: false,
             username: SharedPreference.profileObject.employee_name,
-            page: 0
+        
         }
         console.log("MainView ====> profileObject ==> ", SharedPreference.profileObject)
         console.log("MainView ====> profileObject ==> employee_name ==> ", SharedPreference.profileObject.employee_name)
-    
+
     }
 
 
@@ -204,7 +206,7 @@ export default class HMF01011MainView extends Component {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer MS5IRjAxLmJjZGE4OGIyNzVjMjc1Yzg0MDU1ZDhlYWRlMGJmOTFlNDg4YTI1MGUyOTc0MjUxODUxMzk1ZjgwMWQ3ZGY3YTYyZGQ4YmUyOTE3OWViOGFlMGUwY2Y2NjIxNjViZmRkNjdiMzk5NzJjOGJiOGZlN2QwNWExZTIxNDU2M2YxOTZl',
+                Authorization: SharedPreference.TOKEN,
             },
         })
             .then((response) => response.json())
@@ -216,7 +218,7 @@ export default class HMF01011MainView extends Component {
                         announcepage: 0,
                         annrefresh: false
                     }, function () {
-                        if (this.state.dataSource.status === '200') {
+                        if (this.state.dataSource.status === 200) {
 
                             this.setState(this.renderloadingscreen());
 
@@ -283,7 +285,7 @@ export default class HMF01011MainView extends Component {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer MS5IRjAxLmJjZGE4OGIyNzVjMjc1Yzg0MDU1ZDhlYWRlMGJmOTFlNDg4YTI1MGUyOTc0MjUxODUxMzk1ZjgwMWQ3ZGY3YTYyZGQ4YmUyOTE3OWViOGFlMGUwY2Y2NjIxNjViZmRkNjdiMzk5NzJjOGJiOGZlN2QwNWExZTIxNDU2M2YxOTZl',
+                Authorization: SharedPreference.TOKEN,
             },
         })
             .then((response) => response.json())
@@ -298,7 +300,7 @@ export default class HMF01011MainView extends Component {
 
                         console.log('this.state.dataSource.data :', this.state.dataSource.data)
                         console.log('this.state.dataSource.status :', this.state.dataSource.status)
-                        if (this.state.dataSource.status === '200') {
+                        if (this.state.dataSource.status === 200) {
 
                             this.setState(this.renderloadingscreen());
 
@@ -464,37 +466,89 @@ export default class HMF01011MainView extends Component {
 
     }
     loadHandbooklistfromAPI = async () => {
-         console.log("loadHandbooklistfromAPI")
+        console.log("loadHandbooklistfromAPI")
 
         // this.APICallback(await RestAPI(SharedPreference.HANDBOOK_LIST), 'Handbooklist')
         this.props.navigation.navigate('Handbooklist');
 
     }
 
-    APICallback(data, rount) {
-        console.log("APICallback ")
+    loadOTLineChartfromAPI = async () => {
 
+        let today = new Date();
 
+        let url = SharedPreference.OTSUMMARY_LINE_CHART + 'month=0' + parseInt(today.getMonth() + 1) + '&year=' + today.getFullYear()
+
+        this.APICallback(await RestAPI(url), 'OTLineChartView', 0)
+
+    }
+
+    loadOTBarChartfromAPI = async () => {
+
+        let today = new Date();
+
+        let url = SharedPreference.OTSUMMARY_BAR_CHART + 'month=0' + parseInt(today.getMonth() + 1) + '&year=' + today.getFullYear()
+
+        this.APICallback(await RestAPI(url), 'OTBarChartView', 0)
+
+    }
+
+    loadOrgStructerfromAPI = async () => {
+
+        let today = new Date();
+
+        let url = SharedPreference.ORGANIZ_STRUCTURE_API + orgcode
+
+        this.APICallback(await RestAPI(url), 'OrgStructure', 1)
+
+    }
+    loadOrgStructerClockInOutfromAPI = async () => {
+
+        let today = new Date();
+
+        let url = SharedPreference.ORGANIZ_STRUCTURE_API + orgcode
+
+        this.APICallback(await RestAPI(url), 'OrgStructure', 2)
+
+    }
+
+    loadOrgStructerOTAveragefromAPI = async () => {
+
+        let today = new Date();
+
+        let url = SharedPreference.ORGANIZ_STRUCTURE_OT_API + orgcode
+        console.log('loadOrgStructerOTAveragefromAPI url : ', url)
+        this.APICallback(await RestAPI(url), 'OrganizationOTStruct', 1)
+
+    }
+
+    loadOrgStructerOTHistoryfromAPI = async () => {
+
+        let today = new Date();
+
+        let url = SharedPreference.ORGANIZ_STRUCTURE_OT_API + orgcode
+
+        this.APICallback(await RestAPI(url), 'OrganizationOTStruct', 2)
+
+    }
+    APICallback(data,rount,option) {
+
+        console.log('main menu option :', option)
         code = data[0]
         data = data[1]
-
-        console.log("APICallback code : ", data.code);
-
-        this.setState({
-            isscreenloading: false,
-        })
 
         if (code.SUCCESS == data.code) {
 
             this.props.navigation.navigate(rount, {
                 DataResponse: data.data,
+                Option:option
             });
 
         } else {
             this.onLoadErrorAlertDialog(data)
         }
-
     }
+    
 
     APIClockInOutCallback(data, rount) {
 
@@ -573,7 +627,7 @@ export default class HMF01011MainView extends Component {
     }
 
     loadCalendarfromAPI = async (location) => {
-        console.log("location : ",location)
+        console.log("location : ", location)
         let year = new Date().getFullYear()
         this.calendarCallback(await RestAPI(SharedPreference.CALENDER_YEAR_API + year + '&company=' + SharedPreference.profileObject.location))
     }
@@ -643,20 +697,21 @@ export default class HMF01011MainView extends Component {
 
     // }
 
-    loadOrgStructerfromAPI = async () => {
+    // loadOrgStructerfromAPI = async () => {
 
-        let today = new Date();
+    //     let today = new Date();
 
-        let url = SharedPreference.ORGANIZ_STRUCTURE_API + '60162305'
+    //     let url = SharedPreference.ORGANIZ_STRUCTURE_API + '60162305'
 
-        this.APICallback(await RestAPI(url), 'OrganizationStruct', 0)
+    //     this.APICallback(await RestAPI(url), 'OrganizationStruct', 0)
 
 
-    }
+    // }
 
     //*****************************************************************************
     //*********************** Check API befor change screen  **********************
     //*****************************************************************************
+
 
 
     onOpenCalendar() {
@@ -683,7 +738,61 @@ export default class HMF01011MainView extends Component {
             this.setState(this.renderloadingscreen())
             this.loadOrgStructerfromAPI()
         });
-        //OrganizationStruct
+
+    }
+    onOpenOrgaStructerClockInOut() {
+        this.setState({
+
+            isscreenloading: true,
+            loadingtype: 3
+
+        }, function () {
+
+            this.setState(this.renderloadingscreen())
+            this.loadOrgStructerClockInOutfromAPI()
+        });
+
+    }
+
+    onOpenOrgaStructerOTHistory() {
+        this.setState({
+
+            isscreenloading: true,
+            loadingtype: 3
+
+        }, function () {
+
+            this.setState(this.renderloadingscreen())
+            this.loadOrgStructerOTHistoryfromAPI()
+        });
+
+    }
+    onOpenOrgaStructerOTAverage() {
+        this.setState({
+
+            isscreenloading: true,
+            loadingtype: 3
+
+        }, function () {
+
+            this.setState(this.renderloadingscreen())
+            this.loadOrgStructerOTAveragefromAPI()
+        });
+
+    }
+
+    onOpenOrgaStructerOTHistory() {
+        this.setState({
+
+            isscreenloading: true,
+            loadingtype: 3
+
+        }, function () {
+
+            this.setState(this.renderloadingscreen())
+            this.loadOrgStructerOTHistoryfromAPI()
+        });
+
     }
 
     onOpenAnnouncement() {
@@ -838,19 +947,19 @@ export default class HMF01011MainView extends Component {
     /******************************************************************** */
 
     redertabview() {
-        if (this.state.page === 0) {
+        if (page === 0) {
             return (
                 <View style={{ flex: 1 }}>
                     {this.renderhomeview()}
                 </View>
             )
-        } else if (this.state.page === 1) {
+        } else if (page === 1) {
             return (
                 <View style={{ flex: 1 }}>
                     {this.renderannouncementview()}
                 </View>
             )
-        } else if (this.state.page === 2) {
+        } else if (page === 2) {
 
             return (
                 <View style={{ flex: 1 }}>
@@ -858,7 +967,7 @@ export default class HMF01011MainView extends Component {
                 </View>
 
             )
-        } else if (this.state.page === 3) {
+        } else if (page === 3) {
 
             return (
                 <View style={{ flex: 1 }}>
@@ -875,14 +984,15 @@ export default class HMF01011MainView extends Component {
         if (tabnumber === 1) {
 
             //load data befor open announcement screen in first time
+            
             if (announcementData.length) {
-                this.state.page = tabnumber;
+                page = tabnumber;
                 this.setState({
 
 
                 });
             } else {
-                this.state.page = tabnumber;
+                page = tabnumber;
                 this.setState({
 
                     isscreenloading: true,
@@ -896,7 +1006,7 @@ export default class HMF01011MainView extends Component {
 
 
         } else {
-            this.state.page = tabnumber;
+            page = tabnumber;
             this.setState({
 
 
@@ -1605,7 +1715,9 @@ export default class HMF01011MainView extends Component {
                 <View style={{ flex: 1, backgroundColor: 'white' }} >
                     <View style={{ flex: 1, flexDirection: 'row' }}>
 
-                        <TouchableOpacity style={{ flex: 1 }} onPress={this.onOpenOrgStruct.bind(this)}>
+                        <TouchableOpacity style={{ flex: 1 }}
+                            onPress={this.onOpenOrgaStructer.bind(this)}
+                        >
                             <View style={[styles.boxShadow, shadow]} >
                                 <View style={styles.managermenuImageButton}>
                                     <Image
@@ -1624,7 +1736,7 @@ export default class HMF01011MainView extends Component {
                         </TouchableOpacity>
 
                         <TouchableOpacity style={{ flex: 1 }}
-                            onPress={this.onOpenNonpayroll.bind(this)}
+                            onPress={this.onOpenOrgaStructerClockInOut.bind(this)}
                         >
                             <View style={[styles.boxShadow, shadow]} >
                                 <View style={styles.managermenuImageButton}>
@@ -1645,8 +1757,7 @@ export default class HMF01011MainView extends Component {
 
                         <TouchableOpacity
                             style={{ flex: 1 }}
-
-                            onPress={this.onOpenLeaveQuota.bind(this)}
+                            onPress={this.onOpenOrgaStructerOTAverage.bind(this)}
 
                         >
                             <View style={[styles.boxShadow, shadow]} >
@@ -1665,7 +1776,7 @@ export default class HMF01011MainView extends Component {
 
                         <TouchableOpacity
                             style={{ flex: 1 }}
-                            style={styles.buttonContainer}>
+                            onPress={this.onOpenOrgaStructerOTHistory.bind(this)}>
                             <View style={[styles.boxShadow, shadow]} >
                                 <View style={styles.managermenuImageButton}>
                                     <Image
@@ -1691,7 +1802,6 @@ export default class HMF01011MainView extends Component {
             </View>
         )
     }
-
     rendersettingview() {
         return (
             <View style={{ flex: 1, flexDirection: 'column', }}>
@@ -1971,7 +2081,7 @@ export default class HMF01011MainView extends Component {
                 <TouchableOpacity style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }} onPress={() => { this.settabscreen(2) }}>
 
                     <Image
-                        style={this.state.page === 2 ?
+                        style={page === 2 ?
                             { width: ICON_SIZE, height: ICON_SIZE, tintColor: Colors.redTextColor } :
                             { width: ICON_SIZE, height: ICON_SIZE, tintColor: Colors.lightGrayTextColor }
                         }
@@ -2004,7 +2114,7 @@ export default class HMF01011MainView extends Component {
 
                         <TouchableOpacity style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }} onPress={() => { this.settabscreen(0) }}>
                             <Image
-                                style={this.state.page === 0 ?
+                                style={page === 0 ?
                                     { width: ICON_SIZE, height: ICON_SIZE, tintColor: Colors.redTextColor } :
                                     { width: ICON_SIZE, height: ICON_SIZE, tintColor: Colors.lightGrayTextColor }
                                 }
@@ -2017,7 +2127,7 @@ export default class HMF01011MainView extends Component {
 
                         <TouchableOpacity style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }} onPress={() => { this.settabscreen(1) }}>
                             <Image
-                                style={this.state.page === 1 ?
+                                style={page === 1 ?
                                     { width: ICON_SIZE, height: ICON_SIZE, tintColor: Colors.redTextColor } :
                                     { width: ICON_SIZE, height: ICON_SIZE, tintColor: Colors.lightGrayTextColor }
                                 }
@@ -2044,7 +2154,7 @@ export default class HMF01011MainView extends Component {
 
                             <Image
 
-                                style={this.state.page === 3 ?
+                                style={page === 3 ?
                                     { width: ICON_SIZE, height: ICON_SIZE, tintColor: Colors.redTextColor } :
                                     { width: ICON_SIZE, height: ICON_SIZE, tintColor: Colors.lightGrayTextColor }
                                 }

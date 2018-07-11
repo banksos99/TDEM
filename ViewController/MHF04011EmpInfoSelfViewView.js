@@ -30,6 +30,7 @@ let currentyear = new Date().getFullYear();
 let careerpathlist = [];
 let empinfodetail = [];
 
+
 const tabbuttonColorEna = Colors.redTextColor;
 
 const tabbuttonColorDis = 'white';
@@ -51,8 +52,16 @@ export default class EmpInfoDetail extends Component {
             personalexpand:true,
             currentjobexpand: false,
             educationexpand: false,
-            manager:this.props.navigation.getParam("manager", "")
+            manager: this.props.navigation.getParam("manager", ""),
+            previous: this.props.navigation.getParam("previous", ""),
         }
+        if (this.state.manager) {
+            title = 'Employee Info Manager View'
+        } else {
+            title = 'Employee Info'
+
+        }
+      
         this.checkDataFormat(this.props.navigation.getParam("DataResponse", ""));
 
     }
@@ -72,12 +81,18 @@ export default class EmpInfoDetail extends Component {
 
     onBack() {
 
-        if (this.state.manager == 2) {
+        if (this.state.previous == 1) {
+
             this.props.navigation.navigate('OrgStructure');
-        } else if (this.state.manager == 1) {
+
+        } else if (this.state.previous == 2) {
+
             this.props.navigation.navigate('EmployeeList');
-        } else{
+
+        } else {
+
             this.props.navigation.navigate('HomeScreen');
+            
         }
 
     }
@@ -648,6 +663,9 @@ export default class EmpInfoDetail extends Component {
                 <View style={[styles.navContainer, { flexDirection: 'column' }]}>
                     <View style={styles.statusbarcontainer} />
                     <View style={{ height: 50, flexDirection: 'row', }}>
+                    <View style={{ width: '100%',height:'100%', justifyContent: 'center', position: 'absolute' }}>
+                            <Text style={styles.navTitleTextTop}>{title}</Text>
+                        </View>
                         <View style={{ flex: 1, justifyContent: 'center', }}>
                             <TouchableOpacity onPress={(this.onBack.bind(this))}>
                                 <Image
@@ -657,12 +675,9 @@ export default class EmpInfoDetail extends Component {
                                 />
                             </TouchableOpacity>
                         </View>
-                        <View style={{ flex: 3, justifyContent: 'center', alignItems: 'center' }}>
-                            <Text style={styles.navTitleTextTop}>Employee Info</Text>
-                        </View>
-                        <View style={{ flex: 1, justifyContent: 'center',alignItems: 'flex-end' }}/>
+                       
+                        <View style={{ flex: 4 }}/>
                             
-                      
                     </View>
                 </View>
 

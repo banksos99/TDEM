@@ -147,10 +147,10 @@ export const styles = StyleSheet.create({
         alignSelf: 'center',
         marginLeft: 45,
         marginRight: 45,
-        fontFamily: "Prompt-Bold"
+        fontFamily: font_medium
     },
     navTitleTextTop: {
-        fontSize: Layout.window.width / 320 * 18,
+        fontSize: Layout.window.width / 320 * 17,
         color: 'white',
         alignSelf: 'center',
         fontFamily: "Prompt-Medium"
@@ -433,7 +433,7 @@ export const styles = StyleSheet.create({
     mainmenuTextname: {
         fontSize: scale * 14,
         color: Colors.grayTextColor,
-        fontFamily: "Prompt-Bold"
+        fontFamily: font_medium
     },
     managermenuImageButton: {
         flex: 4,
@@ -452,6 +452,7 @@ export const styles = StyleSheet.create({
     managermenuTextname: {
         fontSize: scale * 14,
         color: Colors.grayTextColor,
+        fontFamily: font_medium
     },
     // LeaveQuota
     leavequotaTabbar: {

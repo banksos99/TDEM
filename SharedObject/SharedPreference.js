@@ -32,6 +32,13 @@ export default {
     ORGANIZ_STRUCTURE_API: HOST + '/api/' + VERSION + '/organization?type=CE&org_code=',
     APPLICATION_INFO_API: HOST + '/api/' + VERSION + '/appinfo',
 
+
+    OTSUMMARY_LINE_CHART: HOST + '/api/' + VERSION + '/ot/history?org_code=',
+    OTSUMMARY_BAR_CHART: HOST + '/api/' + VERSION + '/ot/average?org_code=',
+
+    ORGANIZ_STRUCTURE_API: HOST + '/api/' + VERSION + '/organization?type=CE&org_code=',
+    ORGANIZ_STRUCTURE_OT_API: HOST + '/api/' + VERSION + '/organization?type=E&org_code=',
+
     // 
     profileObject: {},
     initmaster: {},

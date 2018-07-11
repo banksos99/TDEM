@@ -110,7 +110,7 @@ android {
     compileSdkVersion 27
 
     defaultConfig {
-        applicationId "com.toyotaasia.tdem.tdemconnect"
+        applicationId "com.toyotaasia.tdemconnect"
         minSdkVersion 16
         targetSdkVersion 22
         versionCode 1
@@ -122,14 +122,14 @@ android {
         multiDexEnabled true
     }
     signingConfigs {
-       release {
-        //    if (project.hasProperty(MYAPP_RELEASE_STORE_FILE)) {
-        //        storeFile file(MYAPP_RELEASE_STORE_FILE)
-        //        storePassword MYAPP_RELEASE_STORE_PASSWORD
-        //        keyAlias MYAPP_RELEASE_KEY_ALIAS
-        //        keyPassword MYAPP_RELEASE_KEY_PASSWORD
-        //    }
-       }
+        release {
+            if (project.hasProperty('MYAPP_RELEASE_STORE_FILE')) {
+                storeFile file(MYAPP_RELEASE_STORE_FILE)
+                storePassword MYAPP_RELEASE_STORE_PASSWORD
+                keyAlias MYAPP_RELEASE_KEY_ALIAS
+                keyPassword MYAPP_RELEASE_KEY_PASSWORD
+            }
+        }
     }
     splits {
         abi {
@@ -144,6 +144,9 @@ android {
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
             //  signingConfig signingConfigs.release
+
+            signingConfig signingConfigs.release
+
         }
         debug {
             minifyEnabled false
@@ -166,16 +169,27 @@ android {
 }
 
 dependencies {
-    compile project(':react-native-device-info')
+    compile project(':react-native-zip-archive')
+    compile project(':react-native-svg')
+    compile project(':react-native-static-server')
+    compile project(':react-native-orientation')
     compile project(':react-native-fs')
+    compile(project(':react-native-firebase')) {
+        transitive = false
+    }
     compile project(':react-native-fetch-blob')
+    compile project(':react-native-device-info')
     compile project(':react-native-calendar-events')
+    implementation project(':react-native-svg')
+    implementation project(':react-native-zip-archive')
+    implementation project(':react-native-static-server')
+    implementation project(':react-native-orientation')
+    implementation project(':react-native-device-info')
+
     implementation project(':react-native-fs')
     implementation project(':react-native-fetch-blob')
     implementation project(':react-native-calendar-events')
-//    compile(project(':react-native-firebase')) {
-//        transitive = false
-//    }
+
     implementation(project(':react-native-firebase')) {
         transitive = false
     }

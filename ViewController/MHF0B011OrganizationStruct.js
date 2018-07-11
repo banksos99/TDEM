@@ -2,10 +2,14 @@ import React, { Component } from 'react';
 
 import {
     Text,
+    StyleSheet,
     ScrollView,
     View,
+    StatusBar,
+    Button,
     TouchableOpacity,
-    Image,
+    Image, Picker, WebView,
+    FlatList,
     Alert,
     ActivityIndicator
 } from 'react-native';
@@ -20,18 +24,28 @@ import RestAPI from "../constants/RestAPI"
 
 let dataSource = [];
 let temphandbookData = [];
+let option=0;
 
 export default class OrganizationStruct extends Component {
 
     constructor(props) {
         super(props);
-
         this.state = {
-           option : this.props.navigation.getParam("Option", "")
- 
-        };
+         
+
+        }
+
+
+        this.checkoption(this.props.navigation.getParam("Option", ""));
 
         this.checkDataFormat(this.props.navigation.getParam("DataResponse", ""));
+
+    }
+    checkoption(data) {
+        if (data) {
+            option = data
+        }
+        console.log('option :', option)
     }
     checkDataFormat(DataResponse) {
 
@@ -39,19 +53,32 @@ export default class OrganizationStruct extends Component {
             dataSource = [];
             //console.log(DataResponse[0].data)
             // dataSource = DataResponse.org_lst;
-          //  DataResponse.org_emp.map((item) => (
-                
-                dataSource.push({
+            dataSource.push({
                     
-                    org_code:DataResponse.org_code,
-                    org_name:DataResponse.org_name,
-                    org_level:20,
-                    next_level:'true',
-                    expand:0,
-                    }
+                org_code:DataResponse.org_code,
+                org_name:DataResponse.org_name,
+                org_level:DataResponse.org_level,
+                next_level:'true',
+                expand:0,
+                }
+
+            )
+
+
+            // DataResponse.org_emp.map((item) => (
+                
+            //     dataSource.push({
+                    
+            //         org_code:0,
+            //         org_name:item.employee_name,
+            //         org_level:20,
+            //         next_level:'false',
+            //         emp_id:item.employee_id,
+            //         position:item.employee_position,
+            //         expand:0,
+            //         }
     
-                )
-           // ))
+            //     )))
             // DataResponse.org_lst.map((item) => (
             // dataSource.push({
             //     org_code:item.org_code,
@@ -94,7 +121,7 @@ export default class OrganizationStruct extends Component {
         this.props.navigation.navigate('HomeScreen');
     }
 
-    onOrgStruct(item, index) {
+    onClickOrgStruct(item, index) {
 
         console.log('item :',item)
 
@@ -107,6 +134,8 @@ export default class OrganizationStruct extends Component {
                 isscreenloading: true,
                 loadingtype: 3,
                 org_code: item.emp_id,
+                employee_name: item.org_name,
+                employee_position: item.position
 
             }, function () {
 
@@ -114,7 +143,6 @@ export default class OrganizationStruct extends Component {
             });
 
         } else {
-
 
             if (item.next_level === 'true') {
 
@@ -134,10 +162,6 @@ export default class OrganizationStruct extends Component {
                 } else {
                     // *** select collapse   
 
-                    console.log('dataSource : ', dataSource)
-                    console.log('index : ', index)
-                    console.log('org_level : ', item.org_level)
-
                     this.setState({
 
                         isscreenloading: true,
@@ -153,9 +177,7 @@ export default class OrganizationStruct extends Component {
                     for (let i = 0; i < dataSource.length; i++) {
 
                         if(statuscol == 0){
-                            console.log('dataSource[i].org_level : '+ dataSource[i].org_level+':'+item.org_level)
-                          
-                            console.log('     ******    ')
+
                             if(parseInt(item.org_level)  >= parseInt(dataSource[i].org_level)){
 
                                 statuscol = 1;
@@ -173,15 +195,13 @@ export default class OrganizationStruct extends Component {
                                 expand: 0
 
                             })
-                            console.log('select org_code : ', dataSource[i].org_code)
+
                             i = i + dataSource[i].expand;
 
-                        } else if(statuscol == 0){
-                            console.log('collapse org_code : ', dataSource[i].org_code,' : ',dataSource[i].org_level)
-                            
+                        } else if (statuscol == 0) {
 
-                        }else {
-                            console.log('exist org_code : ', dataSource[i].org_code)
+                        } else {
+
                             temparr.push(
                                 dataSource[i]
                             )
@@ -190,7 +210,7 @@ export default class OrganizationStruct extends Component {
 
                     }
                     dataSource = temparr;
-                    console.log('dataSource : ', dataSource)
+
                     this.setState({
                         isscreenloading: false,
                     })
@@ -304,7 +324,7 @@ export default class OrganizationStruct extends Component {
 
         let url = SharedPreference.EMP_INFO_MANAGER_API + this.state.org_code
 
-        if (this.state.option) {
+        if (option == 2) {
             let today = new Date();
             url = SharedPreference.CLOCK_IN_OUT_MANAGER_API + this.state.org_code + '&month=0' + parseInt(today.getMonth() + 1) + '&year=' + today.getFullYear()
 
@@ -323,7 +343,7 @@ export default class OrganizationStruct extends Component {
             console.log('data.data.org_lst :', data.data)
             this.props.navigation.navigate('EmployeeList', {
                 DataResponse: data,
-                Option:this.state.option
+                Option:option
             });
 
         } else {
@@ -337,21 +357,27 @@ export default class OrganizationStruct extends Component {
         data = data[1]
 
         if (code.SUCCESS == data.code) {
-            console.log('data.data.org_lst :', data.data)
-            if(this.state.option){
+            console.log('data.data.org_lst :', data)
+            if (option == 2) {
                 this.props.navigation.navigate('ClockInOutSelfView', {
-                    DataResponse: data.data,
-                    manager: 2,
+                    DataResponse: data,
+                    manager: 1,
+                    previous:1,
+                    employee_name: this.state.employee_name,
+                    employee_position: this.state.employee_position,
+                    Option:option
                 });
 
-            }else{
+            } else if (option == 1) {
 
                 this.props.navigation.navigate('EmployeeInfoDetail', {
                     DataResponse: data.data,
-                    manager: 2,
+                    manager: 1,
+                    previous:1,
+                    Option:option
                 });
             }
-           
+
 
         } else {
             this.onLoadErrorAlertDialog(data)
@@ -359,6 +385,9 @@ export default class OrganizationStruct extends Component {
       
     }
     onLoadErrorAlertDialog(error) {
+        this.setState({
+            isscreenloading: false,
+        })
         if (this.state.isConnected) {
             Alert.alert(
                 'MHF00001ACRI',
@@ -368,7 +397,20 @@ export default class OrganizationStruct extends Component {
                 }],
                 { cancelable: false }
             )
-        } else {
+        } else if(error.code == 404){
+
+            Alert.alert(
+                'MSTD0059AERR',
+                'No data found',
+                [{
+                    text: 'OK', onPress: () => {
+                        console.log("onLoadErrorAlertDialog")
+                    }
+                }],
+                { cancelable: false }
+            )
+
+        }else{
             Alert.alert(
                 'MHF00002ACRI',
                 'System Error (API). Please contact system administrator.',
@@ -436,19 +478,19 @@ export default class OrganizationStruct extends Component {
 
                                         >
                                             <TouchableOpacity
-                                                onPress={() => { this.onOrgStruct(item, index) }}
+                                                onPress={() => { this.onClickOrgStruct(item, index) }}
                                             >
                                                 <View style={{ height: 49, flexDirection: 'row' }}>
                                                     <View style={{ flex: 1, flexDirection: 'column' }}>
                                                         <View style={{ flex: 1, justifyContent: 'center' }} >
                                                             <Text style={item.expand === 0 ?
-                                                                { marginLeft: (parseInt(item.org_level) - 10) * 2, color: Colors.grayTextColor, fontFamily: 'Prompt-Regular' } :
-                                                                { marginLeft: (parseInt(item.org_level) - 10) * 2, color: Colors.redTextColor, fontFamily: 'Prompt-Regular' }}
+                                                                { marginLeft: (parseInt(item.org_level) ) * 2, color: Colors.grayTextColor, fontFamily: 'Prompt-Regular' } :
+                                                                { marginLeft: (parseInt(item.org_level) ) * 2, color: Colors.redTextColor, fontFamily: 'Prompt-Regular' }}
 
                                                             >{item.org_name}</Text>
                                                         </View>
                                                         <View style={item.org_code === 0 ? {height: 20, justifyContent: 'center' }:{height: 0, justifyContent: 'center' }} >
-                                                            <Text style={{marginLeft: (parseInt(item.org_level) - 10) * 2, color: Colors.grayTextColor, fontFamily: 'Prompt-Regular',fontSize:10}}
+                                                            <Text style={{marginLeft: (parseInt(item.org_level) ) * 2, color: Colors.grayTextColor, fontFamily: 'Prompt-Regular',fontSize:10}}
                                                         >{item.position}</Text>
                                                     </View>
                                                     </View>

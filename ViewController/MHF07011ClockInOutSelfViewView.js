@@ -32,7 +32,7 @@ let firstday;
 let daymonth;
 let currentday;
 let currentmonth;
-let initannouncementtype;
+let initannouncementType;
 
 export default class ClockInOutSelfView extends Component {
 
@@ -45,7 +45,7 @@ export default class ClockInOutSelfView extends Component {
         });
         let today = new Date();
         
-        currentday = today.getDay();
+        currentday = today.getDate();
         currentmonth = today.getMonth();
         this.state = {
             isscreenloading: false,
@@ -69,17 +69,29 @@ export default class ClockInOutSelfView extends Component {
             initialyear: 0,
             initialmonth: 0,
             yearselected: 0,
-            monthselected: today.getMonth()+1,
+            monthselected: today.getMonth() + 1,
             dateselected: 0,
-            tfirstday: 0
+            tfirstday: 0,
+            manager: this.props.navigation.getParam("manager", ""),
            
+            previous: this.props.navigation.getParam("previous", ""),
+            employee_name: this.props.navigation.getParam("employee_name", ""),
+            employee_position: this.props.navigation.getParam("employee_position", ""),
+
         }
 
         this.checkDataFormat(this.props.navigation.getParam("DataResponse", ""));
         let birthday = new Date(MONTH_LIST[this.state.initialmonth + 1] + '1,' + this.state.initialyear);
         firstday = birthday.getDay() + 1;
-        
+        console.log('employee_name :', this.state.employee_name);
+        console.log('employee_position :', this.state.employee_position);
 
+        if (this.state.manager) {
+            title = 'Clock In - Out Manager View'
+        } else {
+            title = 'Clock In - Out'
+
+        }
     }
 
     checkDataFormat(DataResponse) {
@@ -116,7 +128,7 @@ export default class ClockInOutSelfView extends Component {
         daymonth = Math.round(difference_ms / one_day)
 
         for (let m = 0; m < daymonth; m++) {
-            let type = 0;
+            let datetype = 0;
             let workstart = '-';
             let workend = '-';
             let actualstart = '-';
@@ -124,26 +136,36 @@ export default class ClockInOutSelfView extends Component {
 
             if (DataResponse.data) {
 
+                console.log('have data work',DataResponse.data.items.length)
+
                 for (let i = 0; i < DataResponse.data.items.length; i++) {
 
                     let item = DataResponse.data.items[i].date.split('-');
-
+                    
                     if (parseInt(item[2]) == m + 1) {
 
-                        type = DataResponse.data.items[i].datetype;
-                        if(DataResponse.data.items[i].work.start){
-                            workstart = DataResponse.data.items[i].work.start;
+                        datetype = DataResponse.data.items[i].datetype;
+                        console.log('have data work',DataResponse.data.items[i].work)
+                        if (DataResponse.data.items[i].work) {
+                            console.log('have data work')
+                            if (DataResponse.data.items[i].work.start) {
+                                workstart = DataResponse.data.items[i].work.start;
+                            }
+
+                            if (DataResponse.data.items[i].work.end) {
+                                workend = DataResponse.data.items[i].work.end;
+                            }
                         }
-                        if(DataResponse.data.items[i].work.end){
-                            workend = DataResponse.data.items[i].work.end;
+
+                        if (DataResponse.data.items[i].actual) {
+                            console.log('have data actual')
+                            if (DataResponse.data.items[i].actual.start) {
+                                actualstart = DataResponse.data.items[i].actual.start;
+                            }
+                            if (DataResponse.data.items[i].actual.end) {
+                                actualend = DataResponse.data.items[i].actual.end;
+                            }
                         }
-                        if(DataResponse.data.items[i].actual.start){
-                            actualstart = DataResponse.data.items[i].actual.start;
-                        }
-                        if(DataResponse.data.items[i].actual.end){
-                            actualend = DataResponse.data.items[i].actual.end;
-                        }
-                        
 
                         var wstart = new Date('Jan 01 2007 ' + workstart + ':00');
                         var astart = new Date('Jan 01 2007 ' + actualstart + ':00');
@@ -177,19 +199,42 @@ export default class ClockInOutSelfView extends Component {
             }
 
             this.state.tdataSource.push({
-                type: type,
+                datetype: datetype,
                 workstart: workstart,
                 workend: workend,
                 actualstart: actualstart,
                 actualend: actualend,
 
             })
+
         }
+        //sert initial data
+initannouncementType = this.state.months[0]
+
+console.log('init data : ',this.state.months[0])
 
     }
 
     componentWillMount() {
         // this._fetchMore(this.state.page);
+    }
+
+    onBack() {
+
+        if (this.state.previous == 1) {
+
+            this.props.navigation.navigate('OrgStructure');
+
+        } else if (this.state.previous == 2) {
+
+            this.props.navigation.navigate('EmployeeList');
+
+        } else {
+
+            this.props.navigation.navigate('HomeScreen');
+            
+        }
+
     }
 
     loadClockInOutfromAPI = async (omonth, oyear) => {
@@ -211,19 +256,19 @@ export default class ClockInOutSelfView extends Component {
         let url = SharedPreference.CLOCK_IN_OUT_API + 'month=' + tmonth + '&year=' + oyear
         console.log('url :', url)
 
-        var monthnow = new Date(oyear, parseInt(omonth)-1, 1);
-        var monthnext = new Date(oyear,omonth, 1);
+        // var monthnow = new Date(oyear, parseInt(omonth)-1, 1);
+        // var monthnext = new Date(oyear,omonth, 1);
 
-        var date1_ms = monthnow.getTime();
-        var date2_ms = monthnext.getTime();
+        // var date1_ms = monthnow.getTime();
+        // var date2_ms = monthnext.getTime();
 
-        // Calculate the difference in milliseconds
-        var difference_ms = date2_ms - date1_ms;
-        var one_day = 1000 * 60 * 60 * 24;
-        // var today = new Date();
-        //displays 726
+        // // Calculate the difference in milliseconds
+        // var difference_ms = date2_ms - date1_ms;
+        // var one_day = 1000 * 60 * 60 * 24;
+        // // var today = new Date();
+        // //displays 726
        
-         daymonth = Math.round(difference_ms / one_day)
+        //  daymonth = Math.round(difference_ms / one_day)
         
         this.APICallback(await RestAPI(url))
 
@@ -234,83 +279,78 @@ export default class ClockInOutSelfView extends Component {
         code = data[0]
         data = data[1]
 
-        this.state.tdataSource = [];
+        if (code.SUCCESS == data.code) {
 
-        for (let m = 0; m < daymonth; m++) {
-            let type = 0;
-            let workstart = '-';
-            let workend = '-';
-            let actualstart = '-';
-            let actualend = '-';
-            let late = 0;
-            let early = 0;
+            this.state.tdataSource = [];
 
-            if (code.SUCCESS == data.code) {
+            for (let i = 0; i < data.data.items.length; i++) {
 
-                for (let i = 0; i < data.data.items.length; i++) {
+                let datetype = 0;
+                let workstart = '-';
+                let workend = '-';
+                let actualstart = '-';
+                let actualend = '-';
+                let late = 0;
+                let early = 0;
 
-                    let item = data.data.items[i].date.split('-');
+                if (data.data.items[i].work) {
 
-                    if (parseInt(item[2]) == m + 1) {
-
-                        type = data.data.items[i].datetype;
-                        if(data.data.items[i].work.start){
-                            workstart = data.data.items[i].work.start;
-                        }
-                        if(data.data.items[i].work.end){
-                            workend = data.data.items[i].work.end;
-                        }
-                        if(data.data.items[i].actual.start){
-                            actualstart = data.data.items[i].actual.start;
-                        }
-                        if(data.data.items[i].actual.end){
-                            actualend = data.data.items[i].actual.end;
-                        }
-                        
-
-                        var wstart = new Date('Jan 01 2007 ' + workstart + ':00');
-                        var astart = new Date('Jan 01 2007 ' + actualstart + ':00');
-
-                        var date1_ms = wstart.getTime();
-                        var date2_ms = astart.getTime();
-
-                        var difference_start = date2_ms - date1_ms;
-
-                        if ((difference_start / 60000) > 0) {
-                            late = 1
-                        }
-                        var wend = new Date('Jan 01 2007 ' + workend + ':00');
-                        var aend = new Date('Jan 01 2007 ' + actualend + ':00');
-
-                        var date3_ms = wend.getTime();
-                        var date4_ms = aend.getTime();
-
-                        var difference_end = date4_ms - date3_ms;
-
-                        if ((difference_end / 60000) < 0) {
-                            early = 1
-
-                            break;
-                        }
-
+                    if (data.data.items[i].work.start) {
+                        workstart = data.data.items[i].work.start;
+                    }
+                    if (data.data.items[i].work.end) {
+                        workend = data.data.items[i].work.end;
                     }
 
                 }
+                if (data.data.items[i].actual) {
+                    if (data.data.items[i].actual.start) {
+                        actualstart = data.data.items[i].actual.start;
+                    }
+                    if (data.data.items[i].actual.end) {
+                        actualend = data.data.items[i].actual.end;
+                    }
+                }
+
+                var wstart = new Date('Jan 01 2007 ' + workstart + ':00');
+                var astart = new Date('Jan 01 2007 ' + actualstart + ':00');
+
+                var date1_ms = wstart.getTime();
+                var date2_ms = astart.getTime();
+
+                var difference_start = date2_ms - date1_ms;
+
+                if ((difference_start / 60000) > 0) {
+                    late = 1
+                }
+                var wend = new Date('Jan 01 2007 ' + workend + ':00');
+                var aend = new Date('Jan 01 2007 ' + actualend + ':00');
+
+                var date3_ms = wend.getTime();
+                var date4_ms = aend.getTime();
+
+                var difference_end = date4_ms - date3_ms;
+
+                if ((difference_end / 60000) < 0) {
+                    early = 1
+
+                }
+
+                this.state.tdataSource.push({
+                    datetype: data.data.items[i].datetype,
+                    workstart: workstart,
+                    workend: workend,
+                    actualstart: actualstart,
+                    actualend: actualend,
+                    late: late,
+                    early: early
+
+                })
+
+
             }
-
-            this.state.tdataSource.push({
-                type: type,
-                workstart: workstart,
-                workend: workend,
-                actualstart: actualstart,
-                actualend: actualend,
-                late: late,
-                early: early
-
-            })
         }
-        console.log('this.state.tdataSource :',this.state.tdataSource)
-
+        console.log('tdataSource : ',this.state.tdataSource)
         this.setState({
             isscreenloading: false,
         })
@@ -343,10 +383,8 @@ export default class ClockInOutSelfView extends Component {
         console.log("error : ", error)
     }
 
-    onBack() {
+   
 
-        this.props.navigation.navigate('HomeScreen');
-    }
     select_month() {
 
         this.setState({
@@ -390,6 +428,20 @@ export default class ClockInOutSelfView extends Component {
         });
 
     }
+
+    conv(date) {
+
+        if (date == '-') {
+
+            return date
+        }
+        let arr = date.split(':');
+
+        return parseInt(arr[0]) + ':' + arr[1]
+
+    }
+
+    
 
     renderpickerview() {
 
@@ -484,9 +536,10 @@ export default class ClockInOutSelfView extends Component {
         console.log('weakday : ', (firstday + 1) % 7)
         let offsety = 0;
         if(this.state.initialmonth + 2 === this.state.monthselected){
+            
             offsety = ((currentday * 90) - 220)
         }
-
+        console.log('offsety : ', offsety)
         return (
             <View style={{ flex: 16, backgroundColor: Colors.calendarLocationBoxColor, }}>
                 <ScrollView ref="scrollView"
@@ -500,24 +553,17 @@ export default class ClockInOutSelfView extends Component {
                                 { height: 90 }} key={index + 500}>
                                 <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', }}>
                                     <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
-                                        <Text style={item.type === 0 ?
+                                        <Text style={item.datetype === 'Y' ? styles.clockinoutdaybluetext :
                                             ((firstday + index) % 7) === 0 | ((firstday + index) % 7) === 6 ?
-                                                styles.clockinoutdayredtext : styles.clockinoutdaytext
-                                            : item.type === 'Y' ?
-                                                styles.clockinoutdaybluetext :
-                                                item.type === 'N' ? styles.clockinoutdayredtext : styles.clockinoutdaytext
+                                                styles.clockinoutdayredtext : item.datetype === 'N' ? styles.clockinoutdayredtext : styles.clockinoutdaytext
 
                                         }
-
                                         >
                                             {index + 1}
                                         </Text >
-                                        <Text style={item.type === 0 ?
+                                        <Text style={item.datetype === 'Y' ? styles.clockinoutweakdaybluetext :
                                             ((firstday + index) % 7) === 0 | ((firstday + index) % 7) === 6 ?
-                                                styles.clockinoutweakdayredtext : styles.clockinoutweakdaytext
-                                            : item.type === 'Y' ?
-                                                styles.clockinoutweakdaybluetext :
-                                                item.type === 'N' ? styles.clockinoutweakdayredtext : styles.clockinoutweakdaytext
+                                                styles.clockinoutweakdayredtext : item.datetype === 'N' ? styles.clockinoutweakdayredtext : styles.clockinoutweakdaytext
                                         }>
                                             {Months.dayNamesShortMonthView[(firstday + index) % 7]}</Text>
                                     </View>
@@ -527,22 +573,22 @@ export default class ClockInOutSelfView extends Component {
                                         <Text style={styles.clockinoutweakdayalphatext}>ACTUAL</Text>
                                     </View>
                                     <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                                        <Text style={styles.clockinoutbodytext}>{item.workstart}</Text>
+                                        <Text style={index > currentday?styles.clockinoutbodyhidetext:styles.clockinoutbodytext}>{this.conv(item.workstart)}</Text>
                                         <Text style={styles.clockinoutweakdayalphatext} />
                                         <Text style={index > currentday?styles.clockinoutbodyhidetext: item.actualstart === '-' && item.workstart != '-' ?
                                             styles.clockinoutbodyredtext :
                                             item.late === 1 ? styles.clockinoutbodyredtext : styles.clockinoutbodytext}>
 
-                                            {item.actualstart}</Text>
+                                            {this.conv(item.actualstart)}</Text>
                                     </View>
                                     <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                                        <Text style={styles.clockinoutbodytext}>{item.workend}</Text>
+                                        <Text style={index > currentday?styles.clockinoutbodyhidetext:styles.clockinoutbodytext}>{this.conv(item.workend)}</Text>
                                         <Text style={styles.clockinoutweakdayalphatext} />
-                                        <Text style={item.actualend === '-' && item.workend != '-' ?
+                                        <Text style={index > currentday ? styles.clockinoutbodyhidetext : item.actualend === '-' && item.workend != '-' ?
                                             styles.clockinoutbodyredtext :
                                             item.early === 1 ? styles.clockinoutbodyredtext : styles.clockinoutbodytext}>
 
-                                            {item.actualend}</Text>
+                                            {this.conv(item.actualend)}</Text>
                                     </View>
                                 </View>
                                 <View style={{ height: 1, backgroundColor: Colors.lightGrayTextColor, }} />
@@ -575,6 +621,9 @@ export default class ClockInOutSelfView extends Component {
                 <View style={[styles.navContainer, { flexDirection: 'column' }]}>
                     <View style={styles.statusbarcontainer} />
                     <View style={{ height: 50, flexDirection: 'row', }}>
+                        <View style={{ width: '100%',height:'100%', justifyContent: 'center', position: 'absolute' }}>
+                            <Text style={styles.navTitleTextTop}>{title}</Text>
+                        </View>
                         <View style={{ flex: 1, justifyContent: 'center', }}>
                             <TouchableOpacity onPress={(this.onBack.bind(this))}>
                                 <Image
@@ -584,16 +633,17 @@ export default class ClockInOutSelfView extends Component {
                                 />
                             </TouchableOpacity>
                         </View>
-                        <View style={{ flex: 3, justifyContent: 'center', alignItems: 'center' }}>
-                            <Text style={styles.navTitleTextTop}>Clock In - Out</Text>
-                        </View>
-                        <View style={{ flex: 1, }}>
+
+                        <View style={{ flex: 5, }}>
                         </View>
                     </View>
                 </View>
                 <View style={{ flex: 1, flexDirection: 'column', }}>
-
-                    <TouchableOpacity style={{ flex: 1, backgroundColor: Colors.calendarLocationBoxColor, margin: 5, borderRadius: 5, justifyContent: 'center', alignItems: 'center', borderWidth: 1 }}
+                    <View style={{ height: this.state.manager * 50, backgroundColor: Colors.redColor,justifyContent:'center' }}>
+                    <Text style={{flex:1 ,marginLeft:20,color:'white',fontFamily:'Prompt-Regular'}}>{this.state.employee_name}</Text>
+                    <Text style={{flex:1,marginLeft:20,color:'white',fontFamily:'Prompt-Regular'}}>{this.state.employee_position}</Text>
+                    </View>
+                    <TouchableOpacity style={{ height: 40, backgroundColor: Colors.calendarLocationBoxColor, margin: 5, borderRadius: 5, justifyContent: 'center', alignItems: 'center', borderWidth: 1 }}
                         onPress={(this.select_month.bind(this))}
                     >
 
@@ -601,7 +651,7 @@ export default class ClockInOutSelfView extends Component {
 
                     </TouchableOpacity>
 
-
+                    
 
                     <View style={{ flex: 12, marginLeft: 5, marginRight: 5, marginTop: 2, marginBottom: 2 }}>
 
