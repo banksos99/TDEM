@@ -59,7 +59,8 @@ export default class HMF01011MainView extends Component {
             announcepage: 0,
             enddragannounce: false,
             annrefresh: false,
-            username: SharedPreference.profileObject.employee_name,
+            // username: SharedPreference.profileObject.employee_name,
+            username:"hello hello"
         
         }
         console.log("MainView ====> profileObject ==> ", SharedPreference.profileObject)

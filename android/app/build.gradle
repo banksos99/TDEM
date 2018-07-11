@@ -95,11 +95,6 @@ def enableSeparateBuildPerCPUArchitecture = false
 def enableProguardInReleaseBuilds = false
 
 
-//MYAPP_RELEASE_STORE_FILE=tdemconnect.jks
-//MYAPP_RELEASE_KEY_ALIAS=tdemconnect-alias
-//MYAPP_RELEASE_STORE_PASSWORD='1234@tdemdevelop'
-//MYAPP_RELEASE_KEY_PASSWORD='1234@tdemconnect'
-
 
 
 android {
@@ -121,16 +116,16 @@ android {
         // because of firestore:
         multiDexEnabled true
     }
-    signingConfigs {
-        release {
-            if (project.hasProperty('MYAPP_RELEASE_STORE_FILE')) {
-                storeFile file(MYAPP_RELEASE_STORE_FILE)
-                storePassword MYAPP_RELEASE_STORE_PASSWORD
-                keyAlias MYAPP_RELEASE_KEY_ALIAS
-                keyPassword MYAPP_RELEASE_KEY_PASSWORD
-            }
-        }
-    }
+//    signingConfigs {
+//        release {
+//            if (project.hasProperty('MYAPP_RELEASE_STORE_FILE')) {
+//                storeFile file(MYAPP_RELEASE_STORE_FILE)
+//                storePassword MYAPP_RELEASE_STORE_PASSWORD
+//                keyAlias MYAPP_RELEASE_KEY_ALIAS
+//                keyPassword MYAPP_RELEASE_KEY_PASSWORD
+//            }
+//        }
+//    }
     splits {
         abi {
             reset()
@@ -145,7 +140,7 @@ android {
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
             //  signingConfig signingConfigs.release
 
-            signingConfig signingConfigs.release
+//            signingConfig signingConfigs.release
 
         }
         debug {
@@ -169,17 +164,7 @@ android {
 }
 
 dependencies {
-    compile project(':react-native-zip-archive')
-    compile project(':react-native-svg')
-    compile project(':react-native-static-server')
-    compile project(':react-native-orientation')
-    compile project(':react-native-fs')
-    compile(project(':react-native-firebase')) {
-        transitive = false
-    }
-    compile project(':react-native-fetch-blob')
-    compile project(':react-native-device-info')
-    compile project(':react-native-calendar-events')
+
     implementation project(':react-native-svg')
     implementation project(':react-native-zip-archive')
     implementation project(':react-native-static-server')

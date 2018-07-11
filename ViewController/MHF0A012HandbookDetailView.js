@@ -469,7 +469,6 @@ export default class HandbookViewer extends Component {
                                     <Text style={styles.epubTocText} numberOfLines={1}> {item.label}</Text>
                                 </View>
                                 <View style={{ height: 1, backgroundColor: Colors.calendarLocationBoxColor }}>
-
                                 </View>
                             </TouchableOpacity>
                         ))}
@@ -543,15 +542,12 @@ export default class HandbookViewer extends Component {
 
                 <Epub style={styles.epubreader}
                     ref={component => this.epub = component}
-                    //src={"https://s3.amazonaws.com/epubjs/books/moby-dick.epub"}
                     src={this.state.src}
-                    // fontFamily={['Prompt-Medium', 'Prompt-Medium', 'Prompt-Medium']}
                     font={this.state.selectfontnametext}
                     height='100%'
                     fontSize={fontsizearr[this.state.fontsizelivel]}
                     flow={this.state.flow}
                     location={this.state.location}
-
                     onLocationChange={(visibleLocation) => {
                         console.log("locationChanged : ", visibleLocation.start.displayed)
                         this.setState({
@@ -564,7 +560,6 @@ export default class HandbookViewer extends Component {
                         this.setState({ sliderDisabled: false });
                     }}
                     onReady={(book) => {
-                        // console.log("Metadata", book.package.metadata)
                         console.log("Table of Contents", book.toc)
                         this.setState({
                             book: book,
@@ -576,12 +571,9 @@ export default class HandbookViewer extends Component {
                     onPress={(cfi, position, rendition) => {
                         this.toggleBars();
                         console.log("press", cfi);
-
                     }}
                     onLongPress={(cfi, rendition, cfiRange) => {
                         console.log("longpress", cfiRange);
-
-
                     }}
                     onViewAdded={(index) => {
                         console.log("added", index)
@@ -594,29 +586,14 @@ export default class HandbookViewer extends Component {
                         console.log("highlight :", rendition.highlight)
                         console.log("book :", this.state.book.render)
 
-                        // this.state.book.getRange(cfiRange).then((range) => {
-                        //   if (range) {
-                        //       let text = range.toString();
-                        //       let startOffset = range.startOffset;
-                        //       let paragraph = range.startContainer.data;
-                        //       let length = range.startContainer.length;
-                        //       console.log("text :", text)
-                        //   }
-                        // });
-
                         // Add marker
                         rendition.highlight(cfiRange, {
-
                         });
-                        // rendition.href
                         this.state.hilightList.push(cfiRange)
-
                     }}
-
                     onMarkClicked={(cfiRange) => {
                         console.log("mark clicked", cfiRange)
                     }}
-
                     themes={{
                         tan: {
                             body: {
@@ -635,7 +612,6 @@ export default class HandbookViewer extends Component {
                     theme="tan"
                     highlights={{
 
-
                     }}
                     regenerateLocations={true}
                     generateLocations={true}
@@ -645,45 +621,7 @@ export default class HandbookViewer extends Component {
                     }}
                 />
 
-                {/* <View
-          style={[styles.bar, { top: 50 }]}>
-          <TopBar
-            title={this.state.title}
-            shown={true}
-            onLeftButtonPressed={() => this._nav.show()}
-            onRightButtonPressed={
-              (value) => {
-                if (this.state.flow === "paginated") {
-                  this.setState({ flow: "scrolled-continuous" });
-                } else {
-                  this.setState({ flow: "paginated" });
-                }
-              }
-            }
-          />
-        </View>
-        <View
-          style={[styles.bar, { bottom: 20 }]}>
-          <BottomBar
-            disabled={this.state.sliderDisabled}
-            value={this.state.visibleLocation ? this.state.visibleLocation.start.percentage : 0}
-            shown={this.state.showBars}
-            onSlidingComplete={
-              (value) => {
-                this.setState({ location: 'epubcfi(/6/24[xchapter_006]!/4/2/10)' })
-                console.log('value.toFixed(1):', value.toFixed(1))
-                // this.epub.highlight({ x: 264, y: 209}, {});
-              }
-            } />
-        </View>
-        <View>
-          <Nav ref={(nav) => this._nav = nav}
-            display={(loc) => {
-              this.setState({ location: loc });
-            }}
-            toc={this.state.toc}
-          />
-        </View > */}
+
                 <View style={{ height: 30, justifyContent: 'center' }}>
                     <Text style={{ textAlign: 'center', }}>{this.state.currentpage + ' / ' + this.state.totalpage}</Text>
                 </View>

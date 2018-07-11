@@ -148,6 +148,10 @@ PODS:
     - React
   - react-native-fetch-blob (0.10.6):
     - React/Core
+  - react-native-orientation (3.1.3):
+    - React
+  - react-native-wkwebview (1.21.0):
+    - React
   - React/Core (0.55.4):
     - yoga (= 0.55.4.React)
   - React/CxxBridge (0.55.4):
@@ -198,6 +202,18 @@ PODS:
     - React/RCTBlob
   - RNDeviceInfo (0.21.5):
     - React
+  - RNFS (2.10.14):
+    - React
+  - RNSVG (6.4.1):
+    - React
+  - RNZipArchive (2.2.6):
+    - React
+    - RNZipArchive/Core (= 2.2.6)
+    - RNZipArchive/RNZASSZipArchive (= 2.2.6)
+  - RNZipArchive/Core (2.2.6):
+    - React
+  - RNZipArchive/RNZASSZipArchive (2.2.6):
+    - React
   - yoga (0.55.4.React)
 
 DEPENDENCIES:
@@ -215,6 +231,8 @@ DEPENDENCIES:
   - Firebase/Storage
   - react-native-calendar-events (from `../node_modules/react-native-calendar-events`)
   - react-native-fetch-blob (from `../node_modules/react-native-fetch-blob`)
+  - react-native-orientation (from `../node_modules/react-native-orientation`)
+  - react-native-wkwebview (from `../node_modules/react-native-wkwebview-reborn`)
   - React/Core (from `../node_modules/react-native`)
   - React/CxxBridge (from `../node_modules/react-native`)
   - React/DevSupport (from `../node_modules/react-native`)
@@ -231,6 +249,9 @@ DEPENDENCIES:
   - React/RCTVibration (from `../node_modules/react-native`)
   - React/RCTWebSocket (from `../node_modules/react-native`)
   - RNDeviceInfo (from `../node_modules/react-native-device-info`)
+  - RNFS (from `../node_modules/react-native-fs`)
+  - RNSVG (from `../node_modules/react-native-svg`)
+  - RNZipArchive (from `../node_modules/react-native-zip-archive`)
   - yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -274,8 +295,18 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-calendar-events"
   react-native-fetch-blob:
     :path: "../node_modules/react-native-fetch-blob"
+  react-native-orientation:
+    :path: "../node_modules/react-native-orientation"
+  react-native-wkwebview:
+    :path: "../node_modules/react-native-wkwebview-reborn"
   RNDeviceInfo:
     :path: "../node_modules/react-native-device-info"
+  RNFS:
+    :path: "../node_modules/react-native-fs"
+  RNSVG:
+    :path: "../node_modules/react-native-svg"
+  RNZipArchive:
+    :path: "../node_modules/react-native-zip-archive"
   yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -314,9 +345,14 @@ SPEC CHECKSUMS:
   React: aa2040dbb6f317b95314968021bd2888816e03d5
   react-native-calendar-events: fe6fbc8ed337a7423c98f2c9012b25f20444de09
   react-native-fetch-blob: 63394b1d7b0781547b3e4463b3195790177b1222
+  react-native-orientation: 3d9a0a8273d18260f7528414093a6a36491382b6
+  react-native-wkwebview: dd501f1ece5088da7bc04e81fa6858eeb51fa14d
   RNDeviceInfo: 568c5641057313b4912d08a7742ff0b2f753ed5c
+  RNFS: bbb1a64eb245763daf34aea86f97c97c4e85f74c
+  RNSVG: 6252323c0312735f0af5f58b5adf2965b6a9ffbf
+  RNZipArchive: 4f72d162e01ba473a6c2365b4e949183fd208f35
   yoga: a23273df0088bf7f2bb7e5d7b00044ea57a2a54a
 
-PODFILE CHECKSUM: 94979ab1db6d4c66193eb2bc0fd304c9de12d765
+PODFILE CHECKSUM: c2ba3a1bd6ef873c02c4a4b23b1fbee587bff885
 
 COCOAPODS: 1.5.3
