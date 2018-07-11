@@ -1,5 +1,5 @@
 
-const HOST = 'http://192.168.2.189:8080'
+const HOST = 'https://tdemconnect-dev.tdem.toyota-asia.com'
 const token = 'Bearer Mi5IRjA1MDEuZTExZGI3YjllYTY0MjNkNDVmYTYyNmNkMzI1ZDhlN2U3NmI4Mzk0NTZhMGU5ODcxYzJiMzJiYzYyZWFlOWUzZGFiMDlhN2Y2M2I1OTE5MTkzZWYwNTYzYjAxODNiYjA2M2RhODAyN2Q5OTE3ZWNhOGExMTBlNTgzYmI3NTkzMmI='
 const VERSION = 'v1'
 

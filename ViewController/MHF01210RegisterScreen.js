@@ -33,10 +33,11 @@ export default class RegisterActivity extends Component {
     onRegister = async () => {
         Keyboard.dismiss()
 
-        console.log("username : ", this.state.username, ", password : ", this.state.password)
+        console.log("rusername : ", this.state.username, ", password : ", this.state.password)
         let data = await RegisterAPI(this.state.username, this.state.password)
         code = data[0]
         data = data[1]
+        console.log("Register ==> data : ",data)
 
         if (code.SUCCESS == data.code) {
             //TODO 
@@ -48,9 +49,12 @@ export default class RegisterActivity extends Component {
             })
 
         } else {
+            console.log("Register ==> data data : ",data.data[0].code)
+            console.log("Register ==> data data : ",data.data[0].detail)
+
             Alert.alert(
-                StringText.SERVER_ERROR_TITLE,
-                StringText.SERVER_ERROR_DESC,
+                data.data[0].code,
+                data.data[0].detail,
                 [
                     { text: 'OK', onPress: () => console.log('OK Pressed') },
                 ],
