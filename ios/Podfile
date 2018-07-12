@@ -23,41 +23,12 @@ target 'tdemconnect' do
   
   pod 'Fabric', '~> 1.7.6'
   pod 'Crashlytics', '~> 3.10.1'
-  pod 'react-native-calendar-events', :path => '../node_modules/react-native-calendar-events'
 
-  pod 'react-native-fetch-blob', :path => '../node_modules/react-native-fetch-blob'
 
-  pod 'React', :path => '../node_modules/react-native', :subspecs => [
-  'Core',
-  'CxxBridge',
-  'DevSupport',
-  'RCTActionSheet',
-  'RCTAnimation',
-  'RCTBlob',
-  'RCTCameraRoll',
-  'RCTImage',
-  'RCTNetwork',
-  'RCTPushNotification',
-  'RCTSettings',
-  'RCTText',
-  'RCTVibration',
-  'RCTWebSocket',
-  'RCTLinkingIOS'
- ]
-
+  
 # Explicitly include Yoga if you are using RN >= 0.42.0
- pod 'yoga', :path => '../node_modules/react-native/ReactCommon/yoga'
+pod 'yoga', :path => '../node_modules/react-native/ReactCommon/yoga'
 
-  pod 'RNDeviceInfo', :path => '../node_modules/react-native-device-info'
 
-  pod 'RNFS', :path => '../node_modules/react-native-fs'
-
-  pod 'react-native-orientation', :path => '../node_modules/react-native-orientation'
-
-  pod 'react-native-wkwebview', :path => '../node_modules/react-native-wkwebview-reborn'
-
-  pod 'RNZipArchive', :path => '../node_modules/react-native-zip-archive'
-
-  pod 'RNSVG', :path => '../node_modules/react-native-svg'
 
 end
