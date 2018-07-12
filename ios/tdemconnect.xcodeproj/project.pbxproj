@@ -36,13 +36,15 @@
 		30347D275CBF413DB203F68C /* Prompt-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 67F9C507946A42C19821B642 /* Prompt-Thin.ttf */; };
 		4889EEAF70734C2ABCF02CA2 /* Prompt-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 55EFBEE8B67B4BDAB9AFEC08 /* Prompt-Bold.ttf */; };
 		606619CF086D4B5CA9330CE8 /* Prompt-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B93DE3132C74458C9CF748F7 /* Prompt-Regular.ttf */; };
-		68B70528A2734DEA89C8B214 /* libRNFirebase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FBC8C743C046423C960F2237 /* libRNFirebase.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		8D23B666C5C34102B2B7A96E /* Roboto-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EE1DD2BE76EE4533ACED6CAF /* Roboto-Bold.ttf */; };
 		8D244B14598E46EF9804BEE1 /* SpaceMono-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5AA49043124E4FD9AC71857A /* SpaceMono-Regular.ttf */; };
 		8E5223DD70154EDBB00C0852 /* Roboto-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6C5D8D44AC2441D8A40E44CB /* Roboto-Regular.ttf */; };
 		8E7D4B171F8AFD9C00699FE4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8E7D4B161F8AFD9B00699FE4 /* GoogleService-Info.plist */; };
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
+		BA4C9B5E20F73E3800C47899 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BDD0D66C20F5F0AA00593D44 /* libReact.a */; };
+		BA4C9B8020F73FF900C47899 /* libRNFetchBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BA4C9B7F20F73FEB00C47899 /* libRNFetchBlob.a */; };
+		BA8CB70520F72FB600FC1F92 /* libRNFirebase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E7D4B151F8AFD6F00699FE4 /* libRNFirebase.a */; };
 		BAF9561BB4526904D3EC6946 /* libPods-tdemconnect.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3CA56E1C6F131DAF32B1777B /* libPods-tdemconnect.a */; };
 		BD0A0EFC20EA3CD2006E652B /* EventKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BD0A0EFB20EA3CD2006E652B /* EventKit.framework */; };
 		BD0A0EFE20EA3CDF006E652B /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BD0A0EFD20EA3CDF006E652B /* CoreFoundation.framework */; };
@@ -220,6 +222,13 @@
 			proxyType = 2;
 			remoteGlobalIDString = 358F4ED71D1E81A9004DF814;
 			remoteInfo = RCTBlob;
+		};
+		BA4C9B7E20F73FEB00C47899 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BA4C9B7A20F73FEA00C47899 /* RNFetchBlob.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = A15C300E1CD25C330074CB35;
+			remoteInfo = RNFetchBlob;
 		};
 		BD6BCF3520F49B6F00E7AB24 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -408,6 +417,8 @@
 		ADBDB91F1DFEBF0600ED6528 /* RCTBlob.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTBlob.xcodeproj; path = "../node_modules/react-native/Libraries/Blob/RCTBlob.xcodeproj"; sourceTree = "<group>"; };
 		ADF4CB3C3BF44D3EBA8B78C4 /* RNFirebase.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNFirebase.xcodeproj; path = "../node_modules/react-native-firebase/ios/RNFirebase.xcodeproj"; sourceTree = "<group>"; };
 		B93DE3132C74458C9CF748F7 /* Prompt-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Prompt-Regular.ttf"; path = "../resource/fonts/Prompt-Regular.ttf"; sourceTree = "<group>"; };
+		BA4C9B7A20F73FEA00C47899 /* RNFetchBlob.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNFetchBlob.xcodeproj; path = "../node_modules/react-native-fetch-blob/ios/RNFetchBlob.xcodeproj"; sourceTree = "<group>"; };
+		BA8CB6E120F72AFE00FC1F92 /* tdemconnect.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = tdemconnect.entitlements; path = tdemconnect/tdemconnect.entitlements; sourceTree = "<group>"; };
 		BD0A0EFB20EA3CD2006E652B /* EventKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKit.framework; path = System/Library/Frameworks/EventKit.framework; sourceTree = SDKROOT; };
 		BD0A0EFD20EA3CDF006E652B /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		BD6BCF5320F4AAFE00E7AB24 /* RNSVG.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNSVG.xcodeproj; path = "../node_modules/react-native-svg/ios/RNSVG.xcodeproj"; sourceTree = "<group>"; };
@@ -433,6 +444,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BD0A0EFE20EA3CDF006E652B /* CoreFoundation.framework in Frameworks */,
+				BA4C9B5E20F73E3800C47899 /* libReact.a in Frameworks */,
 				BD0A0EFC20EA3CD2006E652B /* EventKit.framework in Frameworks */,
 				ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */,
 				00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */,
@@ -441,11 +453,12 @@
 				133E29F31AD74F7200F7D852 /* libRCTLinking.a in Frameworks */,
 				00C302E91ABCBA2D00DB3ED1 /* libRCTNetwork.a in Frameworks */,
 				139105C61AF99C1200B5F7CC /* libRCTSettings.a in Frameworks */,
+				BA4C9B8020F73FF900C47899 /* libRNFetchBlob.a in Frameworks */,
 				832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */,
 				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
 				BD6BCF8320F4AB1E00E7AB24 /* libRNSVG.a in Frameworks */,
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
-				68B70528A2734DEA89C8B214 /* libRNFirebase.a in Frameworks */,
+				BA8CB70520F72FB600FC1F92 /* libRNFirebase.a in Frameworks */,
 				BAF9561BB4526904D3EC6946 /* libPods-tdemconnect.a in Frameworks */,
 				DF46D30A24884FD7B38C7236 /* libFPStaticServer.a in Frameworks */,
 				BDD0D6AF20F61B6800593D44 /* libRCTAnimation.a in Frameworks */,
@@ -558,6 +571,7 @@
 		13B07FAE1A68108700A75B9A /* tdemconnect */ = {
 			isa = PBXGroup;
 			children = (
+				BA8CB6E120F72AFE00FC1F92 /* tdemconnect.entitlements */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -599,6 +613,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				BA4C9B7A20F73FEA00C47899 /* RNFetchBlob.xcodeproj */,
 				BDD0D65820F5F0AA00593D44 /* React.xcodeproj */,
 				BDFDE90020F4E7D90094E5AB /* RCTWKWebView.xcodeproj */,
 				BDFDE8F920F4E7210094E5AB /* RCTOrientation.xcodeproj */,
@@ -690,6 +705,14 @@
 			children = (
 				ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */,
 				8E7D4B021F8AFD6F00699FE4 /* libRCTBlob-tvOS.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		BA4C9B7B20F73FEA00C47899 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BA4C9B7F20F73FEB00C47899 /* libRNFetchBlob.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -859,6 +882,14 @@
 					};
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = 9TM4S6NU5K;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+							com.apple.Push = {
+								enabled = 1;
+							};
+						};
 					};
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -942,6 +973,10 @@
 				{
 					ProductGroup = BDD0D65920F5F0AA00593D44 /* Products */;
 					ProjectRef = BDD0D65820F5F0AA00593D44 /* React.xcodeproj */;
+				},
+				{
+					ProductGroup = BA4C9B7B20F73FEA00C47899 /* Products */;
+					ProjectRef = BA4C9B7A20F73FEA00C47899 /* RNFetchBlob.xcodeproj */;
 				},
 				{
 					ProductGroup = 8E7D4B111F8AFD6F00699FE4 /* Products */;
@@ -1115,6 +1150,13 @@
 			fileType = archive.ar;
 			path = libRCTBlob.a;
 			remoteRef = ADBDB9261DFEBF0700ED6528 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		BA4C9B7F20F73FEB00C47899 /* libRNFetchBlob.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNFetchBlob.a;
+			remoteRef = BA4C9B7E20F73FEB00C47899 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		BD6BCF3620F49B6F00E7AB24 /* libFPStaticServer.a */ = {
@@ -1516,6 +1558,7 @@
 			baseConfigurationReference = 95EC3AC1BC5B157DDFA7B2A7 /* Pods-tdemconnect.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = tdemconnect/tdemconnect.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = 9TM4S6NU5K;
@@ -1544,6 +1587,7 @@
 			baseConfigurationReference = C72C0D1B35328DA2E39D88F3 /* Pods-tdemconnect.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = tdemconnect/tdemconnect.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 9TM4S6NU5K;
 				DISPLAY_NAME = tdemconnect;
