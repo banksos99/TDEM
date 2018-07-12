@@ -4,7 +4,7 @@ const HOST = 'https://tdemconnect-dev.tdem.toyota-asia.com'
 const VERSION = 'v1'
 
 export default {
-    TOKEN: 'Bearer MS4xLmJjMjEyMjQ3OWFhNTg5ZTNlYzJjYjkyNWIwNzdlMTJjNzk4MGQ2MzUxNjIzNDZhYTAxNjRhYzIyNDU1MmQyMDBhM2Q5N2JlYjJkYjFkNmRlNzk5MTAyMTdiNjk0ZGQyZTE3YzQ0YmI1ODgxZDRhZmI1MjFhZTlkYjgxNTQ1NTc0',
+    TOKEN: 'Bearer MS4xLjlhNzBiZTI3NjY2MjJhMDRiZjk3NWVjZWM4MWRhMWIzMTlhMTY0NGJmODQ0MTc0YzhlMzU4OWYwNDQwM2Y3YWI4ZjI3Nzc2MWE4NGQ2MDI4ZGNmNjgxMjMyYTEyOTY3Y2YzY2M5MzcwMzkzNTNjOWFiNDlkYmI3ZTk4MjE1NmQz',
     INITIAL_MASTER_API: HOST + '/api/' + VERSION + '/initmaster/',
     ANNOUNCEMENT_ASC_API: HOST + '/api/' + VERSION + '/announcement?sort=%2Bcreate_date',
     ANNOUNCEMENT_DSC_API: HOST + '/api/' + VERSION + '/announcement?sort=-create_date',
@@ -20,14 +20,14 @@ export default {
 
     NON_PAYROLL_DETAIL_API: HOST + '/api/' + VERSION + '/nonpayroll?month=',
 
-    CLOCK_IN_OUT_API: HOST + '/api/' + VERSION + '/clockinout?empcode=00000001&',
+    CLOCK_IN_OUT_API: HOST + '/api/' + VERSION + '/clockinout?empcode=',
     CALENDAR_PDF_YEAR_API: HOST + '/api/' + VERSION + '/calendar/file?year=',
     CALENDAR_NAME: 'Toyota',
     REGISTER_API: HOST + '/api/' + VERSION + '/auth',
     SET_PIN_API: HOST + '/api/' + VERSION + '/pin',
 
     CLOCK_IN_OUT_MANAGER_API: HOST + '/api/' + VERSION + '/clockinout?empcode=',
-    EMP_INFO_CAREERPATH_API: HOST + '/api/' + VERSION + '/employee/11111101',
+    EMP_INFO_CAREERPATH_API: HOST + '/api/' + VERSION + '/employee/',
     EMP_INFO_MANAGER_API: HOST + '/api/' + VERSION + '/employee/',
     ORGANIZ_STRUCTURE_API: HOST + '/api/' + VERSION + '/organization?type=CE&org_code=',
     APPLICATION_INFO_API: HOST + '/api/' + VERSION + '/appinfo',

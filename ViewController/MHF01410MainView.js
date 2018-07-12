@@ -32,7 +32,7 @@ let ascendingSort = false;
 let filterImageButton = require('./../resource/images/filter.png');
 let sortImageButton = require('./../resource/images/descending.png');
 
-let managerstatus = true;
+let managerstatus = false;
 
 let initannouncementType = 'All';
 let initannouncementTypetext = 'All';
@@ -59,9 +59,9 @@ export default class HMF01011MainView extends Component {
             announcepage: 0,
             enddragannounce: false,
             annrefresh: false,
-            // username: SharedPreference.profileObject.employee_name,
-            username:"hello hello"
-        
+            username: SharedPreference.profileObject.employee_name,
+            // username:"hello hello"
+
         }
         console.log("MainView ====> profileObject ==> ", SharedPreference.profileObject)
         console.log("MainView ====> profileObject ==> employee_name ==> ", SharedPreference.profileObject.employee_name)
@@ -422,7 +422,7 @@ export default class HMF01011MainView extends Component {
         console.log("loadEmployeeInfoformAPI")
 
 
-        this.APICallback(await RestAPI(SharedPreference.EMP_INFO_CAREERPATH_API), 'EmployeeInfoDetail')
+        this.APICallback(await RestAPI(SharedPreference.EMP_INFO_CAREERPATH_API + SharedPreference.profileObject.employee_id), 'EmployeeInfoDetail')
 
     }
 
@@ -451,7 +451,7 @@ export default class HMF01011MainView extends Component {
 
         let today = new Date();
 
-        let url = SharedPreference.CLOCK_IN_OUT_API + 'month=0' + parseInt(today.getMonth() + 1) + '&year=' + today.getFullYear()
+        let url = SharedPreference.CLOCK_IN_OUT_API + SharedPreference.profileObject.employee_id + '&month=0' + parseInt(today.getMonth() + 1) + '&year=' + today.getFullYear()
 
         this.APIClockInOutCallback(await RestAPI(url), 'ClockInOutSelfView')
 
@@ -532,7 +532,7 @@ export default class HMF01011MainView extends Component {
         this.APICallback(await RestAPI(url), 'OrganizationOTStruct', 2)
 
     }
-    APICallback(data,rount,option) {
+    APICallback(data, rount, option) {
 
         console.log('main menu option :', option)
         code = data[0]
@@ -542,14 +542,14 @@ export default class HMF01011MainView extends Component {
 
             this.props.navigation.navigate(rount, {
                 DataResponse: data.data,
-                Option:option
+                Option: option
             });
 
         } else {
             this.onLoadErrorAlertDialog(data)
         }
     }
-    
+
 
     APIClockInOutCallback(data, rount) {
 
@@ -985,7 +985,7 @@ export default class HMF01011MainView extends Component {
         if (tabnumber === 1) {
 
             //load data befor open announcement screen in first time
-            
+
             if (announcementData.length) {
                 page = tabnumber;
                 this.setState({

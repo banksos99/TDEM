@@ -428,6 +428,39 @@ console.log('init data : ',this.state.months[0])
         });
 
     }
+    select_month_clockinout_and(item){
+
+        this.setState({
+
+            // announcementType: month,
+            loadingtype: 1,
+            isscreenloading: true,
+
+            announcementTypetext : item
+            // isscreenloading: false,
+
+        }, function () {
+
+            let tdate = item.split(' ')
+            let mdate = 0;
+
+            console.log('month : ', tdate[0])
+
+            for (let i = 0; i < 12; i++) {
+                if (MONTH_LIST[i] === tdate[0]) {
+                    console.log('month : ', i)
+                    mdate = i;
+                }
+            }
+            console.log('month select  : ', mdate)
+            console.log('year : ', tdate[1])
+
+            this.setState(this.renderloadingscreen())
+
+            this.loadClockInOutfromAPI(mdate + 1, tdate[1])
+        });
+
+    }
 
     conv(date) {
 
@@ -459,7 +492,7 @@ console.log('init data : ',this.state.months[0])
                                 {
                                     this.state.months.map((item, index) => (
                                         <TouchableOpacity style={styles.button}
-                                            onPress={() => { this.selected_month(index) }}
+                                            onPress={() => { this.select_month_clockinout_and(item) }}
                                             key={index + 100}>
                                             <View style={{ justifyContent: 'center', height: 40, alignItems: 'center', }} key={index + 200}>
                                                 <Text style={{ textAlign: 'center', fontSize: 18, width: '100%', height: 30, alignItems: 'center' }}> {item}</Text>

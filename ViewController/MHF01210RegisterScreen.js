@@ -10,11 +10,15 @@ import SavePIN from "./../constants/SavePIN"
 import SaveProfile from "./../constants/SaveProfile"
 import SharedPreference from "../SharedObject/SharedPreference";
 
+import Authorization from "../SharedObject/Authorization";
+
+import SaveTOKEN from "./../constants/SaveToken"
 
 export default class RegisterActivity extends Component {
     savePIN = new SavePIN()
     SaveProfile = new SaveProfile()
-
+    saveToken = new SaveTOKEN()
+    
     constructor(props) {
         super(props);
         this.state = {
@@ -43,7 +47,10 @@ export default class RegisterActivity extends Component {
             //TODO 
             this.SaveProfile.setProfile(data.data)
             SharedPreference.profileObject = await this.SaveProfile.getProfile()
-            console.log("Register ==> profileObject : ", SharedPreference.profileObject)
+            SharedPreference.TOKEN = await Authorization.convert('1','1',SharedPreference.profileObject.client_token)
+            console.log("Register ==> TOKEN : ", SharedPreference.TOKEN)
+            // await this.saveToken.setToken(SharedPreference.TOKEN)
+
             this.setState({
                 showCreatePin: true
             })

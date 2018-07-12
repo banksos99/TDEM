@@ -49,7 +49,7 @@ export default class EmpInfoDetail extends Component {
             profileTextColor: tabbuttonColorDis,
             careerTextColor: tabbuttonColorEna,
             bordercolor: Colors.greenTextColor,
-            personalexpand:true,
+            personalexpand: true,
             currentjobexpand: false,
             educationexpand: false,
             manager: this.props.navigation.getParam("manager", ""),
@@ -61,7 +61,7 @@ export default class EmpInfoDetail extends Component {
             title = 'Employee Info'
 
         }
-      
+
         this.checkDataFormat(this.props.navigation.getParam("DataResponse", ""));
 
     }
@@ -71,12 +71,16 @@ export default class EmpInfoDetail extends Component {
 
         if (DataResponse) {
 
-            careerpathlist = DataResponse.career_paths;
+            if (DataResponse.career_paths) {
+
+                careerpathlist = DataResponse.career_paths;
+            }
+
             empinfodetail = DataResponse;
         }
 
-        console.log('careerpathlist :',careerpathlist)
-        console.log('empinfodetail :',empinfodetail)
+        console.log('careerpathlist :', careerpathlist)
+        console.log('empinfodetail :', empinfodetail)
     }
 
     onBack() {
@@ -92,7 +96,7 @@ export default class EmpInfoDetail extends Component {
         } else {
 
             this.props.navigation.navigate('HomeScreen');
-            
+
         }
 
     }
@@ -115,72 +119,72 @@ export default class EmpInfoDetail extends Component {
             bordercolor: Colors.redTextColor,
         });
     }
-    
+
     onExpandPersonal() {
 
         this.setState({
-            personalexpand:!this.state.personalexpand
+            personalexpand: !this.state.personalexpand
         });
 
     }
-    onExpandCurrentJob(){
+    onExpandCurrentJob() {
 
         this.setState({
-            currentjobexpand:!this.state.currentjobexpand
+            currentjobexpand: !this.state.currentjobexpand
         });
-        
+
     }
-    onExpandEducation(){
+    onExpandEducation() {
 
         this.setState({
-            educationexpand:!this.state.educationexpand
+            educationexpand: !this.state.educationexpand
         });
-        
+
     }
 
     renderdetail() {
 
-            if (this.state.showincome) {
+        if (this.state.showincome) {
 
-                return (
-                    <View style={{ flex: 1 }}>
-                        
-                            {this.renderprofile()}
-                        
-                    </View>
-
-                )
-
-            }
             return (
-                <View style={{ flex: 1}}>
-                        
-                            {this.rendercareerpath()}
-                        
-                    </View>
+                <View style={{ flex: 1 }}>
+
+                    {this.renderprofile()}
+
+                </View>
 
             )
-        
 
-        
+        }
+        return (
+            <View style={{ flex: 1 }}>
 
-            // <View style={{ flex: 5, justifyContent: 'center', alignItems: 'center',marginTop: 15, marginBottom: 15, borderRadius: 5, borderWidth: 1 }}>
-            // <View style={{ flex: 1, marginTop: 15, marginBottom: 15, borderRadius: 5, borderWidth: 1, borderColor: this.state.bordercolor, flexDirection: 'column', }}>
-            //     <Text style={styles.payslipDetailTextCenter}>No Result</Text>
-            //     </View>
-            // </View>
+                {this.rendercareerpath()}
+
+            </View>
+
+        )
+
+
+
+
+        // <View style={{ flex: 5, justifyContent: 'center', alignItems: 'center',marginTop: 15, marginBottom: 15, borderRadius: 5, borderWidth: 1 }}>
+        // <View style={{ flex: 1, marginTop: 15, marginBottom: 15, borderRadius: 5, borderWidth: 1, borderColor: this.state.bordercolor, flexDirection: 'column', }}>
+        //     <Text style={styles.payslipDetailTextCenter}>No Result</Text>
+        //     </View>
+        // </View>
         // );
 
     }
 
     renderprofile() {
         return (
-            <ScrollView style={{flex: 1 }}>
-               
-                    {this.renderProfilePersonal()}
-                    {this.renderCurrentJob()}
-                    {this.renderEducation()}
-               
+            <ScrollView style={{ flex: 1 }}>
+
+                {this.renderProfilePersonal()}
+                {this.renderCurrentJob()}
+                {this.renderEducation()}
+
             </ScrollView>
 
         )
@@ -237,7 +241,7 @@ export default class EmpInfoDetail extends Component {
 
             return (
 
-                <View style={{ flexDirection: 'column',marginLeft:10,marginRight:10 }}>
+                <View style={{ flexDirection: 'column', marginLeft: 10, marginRight: 10 }}>
                     <View style={{ height: 30, justifyContent: 'center', backgroundColor: Colors.calendarGrayBackgroundColor, flexDirection: 'row' }}>
                         <View style={{ flex: 2, justifyContent: 'center' }}>
                             <Text style={styles.empinfoDetailRedText} >Emp Code</Text>
@@ -316,7 +320,7 @@ export default class EmpInfoDetail extends Component {
 
         let adate = date.split('-')
 
-        return adate[2] + ' ' + month[parseInt(adate[1])-1] + ' ' + adate[0]
+        return adate[2] + ' ' + month[parseInt(adate[1]) - 1] + ' ' + adate[0]
 
     }
 
@@ -352,17 +356,47 @@ export default class EmpInfoDetail extends Component {
 
     renderCurrentJobDetail() {
 
+        let hiring_date = '-'
+        let position = '-'
+        let org_group = '-'
+        let org_division = '-'
+        let org_department = '-'
+        let org_section = '-'
+        let org_cost_center = '-'
+        let company_location = '-'
+        let date_in_dept = '-'
+        let period_in_dept = '-'
+        let date_in_position = '-'
+        let period_in_position = '-'
+        if (empinfodetail.career_paths) {
+
+            hiring_date = this.convertdate(empinfodetail.career_paths[0].hiring_date)
+            position = empinfodetail.career_paths[0].position
+            org_group = empinfodetail.career_paths[0].org_group
+            org_division = empinfodetail.career_paths[0].org_division
+            org_department = empinfodetail.career_paths[0].org_department
+            org_section = empinfodetail.career_paths[0].org_section
+            org_cost_center = empinfodetail.career_paths[0].org_cost_center
+            company_location = empinfodetail.career_paths[0].company_location
+            date_in_dept = this.convertdate(empinfodetail.career_paths[0].date_in_dept)
+            period_in_dept = empinfodetail.career_paths[0].period_in_dept
+            date_in_position = this.convertdate(empinfodetail.career_paths[0].date_in_position)
+            period_in_position = empinfodetail.career_paths[0].period_in_position
+        }
+
+
+
         if (this.state.currentjobexpand) {
-            
+
             return (
 
-                <View style={{ flexDirection: 'column',marginLeft:10,marginRight:10 }}>
+                <View style={{ flexDirection: 'column', marginLeft: 10, marginRight: 10 }}>
                     <View style={{ height: 30, justifyContent: 'center', backgroundColor: Colors.calendarGrayBackgroundColor, flexDirection: 'row' }}>
                         <View style={{ flex: 2, justifyContent: 'center' }}>
                             <Text style={styles.empinfoDetailRedText} >Hirring</Text>
                         </View>
                         <View style={{ flex: 3, justifyContent: 'center' }}>
-                            <Text style={styles.empinfoDetailText}>{this.convertdate(empinfodetail.career_paths[0].hiring_date)}</Text>
+                            <Text style={styles.empinfoDetailText}>{hiring_date}</Text>
                         </View>
                     </View>
                     <View style={{ height: 1, justifyContent: 'center', backgroundColor: Colors.calendarLocationBoxColor }} />
@@ -371,7 +405,7 @@ export default class EmpInfoDetail extends Component {
                             <Text style={styles.empinfoDetailRedText} >Position</Text>
                         </View>
                         <View style={{ flex: 3, justifyContent: 'center' }}>
-                            <Text style={styles.empinfoDetailText}>{empinfodetail.career_paths[0].position}</Text>
+                            <Text style={styles.empinfoDetailText}>{position}</Text>
                         </View>
                     </View>
                     <View style={{ height: 1, justifyContent: 'center', backgroundColor: Colors.calendarLocationBoxColor }} />
@@ -380,7 +414,7 @@ export default class EmpInfoDetail extends Component {
                             <Text style={styles.empinfoDetailRedText} >Group</Text>
                         </View>
                         <View style={{ flex: 3, justifyContent: 'center' }}>
-                            <Text style={styles.empinfoDetailText}>{empinfodetail.career_paths[0].org_group}</Text>
+                            <Text style={styles.empinfoDetailText}>{org_group}</Text>
                         </View>
                     </View>
                     <View style={{ height: 1, justifyContent: 'center', backgroundColor: Colors.calendarLocationBoxColor }} />
@@ -389,7 +423,7 @@ export default class EmpInfoDetail extends Component {
                             <Text style={styles.empinfoDetailRedText} >Division</Text>
                         </View>
                         <View style={{ flex: 3, justifyContent: 'center' }}>
-                            <Text style={styles.empinfoDetailText}>{empinfodetail.career_paths[0].org_division}</Text>
+                            <Text style={styles.empinfoDetailText}>{org_division}</Text>
                         </View>
                     </View>
                     <View style={{ height: 1, justifyContent: 'center', backgroundColor: Colors.calendarLocationBoxColor }} />
@@ -398,7 +432,7 @@ export default class EmpInfoDetail extends Component {
                             <Text style={styles.empinfoDetailRedText} >Department</Text>
                         </View>
                         <View style={{ flex: 3, justifyContent: 'center' }}>
-                            <Text style={styles.empinfoDetailText}>{empinfodetail.career_paths[0].org_department}</Text>
+                            <Text style={styles.empinfoDetailText}>{org_department}</Text>
                         </View>
                     </View>
                     <View style={{ height: 1, justifyContent: 'center', backgroundColor: Colors.calendarLocationBoxColor }} />
@@ -407,7 +441,7 @@ export default class EmpInfoDetail extends Component {
                             <Text style={styles.empinfoDetailRedText} >Section</Text>
                         </View>
                         <View style={{ flex: 3, justifyContent: 'center' }}>
-                            <Text style={styles.empinfoDetailText}>{empinfodetail.career_paths[0].org_section}</Text>
+                            <Text style={styles.empinfoDetailText}>{org_section}</Text>
                         </View>
                     </View>
                     <View style={{ height: 1, justifyContent: 'center', backgroundColor: Colors.calendarLocationBoxColor }} />
@@ -416,7 +450,7 @@ export default class EmpInfoDetail extends Component {
                             <Text style={styles.empinfoDetailRedText} >Cost Center</Text>
                         </View>
                         <View style={{ flex: 3, justifyContent: 'center' }}>
-                            <Text style={styles.empinfoDetailText}>{empinfodetail.career_paths[0].org_cost_center}</Text>
+                            <Text style={styles.empinfoDetailText}>{org_cost_center}</Text>
                         </View>
                     </View>
                     <View style={{ height: 1, justifyContent: 'center', backgroundColor: Colors.calendarLocationBoxColor }} />
@@ -425,7 +459,7 @@ export default class EmpInfoDetail extends Component {
                             <Text style={styles.empinfoDetailRedText} >Location</Text>
                         </View>
                         <View style={{ flex: 3, justifyContent: 'center' }}>
-                            <Text style={styles.empinfoDetailText}>{empinfodetail.career_paths[0].company_location}</Text>
+                            <Text style={styles.empinfoDetailText}>{company_location}</Text>
                         </View>
                     </View>
                     <View style={{ height: 1, justifyContent: 'center', backgroundColor: Colors.calendarLocationBoxColor }} />
@@ -434,24 +468,24 @@ export default class EmpInfoDetail extends Component {
                             <Text style={styles.empinfoDetailRedText} >Latest section</Text>
                         </View>
                         <View style={{ flex: 3, justifyContent: 'center' }}>
-                            <Text style={styles.empinfoDetailText}>{this.convertdate(empinfodetail.career_paths[0].date_in_dept)+' ('+empinfodetail.career_paths[0].period_in_dept+')'}</Text>
+                            <Text style={styles.empinfoDetailText}>{date_in_dept + ' (' + period_in_dept + ')'}</Text>
                         </View>
                     </View>
                     <View style={{ height: 1, justifyContent: 'center', backgroundColor: Colors.calendarLocationBoxColor }} />
                     <View style={{ height: 30, justifyContent: 'center', backgroundColor: Colors.calendarGrayBackgroundColor, flexDirection: 'row' }}>
                         <View style={{ flex: 2, justifyContent: 'center' }}>
-                            <Text style={styles.empinfoDetailRedText} >Latest position</Text>
+                            {/* <Text style={styles.empinfoDetailRedText} >Latest position</Text> */}
                         </View>
                         <View style={{ flex: 3, justifyContent: 'center' }}>
-                            <Text style={styles.empinfoDetailText}>{this.convertdate(empinfodetail.career_paths[0].date_in_position)+' ('+empinfodetail.career_paths[0].period_in_position+')'}</Text>
+                            <Text style={styles.empinfoDetailText}>{date_in_position + ' (' + period_in_position + ')'}</Text>
                         </View>
                     </View>
                     <View style={{ height: 1, justifyContent: 'center', backgroundColor: Colors.calendarLocationBoxColor }} />
                 </View>
             );
         }
-
     }
+
 
     renderEducation() {
         return (
@@ -487,24 +521,38 @@ export default class EmpInfoDetail extends Component {
 
         let jlpt = '-'
         let toeic = '-'
-        if (empinfodetail.education.jlpt) {
-            jlpt = empinfodetail.education.jlpt
-        }
-        if (empinfodetail.education.toeic) {
-            toeic = empinfodetail.education.toeic
+        let graduate = '-'
+        let degree = '_'
+        let gpa = '-'
+        let major = '-'
+        let school_university = '-'
+
+        if (empinfodetail.education) {
+            if (empinfodetail.education.jlpt) {
+                jlpt = empinfodetail.education.jlpt
+            }
+            if (empinfodetail.education.toeic) {
+                toe
+            }
+            ic = empinfodetail.education.toeic
+            graduate = empinfodetail.education.graduate_year
+            degree = empinfodetail.education.degree
+            gpa = empinfodetail.education.gpa
+            major = empinfodetail.education.major
+            school_university = empinfodetail.education.school_university
         }
 
         if (this.state.educationexpand) {
 
             return (
 
-                <View style={{ flexDirection: 'column',marginLeft:10,marginRight:10 }}>
+                <View style={{ flexDirection: 'column', marginLeft: 10, marginRight: 10 }}>
                     <View style={{ height: 30, justifyContent: 'center', backgroundColor: Colors.calendarGrayBackgroundColor, flexDirection: 'row' }}>
                         <View style={{ flex: 2, justifyContent: 'center' }}>
                             <Text style={styles.empinfoDetailRedText} >Graduate Year</Text>
                         </View>
                         <View style={{ flex: 3, justifyContent: 'center' }}>
-                            <Text style={styles.empinfoDetailText}>{empinfodetail.education.graduate_year}</Text>
+                            <Text style={styles.empinfoDetailText}>{graduate}</Text>
                         </View>
                     </View>
                     <View style={{ height: 1, justifyContent: 'center', backgroundColor: Colors.calendarLocationBoxColor }} />
@@ -513,7 +561,7 @@ export default class EmpInfoDetail extends Component {
                             <Text style={styles.empinfoDetailRedText} >Degree</Text>
                         </View>
                         <View style={{ flex: 3, justifyContent: 'center' }}>
-                            <Text style={styles.empinfoDetailText}>{empinfodetail.education.degree}</Text>
+                            <Text style={styles.empinfoDetailText}>{degree}</Text>
                         </View>
                     </View>
                     <View style={{ height: 1, justifyContent: 'center', backgroundColor: Colors.calendarLocationBoxColor }} />
@@ -522,7 +570,7 @@ export default class EmpInfoDetail extends Component {
                             <Text style={styles.empinfoDetailRedText} >Place</Text>
                         </View>
                         <View style={{ flex: 3, justifyContent: 'center' }}>
-                            <Text style={styles.empinfoDetailText}>{empinfodetail.education.school_university}</Text>
+                            <Text style={styles.empinfoDetailText}>{school_university}</Text>
                         </View>
                     </View>
                     <View style={{ height: 1, justifyContent: 'center', backgroundColor: Colors.calendarLocationBoxColor }} />
@@ -531,7 +579,7 @@ export default class EmpInfoDetail extends Component {
                             <Text style={styles.empinfoDetailRedText} >Major</Text>
                         </View>
                         <View style={{ flex: 3, justifyContent: 'center' }}>
-                            <Text style={styles.empinfoDetailText}>{empinfodetail.education.major}</Text>
+                            <Text style={styles.empinfoDetailText}>{major}</Text>
                         </View>
                     </View>
                     <View style={{ height: 1, justifyContent: 'center', backgroundColor: Colors.calendarLocationBoxColor }} />
@@ -540,7 +588,7 @@ export default class EmpInfoDetail extends Component {
                             <Text style={styles.empinfoDetailRedText} >GPA</Text>
                         </View>
                         <View style={{ flex: 3, justifyContent: 'center' }}>
-                            <Text style={styles.empinfoDetailText}>{empinfodetail.education.gpa}</Text>
+                            <Text style={styles.empinfoDetailText}>{gpa}</Text>
                         </View>
                     </View>
                     <View style={{ height: 1, justifyContent: 'center', backgroundColor: Colors.calendarLocationBoxColor }} />
@@ -569,72 +617,77 @@ export default class EmpInfoDetail extends Component {
     }
     rendercareerpath() {
         console.log('careerpathlist :', careerpathlist)
-        return (
-            <View style={{ flex: 1 }}>
-                <ScrollView style={{ flex: 1 }}>
 
-                    <View style={{ height: 50, alignItems: 'center', justifyContent: 'center' }}>
-                        <View style={{height:50, width: 120, alignItems: 'center', justifyContent: 'center',backgroundColor:Colors.calendarGrayBackgroundColor }}>
-                            <Text style={{color:Colors.redTextColor,fontFamily: 'Prompt-Medium' }}> PRESENT</Text>
-                        </View>
-                    </View>
+        if (0) {
 
-                    <View style={{ height: 10, alignItems: 'center', }}>
 
-                        <View style={{ height: 10, width: 3, backgroundColor: Colors.redTextColor }}/>
+            return (
+                <View style={{ flex: 1 }}>
+                    <ScrollView style={{ flex: 1 }}>
 
-                       
-                    </View>
-                    {
-                        careerpathlist.map((item, index) => (
-                            <View style={{ flex: 1, marginLeft: 10, marginRight: 10, flexDirection: 'column', }} key={index}>
-                                <View>
-                                    <View style={{ flex: 1, flexDirection: 'row', backgroundColor: Colors.calendarGrayBackgroundColor }} key={index}>
-                                        <View style={{ flex: 1.5, justifyContent: 'center', }}>
-                                            <Text style={styles.empinfocareerLeftText}> {empinfodetail.career_paths[index].position}</Text>
-                                        </View>
-                                        <View style={{ flex: 2, justifyContent: 'center', }}>
-                                            <Text style={styles.empinfocareerRightText}>{empinfodetail.career_paths[index].action_type}</Text>
-                                        </View>
-                                    </View>
-                                </View>
-                                <View>
-                                    <View style={{ flex: 1, flexDirection: 'row', backgroundColor: Colors.calendarGrayBackgroundColor }} key={index}>
-                                        <View style={{ flex: 1, justifyContent: 'center', }}>
-                                            <Text style={styles.empinfocareerLeftText}> {empinfodetail.career_paths[index].org_department}</Text>
-                                        </View>
-                                        <View style={{ flex: 1, justifyContent: 'center', }}>
-                                            <Text style={styles.empinfocareerRightText}></Text>
-                                        </View>
-                                    </View>
-                                </View>
-                                <View>
-                                    <View style={{ flex: 1, flexDirection: 'row', backgroundColor: Colors.calendarGrayBackgroundColor }} key={index}>
-                                        <View style={{ flex: 1.5, justifyContent: 'center', }}>
-                                            <Text style={styles.empinfocareerLeftText}> {empinfodetail.career_paths[index].org_section}</Text>
-                                        </View>
-                                        <View style={{ flex: 2, justifyContent: 'center', }}>
-                                            <Text style={styles.empinfocareerRightRedText}>{this.convertdate(empinfodetail.career_paths[index].hiring_date)}</Text>
-                                        </View>
-                                    </View>
-                                </View>
-                                <View style={{ height: 10, alignItems: 'center', }}>
-                                    <View style={{ height: 10, width: 3, backgroundColor: Colors.redTextColor }}>
-
-                                    </View>
-                                </View>
+                        <View style={{ height: 50, alignItems: 'center', justifyContent: 'center' }}>
+                            <View style={{ height: 50, width: 120, alignItems: 'center', justifyContent: 'center', backgroundColor: Colors.calendarGrayBackgroundColor }}>
+                                <Text style={{ color: Colors.redTextColor, fontFamily: 'Prompt-Medium' }}> PRESENT</Text>
                             </View>
+                        </View>
 
-                        ))}
-                    <View style={{ height: 50, alignItems: 'center', justifyContent: 'center' }}>
-                    <View style={{height:50, width: 120, alignItems: 'center', justifyContent: 'center',backgroundColor:Colors.calendarGrayBackgroundColor }}>
-                        <Text style={{color:Colors.redTextColor,fontFamily: 'Prompt-Medium' }}> HIRRING</Text>
-                    </View>
+                        <View style={{ height: 10, alignItems: 'center', }}>
+
+                            <View style={{ height: 10, width: 3, backgroundColor: Colors.redTextColor }} />
+
+
+                        </View>
+                        {
+                            careerpathlist.map((item, index) => (
+                                <View style={{ flex: 1, marginLeft: 10, marginRight: 10, flexDirection: 'column', }} key={index}>
+                                    <View>
+                                        <View style={{ flex: 1, flexDirection: 'row', backgroundColor: Colors.calendarGrayBackgroundColor }} key={index}>
+                                            <View style={{ flex: 1.5, justifyContent: 'center', }}>
+                                                <Text style={styles.empinfocareerLeftText}> {empinfodetail.career_paths[index].position}</Text>
+                                            </View>
+                                            <View style={{ flex: 2, justifyContent: 'center', }}>
+                                                <Text style={styles.empinfocareerRightText}>{empinfodetail.career_paths[index].action_type}</Text>
+                                            </View>
+                                        </View>
+                                    </View>
+                                    <View>
+                                        <View style={{ flex: 1, flexDirection: 'row', backgroundColor: Colors.calendarGrayBackgroundColor }} key={index}>
+                                            <View style={{ flex: 1, justifyContent: 'center', }}>
+                                                <Text style={styles.empinfocareerLeftText}> {empinfodetail.career_paths[index].org_department}</Text>
+                                            </View>
+                                            <View style={{ flex: 1, justifyContent: 'center', }}>
+                                                <Text style={styles.empinfocareerRightText}></Text>
+                                            </View>
+                                        </View>
+                                    </View>
+                                    <View>
+                                        <View style={{ flex: 1, flexDirection: 'row', backgroundColor: Colors.calendarGrayBackgroundColor }} key={index}>
+                                            <View style={{ flex: 1.5, justifyContent: 'center', }}>
+                                                <Text style={styles.empinfocareerLeftText}> {empinfodetail.career_paths[index].org_section}</Text>
+                                            </View>
+                                            <View style={{ flex: 2, justifyContent: 'center', }}>
+                                                <Text style={styles.empinfocareerRightRedText}>{this.convertdate(empinfodetail.career_paths[index].hiring_date)}</Text>
+                                            </View>
+                                        </View>
+                                    </View>
+                                    <View style={{ height: 10, alignItems: 'center', }}>
+                                        <View style={{ height: 10, width: 3, backgroundColor: Colors.redTextColor }}>
+
+                                        </View>
+                                    </View>
+                                </View>
+
+                            ))}
+                        <View style={{ height: 50, alignItems: 'center', justifyContent: 'center' }}>
+                            <View style={{ height: 50, width: 120, alignItems: 'center', justifyContent: 'center', backgroundColor: Colors.calendarGrayBackgroundColor }}>
+                                <Text style={{ color: Colors.redTextColor, fontFamily: 'Prompt-Medium' }}> HIRRING</Text>
+                            </View>
+                        </View>
+                    </ScrollView>
                 </View>
-                </ScrollView>
-            </View>
 
-        )
+            )
+        }
     }
 
     renderloadingscreen() {
@@ -663,7 +716,7 @@ export default class EmpInfoDetail extends Component {
                 <View style={[styles.navContainer, { flexDirection: 'column' }]}>
                     <View style={styles.statusbarcontainer} />
                     <View style={{ height: 50, flexDirection: 'row', }}>
-                    <View style={{ width: '100%',height:'100%', justifyContent: 'center', position: 'absolute' }}>
+                        <View style={{ width: '100%', height: '100%', justifyContent: 'center', position: 'absolute' }}>
                             <Text style={styles.navTitleTextTop}>{title}</Text>
                         </View>
                         <View style={{ flex: 1, justifyContent: 'center', }}>
@@ -675,23 +728,23 @@ export default class EmpInfoDetail extends Component {
                                 />
                             </TouchableOpacity>
                         </View>
-                       
-                        <View style={{ flex: 4 }}/>
-                            
+
+                        <View style={{ flex: 4 }} />
+
                     </View>
                 </View>
 
-                <View style={{ flex: 1, backgroundColor: Colors.backgroundColor, flexDirection: 'column'}}>
-                    
-                    <View style={{ flex: 3, flexDirection: 'row' }}>
-                    <View style={{ flex: 1, backgroundColor: Colors.navColor, flexDirection: 'column',alignItems:'center',justifyContent:'center' }}>
-                    <Image
+                <View style={{ flex: 1, backgroundColor: Colors.backgroundColor, flexDirection: 'column' }}>
 
-                                    style={{ width: 50, height: 50 , borderWidth:2,borderRadius:25,borderColor:Colors.backgroundcolor}}
-                                    source={require('./../resource/images/people.png')}
-                                    // resizeMode="contain"
-                                />
-                    </View>
+                    <View style={{ flex: 3, flexDirection: 'row' }}>
+                        <View style={{ flex: 1, backgroundColor: Colors.navColor, flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                            <Image
+
+                                style={{ width: 50, height: 50, borderWidth: 2, borderRadius: 25, borderColor: Colors.backgroundcolor }}
+                                source={require('./../resource/images/people.png')}
+                            // resizeMode="contain"
+                            />
+                        </View>
                         <View style={{ flex: 5, backgroundColor: Colors.navColor, flexDirection: 'column', }}>
 
                             <View style={{ flex: 1, justifyContent: 'center', marginLeft: 20 }}>
@@ -699,7 +752,7 @@ export default class EmpInfoDetail extends Component {
                             </View>
                             <View style={{ flex: 1, justifyContent: 'center', marginLeft: 20 }}>
                                 <Text style={styles.empInfopositionLeftText}>
-                                    {empinfodetail.career_paths[0].position}
+                                    {/* {empinfodetail.career_paths[0].position} */}
                                 </Text>
                             </View>
 
@@ -707,21 +760,21 @@ export default class EmpInfoDetail extends Component {
 
                     </View>
                     <View style={{ flex: 2, flexDirection: 'row' }}>
-                        <View style={{ flex: 1,  flexDirection: 'column' }}>
+                        <View style={{ flex: 1, flexDirection: 'column' }}>
                             <TouchableOpacity style={{ flex: 1 }} onPress={(this.onShowCareerPathView.bind(this))}>
-                                <View style={{flex:1, justifyContent: 'center', alignItems: 'center',backgroundColor:this.state.careerTextColor}}>
+                                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: this.state.careerTextColor }}>
 
-                                    <Text style={{color:this.state.profileTextColor,fontFamily: 'Prompt-Medium'}}>PROFILE</Text>
+                                    <Text style={{ color: this.state.profileTextColor, fontFamily: 'Prompt-Medium' }}>PROFILE</Text>
                                 </View>
-                   
+
                             </TouchableOpacity>
                         </View>
-                        <View style={{ flex: 1, flexDirection: 'column'}}>
+                        <View style={{ flex: 1, flexDirection: 'column' }}>
                             <TouchableOpacity style={{ flex: 1 }} onPress={(this.onShowProfileView.bind(this))}>
-                                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center',backgroundColor:this.state.profileTextColor }}>
-                                    <Text style={{color:this.state.careerTextColor,fontFamily: 'Prompt-Medium'}}>CAREER PATH</Text>
+                                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: this.state.profileTextColor }}>
+                                    <Text style={{ color: this.state.careerTextColor, fontFamily: 'Prompt-Medium' }}>CAREER PATH</Text>
                                 </View>
-                                
+
                             </TouchableOpacity>
                         </View>
 

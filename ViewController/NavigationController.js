@@ -43,7 +43,6 @@ import OTLineChartView from "./MHF08013OTSummaryLineGraphView";
 import OTBarChartView from "./MHF08014OTSummaryBarGraphView";
 import OrganizationOTStruct from "./MHF0B010OrganizationStruct";
 
-
 const AppNavigatorPin = createSwitchNavigator({
     RegisterScreen: { screen: registerScreen },
     PinScreen: { screen: pinScreen },
@@ -69,8 +68,7 @@ const AppNavigatorPin = createSwitchNavigator({
     OTBarChartView: { screen: OTBarChartView },
     OrganizationOTStruct: { screen: OrganizationOTStruct },
 }, {
-        // initialRouteName: 'PinScreen',
-        initialRouteName:'HomeScreen',
+        initialRouteName: 'PinScreen',
         headerMode: 'none',
         transitionConfig: () => ({
             transitionSpec: {
@@ -108,8 +106,7 @@ const AppNavigatorRegister = createSwitchNavigator({
     OTBarChartView: { screen: OTBarChartView },
     OrganizationOTStruct: { screen: OrganizationOTStruct },
 }, {
-        // initialRouteName: 'RegisterScreen',
-        initialRouteName:'HomeScreen',
+        initialRouteName: 'RegisterScreen',
         headerMode: 'none',
         transitionConfig: () => ({
             transitionSpec: {

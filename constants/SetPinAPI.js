@@ -1,4 +1,5 @@
 import SharedPreference from "../SharedObject/SharedPreference";
+import Authorization from '../SharedObject/Authorization'
 
 export default async function getRestAPI(pin) {
 
@@ -16,6 +17,9 @@ export default async function getRestAPI(pin) {
         CUT_JSON: "700"
     }
 
+    // let token = await Authorization.convert('1','1','')
+    //TODO Bell
+
     return fetch(SharedPreference.SET_PIN_API, {
         method: 'POST',
         headers: {
@@ -24,18 +28,9 @@ export default async function getRestAPI(pin) {
             Authorization: SharedPreference.TOKEN,
         },
         body: JSON.stringify({
-            grant_type: "register",
-            systemdn: "TDEM",
-            username: "yanwitw",
-            password: "12345",
-            device_model: "pI-x-phone",
-            device_brand: "Iphone Inc",
-            device_os: "ios",
-            device_os_version: "11.4",
-            firebase_token: "champy123",
-            app_version: "1ebu83fg",
-            type: "set",
-            client_pin: pin
+            "type": "set",
+            "client_pin": pin,
+            "systemdn": "TMAP-EM"
         }),
     })
         .then((response) => response.json())

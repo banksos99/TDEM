@@ -8,6 +8,7 @@ import SharedPreference from "../SharedObject/SharedPreference";
 import RestAPI from "../constants/RestAPI"
 
 import SaveProfile from "../constants/SaveProfile"
+import Authorization from "../SharedObject/Authorization";
 
 export default class PinActivity extends Component {
 
@@ -28,6 +29,8 @@ export default class PinActivity extends Component {
     onLoadInitialMaster = async () => {
         console.log("onLoadInitialMaster")
         SharedPreference.profileObject = await this.saveProfile.getProfile()
+        SharedPreference.TOKEN = await Authorization.convert('1','1',SharedPreference.profileObject.client_token)
+
         let data = await RestAPI(SharedPreference.INITIAL_MASTER_API)
         code = data[0]
         data = data[1]

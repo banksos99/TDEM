@@ -153,7 +153,7 @@ export const styles = StyleSheet.create({
         fontSize: Layout.window.width / 320 * 17,
         color: 'white',
         alignSelf: 'center',
-        fontFamily: "Prompt-Medium"
+        fontFamily: font_medium
     },
     navRightContainer: {
         ...Platform.select({
@@ -431,9 +431,15 @@ export const styles = StyleSheet.create({
         alignItems: 'center' // Us
     },
     mainmenuTextname: {
-        fontSize: scale * 14,
+        fontSize: scale * 13,
         color: Colors.grayTextColor,
         fontFamily: font_medium
+    },
+    usernameText:{
+        fontSize: scale * 13,
+        color: Colors.grayTextColor,
+        fontFamily: font_medium
+
     },
     managermenuImageButton: {
         flex: 4,
@@ -1177,6 +1183,11 @@ export const styles = StyleSheet.create({
     clockinoutweakdaybluetext: {
         color: Colors.blueTextColor,
         fontSize: 12 * scale,
+        fontFamily: font_medium,
+    },
+    clockinoutweakdayalphatext:{
+        color: Colors.grayTextColor,
+        fontSize: 14 * scale,
         fontFamily: font_medium,
     },
     epubTocText: {
