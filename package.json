@@ -23,6 +23,7 @@
   "dependencies": {
     "aes-js": "^3.1.1",
     "base-64": "^0.1.0",
+    "btoa": "^1.2.1",
     "epubjs-rn": "0.0.122",
     "fbjs": "^0.8.16",
     "js-sha512": "^0.7.1",
@@ -45,7 +46,8 @@
     "react-native-svg": "^6.4.1",
     "react-native-wkwebview-reborn": "^1.21.0",
     "react-native-zip-archive": "^2.2.6",
-    "react-navigation": "^2.5.5"
+    "react-navigation": "^2.5.5",
+    "utf8": "^3.0.0"
   },
   "rnpm": {
     "assets": [

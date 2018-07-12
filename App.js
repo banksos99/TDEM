@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View,StyleSheet,Image,Platform,AsyncStorage } from 'react-native';
+import { Text, View, StyleSheet, Image, Platform, AsyncStorage } from 'react-native';
 
 import {
   StackNavigator,
@@ -9,10 +9,14 @@ import {
 
 import RootViewController from './ViewController/NavigationController';
 import PINScreen from './ViewController/MHF01310PINScreen';
-import firebase  from './SharedObject/Firebase';
+import firebase from './SharedObject/Firebase';
 import registerscreenView from "./ViewController/MHF01210RegisterScreen";
 
 import SavePIN from "./constants/SavePIN"
+
+// var utf8 = require('utf8');
+// var binaryToBase64 = require('binaryToBase64');
+
 
 export default class mainview extends Component {
 
@@ -22,25 +26,21 @@ export default class mainview extends Component {
     super(props);
     this.state = {
       inactive: false,
-      showpin:false,
+      showpin: false,
     }
   }
   componentDidMount() {
     this.inactivecounting();
-    // this.noaction();
-    // var language = DeviceInfo.getDeviceLocale;
 
     firebase.messaging().getToken().then((token) => {
-      console.log('getToken :',token)
-       this._onChangeToken(token)
+      console.log('getToken :', token)
+      this._onChangeToken(token)
     });
 
     firebase.messaging().onTokenRefresh((token) => {
-      console.log('onTokenRefresh :',token)
-        this._onChangeToken(token)
+      console.log('onTokenRefresh :', token)
+      this._onChangeToken(token)
     });
-
-
     AsyncStorage.getItem("myKey").then((value) => {
 
       if (value) {
@@ -51,7 +51,6 @@ export default class mainview extends Component {
       }
 
     }).done();
-  
   }
 
   _onChangeToken = (token) => {
@@ -76,10 +75,10 @@ export default class mainview extends Component {
 
     try {
       const value = await AsyncStorage.getItem('@MySuperStore:key');
-      if (value !== null){
+      if (value !== null) {
         // We have data!!
-        console.log('MySuperStore : ',value);
-      }else{
+        console.log('MySuperStore : ', value);
+      } else {
         console.log('MySuperStore : write file');
         try {
           await AsyncStorage.setItem('@MySuperStore:key', 'I like to save it.');
@@ -98,7 +97,7 @@ export default class mainview extends Component {
   inactivecounting() {
 
     this.timer = setTimeout(() => {
-     
+
       this.setState({
         inactive: true,
         modalVisible: true
@@ -110,7 +109,7 @@ export default class mainview extends Component {
   noaction() {
 
     this.timer = setTimeout(() => {
-     
+
       this.setState({
         showpin: true,
         modalVisible: true
@@ -123,9 +122,9 @@ export default class mainview extends Component {
     this.timer = setTimeout(() => {
       console.log('I do not leak!');
       this.setState({ showpin: false });
-     
+
     }, 500);
-  
+
   };
 
   getdate(value) {
@@ -135,28 +134,25 @@ export default class mainview extends Component {
 
   }
   sendData(value) {
-        
-    
+
+
   }
 
+  
   
   renderPINScreen() {
     if (this.state.showpin) {
       return (
         <View style={{ width: '100%', height: '100%', position: 'absolute', backgroundColor: 'red' }}>
-          <PINScreen onPINScreen={this.getdata}/>
+          <PINScreen onPINScreen={this.getdata} />
         </View>
 
       );
     }
   }
   render() {
- 
-
     if (this.state.inactive) {
-
       return (
-
         <View style={{ flex: 1, }}>
           <RootViewController />
         </View>

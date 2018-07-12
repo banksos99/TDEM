@@ -69,7 +69,8 @@ const AppNavigatorPin = createSwitchNavigator({
     OTBarChartView: { screen: OTBarChartView },
     OrganizationOTStruct: { screen: OrganizationOTStruct },
 }, {
-        initialRouteName: 'PinScreen',
+        // initialRouteName: 'PinScreen',
+        initialRouteName:'HomeScreen',
         headerMode: 'none',
         transitionConfig: () => ({
             transitionSpec: {
@@ -107,7 +108,8 @@ const AppNavigatorRegister = createSwitchNavigator({
     OTBarChartView: { screen: OTBarChartView },
     OrganizationOTStruct: { screen: OrganizationOTStruct },
 }, {
-        initialRouteName: 'RegisterScreen',
+        // initialRouteName: 'RegisterScreen',
+        initialRouteName:'HomeScreen',
         headerMode: 'none',
         transitionConfig: () => ({
             transitionSpec: {

@@ -37,7 +37,7 @@ export default class RegisterActivity extends Component {
         let data = await RegisterAPI(this.state.username, this.state.password)
         code = data[0]
         data = data[1]
-        console.log("Register ==> data : ",data)
+        console.log("Register ==> data : ", data)
 
         if (code.SUCCESS == data.code) {
             //TODO 
@@ -49,12 +49,11 @@ export default class RegisterActivity extends Component {
             })
 
         } else {
-            console.log("Register ==> data data : ",data.data[0].code)
-            console.log("Register ==> data data : ",data.data[0].detail)
-
+            console.log("Register ==> data data : ", data.data)
+            // console.log("Register ==> data data : ",data.data[0].detail)
             Alert.alert(
-                data.data[0].code,
-                data.data[0].detail,
+                StringText.SERVER_ERROR_TITLE,
+                StringText.SERVER_ERROR_DESC,
                 [
                     { text: 'OK', onPress: () => console.log('OK Pressed') },
                 ],
@@ -70,7 +69,7 @@ export default class RegisterActivity extends Component {
         data = data[1]
         console.log("Register code : ", code.SUCCESS)
         console.log("Register data : ", data.code)
-
+        // TODO Bell
         if (code.SUCCESS == data.code) {
             console.log("Register code :  ")
 
@@ -191,14 +190,10 @@ export default class RegisterActivity extends Component {
                         ],
                         { cancelable: false }
                     )
-
                 }
             }
         }
-
-
     }
-
 
     onOpenPinActivity() {
         console.log("PinScreen")
@@ -396,7 +391,6 @@ export default class RegisterActivity extends Component {
                                     onSubmitEditing={Keyboard.dismiss}
                                     underlineColorAndroid="transparent"
                                     selectionColor='black'
-                                    // autoFocus="true"
                                     style={styles.registText}
                                     placeholder="User ID"
                                     onChangeText={(username) => this.setState({ username })} />
@@ -410,7 +404,7 @@ export default class RegisterActivity extends Component {
                                 <TextInput
                                     onSubmitEditing={Keyboard.dismiss}
                                     underlineColorAndroid="transparent"
-                                    // autoFocus="true"
+                                    secureTextEntry={true}
                                     selectionColor='black'
                                     style={styles.registText}
                                     placeholder="Password"

@@ -1,6 +1,6 @@
 import SharedPreference from "../SharedObject/SharedPreference";
 
-export default async function getRestAPI(username, password) {
+export default async function getRestAPI(PIN) {
 
     let code = {
         SUCCESS: "200",
@@ -16,8 +16,6 @@ export default async function getRestAPI(username, password) {
         CUT_JSON: "700"
     }
 
-    console.log("getRestAPI ===> username : ", username, " ,  password :", password)
-    console.log("getRestAPI ===> register : ", SharedPreference.REGISTER_API)
 
     return fetch(SharedPreference.REGISTER_API, {
         method: 'POST',
@@ -26,22 +24,15 @@ export default async function getRestAPI(username, password) {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            grant_type: "register",
-            systemdn: SharedPreference.company,
-            username: username,
-            password: password,
-            device_model: "I-x-phone",
-            device_brand: "Iphone Inc",
-            device_os: "ios",
-            device_os_version: "11.4",
-            firebase_token: "champy123",
-            app_version: "1ebu83fg"
+            "type": "set",
+            "client_pin": PIN,
+            "systemdn": SharedPreference.company
         }),
     })
-
         .then((response) => response.json())
         .then((responseJson) => {
-            console.log("RegisterAPI ==> callback  success : ", responseJson)
+            
+            console.log("RegisterWithPINAPI ==> callback success : ", responseJson)
             let object
             if (responseJson.status == code.SUCCESS) {
                 SharedPreference.profileObject = responseJson.data
@@ -52,7 +43,7 @@ export default async function getRestAPI(username, password) {
             } else {
                 object = [code, {
                     code: responseJson.status,
-                    data: responseJson.data
+                    data: responseJson.error
                 }]
             }
             return object
