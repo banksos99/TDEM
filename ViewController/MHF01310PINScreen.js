@@ -9,6 +9,7 @@ import RestAPI from "../constants/RestAPI"
 
 import SaveProfile from "../constants/SaveProfile"
 import Authorization from "../SharedObject/Authorization";
+import LoginWithPinAPI from "../constants/LoginWithPinAPI"
 
 export default class PinActivity extends Component {
 
@@ -25,23 +26,60 @@ export default class PinActivity extends Component {
         }
     }
 
-   
+    onLoadLoginWithPin = async (PIN) => {
+
+        console.log("login with pin ==> ", PIN)
+        let data = await LoginWithPinAPI(PIN)
+        code = data[0]
+        data = data[1]
+        if (code.SUCCESS == data.code) {
+            console.log("pin ===> onLoadInitialMaster")
+            await this.onLoadInitialMaster()
+            // this.props.navigation.navigate('HomeScreen')
+        } else {
+            if (this.state.failPin == 4) {
+                Alert.alert(
+                    StringText.ALERT_PIN_TITLE_NOT_CORRECT,
+                    StringText.ALERT_PIN_DESC_TOO_MANY_NOT_CORRECT,
+                    [{
+                        text: 'OK', onPress: () => {
+                            console.log("TODO Too many")
+                            // TODO Reset all
+                            SharedPreference.profileObject = null
+                            this.props.navigation.navigate('RegisterScreen')
+                        }
+                    }],
+                    { cancelable: false }
+                )
+            } else {
+                Alert.alert(
+                    StringText.ALERT_PIN_TITLE_NOT_CORRECT,
+                    StringText.ALERT_PIN_DESC_NOT_CORRECT,
+                    [{
+                        text: 'OK', onPress: () => {
+                            let origin = this.state.failPin + 1
+                            this.setState({
+                                failPin: origin,
+                                pin: ''
+                            })
+                        }
+                    },
+                    ],
+                    { cancelable: false }
+                )
+            }
+        }
+    }
+
     onLoadInitialMaster = async () => {
-        console.log("onLoadInitialMaster")
-        SharedPreference.profileObject = await this.saveProfile.getProfile()
-        SharedPreference.TOKEN = await Authorization.convert('1','1',SharedPreference.profileObject.client_token)
 
         let data = await RestAPI(SharedPreference.INITIAL_MASTER_API)
         code = data[0]
         data = data[1]
         if (code.SUCCESS == data.code) {
-            console.log("onLoadInitialMaster data code : ", data.code)
-            console.log("onLoadInitialMaster data data : ", data.data)
-
             array = data.data
             for (let index = 0; index < array.length; index++) {
                 const element = array[index];
-                console.log("onLoadInitialMaster element : ", element.master_key)
                 if (element.master_key == 'NOTIFICATION_CATEGORY') {
                     SharedPreference.NOTIFICATION_CATEGORY = element.master_data
                 } else if (element.master_key == 'READ_TYPE') {
@@ -52,8 +90,6 @@ export default class PinActivity extends Component {
                     SharedPreference.TB_M_LEAVETYPE = element.TB_M_LEAVETYPE
                 }
             }
-
-        //    await this.onLoadProfile()
             this.props.navigation.navigate('HomeScreen')
 
         } else {
@@ -97,52 +133,10 @@ export default class PinActivity extends Component {
         this.state.pin = origin
 
         if (this.state.pin.length == 6) {
-            console.log("pin ===> 6")
-            console.log("pin ===> pin ==> ", this.state.pin)
-            console.log("pin ===> pin ==> ", this.state.savePin)
-
-            if (this.state.pin == this.state.savePin) {
-                console.log("pin ===> onLoadInitialMaster")
-                await this.onLoadInitialMaster()
-                // this.props.navigation.navigate('HomeScreen')
-
-            } else {
-
-                if (this.state.failPin == 4) {
-                    Alert.alert(
-                        StringText.ALERT_PIN_TITLE_NOT_CORRECT,
-                        StringText.ALERT_PIN_DESC_TOO_MANY_NOT_CORRECT,
-                        [{
-                            text: 'OK', onPress: () => {
-                                console.log("TODO Too many")
-                                // TODO Reset all
-                                SharedPreference.profileObject = null
-                                this.props.navigation.navigate('RegisterScreen')
-
-                            }
-                        },
-                        ],
-                        { cancelable: false }
-                    )
-
-                } else {
-                    Alert.alert(
-                        StringText.ALERT_PIN_TITLE_NOT_CORRECT,
-                        StringText.ALERT_PIN_DESC_NOT_CORRECT,
-                        [{
-                            text: 'OK', onPress: () => {
-                                let origin = this.state.failPin + 1
-                                this.setState({
-                                    failPin: origin,
-                                    pin: ''
-                                })
-                            }
-                        },
-                        ],
-                        { cancelable: false }
-                    )
-                }
-            }
+            // TODO Set Information
+            SharedPreference.profileObject = await this.saveProfile.getProfile()
+            SharedPreference.TOKEN = await Authorization.convert('1', '1', SharedPreference.profileObject.client_token)
+            await this.onLoadLoginWithPin(this.state.pin)
         }
     }
 

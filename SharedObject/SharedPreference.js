@@ -1,10 +1,11 @@
 
 const HOST = 'https://tdemconnect-dev.tdem.toyota-asia.com'
 // const HOST ='http://192.168.2.189:8080'
+// const HOST = 'http://192.168.2.48:8080'
 const VERSION = 'v1'
 
 export default {
-    TOKEN: 'Bearer MS4xLjlhNzBiZTI3NjY2MjJhMDRiZjk3NWVjZWM4MWRhMWIzMTlhMTY0NGJmODQ0MTc0YzhlMzU4OWYwNDQwM2Y3YWI4ZjI3Nzc2MWE4NGQ2MDI4ZGNmNjgxMjMyYTEyOTY3Y2YzY2M5MzcwMzkzNTNjOWFiNDlkYmI3ZTk4MjE1NmQz',
+    TOKEN: '',
     INITIAL_MASTER_API: HOST + '/api/' + VERSION + '/initmaster/',
     ANNOUNCEMENT_ASC_API: HOST + '/api/' + VERSION + '/announcement?sort=%2Bcreate_date',
     ANNOUNCEMENT_DSC_API: HOST + '/api/' + VERSION + '/announcement?sort=-create_date',
@@ -47,6 +48,7 @@ export default {
     READ_TYPE: [],
     COMPANY_LOCATION: [],
     TB_M_LEAVETYPE: [],
-    company: 'TMAP-EM'
+    company: 'TMAP-EM',
+    deviceInfo: {}
 }
 
