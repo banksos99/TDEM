@@ -573,6 +573,10 @@ export default class HMF01011MainView extends Component {
     }
 
     onLoadErrorAlertDialog(error) {
+        this.setState({
+            isscreenloading: false,
+        })
+
         if (this.state.isConnected) {
             Alert.alert(
                 'MHF00001ACRI',

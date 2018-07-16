@@ -1160,6 +1160,11 @@ export const styles = StyleSheet.create({
         fontSize: 35 * scale,
         fontFamily: font_medium,
     },
+    clockinoutbodyhidetext:{
+        color: 'transparent',
+        fontSize: 12 * scale,
+        fontFamily: font_medium,
+    },
     clockinoutdayredtext: {
         color: Colors.redTextColor,
         fontSize: 35 * scale,
@@ -1197,6 +1202,22 @@ export const styles = StyleSheet.create({
         fontFamily: font_medium,
 
 
+    }, epubHighlightdateText: {
+        fontSize: 10 * scale,
+        color: Colors.lightgrayText,
+        // width: '100%',
+        fontFamily: font_medium,
+        // backgroundColor:'blue',
+        flex: 2
+
+    },
+    epubHighlighttitleText: {
+        fontSize: 15 * scale,
+        color: Colors.grayText,
+        // width: '100%',
+        fontFamily: font_medium,
+        // backgroundColor:'red',
+        flex: 3
     },
     empinfoTitleText: {
         color: Colors.grayTextColor,

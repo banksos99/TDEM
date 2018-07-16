@@ -606,18 +606,18 @@ console.log('init data : ',this.state.months[0])
                                         <Text style={styles.clockinoutweakdayalphatext}>ACTUAL</Text>
                                     </View>
                                     <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                                        <Text style={index > currentday?styles.clockinoutbodyhidetext:styles.clockinoutbodytext}>{this.conv(item.workstart)}</Text>
+                                        <Text style={index > currentday&& (this.state.initialmonth + 2 === this.state.monthselected)?styles.clockinoutbodyhidetext:styles.clockinoutbodytext}>{this.conv(item.workstart)}</Text>
                                         <Text style={styles.clockinoutweakdayalphatext} />
-                                        <Text style={index > currentday?styles.clockinoutbodyhidetext: item.actualstart === '-' && item.workstart != '-' ?
+                                        <Text style={index > currentday&& (this.state.initialmonth + 2 === this.state.monthselected)?styles.clockinoutbodyhidetext: item.actualstart === '-' && item.workstart != '-' ?
                                             styles.clockinoutbodyredtext :
                                             item.late === 1 ? styles.clockinoutbodyredtext : styles.clockinoutbodytext}>
 
                                             {this.conv(item.actualstart)}</Text>
                                     </View>
                                     <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                                        <Text style={index > currentday?styles.clockinoutbodyhidetext:styles.clockinoutbodytext}>{this.conv(item.workend)}</Text>
+                                        <Text style={index > currentday&& (this.state.initialmonth + 2 === this.state.monthselected)?styles.clockinoutbodyhidetext:styles.clockinoutbodytext}>{this.conv(item.workend)}</Text>
                                         <Text style={styles.clockinoutweakdayalphatext} />
-                                        <Text style={index > currentday ? styles.clockinoutbodyhidetext : item.actualend === '-' && item.workend != '-' ?
+                                        <Text style={index > currentday&& (this.state.initialmonth + 2 === this.state.monthselected) ? styles.clockinoutbodyhidetext : item.actualend === '-' && item.workend != '-' ?
                                             styles.clockinoutbodyredtext :
                                             item.early === 1 ? styles.clockinoutbodyredtext : styles.clockinoutbodytext}>
 
