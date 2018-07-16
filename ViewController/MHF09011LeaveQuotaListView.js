@@ -41,7 +41,7 @@ export default class LeaveQuotaActivity extends Component {
     }
 
     leaveQuotaListview() {
-        console.log(" this.state.dataSource  : ", this.state.dataSource.code)
+        console.log(" this.state.dataSource  : ", this.state.dataSource)
         if (this.state.dataSource.code == '404') {
             return (<View style={{
                 height: 50, justifyContent: 'center',
@@ -70,7 +70,10 @@ export default class LeaveQuotaActivity extends Component {
                 yearArray = element.items
             }
         }
+        console.log("yearArray : ", yearArray)
+        if(yearArray.length){
 
+        
         return (
             <ScrollView style={styles.leavequotaBackground}>
                 <FlatList
@@ -123,7 +126,14 @@ export default class LeaveQuotaActivity extends Component {
                     )}
                 />
             </ScrollView>
-        )
+        )}
+        return (<View style={{
+            height: 50, justifyContent: 'center',
+            alignItems: 'center'
+        }}>
+            <Text style={{ fontFamily: font_medium }}>No result</Text>
+        </View>)
+
     }
 
     onLastYear() {

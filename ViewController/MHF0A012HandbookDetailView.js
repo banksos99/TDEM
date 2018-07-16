@@ -173,16 +173,16 @@ export default class HandbookViewer extends Component {
     }
 
     _onhilight(item) {
-
         console.log('item :', item)
         this.setState({
             showTOC: 0,
-            location: item,
+            location: item.link,
             // position: 'epubcfi(/6/12[xepigraph_001]!/4/2/4)'
 
         })
 
     }
+
     onchangefont() {
 
         this.setState({
@@ -466,7 +466,10 @@ export default class HandbookViewer extends Component {
                                 onPress={() => this._onPress(item)}
                                 key={index + 100}>
                                 <View style={{ justifyContent: 'center', height: 40, marginLeft: 20, marginRight: 20 }}>
-                                    <Text style={styles.epubTocText} numberOfLines={1}> {item.label}</Text>
+                                    <View style={{ flex: 1, ustifyContent: 'center', flexDirection: 'column' }}>
+                                        <Text style={styles.epubHighlightdateText} numberOfLines={1}> {item.date}</Text>
+                                        <Text style={styles.epubHighlighttitleText} numberOfLines={1}> {item.title}</Text>
+                                    </View>
                                 </View>
                                 <View style={{ height: 1, backgroundColor: Colors.calendarLocationBoxColor }}>
                                 </View>
@@ -582,14 +585,29 @@ export default class HandbookViewer extends Component {
                         console.log("removed", index)
                     }}
                     onSelected={(cfiRange, rendition, selected) => {
-                        console.log("selected", cfiRange.toString())
-                        console.log("highlight :", rendition.highlight)
-                        console.log("book :", this.state.book.render)
+
+                        let datatext = ''
+                        this.state.book.getRange(cfiRange).then((range) => {
+                            if (range) {
+                                datatext = range.startContainer.data.slice(range.startOffset, range.endOffset)
+                   
+                                let newdate = new Date().toString()
+                                let timearr = newdate.split('')
+                                this.state.hilightList.push(
+                                    {
+                                        link: cfiRange,
+                                        title: datatext,
+                                        date: newdate
+                                    })
+
+                            }
+
+                        });
 
                         // Add marker
-                        rendition.highlight(cfiRange, {
-                        });
-                        this.state.hilightList.push(cfiRange)
+
+                        rendition.highlight(cfiRange, {});
+
                     }}
                     onMarkClicked={(cfiRange) => {
                         console.log("mark clicked", cfiRange)
