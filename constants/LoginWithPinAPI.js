@@ -1,6 +1,6 @@
 import SharedPreference from "../SharedObject/SharedPreference";
 
-export default async function getRestAPI(username, password) {
+export default async function getRestAPI(pin) {
 
     let code = {
         SUCCESS: "200",
@@ -16,33 +16,29 @@ export default async function getRestAPI(username, password) {
         CUT_JSON: "700"
     }
 
-    console.log("getRestAPI ===> username : ", username, " ,  password :", password)
-    console.log("getRestAPI ===> register : ", SharedPreference.REGISTER_API)
-
+    console.log("LoginWithPin ==> callback  Register  : ", SharedPreference.REGISTER_API)
+    console.log("LoginWithPin ==> callback  client_pin  : ", pin)
+    console.log("LoginWithPin ==> callback  firebase_token  : ", SharedPreference.deviceInfo.firebaseToken)
+    console.log("LoginWithPin ==> callback  systemdn  : ", SharedPreference.company)
+    console.log("LoginWithPin ==> callback  Token  : ", SharedPreference.TOKEN)
 
     return fetch(SharedPreference.REGISTER_API, {
         method: 'POST',
         headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
+            Authorization: SharedPreference.TOKEN
         },
         body: JSON.stringify({
-            grant_type: "register",
-            systemdn: SharedPreference.company,
-            username: username,
-            password: password,
-            device_model: SharedPreference.deviceInfo.deviceModel,
-            device_brand: SharedPreference.deviceInfo.deviceBrand,
-            device_os: SharedPreference.deviceInfo.deviceOS,
-            device_os_version: SharedPreference.deviceInfo.deviceOSVersion,
+            grant_type: "pinsignin",
+            client_pin: pin,
             firebase_token: SharedPreference.deviceInfo.firebaseToken,
-            app_version: SharedPreference.deviceInfo.appVersion
+            systemdn: SharedPreference.company
         }),
     })
-
         .then((response) => response.json())
         .then((responseJson) => {
-            console.log("RegisterAPI ==> callback  success : ", responseJson)
+            console.log("RegisterAPI ==> callback success : ", responseJson)
             let object
             if (responseJson.status == code.SUCCESS) {
                 SharedPreference.profileObject = responseJson.data
@@ -60,6 +56,10 @@ export default async function getRestAPI(username, password) {
 
         })
         .catch((error) => {
-            console.log("callback error : ", error)
+            object = [code, {
+                code: code.ERROR,
+                data: error
+            }]
+            return object
         });
 }

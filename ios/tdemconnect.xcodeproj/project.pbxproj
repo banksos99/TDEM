@@ -50,6 +50,7 @@
 		BD0A0EFE20EA3CDF006E652B /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BD0A0EFD20EA3CDF006E652B /* CoreFoundation.framework */; };
 		BD6BCF8320F4AB1E00E7AB24 /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BD6BCF8020F4AAFE00E7AB24 /* libRNSVG.a */; };
 		BDD0D6AF20F61B6800593D44 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
+		BDD6B9C420FB768600ACF810 /* libRNDeviceInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BDD6B9BD20FB767100ACF810 /* libRNDeviceInfo.a */; };
 		C81E53BA144248D689D84CD9 /* Prompt-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 803FF4FD684B41F4A960ACA7 /* Prompt-Light.ttf */; };
 		DF46D30A24884FD7B38C7236 /* libFPStaticServer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 356039C755064952A630DFB7 /* libFPStaticServer.a */; };
 /* End PBXBuildFile section */
@@ -363,6 +364,20 @@
 			remoteGlobalIDString = 9936F32F1F5F2E5B0010BF04;
 			remoteInfo = "privatedata-tvOS";
 		};
+		BDD6B9BC20FB767100ACF810 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BDD6B98F20FB767100ACF810 /* RNDeviceInfo.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = DA5891D81BA9A9FC002B4DB2;
+			remoteInfo = RNDeviceInfo;
+		};
+		BDD6B9BE20FB767100ACF810 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BDD6B98F20FB767100ACF810 /* RNDeviceInfo.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = E72EC1401F7ABB5A0001BC90;
+			remoteInfo = "RNDeviceInfo-tvOS";
+		};
 		BDFDE8FD20F4E7220094E5AB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BDFDE8F920F4E7210094E5AB /* RCTOrientation.xcodeproj */;
@@ -423,6 +438,7 @@
 		BD0A0EFD20EA3CDF006E652B /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		BD6BCF5320F4AAFE00E7AB24 /* RNSVG.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNSVG.xcodeproj; path = "../node_modules/react-native-svg/ios/RNSVG.xcodeproj"; sourceTree = "<group>"; };
 		BDD0D65820F5F0AA00593D44 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
+		BDD6B98F20FB767100ACF810 /* RNDeviceInfo.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNDeviceInfo.xcodeproj; path = "../node_modules/react-native-device-info/ios/RNDeviceInfo.xcodeproj"; sourceTree = "<group>"; };
 		BDFDE8F920F4E7210094E5AB /* RCTOrientation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTOrientation.xcodeproj; path = "../node_modules/react-native-orientation/iOS/RCTOrientation.xcodeproj"; sourceTree = "<group>"; };
 		BDFDE90020F4E7D90094E5AB /* RCTWKWebView.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTWKWebView.xcodeproj; path = "../node_modules/react-native-wkwebview-reborn/ios/RCTWKWebView.xcodeproj"; sourceTree = "<group>"; };
 		C72C0D1B35328DA2E39D88F3 /* Pods-tdemconnect.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-tdemconnect.release.xcconfig"; path = "Pods/Target Support Files/Pods-tdemconnect/Pods-tdemconnect.release.xcconfig"; sourceTree = "<group>"; };
@@ -461,6 +477,7 @@
 				BA8CB70520F72FB600FC1F92 /* libRNFirebase.a in Frameworks */,
 				BAF9561BB4526904D3EC6946 /* libPods-tdemconnect.a in Frameworks */,
 				DF46D30A24884FD7B38C7236 /* libFPStaticServer.a in Frameworks */,
+				BDD6B9C420FB768600ACF810 /* libRNDeviceInfo.a in Frameworks */,
 				BDD0D6AF20F61B6800593D44 /* libRCTAnimation.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -613,6 +630,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				BDD6B98F20FB767100ACF810 /* RNDeviceInfo.xcodeproj */,
 				BA4C9B7A20F73FEA00C47899 /* RNFetchBlob.xcodeproj */,
 				BDD0D65820F5F0AA00593D44 /* React.xcodeproj */,
 				BDFDE90020F4E7D90094E5AB /* RCTWKWebView.xcodeproj */,
@@ -753,6 +771,15 @@
 				BDD0D68620F5F0AA00593D44 /* libdouble-conversion.a */,
 				BDD0D68820F5F0AA00593D44 /* libprivatedata.a */,
 				BDD0D68A20F5F0AA00593D44 /* libprivatedata-tvOS.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		BDD6B99020FB767100ACF810 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BDD6B9BD20FB767100ACF810 /* libRNDeviceInfo.a */,
+				BDD6B9BF20FB767100ACF810 /* libRNDeviceInfo-tvOS.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -974,6 +1001,10 @@
 				{
 					ProductGroup = BDD0D65920F5F0AA00593D44 /* Products */;
 					ProjectRef = BDD0D65820F5F0AA00593D44 /* React.xcodeproj */;
+				},
+				{
+					ProductGroup = BDD6B99020FB767100ACF810 /* Products */;
+					ProjectRef = BDD6B98F20FB767100ACF810 /* RNDeviceInfo.xcodeproj */;
 				},
 				{
 					ProductGroup = BA4C9B7B20F73FEA00C47899 /* Products */;
@@ -1291,6 +1322,20 @@
 			fileType = archive.ar;
 			path = "libprivatedata-tvOS.a";
 			remoteRef = BDD0D68920F5F0AA00593D44 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		BDD6B9BD20FB767100ACF810 /* libRNDeviceInfo.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNDeviceInfo.a;
+			remoteRef = BDD6B9BC20FB767100ACF810 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		BDD6B9BF20FB767100ACF810 /* libRNDeviceInfo-tvOS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libRNDeviceInfo-tvOS.a";
+			remoteRef = BDD6B9BE20FB767100ACF810 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		BDFDE8FE20F4E7220094E5AB /* libRCTOrientation.a */ = {
