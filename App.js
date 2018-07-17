@@ -25,6 +25,7 @@ export default class mainview extends Component {
   }
 
   async componentDidMount() {
+
     this.inactivecounting();
 
     const enabled = await firebase.messaging().hasPermission();
@@ -62,7 +63,7 @@ export default class mainview extends Component {
 
     await firebase.messaging().getToken()
       .then((token) => {
-        // console.log('firebase ==> message Device FCM Token: ', token);
+        console.log('firebase ==> message Device FCM Token: ', token);
         SharedPreference.deviceInfo = {
           "deviceModel": deviceModel,
           "deviceBrand": deviceBrand,
@@ -112,7 +113,18 @@ export default class mainview extends Component {
     }
   }
 
+  componentWillReceiveProps(nextProps) {
+
+    if (nextProps.fromPushnoti) {
+      alert('app did become active from pushnoti');
+
+    } else if (nextProps.appDidBecomeActive) {
+      alert('app did become active');
+    }
+  }
+
   componentWillUnmount() {
+    console.log("componentWillUnmount")
     this.messageListener();
     this.notificationDisplayedListener();
     this.notificationListener();
