@@ -33,9 +33,7 @@ export default class PinActivity extends Component {
         code = data[0]
         data = data[1]
         if (code.SUCCESS == data.code) {
-            console.log("pin ===> onLoadInitialMaster")
             await this.onLoadInitialMaster()
-            // this.props.navigation.navigate('HomeScreen')
         } else {
             if (this.state.failPin == 4) {
                 Alert.alert(
@@ -91,6 +89,11 @@ export default class PinActivity extends Component {
                 }
             }
             this.props.navigation.navigate('HomeScreen')
+
+            console.log("SharedPreference.NOTIFICATION_CATEGORY  ==> ", SharedPreference.NOTIFICATION_CATEGORY)
+            console.log("SharedPreference.READ_TYPE  ==> ", SharedPreference.READ_TYPE)
+            console.log("SharedPreference.COMPANY_LOCATION  ==> ", SharedPreference.COMPANY_LOCATION)
+            console.log("SharedPreference.TB_M_LEAVETYPE  ==> ", SharedPreference.TB_M_LEAVETYPE)
 
         } else {
             Alert.alert(
@@ -266,9 +269,11 @@ export default class PinActivity extends Component {
                     <View style={styles.registPinNumRowContainer}>
                         <View style={styles.registPinNumContainer} />
 
-                        <TouchableOpacity style={styles.registPinNumContainer}
+                        <TouchableOpacity style={styles.emptyContainer}
                             onPress={() => { this.setPIN(0) }}>
-                            <Text style={styles.pinnumber}>0</Text>
+                            <View style={styles.registPinNumContainer}>
+                                <Text style={styles.pinnumber}>0</Text>
+                            </View>
                         </TouchableOpacity>
 
                         <TouchableOpacity style={styles.registPinNumContainer}

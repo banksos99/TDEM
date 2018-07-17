@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View } from 'react-native';
 import {
-    StackNavigator,
     createSwitchNavigator,
 } from 'react-navigation';
 
@@ -69,6 +67,7 @@ const AppNavigatorPin = createSwitchNavigator({
     OrganizationOTStruct: { screen: OrganizationOTStruct },
 }, {
         initialRouteName: 'PinScreen',
+        // initialRouteName: 'HomeScreen',
         headerMode: 'none',
         transitionConfig: () => ({
             transitionSpec: {
@@ -107,6 +106,7 @@ const AppNavigatorRegister = createSwitchNavigator({
     OrganizationOTStruct: { screen: OrganizationOTStruct },
 }, {
         initialRouteName: 'RegisterScreen',
+        // initialRouteName: 'HomeScreen',
         headerMode: 'none',
         transitionConfig: () => ({
             transitionSpec: {

@@ -37,18 +37,18 @@ export default class RegisterActivity extends Component {
     onRegister = async () => {
         Keyboard.dismiss()
 
-        console.log("rusername : ", this.state.username, ", password : ", this.state.password)
+        // console.log("rusername : ", this.state.username, ", password : ", this.state.password)
         let data = await RegisterAPI(this.state.username, this.state.password)
         code = data[0]
         data = data[1]
-        console.log("Register ==> data : ", data)
+        // console.log("Register ==> data : ", data)
 
         if (code.SUCCESS == data.code) {
             //TODO 
             this.SaveProfile.setProfile(data.data)
             SharedPreference.profileObject = await this.SaveProfile.getProfile()
             SharedPreference.TOKEN = await Authorization.convert('1','1',SharedPreference.profileObject.client_token)
-            console.log("Register ==> TOKEN : ", SharedPreference.TOKEN)
+            // console.log("Register ==> TOKEN : ", SharedPreference.TOKEN)
             // await this.saveToken.setToken(SharedPreference.TOKEN)
 
             this.setState({
@@ -56,7 +56,7 @@ export default class RegisterActivity extends Component {
             })
 
         } else {
-            console.log("Register ==> data data : ", data.data)
+            // console.log("Register ==> data data : ", data.data)
             // console.log("Register ==> data data : ",data.data[0].detail)
             Alert.alert(
                 StringText.SERVER_ERROR_TITLE,
@@ -70,18 +70,18 @@ export default class RegisterActivity extends Component {
     }
 
     onSetPin = async () => {
-        console.log("Register SetPin : ", this.state.pin2)
+        // console.log("Register SetPin : ", this.state.pin2)
         let data = await SetPinAPI(this.state.pin2)
         code = data[0]
         data = data[1]
-        console.log("Register code : ", code.SUCCESS)
-        console.log("Register data : ", data.code)
+        // console.log("Register code : ", code.SUCCESS)
+        // console.log("Register data : ", data.code)
         // TODO Bell
         if (code.SUCCESS == data.code) {
-            console.log("Register code :  ")
+            // console.log("Register code :  ")
 
             await this.savePIN.setPin(this.state.pin2)
-            console.log("Register setPin ")
+            // console.log("Register setPin ")
 
             const pinID = await this.savePIN.getPin()
             console.log("Register getPin : ", pinID)
@@ -309,9 +309,11 @@ export default class RegisterActivity extends Component {
                         <View style={styles.registPinNumRowContainer}>
                             <View style={styles.registPinNumContainer} />
 
-                            <TouchableOpacity style={styles.registPinNumContainer}
+                           <TouchableOpacity style={styles.emptyContainer}
                                 onPress={() => { this.setPIN(0) }}>
-                                <Text style={styles.pinnumber}>0</Text>
+                                <View style={styles.registPinNumContainer}>
+                                    <Text style={styles.pinnumber}>0</Text>
+                                </View>
                             </TouchableOpacity>
 
                             <TouchableOpacity style={styles.registPinNumContainer}

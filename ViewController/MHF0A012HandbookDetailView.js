@@ -43,7 +43,8 @@ export default class HandbookViewer extends Component {
         this.state = {
             flow: "paginated", // paginated || scrolled-continuous
             location: 1,
-            url: "https://s3.amazonaws.com/epubjs/books/moby-dick.epub",
+            url: "https://s3-us-west-2.amazonaws.com/pressbooks-samplefiles/MetamorphosisJacksonTheme/Metamorphosis-jackson.epub",
+           // url: "https://s3.amazonaws.com/epubjs/books/moby-dick.epub",
             src: "",
             origin: "",
             title: "",
@@ -466,10 +467,10 @@ export default class HandbookViewer extends Component {
                                 onPress={() => this._onPress(item)}
                                 key={index + 100}>
                                 <View style={{ justifyContent: 'center', height: 40, marginLeft: 20, marginRight: 20 }}>
-                                    <View style={{ flex: 1, ustifyContent: 'center', flexDirection: 'column' }}>
-                                        <Text style={styles.epubHighlightdateText} numberOfLines={1}> {item.date}</Text>
-                                        <Text style={styles.epubHighlighttitleText} numberOfLines={1}> {item.title}</Text>
-                                    </View>
+                                    {/* <View style={{ flex: 1, ustifyContent: 'center', flexDirection: 'column' }}> */}
+                                        <Text style={styles.epubTocText} numberOfLines={1}> {item.label}</Text>
+                                        {/* <Text style={styles.epubHighlighttitleText} numberOfLines={1}> {item.title}</Text> */}
+                                    {/* </View> */}
                                 </View>
                                 <View style={{ height: 1, backgroundColor: Colors.calendarLocationBoxColor }}>
                                 </View>
@@ -490,7 +491,10 @@ export default class HandbookViewer extends Component {
                             onPress={() => this._onhilight(item)}
                             key={index + 100}>
                             <View style={{ justifyContent: 'center', height: 40, marginLeft: 20, marginRight: 20 }}>
-                                <Text style={styles.epubTocText} numberOfLines={1}> {item}</Text>
+                            <View style={{ flex: 1, ustifyContent: 'center', flexDirection: 'column' }}>
+                                        <Text style={styles.epubHighlightdateText} numberOfLines={1}> {item.date}</Text>
+                                        <Text style={styles.epubHighlighttitleText} numberOfLines={1}> {item.title}</Text>
+                                    </View>
                             </View>
                             <View style={{ height: 1, backgroundColor: Colors.calendarLocationBoxColor }}>
 

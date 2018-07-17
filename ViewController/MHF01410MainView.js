@@ -15,7 +15,6 @@ import leaveQuotaDataResponse from "./../InAppData/Leavequotalistdata"
 import HandbookshelfDataResponse from "./../InAppData/HandbookListData"
 import OTSelfDataResponse from "./../InAppData/OTSummarySelfData"
 
-
 // import nonPayRollAPI from "../api/NonPayRollAPI"
 
 import RestAPI from "../constants/RestAPI"
@@ -147,12 +146,9 @@ export default class HMF01011MainView extends Component {
     //     }
     //     this.announcementCallback(await RestAPI(url))
     // }
-
     // announcementCallback(data) {
     //     code = data[0]
     //     data = data[1]
-
-
     //     if (code.SUCCESS == data.code) {//200
     //         this.setState(this.renderloadingscreen());
     //         tempannouncementData = []
@@ -618,10 +614,9 @@ export default class HMF01011MainView extends Component {
     }
 
     loadLeaveQuotafromAPI = async () => {
-
         this.leaveQuotaCallback(await RestAPI(SharedPreference.LEAVE_QUOTA_API))
-
     }
+
     leaveQuotaCallback(data) {
         code = data[0]
         data = data[1]
@@ -641,83 +636,16 @@ export default class HMF01011MainView extends Component {
         code = data[0]
         data = data[1]
         console.log("calendarCallback : ", data)
-
         this.props.navigation.navigate('calendarYearView', {
             dataResponse: data,
             selectYear: new Date().getFullYear(),
             location: SharedPreference.profileObject.location
         });
-
     }
-
-    // loadHandbooklistfromAPI = async () => {
-
-    //     this.APICallback(await RestAPI(SharedPreference.HANDBOOK_LIST),'Handbooklist')
-
-    // return fetch(SharedPreference.HANDBOOK_LIST)
-    //     .then((response) => response.json())
-    //     .then((responseJson) => {
-
-    //         try {
-    //             this.setState({
-
-    //                 isscreenloading: false,
-
-
-    //             }, function () {
-
-    //                 this.props.navigation.navigate('Handbooklist', {
-    //                     DataResponse: responseJson,
-    //                 });
-
-
-    //             });
-
-    //         } catch (error) {
-
-    //             //console.log('erreo1 :', error);
-
-    //         }
-    //     })
-    //     .catch((error) => {
-    //         this.setState({
-
-    //             isscreenloading: false,
-
-
-    //         }, function () {
-    //         Alert.alert(
-    //             'MHF00002ACRI',
-    //             'System Error (API). Please contact system administrator.',
-    //             [
-    //                 { text: 'OK', onPress: () => console.log('OK Pressed') },
-    //             ],
-    //             { cancelable: false }
-    //         ) });
-
-    //         //console.log(error);
-
-    //     });
-
-
-    // }
-
-    // loadOrgStructerfromAPI = async () => {
-
-    //     let today = new Date();
-
-    //     let url = SharedPreference.ORGANIZ_STRUCTURE_API + '60162305'
-
-    //     this.APICallback(await RestAPI(url), 'OrganizationStruct', 0)
-
-
-    // }
 
     //*****************************************************************************
     //*********************** Check API befor change screen  **********************
     //*****************************************************************************
-
-
 
     onOpenCalendar() {
         this.setState({
@@ -1823,8 +1751,7 @@ export default class HMF01011MainView extends Component {
                 </View>
                 <View style={{ flex: 1, justifyContent: 'center', borderBottomWidth: 0.5, borderBottomColor: Colors.lightGrayTextColor }}>
                     <TouchableOpacity
-                    // onPress={(this.select_announce_status.bind(this))}
-                    >
+                        onPress={(this.select_sign_out.bind(this))}>
 
                         <Text style={styles.settinglefttext}>Change PIN</Text>
 

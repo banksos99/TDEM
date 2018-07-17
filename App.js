@@ -171,4 +171,3 @@ export default class mainview extends Component {
     );
   }
 }
-// AppRegistry.registerComponent('ReactNativeFirebaseDemo', () => bootstrap);

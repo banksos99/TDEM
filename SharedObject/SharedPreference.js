@@ -40,7 +40,6 @@ export default {
     ORGANIZ_STRUCTURE_API: HOST + '/api/' + VERSION + '/organization?type=CE&org_code=',
     ORGANIZ_STRUCTURE_OT_API: HOST + '/api/' + VERSION + '/organization?type=E&org_code=',
 
-    // 
     profileObject: {},
     initmaster: {},
 

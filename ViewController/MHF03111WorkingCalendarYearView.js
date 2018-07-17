@@ -201,8 +201,15 @@ export default class calendarYearView extends Component {
                 original[index] = object
             }
         }
-        showLocation = await this.getFullLocation(this.state.selectLocation)
+
+        console.log("selectLocation ==> ", this.state.selectLocation)
         console.log("getYearView : showLocation ==> ", showLocation)
+
+        if (this.state.selectLocation == null) {
+            showLocation = await this.getFullLocation("TA")
+        } else {
+            showLocation = await this.getFullLocation(this.state.selectLocation)
+        }
 
         this.showAllMonthView()
         this.setState({
@@ -232,7 +239,6 @@ export default class calendarYearView extends Component {
 
     showAllMonthView() {
         console.log("Calendar ==> showAllMonthView")
-
         monthView = []
         monthView1 = []
         monthView2 = []
@@ -475,49 +481,32 @@ export default class calendarYearView extends Component {
     getLocation = async () => {
         console.log("getLocation ==> this.state.selectLocation : ", this.state.selectLocation)
 
-        // let location
-        // if (Platform.os === 'android') {
-        //     location = await this.getFullLocation(this.state.selectLocation)
-        //     console.log("getLocation ==> android location : ", location)
-        //     this.setState({
-        //         selectLocation: shortLocation
-        //     })
-        // } else {
-        //     location = this.state.selectLocation
-        //     shortLocation = await this.getShortLocation(this.state.selectLocation)
-        //     this.setState({
-        //         selectLocation: shortLocation
-        //     })
-        // }
-
-        // console.log("getLocation ==> android shortLocation : ", shortLocation)
-
         this.setState({
             locationPickerView: false,
             isLoading: true
         })
 
-        // this.state.showLocation = location
+        // this.state.showLocation = this.state.selectLocation 
         // this.state.locationPickerView = false
 
         // console.log("getLocation selectLocation : ", this.state.selectLocation)
         // this.resetCalendar()
+
         await this.openNewPage(this.state.selectLocation)
-        // TODO Bell
 
 
     }
 
     openNewPage = async (location) => {
-        console.log("openNewPage : RestAPI ")
-        console.log("openNewPage selectLocation : ", location)
+        // console.log("openNewPage : RestAPI ")
+        // console.log("openNewPage selectLocation : ", location)
 
         let data = await RestAPI(SharedPreference.CALENDER_YEAR_API + this.state.selectYear + '&company=' + location)
         code = data[0]
         data = data[1]
 
         if (code.SUCCESS == data.code) {
-            console.log("onLoadCalendarAPI ====> SUCCESS")
+            // console.log("onLoadCalendarAPI ====> SUCCESS")
             this.props.navigation.navigate('calendarYearView2', {
                 dataResponse: data,
                 selectYear: this.state.selectYear,
@@ -786,8 +775,6 @@ export default class calendarYearView extends Component {
         fetch(url)
             .then((response) => response.json())
             .then((responseJson) => {
-
-
                 if (responseJson.status == 200) {
                     //console.log("responseJson filename : ", responseJson.data[0].filename)
                     //console.log("responseJson : ", responseJson.data[0].link)
