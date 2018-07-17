@@ -117,6 +117,10 @@ android {
         multiDexEnabled true
     }
     signingConfigs {
+<<<<<<< HEAD
+//        TODO release
+=======
+>>>>>>> 4a64d9bbf2da6d8da88ddea334ef5cc6634a8eb4
         release {
             if (project.hasProperty('MYAPP_RELEASE_STORE_FILE')) {
                 storeFile file(MYAPP_RELEASE_STORE_FILE)
@@ -139,6 +143,11 @@ android {
             minifyEnabled enableProguardInReleaseBuilds
 //            minifyEnabled false
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+<<<<<<< HEAD
+
+//            TODO release
+=======
+>>>>>>> 4a64d9bbf2da6d8da88ddea334ef5cc6634a8eb4
             signingConfig signingConfigs.release
 
         }
