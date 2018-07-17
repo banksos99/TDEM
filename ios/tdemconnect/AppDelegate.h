@@ -7,11 +7,13 @@
 
 #import <UIKit/UIKit.h>
 #import <UserNotifications/UserNotifications.h>
+#import <React/RCTRootView.h>
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate,UNUserNotificationCenterDelegate>
 
 @property (nonatomic, strong) UIWindow *window;
+@property (nonatomic, strong) RCTRootView *rootView;
 
 @end
-#import <UserNotifications/UserNotifications.h>
+
 

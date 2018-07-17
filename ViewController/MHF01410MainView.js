@@ -419,9 +419,8 @@ export default class HMF01011MainView extends Component {
     }
 
     loadEmployeeInfoformAPI = async () => {
-        console.log("loadEmployeeInfoformAPI")
 
-
+        console.log("loadEmployeeInfoformAPI :",SharedPreference.profileObject.employee_id)
         this.APICallback(await RestAPI(SharedPreference.EMP_INFO_CAREERPATH_API + SharedPreference.profileObject.employee_id), 'EmployeeInfoDetail')
 
     }
@@ -947,6 +946,11 @@ export default class HMF01011MainView extends Component {
 
     }
 
+    // setEventIDFromDevice(eventArray) {
+    //     return AsyncStorage.setItem(this.state.calendarName, JSON.stringify(eventArray))
+    //         .then(json => console.log('success!'))
+    //         .catch(error => console.log('error!'));
+    // }
     /******************************************************************** */
     /*************************  selected tab view  ********************** */
     /******************************************************************** */
@@ -1839,6 +1843,7 @@ export default class HMF01011MainView extends Component {
                     </View>
                     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                         <Switch
+                            value={false}
                             onTintColor="red"
                             onValueChange={(value) => this.setState({ syncCalendar: value })}
                             value={this.state.syncCalendar}

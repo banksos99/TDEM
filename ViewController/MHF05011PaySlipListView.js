@@ -463,14 +463,6 @@ export default class PaySlipActivity extends Component {
 
     getPayslipDetailfromAPI(year, index) {
 
-
-
-        // let tyear = 0;
-        // let tmonth = 0;
-
-        // if (year > 0) { tyear += parseInt(monthlistdata[0].month); }
-        // if (year > 1) { tyear += 12; }
-
         let rollid;
 
         for (let i = 0; i < yearlistdata[year].monthlistdata.length; i++) {

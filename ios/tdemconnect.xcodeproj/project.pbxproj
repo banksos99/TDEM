@@ -46,6 +46,7 @@
 		BA4C9B8020F73FF900C47899 /* libRNFetchBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BA4C9B7F20F73FEB00C47899 /* libRNFetchBlob.a */; };
 		BA8CB70520F72FB600FC1F92 /* libRNFirebase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E7D4B151F8AFD6F00699FE4 /* libRNFirebase.a */; };
 		BAF9561BB4526904D3EC6946 /* libPods-tdemconnect.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3CA56E1C6F131DAF32B1777B /* libPods-tdemconnect.a */; };
+		BAF9756920FD89CB0044C4ED /* SplashBg.png in Resources */ = {isa = PBXBuildFile; fileRef = BAF9753A20FD89CA0044C4ED /* SplashBg.png */; };
 		BD0A0EFC20EA3CD2006E652B /* EventKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BD0A0EFB20EA3CD2006E652B /* EventKit.framework */; };
 		BD0A0EFE20EA3CDF006E652B /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BD0A0EFD20EA3CDF006E652B /* CoreFoundation.framework */; };
 		BD6BCF8320F4AB1E00E7AB24 /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BD6BCF8020F4AAFE00E7AB24 /* libRNSVG.a */; };
@@ -434,6 +435,7 @@
 		B93DE3132C74458C9CF748F7 /* Prompt-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Prompt-Regular.ttf"; path = "../resource/fonts/Prompt-Regular.ttf"; sourceTree = "<group>"; };
 		BA4C9B7A20F73FEA00C47899 /* RNFetchBlob.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNFetchBlob.xcodeproj; path = "../node_modules/react-native-fetch-blob/ios/RNFetchBlob.xcodeproj"; sourceTree = "<group>"; };
 		BA8CB6E120F72AFE00FC1F92 /* tdemconnect.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = tdemconnect.entitlements; path = tdemconnect/tdemconnect.entitlements; sourceTree = "<group>"; };
+		BAF9753A20FD89CA0044C4ED /* SplashBg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = SplashBg.png; sourceTree = "<group>"; };
 		BD0A0EFB20EA3CD2006E652B /* EventKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKit.framework; path = System/Library/Frameworks/EventKit.framework; sourceTree = SDKROOT; };
 		BD0A0EFD20EA3CDF006E652B /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		BD6BCF5320F4AAFE00E7AB24 /* RNSVG.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNSVG.xcodeproj; path = "../node_modules/react-native-svg/ios/RNSVG.xcodeproj"; sourceTree = "<group>"; };
@@ -588,6 +590,7 @@
 		13B07FAE1A68108700A75B9A /* tdemconnect */ = {
 			isa = PBXGroup;
 			children = (
+				BAF9753A20FD89CA0044C4ED /* SplashBg.png */,
 				BA8CB6E120F72AFE00FC1F92 /* tdemconnect.entitlements */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
@@ -1374,6 +1377,7 @@
 				04D7CBE8327843E6AB07C8CA /* Prompt-Medium.ttf in Resources */,
 				606619CF086D4B5CA9330CE8 /* Prompt-Regular.ttf in Resources */,
 				30347D275CBF413DB203F68C /* Prompt-Thin.ttf in Resources */,
+				BAF9756920FD89CB0044C4ED /* SplashBg.png in Resources */,
 				8D23B666C5C34102B2B7A96E /* Roboto-Bold.ttf in Resources */,
 				0B582ED7764B45179D566188 /* Roboto-Medium.ttf in Resources */,
 				8E5223DD70154EDBB00C0852 /* Roboto-Regular.ttf in Resources */,
