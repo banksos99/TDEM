@@ -33,12 +33,13 @@ export default class calendarEventDetailView extends Component {
             dayObject: [],
             selectedDay: '2018-0-0',
             oldMark: {},
-            monthObject: this.props.navigation.getParam("monthObject", ""),
+            monthObject: this.props.navigation.getParam("monthObject", {}),
             monthText: this.props.navigation.getParam("month", ""),
             dataResponse: this.props.navigation.getParam("dataResponse", ""),
             location: this.props.navigation.getParam("location", ""),
             isLoading: false
         }
+        console.log("calendarEventDetailView ==> ", this.state.monthObject)
 
     }
 
@@ -51,56 +52,57 @@ export default class calendarEventDetailView extends Component {
         const vacation1 = { key: 'number1', color: Colors.calendarDotColor };
         const vacation2 = { key: 'number2', color: Colors.calendarDotColor };
 
-        if (selectedMonth == this.state.monthObject.month) {
-            //console.log("componentWillMonth : ", selectedMonth)
-            //console.log("this.state.monthObject.month : ", this.state.monthObject.month)
+        if (this.state.monthObject) {
+            if (selectedMonth == this.state.monthObject.month) {
+                //console.log("componentWillMonth : ", selectedMonth)
+                //console.log("this.state.monthObject.month : ", this.state.monthObject.month)
 
-            this.state.dayObject = this.state.monthObject.days;
-            const original = {}
-            for (let index = 0; index < this.state.dayObject.length; index++) {
+                this.state.dayObject = this.state.monthObject.days;
+                const original = {}
+                for (let index = 0; index < this.state.dayObject.length; index++) {
 
-                const datemonth = this.state.dayObject[index].date;
-                if (this.state.dayObject[index].special_holiday == "Y") {
-                    //console.log("selectedMonth ==> Y")
-                    const copy = {
-                        ...original, [datemonth]: { marked: true, selectedColor: Colors.calendarBlueText }
-                    };
-                    original = copy
-                } else if (this.state.dayObject[index].special_holiday == "N") {
-                    //console.log("selectedMonth ==> N")
-                    const copy = {
-                        ...original, [datemonth]: { marked: true, selectedColor: Colors.calendarRedText }
-                    };
-                    original = copy
-
-                } else {//W
-                    //console.log("selectedMonth ==> W")
-                    let count = this.state.dayObject[index].events.length;
-                    if (count > 1) {
+                    const datemonth = this.state.dayObject[index].date;
+                    if (this.state.dayObject[index].special_holiday == "Y") {
+                        //console.log("selectedMonth ==> Y")
                         const copy = {
-                            ...original, [datemonth]: {
-                                dots: [vacation1, vacation2],
-                                marked: true, dotColor: Colors.calendarDotColor
-                            }
+                            ...original, [datemonth]: { marked: true, selectedColor: Colors.calendarBlueText }
                         };
                         original = copy
-                    } else {
+                    } else if (this.state.dayObject[index].special_holiday == "N") {
+                        //console.log("selectedMonth ==> N")
                         const copy = {
-                            ...original, [datemonth]: {
-                                dots: [vacation1],
-                                marked: true, dotColor: Colors.calendarDotColor
-                            }
+                            ...original, [datemonth]: { marked: true, selectedColor: Colors.calendarRedText }
                         };
                         original = copy
+
+                    } else {//W
+                        //console.log("selectedMonth ==> W")
+                        let count = this.state.dayObject[index].events.length;
+                        if (count > 1) {
+                            const copy = {
+                                ...original, [datemonth]: {
+                                    dots: [vacation1, vacation2],
+                                    marked: true, dotColor: Colors.calendarDotColor
+                                }
+                            };
+                            original = copy
+                        } else {
+                            const copy = {
+                                ...original, [datemonth]: {
+                                    dots: [vacation1],
+                                    marked: true, dotColor: Colors.calendarDotColor
+                                }
+                            };
+                            original = copy
+                        }
                     }
-                }
-            };
-            this.setState({
-                _markedDates: original
-            })
-            this.state._markedDates = original
+                };
+                this.setState({
+                    _markedDates: original
+                })
+                this.state._markedDates = original
+            }
         }
-
     }
 
     onBack() {

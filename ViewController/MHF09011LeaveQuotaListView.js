@@ -42,7 +42,7 @@ export default class LeaveQuotaActivity extends Component {
 
     leaveQuotaListview() {
         console.log(" this.state.dataSource  : ", this.state.dataSource)
-        if (this.state.dataSource.code == '404') {
+        if (this.state.dataSource.code != '200') {
             return (<View style={{
                 height: 50, justifyContent: 'center',
                 alignItems: 'center'
@@ -51,7 +51,6 @@ export default class LeaveQuotaActivity extends Component {
             </View>)
         }
             
-
         let dataArray = this.state.dataSource.data.years
         console.log("dataArray : ", dataArray)
         let yearArray = []
@@ -151,7 +150,7 @@ export default class LeaveQuotaActivity extends Component {
     renderTabYearSelect() {
         let lastYear = new Date().getFullYear() - 1
         // console.log("lastYear : ", lastYear)
-        if (this.state.dataSource.status == '404') {
+        if (this.state.dataSource.status != '200') {
             return (
                 <View style={styles.selectYearContainer}>
                     <View style={{ flex: 1, flexDirection: 'row' }}>
@@ -200,17 +199,6 @@ export default class LeaveQuotaActivity extends Component {
     render() {
         return (
             <View style={styles.container} >
-                {/* <View style={styles.navContainer}>
-                    <TouchableOpacity onPress={(this.onBack.bind(this))}>
-                        <Image
-                            source={require('./../resource/images/Back.png')}
-                            resizeMode='contain'
-                        />
-                    </TouchableOpacity>
-                    <Text style={styles.navTitleTextTop}>Leave Quota</Text>
-                    <View style={styles.navRightContainer}>
-                    </View>
-                </View> */}
 
                 <View style={styles.navContainer}>
                     <TouchableOpacity style={styles.navLeftContainer} onPress={(this.onBack.bind(this))}>

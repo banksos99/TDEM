@@ -109,7 +109,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 22
         versionCode 2
-        versionName "1.0"
+        versionName "1.1"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
@@ -117,10 +117,6 @@ android {
         multiDexEnabled true
     }
     signingConfigs {
-<<<<<<< HEAD
-//        TODO release
-=======
->>>>>>> 4a64d9bbf2da6d8da88ddea334ef5cc6634a8eb4
         release {
             if (project.hasProperty('MYAPP_RELEASE_STORE_FILE')) {
                 storeFile file(MYAPP_RELEASE_STORE_FILE)
@@ -143,11 +139,6 @@ android {
             minifyEnabled enableProguardInReleaseBuilds
 //            minifyEnabled false
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
-<<<<<<< HEAD
-
-//            TODO release
-=======
->>>>>>> 4a64d9bbf2da6d8da88ddea334ef5cc6634a8eb4
             signingConfig signingConfigs.release
 
         }

@@ -13,7 +13,7 @@ const font_thin = 'Prompt-Thin';
 export const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'white'
+        // backgroundColor: 'white'
     },
 
     statusbarcontainer: {
@@ -918,9 +918,10 @@ export const styles = StyleSheet.create({
     nonPayRollMonthContainer: {
         flex: 1, flexDirection: 'column',
         backgroundColor: Colors.calendarLocationBoxColor,
+        // backgroundColor:"red",
         marginLeft: 5,
         marginRight: 5,
-        paddingTop: 5,
+        marginTop: -5,
         paddingBottom: 5,
         borderRadius: 5
     },

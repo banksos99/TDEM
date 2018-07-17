@@ -22,10 +22,6 @@ import { styles } from "./../SharedObject/MainStyles"
 import moment from 'moment'
 const _format = 'YYYY-MM-DD'
 
-
-// import _calendarEventData2018 from '../../jsonfile/calendar-event-data-2018.json';
-// import _calendarEventData2017 from '../../jsonfile/calendar-event-data-2017.json';
-
 import SharedPreference from '../SharedObject/SharedPreference'
 import StringText from '../SharedObject/StringText'
 
@@ -200,16 +196,23 @@ export default class calendarYearView extends Component {
                 let object = this.getMonthEvent((index + 1), calendarEventData)
                 original[index] = object
             }
+
+            if (this.state.selectLocation == null) {
+                showLocation = await this.getFullLocation("TA")
+            } else {
+
+                showLocation = await this.getFullLocation(this.state.selectLocation)
+            }
+
+        } else {
+            showLocation = "Company"
+            year = new Date().getFullYear()
         }
 
-        console.log("selectLocation ==> ", this.state.selectLocation)
+
         console.log("getYearView : showLocation ==> ", showLocation)
 
-        if (this.state.selectLocation == null) {
-            showLocation = await this.getFullLocation("TA")
-        } else {
-            showLocation = await this.getFullLocation(this.state.selectLocation)
-        }
+        console.log("getYearView : year ==> ", year)
 
         this.showAllMonthView()
         this.setState({
@@ -430,6 +433,7 @@ export default class calendarYearView extends Component {
         //console.log("datetime : ", datetime)
         const month = moment(datetime).format('M');
         let monthObject = this.state.yearObject[(month - 1)]
+        console.log("onPressCalendar ==> ", monthObject)
         this.props.navigation.navigate('calendarMonthView',
             {
                 month: datetime,
@@ -795,6 +799,7 @@ export default class calendarYearView extends Component {
                 } else {
                     //console.log("state : ", responseJson.state)
 
+
                 }
                 // return responseJson
             })
@@ -889,87 +894,87 @@ export default class calendarYearView extends Component {
     }
 
     addEventOnCalendar = async () => {
-        console.log("addEventOnCalendar")
+        // console.log("addEventOnCalendar")
 
         await this.eventCalendar._deleteEventCalendar()
-        console.log("deleteEventCalendar")
+        // console.log("deleteEventCalendar")
 
-        // await this.eventCalendar._removeEventCalendar()
-        console.log("removeEventCalendar")
 
         this.setState({
             isLoading: true
         })
 
-        //console.log("this.state.calendarEventData : ", this.state.calendarEventData)
+        // console.log("this.state.calendarEventData 1 : ", this.state.calendarEventData)
+        if (this.state.calendarEventData.code == 200) {
+            let holidayArray = this.state.calendarEventData.data.holidays;
+            // console.log("this.state.calendarEventData 2 : ", this.state.calendarEventData.data.holidays)
+            for (let index = 0; index < holidayArray.length; index++) {
+                const daysArray = holidayArray[index].days
+                for (let f = 0; f < daysArray.length; f++) {
+                    const eventDetailArray = daysArray[f].events;
+                    for (let k = 0; k < eventDetailArray.length; k++) {
+                        let eventObject = eventDetailArray[k]
+                        if (eventObject.date == null) {
+                            const copy = {
+                                ...eventObject, date: daysArray[f].date
+                            };
+                            eventObject = copy
+                        }
 
+                        if (eventObject.time_start == null) {
+                            let timeStart = daysArray[f].date + ' 00:00:01'
+                            const copy = {
+                                ...eventObject, time_start: timeStart
+                            };
+                            eventObject = copy
+                        }
 
-        let holidayArray = this.state.calendarEventData.data.holidays;
-        console.log("this.state.calendarEventData : ", holidayArray.length)
+                        if (eventObject.time_end == null) {
+                            let timeEnd = daysArray[f].date + ' 23:59:00'
+                            const copy = {
+                                ...eventObject, time_end: timeEnd
+                            };
+                            eventObject = copy
+                        }
 
-        for (let index = 0; index < holidayArray.length; index++) {
-            const daysArray = holidayArray[index].days
-            for (let f = 0; f < daysArray.length; f++) {
-                const eventDetailArray = daysArray[f].events;
-                for (let k = 0; k < eventDetailArray.length; k++) {
-                    let eventObject = eventDetailArray[k]
-                    if (eventObject.date == null) {
-                        const copy = {
-                            ...eventObject, date: daysArray[f].date
-                        };
-                        eventObject = copy
+                        if (eventObject.description == null) {
+                            const copy = {
+                                ...eventObject, description: "description"
+                            };
+                            eventObject = copy
+                        }
+
+                        //console.log("addEventOnCalendar ==> eventObject : ", eventObject);
+                        await this.eventCalendar.synchronizeCalendar(eventObject, 'EDEM');
+                        //console.log("==============Success==============")
                     }
-
-                    if (eventObject.time_start == null) {
-                        let timeStart = daysArray[f].date + ' 00:00:01'
-                        const copy = {
-                            ...eventObject, time_start: timeStart
-                        };
-                        eventObject = copy
-                    }
-
-                    if (eventObject.time_end == null) {
-                        let timeEnd = daysArray[f].date + ' 23:59:00'
-                        const copy = {
-                            ...eventObject, time_end: timeEnd
-                        };
-                        eventObject = copy
-                    }
-
-                    if (eventObject.description == null) {
-                        const copy = {
-                            ...eventObject, description: "description"
-                        };
-                        eventObject = copy
-                    }
-
-                    //console.log("addEventOnCalendar ==> eventObject : ", eventObject);
-                    await this.eventCalendar.synchronizeCalendar(eventObject, 'EDEM');
-                    //console.log("==============Success==============")
                 }
             }
+
+            console.log("==============Success==============")
+            this.setState({
+                isLoading: false
+            })
+
+            //TODO Alert
+            Alert.alert(
+                StringText.CALENDAR_ALERT_SYNC_CALENDAR_TITLE_SUCCESS,
+                StringText.CALENDAR_ALERT_SYNC_CALENDAR_DESC_SUCCESS,
+                [
+                    {
+                        text: StringText.CALENDAR_ALERT_SYNC_CALENDAR_BUTTON_SUCCESS, onPress: () => {
+                            this.setState({
+                                isLoading: false
+                            })
+                        }
+                    },
+                ],
+                { cancelable: false }
+            )
+        } else {
+
         }
 
-        console.log("==============Success==============")
-        this.setState({
-            isLoading: false
-        })
-
-        //TODO Alert
-        Alert.alert(
-            StringText.CALENDAR_ALERT_SYNC_CALENDAR_TITLE_SUCCESS,
-            StringText.CALENDAR_ALERT_SYNC_CALENDAR_DESC_SUCCESS,
-            [
-                {
-                    text: StringText.CALENDAR_ALERT_SYNC_CALENDAR_BUTTON_SUCCESS, onPress: () => {
-                        this.setState({
-                            isLoading: false
-                        })
-                    }
-                },
-            ],
-            { cancelable: false }
-        )
     }
 
     renderProgressView() {

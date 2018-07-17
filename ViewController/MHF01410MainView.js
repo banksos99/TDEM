@@ -1259,8 +1259,9 @@ export default class HMF01011MainView extends Component {
                                     <Text style={styles.usernameText}>{this.state.username}</Text>
                                 </View>
                                 <View style={{ flex: 1, }} />
+                                {/* Device Info */}
+                                <Text>{ "Version : " + SharedPreference.deviceInfo.buildNumber}</Text>
                             </View>
-
                         </View>
                     </View>
                 </View>

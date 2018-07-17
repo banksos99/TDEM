@@ -18,7 +18,7 @@ export default class RegisterActivity extends Component {
     savePIN = new SavePIN()
     SaveProfile = new SaveProfile()
     saveToken = new SaveTOKEN()
-    
+
     constructor(props) {
         super(props);
         this.state = {
@@ -30,7 +30,8 @@ export default class RegisterActivity extends Component {
             showCreatePinSuccess: false,
             pintitle: 'Create Pin',
             username: '',
-            password: ''
+            password: '',
+            versionCode: "Version : " + SharedPreference.deviceInfo.buildNumber
         }
     }
 
@@ -47,7 +48,7 @@ export default class RegisterActivity extends Component {
             //TODO 
             this.SaveProfile.setProfile(data.data)
             SharedPreference.profileObject = await this.SaveProfile.getProfile()
-            SharedPreference.TOKEN = await Authorization.convert('1','1',SharedPreference.profileObject.client_token)
+            SharedPreference.TOKEN = await Authorization.convert('1', '1', SharedPreference.profileObject.client_token)
             // console.log("Register ==> TOKEN : ", SharedPreference.TOKEN)
             // await this.saveToken.setToken(SharedPreference.TOKEN)
 
@@ -84,7 +85,7 @@ export default class RegisterActivity extends Component {
             // console.log("Register setPin ")
 
             const pinID = await this.savePIN.getPin()
-            console.log("Register getPin : ", pinID)
+            // console.log("Register getPin : ", pinID)
 
             this.setState({
                 showCreatePinSuccess: true,
@@ -145,7 +146,7 @@ export default class RegisterActivity extends Component {
             origin = origin + num
         }
 
-        console.log("origin origin origin : ", origin)
+        // console.log("origin origin origin : ", origin)
 
         this.setState({
             pin: origin
@@ -309,7 +310,7 @@ export default class RegisterActivity extends Component {
                         <View style={styles.registPinNumRowContainer}>
                             <View style={styles.registPinNumContainer} />
 
-                           <TouchableOpacity style={styles.emptyContainer}
+                            <TouchableOpacity style={styles.emptyContainer}
                                 onPress={() => { this.setPIN(0) }}>
                                 <View style={styles.registPinNumContainer}>
                                     <Text style={styles.pinnumber}>0</Text>
@@ -429,6 +430,9 @@ export default class RegisterActivity extends Component {
                                 </View>
                             </TouchableOpacity>
                         </View>
+                        {/* Device Info */}
+                        <Text>{this.state.versionCode}</Text>
+
                     </View>
                 </View >
 

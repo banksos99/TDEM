@@ -54,7 +54,11 @@ export default class mainview extends Component {
     // console.log("deviceOSVersion : ", deviceOSVersion)
 
     const appVersion = DeviceInfo.getVersion();
-    // console.log("appVersion : ", appVersion)
+    console.log("appVersion : ", appVersion)
+
+    const buildNumber = DeviceInfo.getBuildNumber();
+    console.log("buildNumber : ", buildNumber)
+
 
     await firebase.messaging().getToken()
       .then((token) => {
@@ -65,7 +69,8 @@ export default class mainview extends Component {
           "deviceOS": deviceOS,
           "deviceOSVersion": deviceOSVersion,
           "firebaseToken": token,
-          "appVersion": appVersion
+          "appVersion": appVersion,
+          "buildNumber": buildNumber
         }
       });
 
