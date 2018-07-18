@@ -138,7 +138,7 @@ export default class PinActivity extends Component {
         if (this.state.pin.length == 6) {
             // TODO Set Information
             SharedPreference.profileObject = await this.saveProfile.getProfile()
-            SharedPreference.TOKEN = await Authorization.convert('1', '1', SharedPreference.profileObject.client_token)
+            SharedPreference.TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, '1', SharedPreference.profileObject.client_token)
             await this.onLoadLoginWithPin(this.state.pin)
         }
     }

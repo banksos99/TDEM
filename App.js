@@ -10,8 +10,10 @@ import SharedPreference from './SharedObject/SharedPreference';
 import RootViewController from './ViewController/NavigationController';
 import PINScreen from './ViewController/MHF01310PINScreen';
 import SavePIN from "./constants/SavePIN";
-import firebase from 'react-native-firebase';
 import DeviceInfo from 'react-native-device-info';
+
+import firebase from 'react-native-firebase';
+import type, { RemoteMessage } from 'react-native-firebase';
 
 export default class mainview extends Component {
 
@@ -25,7 +27,6 @@ export default class mainview extends Component {
   }
 
   async componentDidMount() {
-
     this.inactivecounting();
 
     const enabled = await firebase.messaging().hasPermission();
@@ -40,6 +41,10 @@ export default class mainview extends Component {
       }
     }
 
+
+    this.messageListener = firebase.messaging().onMessage((message: RemoteMessage) => {
+      // Process your message as required
+    });
     //////////Device Info/////////////
 
     const deviceModel = DeviceInfo.getModel();
@@ -76,42 +81,51 @@ export default class mainview extends Component {
       });
 
     ////////////////////////
-    firebase.notifications().getInitialNotification
+    // firebase.notifications().getInitialNotification
 
-    this.messageListener = firebase.messaging().onMessage((message) => {
-      console.log("firebase ==> 1 Process your message as required : ", message)
-    });
+    // this.messageListener = firebase.messaging().onMessage((message) => {
+    //   console.log("firebase ==> 1 Process your message as required : ", message)
+    // });
 
-    firebase.messaging().onMessage((message) => {
-      console.log("firebase ==> 2 Process your message as required : ", message)
-    });
+    // firebase.messaging().onMessage((message) => {
+    //   console.log("firebase ==> 2 Process your message as required : ", message)
+    // });
 
-    firebase.notifications.Notification()
+    // firebase.notifications.Notification()
 
-    firebase.messaging().onMessage(message => {
-      console.log('firebase ==> message onMessage: ', message);
-    })
+    // firebase.messaging().onMessage(message => {
+    //   console.log('firebase ==> message onMessage: ', message);
+    // })
 
-    this.messageListener = firebase.messaging().onMessage((message) => {
-      console.log("firebase ==> message messageListener : ", message)
-    });
+    // this.messageListener = firebase.messaging().onMessage((message) => {
+    //   console.log("firebase ==> message messageListener : ", message)
+    // });
 
-    this.notificationDisplayedListener = firebase.notifications().onNotificationDisplayed((notification: Notification) => {
-      console.log("firebase ==> Process your notification as required")
-      console.log("firebase ==> ANDROID: Remote notifications do not contain the channel ID. You will have to specify this manually if you'd like to re-display the notification.")
-    });
-    this.notificationListener = firebase.notifications().onNotification((notification) => {
-      console.log("firebase ==> Process your notification as required")
-    });
+    // this.notificationDisplayedListener = firebase.notifications().onNotificationDisplayed((notification: Notification) => {
+    //   console.log("firebase ==> Process your notification as required")
+    //   console.log("firebase ==> ANDROID: Remote notifications do not contain the channel ID. You will have to specify this manually if you'd like to re-display the notification.")
+    // });
+    // this.notificationListener = firebase.notifications().onNotification((notification) => {
+    //   console.log("firebase ==> Process your notification as required")
+    // });
 
-    const notificationOpen = await firebase.notifications().getInitialNotification();
-    if (notificationOpen) {
-      const action = notificationOpen.action;
-      console.log("firebase ==> action : ", action)
-      const notification = notificationOpen.notification;
-      console.log("firebase ==> notification : ", notification)
-    }
+    // const notificationOpen = await firebase.notifications().getInitialNotification();
+    // if (notificationOpen) {
+    //   const action = notificationOpen.action;
+    //   console.log("firebase ==> action : ", action)
+    //   const notification = notificationOpen.notification;
+    //   console.log("firebase ==> notification : ", notification)
+    // }
+
+    // firebase.messaging().onMessage((message) => {
+    //   // Process your message as required
+    //   console.log("firebase ==> messageListener ==> ", message)
+    // });
+
   }
+
+  
+
 
   componentWillReceiveProps(nextProps) {
 

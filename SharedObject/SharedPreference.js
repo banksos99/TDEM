@@ -1,7 +1,6 @@
 
 const HOST = 'https://tdemconnect-dev.tdem.toyota-asia.com'
 // const HOST ='http://192.168.2.189:8080'
-// const HOST = 'http://192.168.2.48:8080'
 const VERSION = 'v1'
 
 export default {

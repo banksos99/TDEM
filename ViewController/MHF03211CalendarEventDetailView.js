@@ -22,7 +22,6 @@ export default class calendarMonthView extends Component {
             dataResponse: this.props.navigation.getParam("dataResponse", ""),
             location: this.props.navigation.getParam("location", ""),
         }
-
     }
 
     onBackPrevious() {

@@ -416,7 +416,7 @@ export default class HMF01011MainView extends Component {
 
     loadEmployeeInfoformAPI = async () => {
 
-        console.log("loadEmployeeInfoformAPI :",SharedPreference.profileObject.employee_id)
+        console.log("loadEmployeeInfoformAPI :", SharedPreference.profileObject.employee_id)
         this.APICallback(await RestAPI(SharedPreference.EMP_INFO_CAREERPATH_API + SharedPreference.profileObject.employee_id), 'EmployeeInfoDetail')
 
     }
@@ -519,30 +519,25 @@ export default class HMF01011MainView extends Component {
     }
 
     loadOrgStructerOTHistoryfromAPI = async () => {
-
         let today = new Date();
-
         let url = SharedPreference.ORGANIZ_STRUCTURE_OT_API + orgcode
-
         this.APICallback(await RestAPI(url), 'OrganizationOTStruct', 2)
-
     }
-    APICallback(data, rount, option) {
 
+    APICallback(data, rount, option) {
         console.log('main menu option :', option)
         code = data[0]
         data = data[1]
 
         if (code.SUCCESS == data.code) {
-
             this.props.navigation.navigate(rount, {
                 DataResponse: data.data,
                 Option: option
             });
-
         } else {
             this.onLoadErrorAlertDialog(data)
         }
+        
     }
 
 
@@ -597,7 +592,6 @@ export default class HMF01011MainView extends Component {
     }
 
     loadLeaveQuotafromAPI = async () => {
-
         let data = await RestAPI(SharedPreference.LEAVE_QUOTA_API)
         code = data[0]
         data = data[1]
@@ -628,22 +622,32 @@ export default class HMF01011MainView extends Component {
     loadCalendarfromAPI = async (location) => {
         console.log("location : ", location)
         let year = new Date().getFullYear()
-        this.calendarCallback(await RestAPI(SharedPreference.CALENDER_YEAR_API + year + '&company=' + SharedPreference.profileObject.location))
+        let company = SharedPreference.profileObject.location
+        if (company == null) {
+            company = "TA"
+        }
+        this.calendarCallback(await RestAPI(SharedPreference.CALENDER_YEAR_API + year + '&company=' + company))
     }
 
     calendarCallback(data) {
+
+        let company = SharedPreference.profileObject.location
+        if (company == null) {
+            company = "TA"
+        }
+
         code = data[0]
         data = data[1]
         console.log("calendarCallback : ", data)
         this.props.navigation.navigate('calendarYearView', {
             dataResponse: data,
             selectYear: new Date().getFullYear(),
-            location: SharedPreference.profileObject.location
+            location: company
         });
     }
 
     //*****************************************************************************
-    //*********************** Check API befor change screen  **********************
+    //*********************** Check API before change screen  **********************
     //*****************************************************************************
 
     onOpenCalendar() {
@@ -1264,17 +1268,15 @@ export default class HMF01011MainView extends Component {
                                 </View>
                                 <View style={{ flex: 1, }} />
                                 {/* Device Info */}
-                                <Text>{ "Version : " + SharedPreference.deviceInfo.buildNumber}</Text>
+                                <Text>{"Version : " + SharedPreference.deviceInfo.buildNumber}</Text>
                             </View>
                         </View>
                     </View>
                 </View>
                 <View style={{ flex: 1, backgroundColor: 'white' }} >
                     <View style={{ flex: 1, flexDirection: 'row' }}>
-
                         <TouchableOpacity style={{ flex: 1 }}
-                            onPress={this.onOpenEmployeeInfo.bind(this)}
-                        >
+                            onPress={this.onOpenEmployeeInfo.bind(this)}>
                             <View style={[styles.boxShadow, shadow]} >
                                 <View style={styles.mainmenuImageButton}>
                                     <Image

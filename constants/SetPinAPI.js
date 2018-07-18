@@ -11,6 +11,7 @@ export default async function getRestAPI(pin) {
         FAILED: "400",
         FORM_VALIDATE_FAILED: "401",
         NODATA: "404",
+        DUPLICATE: "409",
         TIME_OUT: "500",
         ERROR: "501",
         UPDATE_APPLICATION: "600",
@@ -54,4 +55,5 @@ export default async function getRestAPI(pin) {
         .catch((error) => {
             console.log("callback error : ", error)
         });
+
 }

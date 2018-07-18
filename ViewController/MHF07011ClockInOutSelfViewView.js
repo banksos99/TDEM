@@ -44,7 +44,7 @@ export default class ClockInOutSelfView extends Component {
             rowHasChanged: (r1, r2) => r1 !== r2
         });
         let today = new Date();
-        
+
         currentday = today.getDate();
         currentmonth = today.getMonth();
         this.state = {
@@ -73,11 +73,9 @@ export default class ClockInOutSelfView extends Component {
             dateselected: 0,
             tfirstday: 0,
             manager: this.props.navigation.getParam("manager", ""),
-           
             previous: this.props.navigation.getParam("previous", ""),
             employee_name: this.props.navigation.getParam("employee_name", ""),
             employee_position: this.props.navigation.getParam("employee_position", ""),
-
         }
 
         this.checkDataFormat(this.props.navigation.getParam("DataResponse", ""));
@@ -106,7 +104,7 @@ export default class ClockInOutSelfView extends Component {
         this.state.initialyear = today.getFullYear();
         this.state.initialmonth = parseInt(today.getMonth() - 1);
         this.state.announcementTypetext = MONTH_LIST[this.state.initialmonth + 1] + ' ' + this.state.initialyear;
-        for (let i = this.state.initialmonth + 13; i > this.state.initialmonth+1; i--) {
+        for (let i = this.state.initialmonth + 13; i > this.state.initialmonth + 1; i--) {
 
             if (i === 11) {
 
@@ -136,16 +134,16 @@ export default class ClockInOutSelfView extends Component {
 
             if (DataResponse.data) {
 
-                console.log('have data work',DataResponse.data.items.length)
+                console.log('have data work', DataResponse.data.items.length)
 
                 for (let i = 0; i < DataResponse.data.items.length; i++) {
 
                     let item = DataResponse.data.items[i].date.split('-');
-                    
+
                     if (parseInt(item[2]) == m + 1) {
 
                         datetype = DataResponse.data.items[i].datetype;
-                        console.log('have data work',DataResponse.data.items[i].work)
+                        console.log('have data work', DataResponse.data.items[i].work)
                         if (DataResponse.data.items[i].work) {
                             console.log('have data work')
                             if (DataResponse.data.items[i].work.start) {
@@ -209,9 +207,9 @@ export default class ClockInOutSelfView extends Component {
 
         }
         //sert initial data
-initannouncementType = this.state.months[0]
+        initannouncementType = this.state.months[0]
 
-console.log('init data : ',this.state.months[0])
+        console.log('init data : ', this.state.months[0])
 
     }
 
@@ -232,7 +230,7 @@ console.log('init data : ',this.state.months[0])
         } else {
 
             this.props.navigation.navigate('HomeScreen');
-            
+
         }
 
     }
@@ -267,9 +265,9 @@ console.log('init data : ',this.state.months[0])
         // var one_day = 1000 * 60 * 60 * 24;
         // // var today = new Date();
         // //displays 726
-       
+
         //  daymonth = Math.round(difference_ms / one_day)
-        
+
         this.APICallback(await RestAPI(url))
 
     }
@@ -350,7 +348,7 @@ console.log('init data : ',this.state.months[0])
 
             }
         }
-        console.log('tdataSource : ',this.state.tdataSource)
+        console.log('tdataSource : ', this.state.tdataSource)
         this.setState({
             isscreenloading: false,
         })
@@ -383,7 +381,7 @@ console.log('init data : ',this.state.months[0])
         console.log("error : ", error)
     }
 
-   
+
 
     select_month() {
 
@@ -397,7 +395,7 @@ console.log('init data : ',this.state.months[0])
             this.setState(this.renderloadingscreen())
         });
     }
-    select_month_clockinout(){
+    select_month_clockinout() {
 
         this.setState({
 
@@ -428,7 +426,7 @@ console.log('init data : ',this.state.months[0])
         });
 
     }
-    select_month_clockinout_and(item){
+    select_month_clockinout_and(item) {
 
         this.setState({
 
@@ -436,7 +434,7 @@ console.log('init data : ',this.state.months[0])
             loadingtype: 1,
             isscreenloading: true,
 
-            announcementTypetext : item
+            announcementTypetext: item
             // isscreenloading: false,
 
         }, function () {
@@ -474,7 +472,7 @@ console.log('init data : ',this.state.months[0])
 
     }
 
-    
+
 
     renderpickerview() {
 
@@ -568,8 +566,8 @@ console.log('init data : ',this.state.months[0])
     renderdetail() {
         console.log('weakday : ', (firstday + 1) % 7)
         let offsety = 0;
-        if(this.state.initialmonth + 2 === this.state.monthselected){
-            
+        if (this.state.initialmonth + 2 === this.state.monthselected) {
+
             offsety = ((currentday * 90) - 220)
         }
         console.log('offsety : ', offsety)
@@ -606,18 +604,18 @@ console.log('init data : ',this.state.months[0])
                                         <Text style={styles.clockinoutweakdayalphatext}>ACTUAL</Text>
                                     </View>
                                     <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                                        <Text style={index > currentday&& (this.state.initialmonth + 2 === this.state.monthselected)?styles.clockinoutbodyhidetext:styles.clockinoutbodytext}>{this.conv(item.workstart)}</Text>
+                                        <Text style={index > currentday && (this.state.initialmonth + 2 === this.state.monthselected) ? styles.clockinoutbodyhidetext : styles.clockinoutbodytext}>{this.conv(item.workstart)}</Text>
                                         <Text style={styles.clockinoutweakdayalphatext} />
-                                        <Text style={index > currentday&& (this.state.initialmonth + 2 === this.state.monthselected)?styles.clockinoutbodyhidetext: item.actualstart === '-' && item.workstart != '-' ?
+                                        <Text style={index > currentday && (this.state.initialmonth + 2 === this.state.monthselected) ? styles.clockinoutbodyhidetext : item.actualstart === '-' && item.workstart != '-' ?
                                             styles.clockinoutbodyredtext :
                                             item.late === 1 ? styles.clockinoutbodyredtext : styles.clockinoutbodytext}>
 
                                             {this.conv(item.actualstart)}</Text>
                                     </View>
                                     <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                                        <Text style={index > currentday&& (this.state.initialmonth + 2 === this.state.monthselected)?styles.clockinoutbodyhidetext:styles.clockinoutbodytext}>{this.conv(item.workend)}</Text>
+                                        <Text style={index > currentday && (this.state.initialmonth + 2 === this.state.monthselected) ? styles.clockinoutbodyhidetext : styles.clockinoutbodytext}>{this.conv(item.workend)}</Text>
                                         <Text style={styles.clockinoutweakdayalphatext} />
-                                        <Text style={index > currentday&& (this.state.initialmonth + 2 === this.state.monthselected) ? styles.clockinoutbodyhidetext : item.actualend === '-' && item.workend != '-' ?
+                                        <Text style={index > currentday && (this.state.initialmonth + 2 === this.state.monthselected) ? styles.clockinoutbodyhidetext : item.actualend === '-' && item.workend != '-' ?
                                             styles.clockinoutbodyredtext :
                                             item.early === 1 ? styles.clockinoutbodyredtext : styles.clockinoutbodytext}>
 
@@ -626,8 +624,8 @@ console.log('init data : ',this.state.months[0])
                                 </View>
                                 <View style={{ height: 1, backgroundColor: Colors.lightGrayTextColor, }} />
                                 <View style={index > currentday && (this.state.initialmonth + 2 === this.state.monthselected) ?
-                                { height: 90, width: '100%', justifyContent: 'center', alignItems: 'center', position: 'absolute', backgroundColor: 'white', opacity: 0.7 }:
-                                { height: 90, width: '100%', justifyContent: 'center', alignItems: 'center', position: 'absolute', backgroundColor: 'white', opacity: 0 }
+                                    { height: 90, width: '100%', justifyContent: 'center', alignItems: 'center', position: 'absolute', backgroundColor: 'white', opacity: 0.7 } :
+                                    { height: 90, width: '100%', justifyContent: 'center', alignItems: 'center', position: 'absolute', backgroundColor: 'white', opacity: 0 }
                                 } >
                                 </View>
                             </View>
@@ -654,7 +652,7 @@ console.log('init data : ',this.state.months[0])
                 <View style={[styles.navContainer, { flexDirection: 'column' }]}>
                     <View style={styles.statusbarcontainer} />
                     <View style={{ height: 50, flexDirection: 'row', }}>
-                        <View style={{ width: '100%',height:'100%', justifyContent: 'center', position: 'absolute' }}>
+                        <View style={{ width: '100%', height: '100%', justifyContent: 'center', position: 'absolute' }}>
                             <Text style={styles.navTitleTextTop}>{title}</Text>
                         </View>
                         <View style={{ flex: 1, justifyContent: 'center', }}>
@@ -672,9 +670,9 @@ console.log('init data : ',this.state.months[0])
                     </View>
                 </View>
                 <View style={{ flex: 1, flexDirection: 'column', }}>
-                    <View style={{ height: this.state.manager * 50, backgroundColor: Colors.redColor,justifyContent:'center' }}>
-                    <Text style={{flex:1 ,marginLeft:20,color:'white',fontFamily:'Prompt-Regular'}}>{this.state.employee_name}</Text>
-                    <Text style={{flex:1,marginLeft:20,color:'white',fontFamily:'Prompt-Regular'}}>{this.state.employee_position}</Text>
+                    <View style={{ height: this.state.manager * 50, backgroundColor: Colors.redColor, justifyContent: 'center' }}>
+                        <Text style={{ flex: 1, marginLeft: 20, color: 'white', fontFamily: 'Prompt-Regular' }}>{this.state.employee_name}</Text>
+                        <Text style={{ flex: 1, marginLeft: 20, color: 'white', fontFamily: 'Prompt-Regular' }}>{this.state.employee_position}</Text>
                     </View>
                     <TouchableOpacity style={{ height: 40, backgroundColor: Colors.calendarLocationBoxColor, margin: 5, borderRadius: 5, justifyContent: 'center', alignItems: 'center', borderWidth: 1 }}
                         onPress={(this.select_month.bind(this))}
@@ -684,7 +682,7 @@ console.log('init data : ',this.state.months[0])
 
                     </TouchableOpacity>
 
-                    
+
 
                     <View style={{ flex: 12, marginLeft: 5, marginRight: 5, marginTop: 2, marginBottom: 2 }}>
 

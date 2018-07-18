@@ -11,8 +11,10 @@ import SaveProfile from "./../constants/SaveProfile"
 import SharedPreference from "../SharedObject/SharedPreference";
 
 import Authorization from "../SharedObject/Authorization";
-
 import SaveTOKEN from "./../constants/SaveToken"
+
+import LoginWithPinAPI from "./../constants/LoginWithPinAPI"
+import RestAPI from "./../constants/RestAPI"
 
 export default class RegisterActivity extends Component {
     savePIN = new SavePIN()
@@ -48,7 +50,7 @@ export default class RegisterActivity extends Component {
             //TODO 
             this.SaveProfile.setProfile(data.data)
             SharedPreference.profileObject = await this.SaveProfile.getProfile()
-            SharedPreference.TOKEN = await Authorization.convert('1', '1', SharedPreference.profileObject.client_token)
+            SharedPreference.TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, '1', SharedPreference.profileObject.client_token)
             // console.log("Register ==> TOKEN : ", SharedPreference.TOKEN)
             // await this.saveToken.setToken(SharedPreference.TOKEN)
 
@@ -79,18 +81,14 @@ export default class RegisterActivity extends Component {
         // console.log("Register data : ", data.code)
         // TODO Bell
         if (code.SUCCESS == data.code) {
-            // console.log("Register code :  ")
-
             await this.savePIN.setPin(this.state.pin2)
-            // console.log("Register setPin ")
-
             const pinID = await this.savePIN.getPin()
-            // console.log("Register getPin : ", pinID)
-
             this.setState({
                 showCreatePinSuccess: true,
                 showCreatePin: false
             })
+        } else if (code.DUPLICATE == data.code) {
+            await this.onLoadLoginWithPin(this.state.pin2)
         } else {
             Alert.alert(
                 StringText.SERVER_ERROR_TITLE,
@@ -102,6 +100,76 @@ export default class RegisterActivity extends Component {
             )
         }
     }
+
+    onLoadLoginWithPin = async (PIN) => {
+
+        console.log("login with pin ==> ", PIN)
+        let data = await LoginWithPinAPI(PIN)
+        code = data[0]
+        data = data[1]
+        if (code.SUCCESS == data.code) {
+            await this.onLoadInitialMaster()
+        } else {
+            this.props.navigation.navigate('PinScreen')
+
+            // Alert.alert(
+            //     StringText.ALERT_PIN_TITLE_NOT_CORRECT,
+            //     StringText.ALERT_PIN_DESC_NOT_CORRECT,
+            //     [{
+            //         text: 'OK', onPress: () => {
+            //             TODO
+            //             this.setState({
+            //                 showCreatePin: false
+            //             })
+                        
+
+            //         }
+            //     },
+            //     ],
+            //     { cancelable: false }
+            // )
+        }
+    }
+
+    onLoadInitialMaster = async () => {
+
+        let data = await RestAPI(SharedPreference.INITIAL_MASTER_API)
+        code = data[0]
+        data = data[1]
+        if (code.SUCCESS == data.code) {
+            array = data.data
+            for (let index = 0; index < array.length; index++) {
+                const element = array[index];
+                if (element.master_key == 'NOTIFICATION_CATEGORY') {
+                    SharedPreference.NOTIFICATION_CATEGORY = element.master_data
+                } else if (element.master_key == 'READ_TYPE') {
+                    SharedPreference.READ_TYPE = element.master_data
+                } else if (element.master_key == 'COMPANY_LOCATION') {
+                    SharedPreference.COMPANY_LOCATION = element.master_data
+                } else {
+                    SharedPreference.TB_M_LEAVETYPE = element.TB_M_LEAVETYPE
+                }
+            }
+            this.props.navigation.navigate('HomeScreen')
+
+            console.log("SharedPreference.NOTIFICATION_CATEGORY  ==> ", SharedPreference.NOTIFICATION_CATEGORY)
+            console.log("SharedPreference.READ_TYPE  ==> ", SharedPreference.READ_TYPE)
+            console.log("SharedPreference.COMPANY_LOCATION  ==> ", SharedPreference.COMPANY_LOCATION)
+            console.log("SharedPreference.TB_M_LEAVETYPE  ==> ", SharedPreference.TB_M_LEAVETYPE)
+
+        } else {
+            Alert.alert(
+                StringText.SERVER_ERROR_TITLE,
+                StringText.SERVER_ERROR_DESC,
+                [
+                    { text: 'OK', onPress: () => console.log('OK Pressed') },
+                ],
+                { cancelable: false }
+            )
+        }
+    }
+
+
 
     onClosePIN = () => {
         console.log("onClosePIN")

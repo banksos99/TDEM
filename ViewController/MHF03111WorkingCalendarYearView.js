@@ -973,6 +973,21 @@ export default class calendarYearView extends Component {
             )
         } else {
 
+            Alert.alert(
+                StringText.CALENDAR_ALERT_SYNC_CALENDAR_TITLE_SUCCESS,
+                StringText.CALENDAR_ALERT_SYNC_CALENDAR_DESC_SUCCESS,
+                [
+                    {
+                        text: StringText.CALENDAR_ALERT_SYNC_CALENDAR_BUTTON_SUCCESS, onPress: () => {
+                            this.setState({
+                                isLoading: false
+                            })
+                        }
+                    },
+                ],
+                { cancelable: false }
+            )
+
         }
 
     }
