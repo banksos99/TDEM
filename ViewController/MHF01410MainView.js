@@ -31,8 +31,6 @@ let ascendingSort = false;
 let filterImageButton = require('./../resource/images/filter.png');
 let sortImageButton = require('./../resource/images/descending.png');
 
-let managerstatus = false;
-
 let initannouncementType = 'All';
 let initannouncementTypetext = 'All';
 let initannouncementStatus = 'All';
@@ -40,6 +38,10 @@ let initannouncementStatustext = 'All'
 let page = 0;
 let orgcode = 60162305;
 
+let managerstatus = false;
+let announcestatus = false;
+let rolemanagementEmpoyee = [1,1,1,1,1,1,0,0];
+let rolemanagementManager = [0,0,0,0];
 
 export default class HMF01011MainView extends Component {
 
@@ -427,7 +429,7 @@ export default class HMF01011MainView extends Component {
         code = data[0]
         data = data[1]
 
-        if (code.SUCCESS == data.code) {
+        if ((code.SUCCESS == data.code) | (code.NODATA == data.code)) {
             this.props.navigation.navigate('NonPayrollList', {
                 dataResponse: data.data,
             });
@@ -438,7 +440,17 @@ export default class HMF01011MainView extends Component {
 
     loadPayslipfromAPI = async () => {
 
-        this.APICallback(await RestAPI(SharedPreference.PAYSLIP_LIST_API), 'PayslipList')
+        let data = await RestAPI(SharedPreference.PAYSLIP_LIST_API)
+        code = data[0]
+        data = data[1]
+
+        if ((code.SUCCESS == data.code) | (code.NODATA == data.code)) {
+            this.props.navigation.navigate('PayslipList', {
+                dataResponse: data.data,
+            });
+        } else {
+            this.onLoadErrorAlertDialog(data)
+        }
 
     }
 
@@ -650,18 +662,7 @@ export default class HMF01011MainView extends Component {
     //*********************** Check API before change screen  **********************
     //*****************************************************************************
 
-    onOpenCalendar() {
-        this.setState({
-
-            isscreenloading: true,
-            loadingtype: 3
-
-        }, function () {
-            // this.props.navigation.navigate('CalendarActivity');
-            this.setState(this.renderloadingscreen())
-            this.loadCalendarfromAPI()
-        });
-    }
+    
 
     onOpenOrgaStructer() {
         this.setState({
@@ -732,6 +733,7 @@ export default class HMF01011MainView extends Component {
     }
 
     onOpenAnnouncement() {
+
         this.setState({
 
             isscreenloading: true,
@@ -745,6 +747,7 @@ export default class HMF01011MainView extends Component {
 
     }
     onOpenAnnouncementDetail(item, index) {
+
         this.setState({
 
             isscreenloading: true,
@@ -758,107 +761,155 @@ export default class HMF01011MainView extends Component {
         });
 
     }
+
     onOpenEmployeeInfo() {
-        this.setState({
-            isscreenloading: true,
-            loadingtype: 3
-        }, function () {
-            this.setState(this.renderloadingscreen())
-            this.loadEmployeeInfoformAPI()
-        });
 
+        if (rolemanagementEmpoyee[0]) {
+
+            this.setState({
+                isscreenloading: true,
+                loadingtype: 3
+            }, function () {
+                this.setState(this.renderloadingscreen())
+                this.loadEmployeeInfoformAPI()
+            });
+        }
     }
-    onOpenNonpayroll() {
-        this.setState({
-            isscreenloading: true,
-            loadingtype: 3
-        }, function () {
-            this.setState(this.renderloadingscreen())
-            this.loadNonpayrollfromAPI()
-        });
 
+    onOpenNonpayroll() {
+
+        if (rolemanagementEmpoyee[1]) {
+
+            this.setState({
+
+                isscreenloading: true,
+                loadingtype: 3
+
+            }, function () {
+
+                this.setState(this.renderloadingscreen())
+                this.loadNonpayrollfromAPI()
+
+            });
+
+        }
     }
 
     onOpenPayslip() {
-        this.setState({
 
-            isscreenloading: true,
-            loadingtype: 3
+        if (rolemanagementEmpoyee[2]) {
 
-        }, function () {
+            this.setState({
 
-            this.setState(this.renderloadingscreen())
-            this.loadPayslipfromAPI()
-        });
+                isscreenloading: true,
+                loadingtype: 3
+
+            }, function () {
+
+                this.setState(this.renderloadingscreen())
+                this.loadPayslipfromAPI()
+            });
+
+        }
+    }
+
+    onOpenLeaveQuota() {
+
+        if (rolemanagementEmpoyee[3]) {
+
+            this.setState({
+
+                isscreenloading: true,
+                loadingtype: 3
+
+            }, function () {
+
+                this.setState(this.renderloadingscreen())
+                this.loadLeaveQuotafromAPI()
+            });
+
+        }
 
     }
-    onOpenLeaveQuota() {
-        this.setState({
 
-            isscreenloading: true,
-            loadingtype: 3
+    onOpenClockInOut() {
 
-        }, function () {
+        if(rolemanagementEmpoyee[4]){
 
-            this.setState(this.renderloadingscreen())
-            this.loadLeaveQuotafromAPI()
-        });
+            this.setState({
 
+                isscreenloading: true,
+                loadingtype: 3
+    
+            }, function () {
+    
+                this.setState(this.renderloadingscreen())
+                this.loadClockInOutDetailfromAPI()
+    
+    
+            });
+
+        }
+        
     }
 
     onOpenOTSummarySelf() {
-        this.setState({
 
-            isscreenloading: true,
-            loadingtype: 3
+        if (rolemanagementEmpoyee[5]) {
+            this.setState({
 
-        }, function () {
+                isscreenloading: true,
+                loadingtype: 3
 
-            this.setState(this.renderloadingscreen())
-            this.loadOTSummarySelffromAPI()
-        });
+            }, function () {
 
-        // this.props.navigation.navigate('OTSummaryDetail', {
-        //     DataResponse: leaveQuotaDataResponse.dataSource,
-        // });
+                this.setState(this.renderloadingscreen())
+                this.loadOTSummarySelffromAPI()
+            });
 
+            // this.props.navigation.navigate('OTSummaryDetail', {
+            //     DataResponse: leaveQuotaDataResponse.dataSource,
+            // });
+
+        }
     }
-    onOpenClockInOut() {
-        this.setState({
 
-            isscreenloading: true,
-            loadingtype: 3
+    onOpenCalendar() {
+        if (rolemanagementEmpoyee[6]) {
 
-        }, function () {
+            this.setState({
 
-            this.setState(this.renderloadingscreen())
-            this.loadClockInOutDetailfromAPI()
+                isscreenloading: true,
+                loadingtype: 3
 
-
-        });
-
-        // this.props.navigation.navigate('Handbooklist', {
-        //     DataResponse: HandbookshelfDataResponse.dataSource,
-        // })
-
+            }, function () {
+                // this.props.navigation.navigate('CalendarActivity');
+                this.setState(this.renderloadingscreen())
+                this.loadCalendarfromAPI()
+            });
+        }
     }
+
     onOpenHandbook() {
-        this.setState({
 
-            isscreenloading: true,
-            loadingtype: 3
+        if (rolemanagementEmpoyee[7]) {
+            this.setState({
 
-        }, function () {
+                isscreenloading: true,
+                loadingtype: 3
 
-            this.setState(this.renderloadingscreen())
-            this.loadHandbooklistfromAPI()
+            }, function () {
+
+                this.setState(this.renderloadingscreen())
+                this.loadHandbooklistfromAPI()
 
 
-        });
+            });
 
-        // this.props.navigation.navigate('Handbooklist', {
-        //     DataResponse: HandbookshelfDataResponse.dataSource,
-        // })
+            // this.props.navigation.navigate('Handbooklist', {
+            //     DataResponse: HandbookshelfDataResponse.dataSource,
+            // })
+        }
 
     }
 
@@ -922,10 +973,18 @@ export default class HMF01011MainView extends Component {
 
     settabscreen(tabnumber) {
 
+        
+
+
         if (tabnumber === 1) {
 
-            //load data befor open announcement screen in first time
+            // check permission announcement
+            if (announcestatus == false) {
 
+                return
+            }
+
+            //load data befor open announcement screen in first time
             if (announcementData.length) {
                 page = tabnumber;
                 this.setState({
@@ -1280,7 +1339,9 @@ export default class HMF01011MainView extends Component {
                             <View style={[styles.boxShadow, shadow]} >
                                 <View style={styles.mainmenuImageButton}>
                                     <Image
-                                        style={{ flex: 0.7 }}
+                                        style={rolemanagementEmpoyee[0] === 1 ?
+                                            { flex: 0.7, tintColor: Colors.redTextColor } :
+                                            { flex: 0.7, tintColor: Colors.lightGrayTextColor }}
                                         source={require('./../resource/images/MainMenu/MenuEmployee.png')}
                                         resizeMode='contain'
                                     />
@@ -1300,7 +1361,9 @@ export default class HMF01011MainView extends Component {
                             <View style={[styles.boxShadow, shadow]} >
                                 <View style={styles.mainmenuImageButton}>
                                     <Image
-                                        style={{ flex: 0.7 }}
+                                        style={rolemanagementEmpoyee[1] === 1 ?
+                                            { flex: 0.7, tintColor: Colors.redTextColor } :
+                                            { flex: 0.7, tintColor: Colors.lightGrayTextColor }}
                                         source={require('./../resource/images/MainMenu/MenuNonpayroll.png')}
                                         resizeMode='contain'
                                     />
@@ -1317,7 +1380,9 @@ export default class HMF01011MainView extends Component {
                             <View style={[styles.boxShadow, shadow]} >
                                 <View style={styles.mainmenuImageButton}>
                                     <Image
-                                        style={{ flex: 0.7 }}
+                                        style={rolemanagementEmpoyee[2] === 1 ?
+                                            { flex: 0.7, tintColor: Colors.redTextColor } :
+                                            { flex: 0.7, tintColor: Colors.lightGrayTextColor }}
                                         source={require('./../resource/images/MainMenu/MenuPayslip.png')}
                                         resizeMode='contain'
                                     />
@@ -1337,7 +1402,9 @@ export default class HMF01011MainView extends Component {
                             <View style={[styles.boxShadow, shadow]} >
                                 <View style={styles.mainmenuImageButton}>
                                     <Image
-                                        style={{ flex: 0.7 }}
+                                        style={rolemanagementEmpoyee[3] === 1 ?
+                                            { flex: 0.7, tintColor: Colors.redTextColor } :
+                                            { flex: 0.7, tintColor: Colors.lightGrayTextColor }}
                                         source={require('./../resource/images/MainMenu/MenuLeave.png')}
                                         resizeMode='contain'
                                     />
@@ -1355,7 +1422,9 @@ export default class HMF01011MainView extends Component {
                             <View style={[styles.boxShadow, shadow]} >
                                 <View style={styles.mainmenuImageButton}>
                                     <Image
-                                        style={{ flex: 0.7 }}
+                                        style={rolemanagementEmpoyee[4] === 1 ?
+                                            { flex: 0.7, tintColor: Colors.redTextColor } :
+                                            { flex: 0.7, tintColor: Colors.lightGrayTextColor }}
                                         source={require('./../resource/images/MainMenu/MenuClock.png')}
                                         resizeMode='contain'
                                     />
@@ -1373,7 +1442,9 @@ export default class HMF01011MainView extends Component {
                             <View style={[styles.boxShadow, shadow]} >
                                 <View style={styles.mainmenuImageButton}>
                                     <Image
-                                        style={{ flex: 0.7 }}
+                                        style={rolemanagementEmpoyee[5] === 1 ?
+                                            { flex: 0.7, tintColor: Colors.redTextColor } :
+                                            { flex: 0.7, tintColor: Colors.lightGrayTextColor }}
                                         source={require('./../resource/images/MainMenu/MenuOT.png')}
                                         resizeMode='contain'
                                     />
@@ -1393,7 +1464,9 @@ export default class HMF01011MainView extends Component {
                             <View style={[styles.boxShadow, shadow]} >
                                 <View style={styles.mainmenuImageButton}>
                                     <Image
-                                        style={{ flex: 0.7 }}
+                                        style={rolemanagementEmpoyee[6] === 1 ?
+                                            { flex: 0.7, tintColor: Colors.redTextColor } :
+                                            { flex: 0.7, tintColor: Colors.lightGrayTextColor }}
                                         source={require('./../resource/images/MainMenu/MenuCalendar.png')}
                                         resizeMode='contain'
                                     />
@@ -1410,7 +1483,9 @@ export default class HMF01011MainView extends Component {
                             <View style={[styles.boxShadow, shadow]} >
                                 <View style={styles.mainmenuImageButton}>
                                     <Image
-                                        style={{ flex: 0.7 }}
+                                        style={rolemanagementEmpoyee[7] === 1 ?
+                                            { flex: 0.7, tintColor: Colors.redTextColor } :
+                                            { flex: 0.7, tintColor: Colors.lightGrayTextColor }}
                                         source={require('./../resource/images/MainMenu/MenuHandbook.png')}
                                         resizeMode='contain'
                                     />

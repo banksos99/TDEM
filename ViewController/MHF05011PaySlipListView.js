@@ -118,93 +118,101 @@ export default class PaySlipActivity extends Component {
 
         let havedata;
 
-        if (dataSource.years[this.state.indexselectyear].detail) {
+        if (dataSource.years) {
 
-            for (let j = 0; j < dataSource.years[this.state.indexselectyear].detail.length; j++) {
+            if (dataSource.years[this.state.indexselectyear].detail) {
 
-                if (dataSource.years[this.state.indexselectyear].detail[j].month_no === i + 1) {
+                for (let j = 0; j < dataSource.years[this.state.indexselectyear].detail.length; j++) {
 
-                    havedata = dataSource.years[this.state.indexselectyear].detail[j]
-                    break
+                    if (dataSource.years[this.state.indexselectyear].detail[j].month_no === i + 1) {
 
-                }
+                        havedata = dataSource.years[this.state.indexselectyear].detail[j]
+                        break
 
-            }
-
-            if (havedata) {
-
-                let netsalary = 0;
-                let pay_date;
-
-                if (havedata.net_salary) {
-                    netsalary = Dcryptfun.decrypt(havedata.net_salary)
-                }
-                
-
-                if (havedata.pay_date) {
-
-                    teatlist = havedata.pay_date.split('-')
-                    
-                    pay_date = teatlist[2]+' ' + month[teatlist[1]-1] +' '+ teatlist[0]
+                    }
 
                 }
-    
+
+                if (havedata) {
+
+                    let netsalary = 0;
+                    let pay_date;
+
+                    if (havedata.net_salary) {
+                        netsalary = Dcryptfun.decrypt(havedata.net_salary)
+                    }
+
+
+                    if (havedata.pay_date) {
+
+                        teatlist = havedata.pay_date.split('-')
+
+                        pay_date = teatlist[2] + ' ' + month[teatlist[1] - 1] + ' ' + teatlist[0]
+
+                    }
+
+                    return (
+                        <View style={i === currentmonth && this.state.indexselectyear === 0 ?
+                            styles.payslipitemlast :
+                            i > currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemdisable : styles.payslipitem} key={i}>
+                            <TouchableOpacity style={{ flex: 1 }}
+                                onPress={() => { this.onDetail(this.state.indexselectyear, i) }}
+                            >
+
+                                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', }}>
+                                    <Text style={i === currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemmoneyred : styles.payslipitemdetail}>
+                                        {month[i]}
+                                    </Text>
+                                </View>
+                                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                                    <Text style={i === currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemmoneyred : styles.payslipincome}>
+                                        {(netsalary)}
+                                    </Text>
+                                </View>
+                                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', }}>
+                                    <Text style={i === currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemmoneyred : styles.payslipitemdetail}>
+                                        {pay_date}
+                                    </Text>
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+                    )
+                }
+
+                let net = '0.00';
+
+                if (currentmonth < i && this.state.indexselectyear === 0) {
+
+                    net = '';
+
+                }
                 return (
                     <View style={i === currentmonth && this.state.indexselectyear === 0 ?
                         styles.payslipitemlast :
-                        i > currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemdisable : styles.payslipitem} key={i}>
-                        <TouchableOpacity style={{ flex: 1 }}
-                            onPress={() => { this.onDetail(this.state.indexselectyear, i) }}
-                        >
+                        styles.payslipitemdisable}
+                        key={i}>
 
-                            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', }}>
-                                <Text style={i === currentmonth && this.state.indexselectyear === 0? styles.payslipitemmoneyred : styles.payslipitemdetail}>
-                                {month[i]}
-                                </Text>
-                            </View>
-                            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                                <Text style={i === currentmonth && this.state.indexselectyear === 0? styles.payslipitemmoneyred : styles.payslipincome}>
-                                {(netsalary) }
-                                </Text>
-                            </View>
-                            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', }}>
-                                <Text style={i === currentmonth && this.state.indexselectyear === 0? styles.payslipitemmoneyred : styles.payslipitemdetail}>
-                                {pay_date}
-                                </Text>
-                            </View>
-                        </TouchableOpacity>
+                        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', }}>
+                            <Text style={i === currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemmoneyred : styles.payslipitemdetail}>{month[i]}</Text>
+                        </View>
+                        <View style={{ flex: 2, justifyContent: 'center', alignItems: 'center' }}>
+                            <Text style={i === currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemmoneyred : styles.payslipitemdetail}>{net}</Text>
+                        </View>
+                        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', }}>
+
+                        </View>
                     </View>
-                )
-            }
-            let net = '0.00';
-            if (currentmonth < i && this.state.indexselectyear === 0) {
-
-                net = '';
+                );
 
             }
-            return (
-                <View style={i === currentmonth && this.state.indexselectyear === 0 ?
-                    styles.payslipitemlast :
-                     styles.payslipitemdisable}
-                     key={i}>
-
-                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', }}>
-                        <Text style={i === currentmonth && this.state.indexselectyear === 0? styles.payslipitemmoneyred : styles.payslipitemdetail}>{month[i]}</Text>
-                    </View>
-                    <View style={{ flex: 2, justifyContent: 'center', alignItems: 'center' }}>
-                        <Text style={i === currentmonth && this.state.indexselectyear === 0? styles.payslipitemmoneyred : styles.payslipitemdetail}>{net}</Text>
-                    </View>
-                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', }}>
-
-                    </View>
-                </View>
-            );
-
         }
+
+        console.log('i => ',i)
+        console.log('currentmonth => ',currentmonth)
         return (
             <View style={i === currentmonth && this.state.indexselectyear === 0 ?
                 styles.payslipitemlast :
-                styles.payslipitemdisable }
+                styles.payslipitemdisable}
                 key={i}>
 
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', }}>
