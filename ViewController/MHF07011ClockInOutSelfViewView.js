@@ -27,7 +27,9 @@ import { styles } from "./../SharedObject/MainStyles"
 import Months from "./../constants/Month"
 import RestAPI from "../constants/RestAPI"
 
-let MONTH_LIST = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+//monthNames
+//let MONTH_LIST = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
 let firstday;
 let daymonth;
 let currentday;
@@ -79,7 +81,7 @@ export default class ClockInOutSelfView extends Component {
         }
 
         this.checkDataFormat(this.props.navigation.getParam("DataResponse", ""));
-        let birthday = new Date(MONTH_LIST[this.state.initialmonth + 1] + '1,' + this.state.initialyear);
+        let birthday = new Date(Months.monthNames[this.state.initialmonth + 1] + '1,' + this.state.initialyear);
         firstday = birthday.getDay() + 1;
         console.log('employee_name :', this.state.employee_name);
         console.log('employee_position :', this.state.employee_position);
@@ -103,14 +105,14 @@ export default class ClockInOutSelfView extends Component {
         date = today.getDate() + "/" + parseInt(today.getMonth() + 1) + "/" + today.getFullYear();
         this.state.initialyear = today.getFullYear();
         this.state.initialmonth = parseInt(today.getMonth() - 1);
-        this.state.announcementTypetext = MONTH_LIST[this.state.initialmonth + 1] + ' ' + this.state.initialyear;
+        this.state.announcementTypetext = Months.monthNames[this.state.initialmonth + 1] + ' ' + this.state.initialyear;
         for (let i = this.state.initialmonth + 13; i > this.state.initialmonth + 1; i--) {
 
             if (i === 11) {
 
                 this.state.initialyear--;
             }
-            this.state.months.push(MONTH_LIST[i % 12] + ' ' + this.state.initialyear)
+            this.state.months.push(Months.monthNames[i % 12] + ' ' + this.state.initialyear)
         }
 
         var monthnow = new Date(this.state.initialyear, this.state.initialmonth + 1, 1);
@@ -131,6 +133,8 @@ export default class ClockInOutSelfView extends Component {
             let workend = '-';
             let actualstart = '-';
             let actualend = '-';
+            let late = 0;
+            let early = 0;
 
             if (DataResponse.data) {
 
@@ -202,7 +206,8 @@ export default class ClockInOutSelfView extends Component {
                 workend: workend,
                 actualstart: actualstart,
                 actualend: actualend,
-
+                late: late,
+                early: early
             })
 
         }
@@ -248,11 +253,11 @@ export default class ClockInOutSelfView extends Component {
             tmonth = '0' + omonth
         }
         let today = new Date();
-        let birthday = new Date(MONTH_LIST[parseInt(omonth) - 1] + '1,' + oyear);
+        let birthday = new Date(Months.monthNames[parseInt(omonth) - 1] + '1,' + oyear);
         firstday = birthday.getDay();
-
-        let url = SharedPreference.CLOCK_IN_OUT_API + 'month=' + tmonth + '&year=' + oyear
-        console.log('url :', url)
+        
+        let url = SharedPreference.CLOCK_IN_OUT_API + SharedPreference.profileObject.employee_id + '&month=' + tmonth + '&year=' + oyear
+        console.log('CLOCK_IN_OUT_API :', url)
 
         // var monthnow = new Date(oyear, parseInt(omonth)-1, 1);
         // var monthnext = new Date(oyear,omonth, 1);
@@ -273,12 +278,12 @@ export default class ClockInOutSelfView extends Component {
     }
 
     APICallback(data) {
-
+       
         code = data[0]
         data = data[1]
-
+        console.log('CLOCK_IN_OUT_API data :', data)
         if (code.SUCCESS == data.code) {
-
+           
             this.state.tdataSource = [];
 
             for (let i = 0; i < data.data.items.length; i++) {
@@ -347,6 +352,41 @@ export default class ClockInOutSelfView extends Component {
 
 
             }
+        } else {
+
+            this.state.tdataSource = [];
+            var monthnow = new Date(this.state.yearselected, this.state.monthselected + 1, 1);
+            var monthnext = new Date(this.state.yearselected, this.state.monthselected + 2, 1);
+            console.log('monthselected :', this.state.monthselected);
+            var date1_ms = monthnow.getTime();
+            var date2_ms = monthnext.getTime();
+            var difference_ms = date2_ms - date1_ms;
+            var one_day = 1000 * 60 * 60 * 24;
+
+            daymonth = Math.round(difference_ms / one_day)
+
+            for (let m = 0; m < daymonth; m++) {
+
+                let datetype = 0;
+                let workstart = '-';
+                let workend = '-';
+                let actualstart = '-';
+                let actualend = '-';
+                let late = 0;
+                let early = 0;
+
+                this.state.tdataSource.push({
+                    datetype: datetype,
+                    workstart: workstart,
+                    workend: workend,
+                    actualstart: actualstart,
+                    actualend: actualend,
+                    late: late,
+                    early: early
+
+                })
+            }
+
         }
         console.log('tdataSource : ', this.state.tdataSource)
         this.setState({
@@ -382,7 +422,6 @@ export default class ClockInOutSelfView extends Component {
     }
 
 
-
     select_month() {
 
         this.setState({
@@ -405,14 +444,14 @@ export default class ClockInOutSelfView extends Component {
             // isscreenloading: false,
 
         }, function () {
-
+            
             let tdate = initannouncementType.split(' ')
             let mdate = 0;
 
             console.log('month : ', tdate[0])
 
             for (let i = 0; i < 12; i++) {
-                if (MONTH_LIST[i] === tdate[0]) {
+                if (Months.monthNames[i] === tdate[0]) {
                     console.log('month : ', i)
                     mdate = i;
                 }
@@ -445,7 +484,7 @@ export default class ClockInOutSelfView extends Component {
             console.log('month : ', tdate[0])
 
             for (let i = 0; i < 12; i++) {
-                if (MONTH_LIST[i] === tdate[0]) {
+                if (Months.monthNames[i] === tdate[0]) {
                     console.log('month : ', i)
                     mdate = i;
                 }
@@ -465,10 +504,12 @@ export default class ClockInOutSelfView extends Component {
         if (date == '-') {
 
             return date
-        }
-        let arr = date.split(':');
+        } else if (parseInt(date)) {
+            let arr = date.split(':');
 
-        return parseInt(arr[0]) + ':' + arr[1]
+            return parseInt(arr[0]) + ':' + arr[1]
+        }
+        return '-'
 
     }
 
@@ -615,9 +656,12 @@ export default class ClockInOutSelfView extends Component {
                                     <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                                         <Text style={index > currentday && (this.state.initialmonth + 2 === this.state.monthselected) ? styles.clockinoutbodyhidetext : styles.clockinoutbodytext}>{this.conv(item.workend)}</Text>
                                         <Text style={styles.clockinoutweakdayalphatext} />
-                                        <Text style={index > currentday && (this.state.initialmonth + 2 === this.state.monthselected) ? styles.clockinoutbodyhidetext : item.actualend === '-' && item.workend != '-' ?
-                                            styles.clockinoutbodyredtext :
-                                            item.early === 1 ? styles.clockinoutbodyredtext : styles.clockinoutbodytext}>
+                                        <Text style={index > currentday && (this.state.initialmonth + 2 === this.state.monthselected) ?
+                                            styles.clockinoutbodyhidetext :
+                                            item.actualend === '-' && item.workend != '-' ?
+                                                styles.clockinoutbodyredtext :
+                                                item.early === 1 ? styles.clockinoutbodyredtext :
+                                                    styles.clockinoutbodytext}>
 
                                             {this.conv(item.actualend)}</Text>
                                     </View>

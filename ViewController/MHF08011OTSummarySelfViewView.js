@@ -24,6 +24,7 @@ import { styles } from "./../SharedObject/MainStyles"
 import SharedPreference from "./../SharedObject/SharedPreference"
 import RestAPI from "../constants/RestAPI"
 
+//monthNames
 let MONTH_LIST = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
 export default class OTSummaryDetail extends Component {
