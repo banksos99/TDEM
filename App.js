@@ -140,10 +140,10 @@ export default class mainview extends Component {
   componentWillReceiveProps(nextProps) {
 
     if (nextProps.fromPushnoti) {
-      alert('app did become active from pushnoti');
+      // alert('app did become active from pushnoti');
 
     } else if (nextProps.appDidBecomeActive) {
-      alert('app did become active');
+      // alert('app did become active');
     }
   }
 

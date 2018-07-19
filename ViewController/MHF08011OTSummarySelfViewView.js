@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 
-
 import {
     Text,
     StyleSheet,
@@ -13,7 +12,8 @@ import {
     RefreshControl,
     Image, Picker, WebView,
     Platform,
-    ActivityIndicator
+    ActivityIndicator,
+    Alert
 
 } from 'react-native';
 
@@ -21,6 +21,8 @@ import Colors from "./../SharedObject/Colors"
 import Layout from "./../SharedObject/Layout"
 import { styles } from "./../SharedObject/MainStyles"
 // import AnnounceTable from "../../components/TableviewCell"
+import SharedPreference from "./../SharedObject/SharedPreference"
+import RestAPI from "../constants/RestAPI"
 
 let MONTH_LIST = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
@@ -55,6 +57,7 @@ export default class OTSummaryDetail extends Component {
 
             months: [],
             tdataSource: {},
+            headerdataSource: {},
             initialyear: 0,
             initialmonth: 0,
 
@@ -77,25 +80,29 @@ export default class OTSummaryDetail extends Component {
     checkDataFormat(DataResponse) {
         
         if (DataResponse) {
-            
-            let today = new Date();
-            date = today.getDate() + "/" + parseInt(today.getMonth() + 1) + "/" + today.getFullYear();
-            this.state.initialyear = today.getFullYear();
-            this.state.initialmonth = parseInt(today.getMonth() - 1);
-            this.state.announcementTypetext = MONTH_LIST[this.state.initialmonth + 1]+' '+this.state.initialyear;
-            for (let i = this.state.initialmonth + 13; i > this.state.initialmonth; i--) {
 
-                if (i === 11) {
-
-                    this.state.initialyear--;
-                }
-                this.state.months.push(MONTH_LIST[i % 12] +' '+ this.state.initialyear)
-            }
-
-            this.state.tdataSource = DataResponse;
-            console.log('tosummary data : ',this.state.tdataSource)
-
+            this.state.tdataSource = DataResponse.detail.items;
+            this.state.headerdataSource = DataResponse.header
+            console.log('tosummary data : ', this.state.tdataSource)
         }
+
+        let today = new Date();
+        date = today.getDate() + "/" + parseInt(today.getMonth() + 1) + "/" + today.getFullYear();
+        this.state.initialyear = today.getFullYear();
+        this.state.initialmonth = parseInt(today.getMonth() - 1);
+        this.state.announcementTypetext = MONTH_LIST[this.state.initialmonth + 1] + ' ' + this.state.initialyear;
+        for (let i = this.state.initialmonth + 13; i > this.state.initialmonth; i--) {
+
+            if (i === 11) {
+
+                this.state.initialyear--;
+            }
+            this.state.months.push(MONTH_LIST[i % 12] + ' ' + this.state.initialyear)
+        }
+
+
+
+        
     }
 
     componentWillMount() {
@@ -146,9 +153,13 @@ export default class OTSummaryDetail extends Component {
         return promise;
       }
 
-    loadOTSummarySelffromAPI(omonth, oyear) {
+    loadOTSummarySelffromAPI= async (omonth, oyear) =>{
 
-     
+       this.setState({
+            loadingtype: 1,
+            isscreenloading: false,
+        })
+
         let tmonth = omonth.toString();
      
 
@@ -156,54 +167,106 @@ export default class OTSummaryDetail extends Component {
             tmonth = '0' + omonth
         }
 
-        return fetch(('http://192.168.2.189:8080/api/v1/ot/summary?month=' + tmonth + '&year=' + oyear), {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                Authorization: 'Bearer Mi5IRjA1MDEuZTExZGI3YjllYTY0MjNkNDVmYTYyNmNkMzI1ZDhlN2U3NmI4Mzk0NTZhMGU5ODcxYzJiMzJiYzYyZWFlOWUzZGFiMDlhN2Y2M2I1OTE5MTkzZWYwNTYzYjAxODNiYjA2M2RhODAyN2Q5OTE3ZWNhOGExMTBlNTgzYmI3NTkzMmI=',
-            },
-        })
-  
-            .then((response) => response.json())
-            .then((responseJson) => {
+        let today = new Date();
 
-                try {
-                    this.setState({
+        let url = SharedPreference.OTSUMMARY_DETAIL + 'month=0' + tmonth + '&year=' + oyear
 
-                        isscreenloading: false,
-                        tdataSource: responseJson.data,
+        // this.APICallback(await RestAPI(url), 'OTSummarySelfView')
+        let data = await RestAPI(url)
+        code = data[0]
+        data = data[1]
 
-                    }, function () {
-                        console.log('tosummary data : ',this.state.tdataSource)
-                        // this.state.tdataSource = responseJson;
-
-
-                    });
-
-                } catch (error) {
-
-                    //console.log('erreo1 :', error);
-
-                }
-            })
-            .catch((error) => {
-
-                Alert.alert(
-                    'MHF00002ACRI',
-                    'System Error (API). Please contact system administrator.',
-                    [
-                        { text: 'OK', onPress: () => console.log('OK Pressed') },
-                    ],
-                    { cancelable: false }
-                )
-
-                //console.log(error);
-
+        if ((code.SUCCESS == data.code) | (code.NODATA == data.code)) {
+            this.props.navigation.navigate('OTSummarySelfView', {
+                dataResponse: data.data,
             });
+        } else {
+            this.onLoadErrorAlertDialog(data)
+        }
+
+
+
+
+        // return fetch(('http://192.168.2.189:8080/api/v1/ot/summary?month=' + tmonth + '&year=' + oyear), {
+        //     method: 'GET',
+        //     headers: {
+        //         'Accept': 'application/json',
+        //         'Content-Type': 'application/json',
+        //         Authorization: 'Bearer Mi5IRjA1MDEuZTExZGI3YjllYTY0MjNkNDVmYTYyNmNkMzI1ZDhlN2U3NmI4Mzk0NTZhMGU5ODcxYzJiMzJiYzYyZWFlOWUzZGFiMDlhN2Y2M2I1OTE5MTkzZWYwNTYzYjAxODNiYjA2M2RhODAyN2Q5OTE3ZWNhOGExMTBlNTgzYmI3NTkzMmI=',
+        //     },
+        // })
+
+        //     .then((response) => response.json())
+        //     .then((responseJson) => {
+
+        //         try {
+        //             this.setState({
+
+        //                 isscreenloading: false,
+        //                 // tdataSource: responseJson.data,
+        //                 tdataSource: responseJson.data.detail.items,
+        //                 headerdataSource: responseJson.data.header
+
+        //             }, function () {
+        //                 console.log('tosummary data : ', this.state.tdataSource)
+        //                 // this.state.tdataSource = responseJson;
+
+
+        //             });
+
+        //         } catch (error) {
+
+        //             //console.log('erreo1 :', error);
+
+        //         }
+        //     })
+        //     .catch((error) => {
+
+        //         Alert.alert(
+        //             'MHF00002ACRI',
+        //             'System Error (API). Please contact system administrator.',
+        //             [
+        //                 { text: 'OK', onPress: () => console.log('OK Pressed') },
+        //             ],
+        //             { cancelable: false }
+        //         )
+
+        //         //console.log(error);
+
+        //     });
 
 
     }
+
+    onLoadErrorAlertDialog(error) {
+        this.setState({
+            isscreenloading: false,
+        })
+
+        if (this.state.isConnected) {
+            Alert.alert(
+                'MHF00001ACRI',
+                'Cannot connect to server. Please contact system administrator.',
+                [{
+                    text: 'OK', onPress: () => console.log('OK Pressed')
+                }],
+                { cancelable: false }
+            )
+        } else {
+            Alert.alert(
+                'MHF00002ACRI',
+                'System Error (API). Please contact system administrator.',
+                [{
+                    text: 'OK', onPress: () => {
+                        console.log("onLoadErrorAlertDialog")
+                    }
+                }],
+                { cancelable: false }
+            )
+        }
+        console.log("error : ", error)
+    }
+
 
       _generateRows(page) {
         //console.log(`loading rows for page ${page}`);
@@ -391,13 +454,13 @@ export default class OTSummaryDetail extends Component {
 
     }
     renderdetail() {
-
-        if (this.state.tdataSource) {
+console.log('this.state.tdataSource',this.state.tdataSource)
+        if (this.state.tdataSource.length) {
             return (
                 <View style={{ flex: 16, backgroundColor: Colors.calendarLocationBoxColor, }}>
                     <ScrollView>
                         {
-                            this.state.tdataSource.detail.items.map((item, index) => (
+                            this.state.tdataSource.map((item, index) => (
 
                                 <View key={item.id} style={{ height: 50 }} key={index + 500}>
                                     <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', }}>
@@ -441,13 +504,22 @@ export default class OTSummaryDetail extends Component {
         let ot_30 = 0;
         let ot_meals = 0;
 
-        if (this.state.tdataSource) {
+        if (this.state.headerdataSource.total_ot_hr) {
 
-            total_ot = this.state.tdataSource.header.total_ot_hr;
-            ot_15 = this.state.tdataSource.header.ot_hr.ot_x15;
-            ot_20 = this.state.tdataSource.header.ot_hr.ot_x20;
-            ot_30 = this.state.tdataSource.header.ot_hr.ot_x30;
-            ot_meals = this.state.tdataSource.header.ot_meals;
+            total_ot = this.state.headerdataSource.total_ot_hr;
+        }
+        if (this.state.headerdataSource.ot_hr) {
+
+            ot_15 = this.state.headerdataSource.ot_hr.ot_x15;
+        }
+        if (this.state.headerdataSource.ot_hr) {
+            ot_20 = this.state.headerdataSource.ot_hr.ot_x20;
+        }
+        if (this.state.headerdataSource.ot_hr) {
+            ot_30 = this.state.headerdataSource.ot_hr.ot_x30;
+        }
+        if (this.state.headerdataSource.ot_meals) {
+            ot_meals = this.state.headerdataSource.ot_meals;
         }
 
         return (

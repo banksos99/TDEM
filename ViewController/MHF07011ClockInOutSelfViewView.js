@@ -45,7 +45,7 @@ export default class ClockInOutSelfView extends Component {
         });
         let today = new Date();
 
-        currentday = today.getDate();
+        currentday = today.getDate()-1;
         currentmonth = today.getMonth();
         this.state = {
             isscreenloading: false,

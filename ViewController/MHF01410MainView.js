@@ -31,8 +31,6 @@ let ascendingSort = false;
 let filterImageButton = require('./../resource/images/filter.png');
 let sortImageButton = require('./../resource/images/descending.png');
 
-let managerstatus = false;
-
 let initannouncementType = 'All';
 let initannouncementTypetext = 'All';
 let initannouncementStatus = 'All';
@@ -40,6 +38,10 @@ let initannouncementStatustext = 'All'
 let page = 0;
 let orgcode = 60162305;
 
+let managerstatus = false;
+let announcestatus = false;
+let rolemanagementEmpoyee = [1,1,1,1,1,1,0,0];
+let rolemanagementManager = [0,0,0,0];
 
 export default class HMF01011MainView extends Component {
     saveAutoSyncCalendar = new SaveAutoSyncCalendar()
@@ -387,7 +389,7 @@ export default class HMF01011MainView extends Component {
         code = data[0]
         data = data[1]
 
-        if (code.SUCCESS == data.code) {
+        if ((code.SUCCESS == data.code) | (code.NODATA == data.code)) {
             this.props.navigation.navigate('NonPayrollList', {
                 dataResponse: data.data,
             });
@@ -398,7 +400,17 @@ export default class HMF01011MainView extends Component {
 
     loadPayslipfromAPI = async () => {
 
-        this.APICallback(await RestAPI(SharedPreference.PAYSLIP_LIST_API), 'PayslipList')
+        let data = await RestAPI(SharedPreference.PAYSLIP_LIST_API)
+        code = data[0]
+        data = data[1]
+
+        if ((code.SUCCESS == data.code) | (code.NODATA == data.code)) {
+            this.props.navigation.navigate('PayslipList', {
+                dataResponse: data.data,
+            });
+        } else {
+            this.onLoadErrorAlertDialog(data)
+        }
 
     }
 
@@ -418,9 +430,21 @@ export default class HMF01011MainView extends Component {
 
         let url = SharedPreference.OTSUMMARY_DETAIL + 'month=0' + parseInt(today.getMonth() + 1) + '&year=' + today.getFullYear()
 
-        this.APICallback(await RestAPI(url), 'OTSummarySelfView')
+        // this.APICallback(await RestAPI(url), 'OTSummarySelfView')
+        let data = await RestAPI(url)
+        code = data[0]
+        data = data[1]
+
+        if ((code.SUCCESS == data.code) | (code.NODATA == data.code)) {
+            this.props.navigation.navigate('OTSummarySelfView', {
+                dataResponse: data.data,
+            });
+        } else {
+            this.onLoadErrorAlertDialog(data)
+        }
 
     }
+
     loadHandbooklistfromAPI = async () => {
         console.log("loadHandbooklistfromAPI")
 
@@ -610,18 +634,7 @@ export default class HMF01011MainView extends Component {
     //*********************** Check API before change screen  **********************
     //*****************************************************************************
 
-    onOpenCalendar() {
-        this.setState({
-
-            isscreenloading: true,
-            loadingtype: 3
-
-        }, function () {
-            // this.props.navigation.navigate('CalendarActivity');
-            this.setState(this.renderloadingscreen())
-            this.loadCalendarfromAPI()
-        });
-    }
+    
 
     onOpenOrgaStructer() {
         this.setState({
@@ -692,6 +705,7 @@ export default class HMF01011MainView extends Component {
     }
 
     onOpenAnnouncement() {
+
         this.setState({
 
             isscreenloading: true,
@@ -705,6 +719,7 @@ export default class HMF01011MainView extends Component {
 
     }
     onOpenAnnouncementDetail(item, index) {
+
         this.setState({
 
             isscreenloading: true,
@@ -718,7 +733,9 @@ export default class HMF01011MainView extends Component {
         });
 
     }
+
     onOpenEmployeeInfo() {
+
         this.setState({
             isscreenloading: true,
             loadingtype: 3
@@ -728,18 +745,25 @@ export default class HMF01011MainView extends Component {
         });
 
     }
+
     onOpenNonpayroll() {
+
         this.setState({
+
             isscreenloading: true,
             loadingtype: 3
+
         }, function () {
+
             this.setState(this.renderloadingscreen())
             this.loadNonpayrollfromAPI()
+
         });
 
     }
 
     onOpenPayslip() {
+
         this.setState({
 
             isscreenloading: true,
@@ -750,9 +774,10 @@ export default class HMF01011MainView extends Component {
             this.setState(this.renderloadingscreen())
             this.loadPayslipfromAPI()
         });
-
     }
+
     onOpenLeaveQuota() {
+
         this.setState({
 
             isscreenloading: true,
@@ -766,24 +791,8 @@ export default class HMF01011MainView extends Component {
 
     }
 
-    onOpenOTSummarySelf() {
-        this.setState({
-
-            isscreenloading: true,
-            loadingtype: 3
-
-        }, function () {
-
-            this.setState(this.renderloadingscreen())
-            this.loadOTSummarySelffromAPI()
-        });
-
-        // this.props.navigation.navigate('OTSummaryDetail', {
-        //     DataResponse: leaveQuotaDataResponse.dataSource,
-        // });
-
-    }
     onOpenClockInOut() {
+
         this.setState({
 
             isscreenloading: true,
@@ -797,12 +806,40 @@ export default class HMF01011MainView extends Component {
 
         });
 
-        // this.props.navigation.navigate('Handbooklist', {
-        //     DataResponse: HandbookshelfDataResponse.dataSource,
-        // })
+    }
+
+    onOpenOTSummarySelf() {
+
+        this.setState({
+
+            isscreenloading: true,
+            loadingtype: 3
+
+        }, function () {
+
+            this.setState(this.renderloadingscreen())
+            this.loadOTSummarySelffromAPI()
+        });
 
     }
+
+    onOpenCalendar() {
+
+        this.setState({
+
+            isscreenloading: true,
+            loadingtype: 3
+
+        }, function () {
+
+            this.setState(this.renderloadingscreen())
+            this.loadCalendarfromAPI()
+        });
+
+    }
+
     onOpenHandbook() {
+
         this.setState({
 
             isscreenloading: true,
@@ -813,12 +850,7 @@ export default class HMF01011MainView extends Component {
             this.setState(this.renderloadingscreen())
             this.loadHandbooklistfromAPI()
 
-
         });
-
-        // this.props.navigation.navigate('Handbooklist', {
-        //     DataResponse: HandbookshelfDataResponse.dataSource,
-        // })
 
     }
 
@@ -832,7 +864,6 @@ export default class HMF01011MainView extends Component {
 
             this.setState(this.renderloadingscreen())
             this.loadOrgStructerfromAPI()
-
 
         });
 
@@ -882,10 +913,18 @@ export default class HMF01011MainView extends Component {
 
     settabscreen(tabnumber) {
 
+        
+
+
         if (tabnumber === 1) {
 
-            //load data befor open announcement screen in first time
+            // check permission announcement
+            if (announcestatus == false) {
 
+                return
+            }
+
+            //load data befor open announcement screen in first time
             if (announcementData.length) {
                 page = tabnumber;
                 this.setState({
@@ -1247,12 +1286,17 @@ export default class HMF01011MainView extends Component {
                 </View>
                 <View style={{ flex: 1, backgroundColor: 'white' }} >
                     <View style={{ flex: 1, flexDirection: 'row' }}>
-                        <TouchableOpacity style={{ flex: 1 }}
+                        <TouchableOpacity
+                            ref=''
+                            disabled={!rolemanagementEmpoyee[0]}
+                            style={{ flex: 1 }}
                             onPress={this.onOpenEmployeeInfo.bind(this)}>
                             <View style={[styles.boxShadow, shadow]} >
                                 <View style={styles.mainmenuImageButton}>
                                     <Image
-                                        style={{ flex: 0.7 }}
+                                        style={rolemanagementEmpoyee[0] === 1 ?
+                                            { flex: 0.7, tintColor: Colors.redTextColor } :
+                                            { flex: 0.7, tintColor: Colors.lightGrayTextColor }}
                                         source={require('./../resource/images/MainMenu/MenuEmployee.png')}
                                         resizeMode='contain'
                                     />
@@ -1266,13 +1310,18 @@ export default class HMF01011MainView extends Component {
                             </View>
                         </TouchableOpacity>
 
-                        <TouchableOpacity style={{ flex: 1 }}
+                        <TouchableOpacity
+                            ref=''
+                            disabled={!rolemanagementEmpoyee[1]}
+                            style={{ flex: 1 }}
                             onPress={this.onOpenNonpayroll.bind(this)}
                         >
                             <View style={[styles.boxShadow, shadow]} >
                                 <View style={styles.mainmenuImageButton}>
                                     <Image
-                                        style={{ flex: 0.7 }}
+                                        style={rolemanagementEmpoyee[1] === 1 ?
+                                            { flex: 0.7, tintColor: Colors.redTextColor } :
+                                            { flex: 0.7, tintColor: Colors.lightGrayTextColor }}
                                         source={require('./../resource/images/MainMenu/MenuNonpayroll.png')}
                                         resizeMode='contain'
                                     />
@@ -1283,13 +1332,17 @@ export default class HMF01011MainView extends Component {
                             </View>
                         </TouchableOpacity>
                         <TouchableOpacity
+                            ref=''
+                            disabled={!rolemanagementEmpoyee[2]}
                             style={{ flex: 1 }}
                             onPress={this.onOpenPayslip.bind(this)}
                         >
                             <View style={[styles.boxShadow, shadow]} >
                                 <View style={styles.mainmenuImageButton}>
                                     <Image
-                                        style={{ flex: 0.7 }}
+                                        style={rolemanagementEmpoyee[2] === 1 ?
+                                            { flex: 0.7, tintColor: Colors.redTextColor } :
+                                            { flex: 0.7, tintColor: Colors.lightGrayTextColor }}
                                         source={require('./../resource/images/MainMenu/MenuPayslip.png')}
                                         resizeMode='contain'
                                     />
@@ -1303,13 +1356,17 @@ export default class HMF01011MainView extends Component {
                     <View style={{ flex: 1, flexDirection: 'row' }}>
 
                         <TouchableOpacity
+                            ref=''
+                            disabled={!rolemanagementEmpoyee[3]}
                             style={{ flex: 1 }}
                             onPress={this.onOpenLeaveQuota.bind(this)}
                         >
                             <View style={[styles.boxShadow, shadow]} >
                                 <View style={styles.mainmenuImageButton}>
                                     <Image
-                                        style={{ flex: 0.7 }}
+                                        style={rolemanagementEmpoyee[3] === 1 ?
+                                            { flex: 0.7, tintColor: Colors.redTextColor } :
+                                            { flex: 0.7, tintColor: Colors.lightGrayTextColor }}
                                         source={require('./../resource/images/MainMenu/MenuLeave.png')}
                                         resizeMode='contain'
                                     />
@@ -1321,13 +1378,17 @@ export default class HMF01011MainView extends Component {
                         </TouchableOpacity>
 
                         <TouchableOpacity
+                            ref=''
+                            disabled={!rolemanagementEmpoyee[4]}
                             style={{ flex: 1 }}
                             onPress={this.onOpenClockInOut.bind(this)}
                         >
                             <View style={[styles.boxShadow, shadow]} >
                                 <View style={styles.mainmenuImageButton}>
                                     <Image
-                                        style={{ flex: 0.7 }}
+                                        style={rolemanagementEmpoyee[4] === 1 ?
+                                            { flex: 0.7, tintColor: Colors.redTextColor } :
+                                            { flex: 0.7, tintColor: Colors.lightGrayTextColor }}
                                         source={require('./../resource/images/MainMenu/MenuClock.png')}
                                         resizeMode='contain'
                                     />
@@ -1339,13 +1400,17 @@ export default class HMF01011MainView extends Component {
                         </TouchableOpacity>
 
                         <TouchableOpacity
+                            ref=''
+                            disabled={!rolemanagementEmpoyee[5]}
                             style={{ flex: 1 }}
                             onPress={this.onOpenOTSummarySelf.bind(this)}
                         >
                             <View style={[styles.boxShadow, shadow]} >
                                 <View style={styles.mainmenuImageButton}>
                                     <Image
-                                        style={{ flex: 0.7 }}
+                                        style={rolemanagementEmpoyee[5] === 1 ?
+                                            { flex: 0.7, tintColor: Colors.redTextColor } :
+                                            { flex: 0.7, tintColor: Colors.lightGrayTextColor }}
                                         source={require('./../resource/images/MainMenu/MenuOT.png')}
                                         resizeMode='contain'
                                     />
@@ -1359,13 +1424,18 @@ export default class HMF01011MainView extends Component {
                     </View>
                     <View style={{ flex: 1, flexDirection: 'row' }}>
 
-                        <TouchableOpacity style={{ flex: 1 }}
+                        <TouchableOpacity
+                            ref=''
+                            disabled={!rolemanagementEmpoyee[6]}
+                            style={{ flex: 1 }}
                             onPress={this.onOpenCalendar.bind(this)}
                         >
                             <View style={[styles.boxShadow, shadow]} >
                                 <View style={styles.mainmenuImageButton}>
                                     <Image
-                                        style={{ flex: 0.7 }}
+                                        style={rolemanagementEmpoyee[6] === 1 ?
+                                            { flex: 0.7, tintColor: Colors.redTextColor } :
+                                            { flex: 0.7, tintColor: Colors.lightGrayTextColor }}
                                         source={require('./../resource/images/MainMenu/MenuCalendar.png')}
                                         resizeMode='contain'
                                     />
@@ -1376,13 +1446,18 @@ export default class HMF01011MainView extends Component {
                             </View>
                         </TouchableOpacity>
 
-                        <TouchableOpacity style={{ flex: 1 }}
+                        <TouchableOpacity
+                            ref=''
+                            disabled={!rolemanagementEmpoyee[7]}
+                            style={{ flex: 1 }}
                             onPress={this.onOpenHandbook.bind(this)}
                         >
                             <View style={[styles.boxShadow, shadow]} >
                                 <View style={styles.mainmenuImageButton}>
                                     <Image
-                                        style={{ flex: 0.7 }}
+                                        style={rolemanagementEmpoyee[7] === 1 ?
+                                            { flex: 0.7, tintColor: Colors.redTextColor } :
+                                            { flex: 0.7, tintColor: Colors.lightGrayTextColor }}
                                         source={require('./../resource/images/MainMenu/MenuHandbook.png')}
                                         resizeMode='contain'
                                     />
@@ -1627,7 +1702,9 @@ export default class HMF01011MainView extends Component {
                 <View style={{ flex: 1, backgroundColor: 'white' }} >
                     <View style={{ flex: 1, flexDirection: 'row' }}>
 
-                        <TouchableOpacity style={{ flex: 1 }}
+                        <TouchableOpacity
+                            ref=''
+                            style={{ flex: 1 }}
                             onPress={this.onOpenOrgaStructer.bind(this)}
                         >
                             <View style={[styles.boxShadow, shadow]} >
@@ -1647,7 +1724,9 @@ export default class HMF01011MainView extends Component {
                             </View>
                         </TouchableOpacity>
 
-                        <TouchableOpacity style={{ flex: 1 }}
+                        <TouchableOpacity
+                            ref=''
+                            style={{ flex: 1 }}
                             onPress={this.onOpenOrgaStructerClockInOut.bind(this)}
                         >
                             <View style={[styles.boxShadow, shadow]} >
@@ -1668,6 +1747,7 @@ export default class HMF01011MainView extends Component {
                     <View style={{ flex: 1, flexDirection: 'row' }}>
 
                         <TouchableOpacity
+                            ref=''
                             style={{ flex: 1 }}
                             onPress={this.onOpenOrgaStructerOTAverage.bind(this)}
 
@@ -1687,6 +1767,7 @@ export default class HMF01011MainView extends Component {
                         </TouchableOpacity>
 
                         <TouchableOpacity
+                            ref=''
                             style={{ flex: 1 }}
                             onPress={this.onOpenOrgaStructerOTHistory.bind(this)}>
                             <View style={[styles.boxShadow, shadow]} >
