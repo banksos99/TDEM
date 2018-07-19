@@ -82,6 +82,7 @@ export default class mainview extends Component {
 
     ////////////////////////
     // firebase.notifications().getInitialNotification
+    // firebase.notifications.Notification()
 
     // this.messageListener = firebase.messaging().onMessage((message) => {
     //   console.log("firebase ==> 1 Process your message as required : ", message)
@@ -91,7 +92,6 @@ export default class mainview extends Component {
     //   console.log("firebase ==> 2 Process your message as required : ", message)
     // });
 
-    // firebase.notifications.Notification()
 
     // firebase.messaging().onMessage(message => {
     //   console.log('firebase ==> message onMessage: ', message);
@@ -122,9 +122,19 @@ export default class mainview extends Component {
     //   console.log("firebase ==> messageListener ==> ", message)
     // });
 
+
+    firebase.messaging().onMessage(payload => {
+      console.log('Opened when app is alive');
+      console.log("payload ", payload);
+
+      const prefix = Platform.OS == 'android' ? 'ifimarketplace://ifimarketplace/' : 'ifimarketplace://'
+      const url = `${prefix}tabs/messages/${payload.key}`;
+      console.log("url ", url);
+    });
+
   }
 
-  
+
 
 
   componentWillReceiveProps(nextProps) {

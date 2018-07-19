@@ -31,7 +31,7 @@ export default class calendarMonthView extends Component {
                 month: this.state.monthText,
                 monthObject: this.state.monthObject,
                 dataResponse: this.state.dataResponse,
-                location : this.state.location
+                location: this.state.location
             });
     }
 

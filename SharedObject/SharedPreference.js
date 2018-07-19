@@ -1,6 +1,6 @@
 
 const HOST = 'https://tdemconnect-dev.tdem.toyota-asia.com'
-// const HOST ='http://192.168.2.189:8080'
+// const HOST = 'http://192.168.2.189:8080'
 const VERSION = 'v1'
 
 export default {
@@ -32,7 +32,6 @@ export default {
     ORGANIZ_STRUCTURE_API: HOST + '/api/' + VERSION + '/organization?type=CE&org_code=',
     APPLICATION_INFO_API: HOST + '/api/' + VERSION + '/appinfo',
 
-
     OTSUMMARY_LINE_CHART: HOST + '/api/' + VERSION + '/ot/history?org_code=',
     OTSUMMARY_BAR_CHART: HOST + '/api/' + VERSION + '/ot/average?org_code=',
 
@@ -47,6 +46,7 @@ export default {
     COMPANY_LOCATION: [],
     TB_M_LEAVETYPE: [],
     company: 'TMAP-EM',
-    deviceInfo: {}
+    deviceInfo: {},
+    calendarAutoSync: true
 }
 

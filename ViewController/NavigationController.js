@@ -33,7 +33,7 @@ import clockInOutSelfView from "./MHF07011ClockInOutSelfViewView";
 import registerScreen from "./MHF01210RegisterScreen";
 import pinScreen from "./MHF01310PINScreen";
 
-import SavePIN from "../constants/SavePIN"
+import SaveProfile from "../constants/SaveProfile"
 
 
 // OTLineChartView
@@ -118,7 +118,7 @@ const AppNavigatorRegister = createSwitchNavigator({
     }
 );
 export default class rootNavigation extends Component {
-    savePIN = new SavePIN()
+    saveProfile = new SaveProfile()
     constructor(props) {
         super(props);
         this.state = {
@@ -127,17 +127,28 @@ export default class rootNavigation extends Component {
     }
 
     async componentWillMount() {
-        number = await this.getPINFromDevice()
+        // number = await this.getPINFromDevice()
+        profile = await this.getProfileObject()
     }
 
-    getPINFromDevice = async () => {
-        pin = await this.savePIN.getPin()
-        if (pin.length > 0) {
+    getProfileObject = async () => {
+        profileObject = await this.saveProfile.getProfile()
+        console.log("NavigationController ==> ", profileObject)
+        if (profileObject) {
             this.setState({
                 hasPin: true
             })
         }
     }
+
+    // getPINFromDevice = async () => {
+    //     pin = await this.savePIN.getPin()
+    //     if (pin.length > 0) {
+    //         this.setState({
+    //             hasPin: true
+    //         })
+    //     }
+    // }
 
     render() {
         if (this.state.hasPin == false) {

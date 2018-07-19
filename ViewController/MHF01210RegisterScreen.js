@@ -44,7 +44,7 @@ export default class RegisterActivity extends Component {
         let data = await RegisterAPI(this.state.username, this.state.password)
         code = data[0]
         data = data[1]
-        // console.log("Register ==> data : ", data)
+        console.log("Register ==> data : ", data)
 
         if (code.SUCCESS == data.code) {
             //TODO 

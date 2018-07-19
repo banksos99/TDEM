@@ -9,15 +9,15 @@ import { styles } from "./../SharedObject/MainStyles";
 import Colors from "./../SharedObject/Colors"
 import SharedPreference from "./../SharedObject/SharedPreference"
 
-import payslipDataResponse from "./../InAppData/Payslipdatalist"
-import announcementDataResponse from "./../InAppData/Announcementdata"
-import leaveQuotaDataResponse from "./../InAppData/Leavequotalistdata"
-import HandbookshelfDataResponse from "./../InAppData/HandbookListData"
-import OTSelfDataResponse from "./../InAppData/OTSummarySelfData"
-
+// import payslipDataResponse from "./../InAppData/Payslipdatalist"
+// import announcementDataResponse from "./../InAppData/Announcementdata"
+// import leaveQuotaDataResponse from "./../InAppData/Leavequotalistdata"
+// import HandbookshelfDataResponse from "./../InAppData/HandbookListData"
+// import OTSelfDataResponse from "./../InAppData/OTSummarySelfData"
 // import nonPayRollAPI from "../api/NonPayRollAPI"
 
 import RestAPI from "../constants/RestAPI"
+import SaveAutoSyncCalendar from "../constants/SaveAutoSyncCalendar";
 
 const ROLL_ANNOUNCE = 10;
 
@@ -42,7 +42,7 @@ let orgcode = 60162305;
 
 
 export default class HMF01011MainView extends Component {
-
+    saveAutoSyncCalendar = new SaveAutoSyncCalendar()
     constructor(props) {
         super(props);
         this.state = {
@@ -68,12 +68,25 @@ export default class HMF01011MainView extends Component {
     }
 
 
-    componentDidMount() {
+    loadData = async () => {
+
+        autoSyncCalendarBool = await this.saveAutoSyncCalendar.getAutoSyncCalendar()
+        console.log("MainView ==> autoSyncCalendarBool : ", autoSyncCalendarBool)
+
+        if (autoSyncCalendarBool) {
+            this.setState({
+                syncCalendar: autoSyncCalendarBool
+            })
+        }
+    }
+
+    async componentDidMount() {
         this.setState({
             page: 0,
         })
         this.redertabview()
         NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectivityChange);
+        await this.loadData()
     }
 
     componentWillUnmount() {
@@ -122,63 +135,10 @@ export default class HMF01011MainView extends Component {
             loadingtype: 3,
             isscreenloading: true,
             loadmore: true,
-            // refreshing: true,
             page: 1,
-
         });
-
-        let promise = this.loadAnnouncementMorefromAPI();
-
-        // if (!promise) {
-        //     return;
-        // }
-
-        // promise.then(() => this.setState({
-        //     loadmore: false
-        // }));
-
     }
 
-    // loadAnnouncementfromAPI = async () => {
-    //     let url = SharedPreference.ANNOUNCEMENT_ASC_API
-    //     if (ascendingSort) {
-    //         url = SharedPreference.ANNOUNCEMENT_DSC_API
-    //     }
-    //     this.announcementCallback(await RestAPI(url))
-    // }
-    // announcementCallback(data) {
-    //     code = data[0]
-    //     data = data[1]
-    //     if (code.SUCCESS == data.code) {//200
-    //         this.setState(this.renderloadingscreen());
-    //         tempannouncementData = []
-    //         announcementData = this.state.dataSource.data;
-    //         announcementData.map((item, i) => {
-    //             if (this.state.announcementStatus === 'All') {
-    //                 if (this.state.announcementType === 'All') {
-    //                     tempannouncementData.push(item)
-    //                 } else {
-    //                     if (item.category === this.state.announcementType) {
-    //                         tempannouncementData.push(item)
-    //                     }
-    //                 }
-    //             } else {
-    //                 if (item.attributes.read === this.state.announcementStatus) {
-    //                     if (this.state.announcementType === 'All') {
-    //                         tempannouncementData.push(item)
-    //                     } else {
-    //                         if (item.category === this.state.announcementType) {
-    //                             tempannouncementData.push(item)
-    //                         }
-    //                     }
-    //                 }
-    //             }
-    //         });
-    //         this.setState(this.renderannouncementbody());
-    //     } else {
-    //         this.onLoadErrorAlertDialog(data)
-    //     }
-    // }
 
     loadAnnouncementfromAPI() {
 
@@ -537,7 +497,7 @@ export default class HMF01011MainView extends Component {
         } else {
             this.onLoadErrorAlertDialog(data)
         }
-        
+
     }
 
 
@@ -1230,6 +1190,18 @@ export default class HMF01011MainView extends Component {
             });
         }
     }
+
+    onChangeFunction(newState) {
+        console.log("onChangeFunction ==> ", newState.syncCalendar)
+        this.setState({
+            syncCalendar: newState.syncCalendar
+        });
+        SharedPreference.calendarAutoSync = newState.syncCalendar
+
+        console.log("onChangeFunction ==> calendarAutoSync ==>  ", SharedPreference.calendarAutoSync)
+
+        this.saveAutoSyncCalendar.setAutoSyncCalendar(newState.syncCalendar)
+    }
     /*************************************************************** */
     /*************************   render class ********************** */
     /*************************************************************** */
@@ -1759,15 +1731,12 @@ export default class HMF01011MainView extends Component {
                 <View style={{ flex: 1, justifyContent: 'center', borderBottomWidth: 0.5, borderBottomColor: Colors.lightGrayTextColor }}>
                     <TouchableOpacity
                         onPress={(this.select_sign_out.bind(this))}>
-
                         <Text style={styles.settinglefttext}>Change PIN</Text>
-
                     </TouchableOpacity>
                 </View>
 
                 <View style={{ flex: 1, flexDirection: 'row', borderBottomWidth: 0.5, borderBottomColor: Colors.lightGrayTextColor }}>
                     <View style={{ flex: 4, justifyContent: 'center' }}>
-
                         <Text style={styles.settinglefttext}>Sync Calendar</Text>
 
                     </View>
@@ -1775,9 +1744,8 @@ export default class HMF01011MainView extends Component {
                         <Switch
                             value={false}
                             onTintColor="red"
-                            onValueChange={(value) => this.setState({ syncCalendar: value })}
-                            value={this.state.syncCalendar}
-                        />
+                            onValueChange={(value) => this.onChangeFunction({ syncCalendar: value })}
+                            value={this.state.syncCalendar} />
                     </View>
                 </View>
 

@@ -96,9 +96,16 @@ export default class calendarYearView extends Component {
         this.state.locationPicker = locationArray
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         this.getYearSelect()
         this.getYearView(this.state.selectYear, this.state.dataResponse)
+
+
+        console.log("SharedPreference.calendarAutoSync : ", SharedPreference.calendarAutoSync)
+
+        if (SharedPreference.calendarAutoSync == true) {
+            await this.onSynWithCalendar()
+        }
     }
 
     getYearSelect() {
@@ -112,23 +119,6 @@ export default class calendarYearView extends Component {
             };
         }//copy 3 years to yearsPickerArray
     }
-
-    // setNewProfile = async (newlocation) => {
-    //     console.log("====================================")
-    //     console.log("1 setNewProfile ===> newlocation : ", newlocation)
-    //     let original = SharedPreference.profileObject
-    //     const copy = {
-    //         ...original, location: newlocation
-    //     };
-    //     original = copy
-    //     console.log("====================================")
-    //      this.SaveProfile.setProfile(original)
-    //     SharedPreference.profileObject = original
-    //     console.log("====================================")
-    //     console.log("2 setNewProfile ===> copy : ", copy)
-    //     console.log("2 setNewProfile ===> original : ", original)
-    //     console.log("====================================")
-    // }
 
     loadDataFromAPI = async (year, location) => {
         console.log("loadDataFromAPI year ==>: ", year)
@@ -144,6 +134,7 @@ export default class calendarYearView extends Component {
 
         this.setState({ isLoading: true })
         await this.onLoadCalendarAPI(year, location)
+
     }
 
     onLoadCalendarAPI = async (year, location) => {
