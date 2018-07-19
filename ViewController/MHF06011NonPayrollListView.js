@@ -13,8 +13,9 @@ import Decrypt from './../SharedObject/Decryptfun'
 import Colors from "./../SharedObject/Colors"
 import { styles } from "./../SharedObject/MainStyles"
 
-
-let month = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+import Months from "./../constants/Month"
+//monthNamesShort
+//let month = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
 
 export default class NonpayrollActivity extends Component {
 
@@ -106,7 +107,7 @@ export default class NonpayrollActivity extends Component {
                     }}
                 >
                     <View style={styles.nonPayRollDetailContainer}>
-                        <Text style={[styles.payslipitemdetail, { color: 'white' }]}>{month[monthNumber - 1]}</Text>
+                        <Text style={[styles.payslipitemdetail, { color: 'white' }]}>{Months.monthNamesShort[monthNumber - 1]}</Text>
                     </View>
                     <View style={styles.nonPayRollDetailContainer}>
                         <Text style={[styles.payslipitemmoney, { color: 'white' }]}>{amount}</Text>
@@ -136,7 +137,7 @@ export default class NonpayrollActivity extends Component {
                             });
                         }} >
                         <View style={styles.nonPayRollDetailContainer}>
-                            <Text style={styles.payslipitemdetail}>{month[monthNumber - 1]}</Text>
+                            <Text style={styles.payslipitemdetail}>{Months.monthNamesShort[monthNumber - 1]}</Text>
                         </View>
                         <View style={styles.nonPayRollDetailContainer}>
                             <Text style={styles.payslipitemmoney}>{amount}</Text>
@@ -156,7 +157,7 @@ export default class NonpayrollActivity extends Component {
                             this.onLoadAlertDialog()
                         }}>
                         <View style={styles.nonPayRollDetailContainer}>
-                            <Text style={styles.payslipitemdetail}>{month[monthNumber - 1]}</Text>
+                            <Text style={styles.payslipitemdetail}>{Months.monthNamesShort[monthNumber - 1]}</Text>
                         </View>
                         <View style={styles.nonPayRollDetailContainer}>
                             <Text style={styles.payslipitemdetail}>00.00</Text>

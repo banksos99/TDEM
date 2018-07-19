@@ -1176,6 +1176,17 @@ export const styles = StyleSheet.create({
         fontSize: 12 * scale,
         fontFamily: font_medium,
     },
+    clockinoutbodyredtext:{
+        color: Colors.redTextColor,
+        fontSize: 12 * scale,
+        fontFamily: font_medium,
+    },
+    clockinoutbodytext:{
+        color: Colors.grayTextColor,
+        fontSize: 12 * scale,
+        fontFamily: font_medium,
+    },
+
     clockinoutdayredtext: {
         color: Colors.redTextColor,
         fontSize: 35 * scale,
