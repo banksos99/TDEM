@@ -10,10 +10,11 @@ export default async function getRestAPI(pin) {
         FAILED: "400",
         FORM_VALIDATE_FAILED: "401",
         NODATA: "404",
+        DUPLICATE_DATA: "409",
         TIME_OUT: "500",
         ERROR: "501",
         UPDATE_APPLICATION: "600",
-        CUT_JSON: "700"
+        CUT_JSON: "700",
     }
 
     console.log("LoginWithPin ==> callback  Register  : ", SharedPreference.REGISTER_API)
@@ -52,6 +53,7 @@ export default async function getRestAPI(pin) {
                     data: responseJson.data
                 }]
             }
+            console.log("RegisterAPI ==> callback object : ", JSON.stringify(object))
             return object
 
         })

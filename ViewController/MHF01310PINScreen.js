@@ -164,7 +164,7 @@ export default class PinActivity extends Component {
         }
     }
 
-    onResetPIN() {
+    onResetPIN = async () => {
         console.log("onResetPIN")
         Alert.alert(
             StringText.ALERT_RESET_PIN_TITLE,
@@ -175,6 +175,7 @@ export default class PinActivity extends Component {
             }, {
                 text: 'OK', onPress: () => {
                     SharedPreference.profileObject = null
+                     this.saveProfile.setProfile(null)
                     this.props.navigation.navigate('RegisterScreen')
                 }
             }

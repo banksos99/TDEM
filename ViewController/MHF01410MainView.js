@@ -66,7 +66,6 @@ export default class HMF01011MainView extends Component {
         }
         console.log("MainView ====> profileObject ==> ", SharedPreference.profileObject)
         console.log("MainView ====> profileObject ==> employee_name ==> ", SharedPreference.profileObject.employee_name)
-
     }
 
 

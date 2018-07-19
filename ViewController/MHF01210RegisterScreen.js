@@ -17,8 +17,9 @@ import LoginWithPinAPI from "./../constants/LoginWithPinAPI"
 import RestAPI from "./../constants/RestAPI"
 
 export default class RegisterActivity extends Component {
+
     savePIN = new SavePIN()
-    SaveProfile = new SaveProfile()
+    saveProfile = new SaveProfile()
     saveToken = new SaveTOKEN()
 
     constructor(props) {
@@ -39,28 +40,22 @@ export default class RegisterActivity extends Component {
 
     onRegister = async () => {
         Keyboard.dismiss()
-
-        // console.log("rusername : ", this.state.username, ", password : ", this.state.password)
         let data = await RegisterAPI(this.state.username, this.state.password)
         code = data[0]
         data = data[1]
-        console.log("Register ==> data : ", data)
+        console.log("onRegister ==> data : ", data)
 
         if (code.SUCCESS == data.code) {
             //TODO 
-            this.SaveProfile.setProfile(data.data)
-            SharedPreference.profileObject = await this.SaveProfile.getProfile()
+            this.saveProfile.setProfile(data.data)
+            SharedPreference.profileObject = await this.saveProfile.getProfile()
             SharedPreference.TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, '1', SharedPreference.profileObject.client_token)
-            // console.log("Register ==> TOKEN : ", SharedPreference.TOKEN)
-            // await this.saveToken.setToken(SharedPreference.TOKEN)
-
-            this.setState({
-                showCreatePin: true
-            })
-
+            // this.setState({
+            //     showCreatePin: true
+            // })
+            console.log("onRegister ==> onLoadLoginWithPin")
+            await this.onLoadLoginWithPin("001000200")
         } else {
-            // console.log("Register ==> data data : ", data.data)
-            // console.log("Register ==> data data : ",data.data[0].detail)
             Alert.alert(
                 StringText.SERVER_ERROR_TITLE,
                 StringText.SERVER_ERROR_DESC,
@@ -72,17 +67,37 @@ export default class RegisterActivity extends Component {
         }
     }
 
+    onLoadLoginWithPin = async (PIN) => {
+
+        console.log("1login with pin111 ==> ", PIN)
+        let data = await LoginWithPinAPI(PIN)
+        console.log("2login with pin data ==> ", data)
+
+        code = data[0]
+        data = data[1]
+
+        console.log("login with DUPLICATE_DATA : ", code.DUPLICATE_DATA)
+        console.log("login with code : ", data.code)
+
+        if (code.DUPLICATE_DATA == data.code) {
+            // TODO Bell
+            this.onOpenPinActivity()
+        } else {
+            this.setState({
+                showCreatePin: true
+            })
+        }
+    }
+
     onSetPin = async () => {
-        // console.log("Register SetPin : ", this.state.pin2)
+        console.log("Register SetPin : ", this.state.pin2)
         let data = await SetPinAPI(this.state.pin2)
         code = data[0]
         data = data[1]
-        // console.log("Register code : ", code.SUCCESS)
-        // console.log("Register data : ", data.code)
-        // TODO Bell
+
+        // TODO 
         if (code.SUCCESS == data.code) {
-            await this.savePIN.setPin(this.state.pin2)
-            const pinID = await this.savePIN.getPin()
+            // await this.savePIN.setPin(this.state.pin2)
             this.setState({
                 showCreatePinSuccess: true,
                 showCreatePin: false
@@ -101,38 +116,7 @@ export default class RegisterActivity extends Component {
         }
     }
 
-    onLoadLoginWithPin = async (PIN) => {
-
-        console.log("login with pin ==> ", PIN)
-        let data = await LoginWithPinAPI(PIN)
-        code = data[0]
-        data = data[1]
-        if (code.SUCCESS == data.code) {
-            await this.onLoadInitialMaster()
-        } else {
-            this.props.navigation.navigate('PinScreen')
-
-            // Alert.alert(
-            //     StringText.ALERT_PIN_TITLE_NOT_CORRECT,
-            //     StringText.ALERT_PIN_DESC_NOT_CORRECT,
-            //     [{
-            //         text: 'OK', onPress: () => {
-            //             TODO
-            //             this.setState({
-            //                 showCreatePin: false
-            //             })
-                        
-
-            //         }
-            //     },
-            //     ],
-            //     { cancelable: false }
-            // )
-        }
-    }
-
     onLoadInitialMaster = async () => {
-
         let data = await RestAPI(SharedPreference.INITIAL_MASTER_API)
         code = data[0]
         data = data[1]
@@ -152,10 +136,10 @@ export default class RegisterActivity extends Component {
             }
             this.props.navigation.navigate('HomeScreen')
 
-            console.log("SharedPreference.NOTIFICATION_CATEGORY  ==> ", SharedPreference.NOTIFICATION_CATEGORY)
-            console.log("SharedPreference.READ_TYPE  ==> ", SharedPreference.READ_TYPE)
-            console.log("SharedPreference.COMPANY_LOCATION  ==> ", SharedPreference.COMPANY_LOCATION)
-            console.log("SharedPreference.TB_M_LEAVETYPE  ==> ", SharedPreference.TB_M_LEAVETYPE)
+            // console.log("SharedPreference.NOTIFICATION_CATEGORY  ==> ", SharedPreference.NOTIFICATION_CATEGORY)
+            // console.log("SharedPreference.READ_TYPE  ==> ", SharedPreference.READ_TYPE)
+            // console.log("SharedPreference.COMPANY_LOCATION  ==> ", SharedPreference.COMPANY_LOCATION)
+            // console.log("SharedPreference.TB_M_LEAVETYPE  ==> ", SharedPreference.TB_M_LEAVETYPE)
 
         } else {
             Alert.alert(

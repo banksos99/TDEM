@@ -18,6 +18,7 @@ import type, { RemoteMessage } from 'react-native-firebase';
 export default class mainview extends Component {
 
   savePIN = new SavePIN()
+
   constructor(props) {
     super(props);
     this.state = {
@@ -27,8 +28,9 @@ export default class mainview extends Component {
   }
 
   async componentDidMount() {
-    this.inactivecounting();
+    console.log("App ==> componentDidMount")
 
+    this.inactivecounting();
     const enabled = await firebase.messaging().hasPermission();
     if (enabled) {
       console.log("firebase ==> user has permissions")
@@ -41,8 +43,7 @@ export default class mainview extends Component {
       }
     }
 
-
-    this.messageListener = firebase.messaging().onMessage((message: RemoteMessage) => {
+    this.messageListener = firebase.messaging().onMessage((message) => {
       // Process your message as required
     });
     //////////Device Info/////////////
@@ -60,10 +61,10 @@ export default class mainview extends Component {
     // console.log("deviceOSVersion : ", deviceOSVersion)
 
     const appVersion = DeviceInfo.getVersion();
-    console.log("appVersion : ", appVersion)
+    // console.log("appVersion : ", appVersion)
 
     const buildNumber = DeviceInfo.getBuildNumber();
-    console.log("buildNumber : ", buildNumber)
+    // console.log("buildNumber : ", buildNumber)
 
 
     await firebase.messaging().getToken()
@@ -80,47 +81,6 @@ export default class mainview extends Component {
         }
       });
 
-    ////////////////////////
-    // firebase.notifications().getInitialNotification
-    // firebase.notifications.Notification()
-
-    // this.messageListener = firebase.messaging().onMessage((message) => {
-    //   console.log("firebase ==> 1 Process your message as required : ", message)
-    // });
-
-    // firebase.messaging().onMessage((message) => {
-    //   console.log("firebase ==> 2 Process your message as required : ", message)
-    // });
-
-
-    // firebase.messaging().onMessage(message => {
-    //   console.log('firebase ==> message onMessage: ', message);
-    // })
-
-    // this.messageListener = firebase.messaging().onMessage((message) => {
-    //   console.log("firebase ==> message messageListener : ", message)
-    // });
-
-    // this.notificationDisplayedListener = firebase.notifications().onNotificationDisplayed((notification: Notification) => {
-    //   console.log("firebase ==> Process your notification as required")
-    //   console.log("firebase ==> ANDROID: Remote notifications do not contain the channel ID. You will have to specify this manually if you'd like to re-display the notification.")
-    // });
-    // this.notificationListener = firebase.notifications().onNotification((notification) => {
-    //   console.log("firebase ==> Process your notification as required")
-    // });
-
-    // const notificationOpen = await firebase.notifications().getInitialNotification();
-    // if (notificationOpen) {
-    //   const action = notificationOpen.action;
-    //   console.log("firebase ==> action : ", action)
-    //   const notification = notificationOpen.notification;
-    //   console.log("firebase ==> notification : ", notification)
-    // }
-
-    // firebase.messaging().onMessage((message) => {
-    //   // Process your message as required
-    //   console.log("firebase ==> messageListener ==> ", message)
-    // });
 
 
     firebase.messaging().onMessage(payload => {
@@ -132,28 +92,20 @@ export default class mainview extends Component {
       console.log("url ", url);
     });
 
+    // this.messageListener();
+    // this.notificationDisplayedListener();
+    // this.notificationListener();
+    // this.notificationOpenedListener();
+
   }
 
-
-
-
-  componentWillReceiveProps(nextProps) {
-
-    if (nextProps.fromPushnoti) {
-      // alert('app did become active from pushnoti');
-
-    } else if (nextProps.appDidBecomeActive) {
-      // alert('app did become active');
-    }
-  }
-
-  componentWillUnmount() {
-    console.log("componentWillUnmount")
-    this.messageListener();
-    this.notificationDisplayedListener();
-    this.notificationListener();
-    this.notificationOpenedListener();
-  }
+  // componentWillUnmount() {
+  //   console.log("App ==> componentWillUnmount")
+  //   this.messageListener();
+  //   this.notificationDisplayedListener();
+  //   this.notificationListener();
+  //   this.notificationOpenedListener();
+  // }
 
   inactivecounting() {
     this.timer = setTimeout(() => {
