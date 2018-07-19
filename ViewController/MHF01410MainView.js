@@ -470,9 +470,21 @@ export default class HMF01011MainView extends Component {
 
         let url = SharedPreference.OTSUMMARY_DETAIL + 'month=0' + parseInt(today.getMonth() + 1) + '&year=' + today.getFullYear()
 
-        this.APICallback(await RestAPI(url), 'OTSummarySelfView')
+        // this.APICallback(await RestAPI(url), 'OTSummarySelfView')
+        let data = await RestAPI(url)
+        code = data[0]
+        data = data[1]
+
+        if ((code.SUCCESS == data.code) | (code.NODATA == data.code)) {
+            this.props.navigation.navigate('OTSummarySelfView', {
+                dataResponse: data.data,
+            });
+        } else {
+            this.onLoadErrorAlertDialog(data)
+        }
 
     }
+
     loadHandbooklistfromAPI = async () => {
         console.log("loadHandbooklistfromAPI")
 
@@ -764,152 +776,121 @@ export default class HMF01011MainView extends Component {
 
     onOpenEmployeeInfo() {
 
-        if (rolemanagementEmpoyee[0]) {
+        this.setState({
+            isscreenloading: true,
+            loadingtype: 3
+        }, function () {
+            this.setState(this.renderloadingscreen())
+            this.loadEmployeeInfoformAPI()
+        });
 
-            this.setState({
-                isscreenloading: true,
-                loadingtype: 3
-            }, function () {
-                this.setState(this.renderloadingscreen())
-                this.loadEmployeeInfoformAPI()
-            });
-        }
     }
 
     onOpenNonpayroll() {
 
-        if (rolemanagementEmpoyee[1]) {
+        this.setState({
 
-            this.setState({
+            isscreenloading: true,
+            loadingtype: 3
 
-                isscreenloading: true,
-                loadingtype: 3
+        }, function () {
 
-            }, function () {
+            this.setState(this.renderloadingscreen())
+            this.loadNonpayrollfromAPI()
 
-                this.setState(this.renderloadingscreen())
-                this.loadNonpayrollfromAPI()
+        });
 
-            });
-
-        }
     }
 
     onOpenPayslip() {
 
-        if (rolemanagementEmpoyee[2]) {
+        this.setState({
 
-            this.setState({
+            isscreenloading: true,
+            loadingtype: 3
 
-                isscreenloading: true,
-                loadingtype: 3
+        }, function () {
 
-            }, function () {
-
-                this.setState(this.renderloadingscreen())
-                this.loadPayslipfromAPI()
-            });
-
-        }
+            this.setState(this.renderloadingscreen())
+            this.loadPayslipfromAPI()
+        });
     }
 
     onOpenLeaveQuota() {
 
-        if (rolemanagementEmpoyee[3]) {
+        this.setState({
 
-            this.setState({
+            isscreenloading: true,
+            loadingtype: 3
 
-                isscreenloading: true,
-                loadingtype: 3
+        }, function () {
 
-            }, function () {
-
-                this.setState(this.renderloadingscreen())
-                this.loadLeaveQuotafromAPI()
-            });
-
-        }
+            this.setState(this.renderloadingscreen())
+            this.loadLeaveQuotafromAPI()
+        });
 
     }
 
     onOpenClockInOut() {
 
-        if(rolemanagementEmpoyee[4]){
+        this.setState({
 
-            this.setState({
+            isscreenloading: true,
+            loadingtype: 3
 
-                isscreenloading: true,
-                loadingtype: 3
-    
-            }, function () {
-    
-                this.setState(this.renderloadingscreen())
-                this.loadClockInOutDetailfromAPI()
-    
-    
-            });
+        }, function () {
 
-        }
-        
+            this.setState(this.renderloadingscreen())
+            this.loadClockInOutDetailfromAPI()
+
+
+        });
+
     }
 
     onOpenOTSummarySelf() {
 
-        if (rolemanagementEmpoyee[5]) {
-            this.setState({
+        this.setState({
 
-                isscreenloading: true,
-                loadingtype: 3
+            isscreenloading: true,
+            loadingtype: 3
 
-            }, function () {
+        }, function () {
 
-                this.setState(this.renderloadingscreen())
-                this.loadOTSummarySelffromAPI()
-            });
+            this.setState(this.renderloadingscreen())
+            this.loadOTSummarySelffromAPI()
+        });
 
-            // this.props.navigation.navigate('OTSummaryDetail', {
-            //     DataResponse: leaveQuotaDataResponse.dataSource,
-            // });
-
-        }
     }
 
     onOpenCalendar() {
-        if (rolemanagementEmpoyee[6]) {
 
-            this.setState({
+        this.setState({
 
-                isscreenloading: true,
-                loadingtype: 3
+            isscreenloading: true,
+            loadingtype: 3
 
-            }, function () {
-                // this.props.navigation.navigate('CalendarActivity');
-                this.setState(this.renderloadingscreen())
-                this.loadCalendarfromAPI()
-            });
-        }
+        }, function () {
+
+            this.setState(this.renderloadingscreen())
+            this.loadCalendarfromAPI()
+        });
+
     }
 
     onOpenHandbook() {
 
-        if (rolemanagementEmpoyee[7]) {
-            this.setState({
+        this.setState({
 
-                isscreenloading: true,
-                loadingtype: 3
+            isscreenloading: true,
+            loadingtype: 3
 
-            }, function () {
+        }, function () {
 
-                this.setState(this.renderloadingscreen())
-                this.loadHandbooklistfromAPI()
+            this.setState(this.renderloadingscreen())
+            this.loadHandbooklistfromAPI()
 
-
-            });
-
-            // this.props.navigation.navigate('Handbooklist', {
-            //     DataResponse: HandbookshelfDataResponse.dataSource,
-            // })
-        }
+        });
 
     }
 
@@ -923,7 +904,6 @@ export default class HMF01011MainView extends Component {
 
             this.setState(this.renderloadingscreen())
             this.loadOrgStructerfromAPI()
-
 
         });
 
@@ -1334,7 +1314,10 @@ export default class HMF01011MainView extends Component {
                 </View>
                 <View style={{ flex: 1, backgroundColor: 'white' }} >
                     <View style={{ flex: 1, flexDirection: 'row' }}>
-                        <TouchableOpacity style={{ flex: 1 }}
+                        <TouchableOpacity
+                            ref=''
+                            disabled={!rolemanagementEmpoyee[0]}
+                            style={{ flex: 1 }}
                             onPress={this.onOpenEmployeeInfo.bind(this)}>
                             <View style={[styles.boxShadow, shadow]} >
                                 <View style={styles.mainmenuImageButton}>
@@ -1355,7 +1338,10 @@ export default class HMF01011MainView extends Component {
                             </View>
                         </TouchableOpacity>
 
-                        <TouchableOpacity style={{ flex: 1 }}
+                        <TouchableOpacity
+                            ref=''
+                            disabled={!rolemanagementEmpoyee[1]}
+                            style={{ flex: 1 }}
                             onPress={this.onOpenNonpayroll.bind(this)}
                         >
                             <View style={[styles.boxShadow, shadow]} >
@@ -1374,6 +1360,8 @@ export default class HMF01011MainView extends Component {
                             </View>
                         </TouchableOpacity>
                         <TouchableOpacity
+                            ref=''
+                            disabled={!rolemanagementEmpoyee[2]}
                             style={{ flex: 1 }}
                             onPress={this.onOpenPayslip.bind(this)}
                         >
@@ -1396,6 +1384,8 @@ export default class HMF01011MainView extends Component {
                     <View style={{ flex: 1, flexDirection: 'row' }}>
 
                         <TouchableOpacity
+                            ref=''
+                            disabled={!rolemanagementEmpoyee[3]}
                             style={{ flex: 1 }}
                             onPress={this.onOpenLeaveQuota.bind(this)}
                         >
@@ -1416,6 +1406,8 @@ export default class HMF01011MainView extends Component {
                         </TouchableOpacity>
 
                         <TouchableOpacity
+                            ref=''
+                            disabled={!rolemanagementEmpoyee[4]}
                             style={{ flex: 1 }}
                             onPress={this.onOpenClockInOut.bind(this)}
                         >
@@ -1436,6 +1428,8 @@ export default class HMF01011MainView extends Component {
                         </TouchableOpacity>
 
                         <TouchableOpacity
+                            ref=''
+                            disabled={!rolemanagementEmpoyee[5]}
                             style={{ flex: 1 }}
                             onPress={this.onOpenOTSummarySelf.bind(this)}
                         >
@@ -1458,7 +1452,10 @@ export default class HMF01011MainView extends Component {
                     </View>
                     <View style={{ flex: 1, flexDirection: 'row' }}>
 
-                        <TouchableOpacity style={{ flex: 1 }}
+                        <TouchableOpacity
+                            ref=''
+                            disabled={!rolemanagementEmpoyee[6]}
+                            style={{ flex: 1 }}
                             onPress={this.onOpenCalendar.bind(this)}
                         >
                             <View style={[styles.boxShadow, shadow]} >
@@ -1477,7 +1474,10 @@ export default class HMF01011MainView extends Component {
                             </View>
                         </TouchableOpacity>
 
-                        <TouchableOpacity style={{ flex: 1 }}
+                        <TouchableOpacity
+                            ref=''
+                            disabled={!rolemanagementEmpoyee[7]}
+                            style={{ flex: 1 }}
                             onPress={this.onOpenHandbook.bind(this)}
                         >
                             <View style={[styles.boxShadow, shadow]} >
@@ -1730,7 +1730,9 @@ export default class HMF01011MainView extends Component {
                 <View style={{ flex: 1, backgroundColor: 'white' }} >
                     <View style={{ flex: 1, flexDirection: 'row' }}>
 
-                        <TouchableOpacity style={{ flex: 1 }}
+                        <TouchableOpacity
+                            ref=''
+                            style={{ flex: 1 }}
                             onPress={this.onOpenOrgaStructer.bind(this)}
                         >
                             <View style={[styles.boxShadow, shadow]} >
@@ -1750,7 +1752,9 @@ export default class HMF01011MainView extends Component {
                             </View>
                         </TouchableOpacity>
 
-                        <TouchableOpacity style={{ flex: 1 }}
+                        <TouchableOpacity
+                            ref=''
+                            style={{ flex: 1 }}
                             onPress={this.onOpenOrgaStructerClockInOut.bind(this)}
                         >
                             <View style={[styles.boxShadow, shadow]} >
@@ -1771,6 +1775,7 @@ export default class HMF01011MainView extends Component {
                     <View style={{ flex: 1, flexDirection: 'row' }}>
 
                         <TouchableOpacity
+                            ref=''
                             style={{ flex: 1 }}
                             onPress={this.onOpenOrgaStructerOTAverage.bind(this)}
 
@@ -1790,6 +1795,7 @@ export default class HMF01011MainView extends Component {
                         </TouchableOpacity>
 
                         <TouchableOpacity
+                            ref=''
                             style={{ flex: 1 }}
                             onPress={this.onOpenOrgaStructerOTHistory.bind(this)}>
                             <View style={[styles.boxShadow, shadow]} >

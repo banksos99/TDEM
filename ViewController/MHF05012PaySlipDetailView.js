@@ -23,7 +23,8 @@ import SharedPreference from "./../SharedObject/SharedPreference"
 import Decryptfun from "./../SharedObject/Decryptfun"
 import Months from "./../constants/Month"
 
-let month = ['January ', 'February ', 'March ', 'April ', 'MAY ', 'June ', 'July ', 'August ', 'September ', 'October ', 'November ', 'December '];
+//let month = ['January ', 'February ', 'March ', 'April ', 'MAY ', 'June ', 'July ', 'August ', 'September ', 'October ', 'November ', 'December '];
+//monthNames
 let currentmonth = new Date().getMonth();
 let currentyear = new Date().getFullYear();
 
@@ -531,7 +532,7 @@ export default class PayslipDetail extends Component {
 
                                 <Text style={{ fontSize: 21, color: Colors.redTextColor, textAlign: 'center', }}>
         
-                                    {month[this.state.monthselected] + (this.state.initialyear - this.state.yearselected)}
+                                    {Months.monthNames[this.state.monthselected] + (this.state.initialyear - this.state.yearselected)}
                                 </Text>
 
                             </View>

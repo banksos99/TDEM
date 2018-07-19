@@ -659,9 +659,14 @@ export const styles = StyleSheet.create({
         color: Colors.thingrayTextColor,
         fontFamily: font_medium
     },
+    payslipitemcurrentdetail: {
+        fontSize: 12 * scale,
+        color: 'white',
+        fontFamily: font_medium
+    },
     payslipitemdetailHide: {
         fontSize: 12 * scale,
-        color: 'red'//'transparent',
+        color: 'transparent',
         fontFamily: font_medium
     },
     payslipitemmoney: {

@@ -81,25 +81,28 @@ export default class NonpayrollActivity extends Component {
 
         let currentYear = new Date().getFullYear()
         let currentMonth = new Date().getMonth() + 1
+
         if ((currentMonth == monthNumber) && (currentYear == this.state.selectYear)) {
-            if (amount == false) {
+            if (!amount) {
                 amount = '0.00'
             }
             return <View style={[styles.nonPayRollitem, {
                 backgroundColor: Colors.calendarRedDotColor,
             }]}>
-                <TouchableOpacity style={styles.button}
+                <TouchableOpacity 
+                style={styles.button}
+                disable = {amount}
                     onPress={() => {
 
-                        if (amount == '0.00') {
-                            this.onLoadAlertDialog();
-                        } else {
+                        // if (amount == '0.00') {
+                        //     this.onLoadAlertDialog();
+                        // } else {
                             this.props.navigation.navigate('NonPayrollDetail', {
                                 month: monthNumber,
                                 selectYear: this.state.selectYear,
                                 dataObject: this.state.dataSource
                             });
-                        }
+                        // }
                     }}
                 >
                     <View style={styles.nonPayRollDetailContainer}>
@@ -110,31 +113,16 @@ export default class NonpayrollActivity extends Component {
                     </View>
                 </TouchableOpacity>
             </View>
+
         } else if ((monthNumber > currentMonth) && (currentYear == this.state.selectYear)) {
+            // nodata
             return <View style={[styles.nonPayRollitem, {
                 backgroundColor: 'white',
             }]}>
             </View>
-        } else if (amount == false) {
-            return (
-                <View style={[styles.nonPayRollitem, {
-                    backgroundColor: 'white',
-                }]}>
-                    <TouchableOpacity style={styles.button}
-                        onPress={() => {
-                            this.onLoadAlertDialog()
-                        }}>
-                        <View style={styles.nonPayRollDetailContainer}>
-                            <Text style={styles.payslipitemdetail}>{month[monthNumber - 1]}</Text>
-                        </View>
-                        <View style={styles.nonPayRollDetailContainer}>
-                            <Text style={styles.payslipitemmoney}>0.00</Text>
-                        </View>
-                    </TouchableOpacity>
-                </View>
-            )
 
-        } else {
+        } else if (amount) {
+            console.log('amount :',amount)
             return (
                 <View style={[styles.nonPayRollitem, {
                     backgroundColor: Colors.calendarLocationBoxColor
@@ -152,6 +140,26 @@ export default class NonpayrollActivity extends Component {
                         </View>
                         <View style={styles.nonPayRollDetailContainer}>
                             <Text style={styles.payslipitemmoney}>{amount}</Text>
+                        </View>
+                    </TouchableOpacity>
+                </View>
+            )
+            
+
+        } else {
+            return (
+                <View style={[styles.nonPayRollitem, {
+                    backgroundColor: 'white',
+                }]}>
+                    <TouchableOpacity style={styles.button}
+                        onPress={() => {
+                            this.onLoadAlertDialog()
+                        }}>
+                        <View style={styles.nonPayRollDetailContainer}>
+                            <Text style={styles.payslipitemdetail}>{month[monthNumber - 1]}</Text>
+                        </View>
+                        <View style={styles.nonPayRollDetailContainer}>
+                            <Text style={styles.payslipitemdetail}>00.00</Text>
                         </View>
                     </TouchableOpacity>
                 </View>
