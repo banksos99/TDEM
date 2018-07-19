@@ -435,6 +435,11 @@ export const styles = StyleSheet.create({
         color: Colors.grayTextColor,
         fontFamily: font_medium
     },
+    userTitleText:{
+        fontSize: scale * 15,
+        color: Colors.grayTextColor,
+        fontFamily: font_medium
+    },
     usernameText:{
         fontSize: scale * 13,
         color: Colors.grayTextColor,
