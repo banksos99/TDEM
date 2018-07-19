@@ -62,7 +62,7 @@ export default class NonpayrollActivity extends Component {
                     for (let k = 0; k < object.detail.length; k++) {
                         const element = object.detail
                         if (object.detail[k].month_no == selectMonth) {
-                            //////console.log("month ==> ", object.detail.month, " , selectMonth : ", selectMonth)
+                            console.log("month ==> ", object.detail.month, " , selectMonth : ", selectMonth)
                             return this.convertAmount(object.detail[k].sum_nonpay_amt)
                         }
                     }
@@ -74,35 +74,37 @@ export default class NonpayrollActivity extends Component {
     }
 
     convertAmount(code) {
+        console.log("convertAmount ==> month ==> code ==> ", code)
         return Decrypt.decrypt(code);
     }
 
     customMonthContainer(monthNumber, amount) {
-        //console.log("monthNumber : ", monthNumber)
+        console.log("monthNumber : ", monthNumber, " , amount : ", amount)
 
         let currentYear = new Date().getFullYear()
         let currentMonth = new Date().getMonth() + 1
 
         if ((currentMonth == monthNumber) && (currentYear == this.state.selectYear)) {
+
             if (!amount) {
                 amount = '0.00'
             }
             return <View style={[styles.nonPayRollitem, {
                 backgroundColor: Colors.calendarRedDotColor,
             }]}>
-                <TouchableOpacity 
-                style={styles.button}
-                disable = {amount}
+                <TouchableOpacity
+                    style={styles.button}
+                    disable={amount}
                     onPress={() => {
 
                         // if (amount == '0.00') {
                         //     this.onLoadAlertDialog();
                         // } else {
-                            this.props.navigation.navigate('NonPayrollDetail', {
-                                month: monthNumber,
-                                selectYear: this.state.selectYear,
-                                dataObject: this.state.dataSource
-                            });
+                        this.props.navigation.navigate('NonPayrollDetail', {
+                            month: monthNumber,
+                            selectYear: this.state.selectYear,
+                            dataObject: this.state.dataSource
+                        });
                         // }
                     }}
                 >
@@ -123,7 +125,7 @@ export default class NonpayrollActivity extends Component {
             </View>
 
         } else if (amount) {
-            console.log('amount :',amount)
+            console.log('amount :', amount)
             return (
                 <View style={[styles.nonPayRollitem, {
                     backgroundColor: Colors.calendarLocationBoxColor
@@ -145,7 +147,7 @@ export default class NonpayrollActivity extends Component {
                     </TouchableOpacity>
                 </View>
             )
-            
+
 
         } else {
             return (

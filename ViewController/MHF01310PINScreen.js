@@ -10,11 +10,13 @@ import RestAPI from "../constants/RestAPI"
 import SaveProfile from "../constants/SaveProfile"
 import Authorization from "../SharedObject/Authorization";
 import LoginWithPinAPI from "../constants/LoginWithPinAPI"
+import SaveAutoSyncCalendar from "../constants/SaveAutoSyncCalendar";
 
 export default class PinActivity extends Component {
 
     savePIN = new SavePIN()
     saveProfile = new SaveProfile()
+    saveAutoSyncCalendar = new SaveAutoSyncCalendar()
 
     constructor(props) {
         super(props);
@@ -27,12 +29,12 @@ export default class PinActivity extends Component {
     }
 
     onLoadLoginWithPin = async (PIN) => {
-
-        console.log("login with pin ==> ", PIN)
+        // console.log("login with pin ==> ", PIN)
         let data = await LoginWithPinAPI(PIN)
         code = data[0]
         data = data[1]
         if (code.SUCCESS == data.code) {
+            SharedPreference.calendarAutoSync = await this.saveAutoSyncCalendar.getAutoSyncCalendar()
             await this.onLoadInitialMaster()
         } else {
             if (this.state.failPin == 4) {
@@ -41,9 +43,8 @@ export default class PinActivity extends Component {
                     StringText.ALERT_PIN_DESC_TOO_MANY_NOT_CORRECT,
                     [{
                         text: 'OK', onPress: () => {
-                            console.log("TODO Too many")
-                            // TODO Reset all
                             SharedPreference.profileObject = null
+                            this.saveProfile.setProfile(null)
                             this.props.navigation.navigate('RegisterScreen')
                         }
                     }],
@@ -70,7 +71,6 @@ export default class PinActivity extends Component {
     }
 
     onLoadInitialMaster = async () => {
-
         let data = await RestAPI(SharedPreference.INITIAL_MASTER_API)
         code = data[0]
         data = data[1]
@@ -89,11 +89,10 @@ export default class PinActivity extends Component {
                 }
             }
             this.props.navigation.navigate('HomeScreen')
-
-            console.log("SharedPreference.NOTIFICATION_CATEGORY  ==> ", SharedPreference.NOTIFICATION_CATEGORY)
-            console.log("SharedPreference.READ_TYPE  ==> ", SharedPreference.READ_TYPE)
-            console.log("SharedPreference.COMPANY_LOCATION  ==> ", SharedPreference.COMPANY_LOCATION)
-            console.log("SharedPreference.TB_M_LEAVETYPE  ==> ", SharedPreference.TB_M_LEAVETYPE)
+            // console.log("SharedPreference.NOTIFICATION_CATEGORY  ==> ", SharedPreference.NOTIFICATION_CATEGORY)
+            // console.log("SharedPreference.READ_TYPE  ==> ", SharedPreference.READ_TYPE)
+            // console.log("SharedPreference.COMPANY_LOCATION  ==> ", SharedPreference.COMPANY_LOCATION)
+            // console.log("SharedPreference.TB_M_LEAVETYPE  ==> ", SharedPreference.TB_M_LEAVETYPE)
 
         } else {
             Alert.alert(
@@ -109,13 +108,10 @@ export default class PinActivity extends Component {
 
     getPINFromDevice = async () => {
         pin = await this.savePIN.getPin()
-        console.log("PinActivity ==> getPINFromDevice ==>pin : ", pin)
+        // console.log("PinActivity ==> getPINFromDevice ==>pin : ", pin)
         this.state.savePin = pin
     }
 
-    onBack() {
-        console.log(">>>>>>> onBack");
-    }
 
     setPIN = async (num) => {
         if (this.state.savePin == '') {
@@ -165,7 +161,7 @@ export default class PinActivity extends Component {
     }
 
     onResetPIN = async () => {
-        console.log("onResetPIN")
+        // console.log("onResetPIN")
         Alert.alert(
             StringText.ALERT_RESET_PIN_TITLE,
             StringText.ALERT_RESET_PIN_DESC,
@@ -175,7 +171,7 @@ export default class PinActivity extends Component {
             }, {
                 text: 'OK', onPress: () => {
                     SharedPreference.profileObject = null
-                     this.saveProfile.setProfile(null)
+                    this.saveProfile.setProfile(null)
                     this.props.navigation.navigate('RegisterScreen')
                 }
             }

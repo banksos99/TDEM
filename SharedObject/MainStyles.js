@@ -569,19 +569,15 @@ export const styles = StyleSheet.create({
     },
     leaveQuotaContentTitleText: {
         flex: 1,
-        //  alignItems: 'left',
-        //  justifyContent: 'center', 
         fontSize: 15,
         color: Colors.grayTextColor,
         fontFamily: font_medium
     },
     leaveQuotaContentDescText: {
         flex: 1,
-        // alignItems: 'right', 
-        // justifyContent: 'center', 
         fontSize: 15,
         color: Colors.grayTextColor,
-        textAlign: 'right',
+        textAlign: 'left',
         fontFamily: font_medium
     },
     leaveQuotaContentGrayText: {

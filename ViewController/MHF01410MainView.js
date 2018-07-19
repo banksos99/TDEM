@@ -19,6 +19,9 @@ import SharedPreference from "./../SharedObject/SharedPreference"
 import RestAPI from "../constants/RestAPI"
 import SaveAutoSyncCalendar from "../constants/SaveAutoSyncCalendar";
 
+import SaveProfile from "../constants/SaveProfile"
+
+
 const ROLL_ANNOUNCE = 10;
 
 let annountype = { 'All': 'All', 'Company Announcement': 'Company Announcement', 'Emergency Announcement': 'Emergency Announcement', 'Event Announcement': 'Event Announcement', 'General Announcement': 'General Announcement' };
@@ -35,16 +38,19 @@ let initannouncementType = 'All';
 let initannouncementTypetext = 'All';
 let initannouncementStatus = 'All';
 let initannouncementStatustext = 'All'
-let page = 0;
+// let page = 0;
 let orgcode = 60162305;
 
 let managerstatus = false;
 let announcestatus = false;
-let rolemanagementEmpoyee = [1,1,1,1,1,1,0,0];
-let rolemanagementManager = [0,0,0,0];
+let rolemanagementEmpoyee = [1, 1, 1, 1, 1, 1, 0, 0];
+let rolemanagementManager = [0, 0, 0, 0];
 
 export default class HMF01011MainView extends Component {
+
     saveAutoSyncCalendar = new SaveAutoSyncCalendar()
+    saveProfile = new SaveProfile()
+
     constructor(props) {
         super(props);
         this.state = {
@@ -61,9 +67,9 @@ export default class HMF01011MainView extends Component {
             enddragannounce: false,
             annrefresh: false,
             username: SharedPreference.profileObject.employee_name,
-            // username:"hello hello"
-
+            page: 0
         }
+
         console.log("MainView ====> profileObject ==> ", SharedPreference.profileObject)
         console.log("MainView ====> profileObject ==> employee_name ==> ", SharedPreference.profileObject.employee_name)
     }
@@ -72,13 +78,22 @@ export default class HMF01011MainView extends Component {
     loadData = async () => {
 
         autoSyncCalendarBool = await this.saveAutoSyncCalendar.getAutoSyncCalendar()
-        console.log("MainView ==> autoSyncCalendarBool : ", autoSyncCalendarBool)
+        console.log("1MainView ==> autoSyncCalendarBool : ", autoSyncCalendarBool)
+
+        if(autoSyncCalendarBool == 'true'){
+            autoSyncCalendarBool = true
+        }else{
+            autoSyncCalendarBool = false
+        }
+    
+        console.log("2MainView ==> autoSyncCalendarBool : ", autoSyncCalendarBool)
 
         if (autoSyncCalendarBool) {
             this.setState({
                 syncCalendar: autoSyncCalendarBool
             })
         }
+        SharedPreference.calendarAutoSync = autoSyncCalendarBool
     }
 
     async componentDidMount() {
@@ -633,7 +648,7 @@ export default class HMF01011MainView extends Component {
     //*********************** Check API before change screen  **********************
     //*****************************************************************************
 
-    
+
 
     onOpenOrgaStructer() {
         this.setState({
@@ -878,19 +893,19 @@ export default class HMF01011MainView extends Component {
     /******************************************************************** */
 
     redertabview() {
-        if (page === 0) {
+        if (this.state.page === 0) {
             return (
                 <View style={{ flex: 1 }}>
                     {this.renderhomeview()}
                 </View>
             )
-        } else if (page === 1) {
+        } else if (this.state.page === 1) {
             return (
                 <View style={{ flex: 1 }}>
                     {this.renderannouncementview()}
                 </View>
             )
-        } else if (page === 2) {
+        } else if (this.state.page === 2) {
 
             return (
                 <View style={{ flex: 1 }}>
@@ -898,7 +913,7 @@ export default class HMF01011MainView extends Component {
                 </View>
 
             )
-        } else if (page === 3) {
+        } else if (this.state.page === 3) {
 
             return (
                 <View style={{ flex: 1 }}>
@@ -912,7 +927,7 @@ export default class HMF01011MainView extends Component {
 
     settabscreen(tabnumber) {
 
-        
+
 
 
         if (tabnumber === 1) {
@@ -925,15 +940,12 @@ export default class HMF01011MainView extends Component {
 
             //load data befor open announcement screen in first time
             if (announcementData.length) {
-                page = tabnumber;
                 this.setState({
-
-
+                    page: tabnumber
                 });
             } else {
-                page = tabnumber;
                 this.setState({
-
+                    page: tabnumber,
                     isscreenloading: true,
                     loadingtype: 3
                 }, function () {
@@ -945,11 +957,9 @@ export default class HMF01011MainView extends Component {
 
 
         } else {
-            page = tabnumber;
             this.setState({
-
-
-            });
+                page: tabnumber
+            })
         }
     }
     //*******************************************************************************
@@ -1245,9 +1255,7 @@ export default class HMF01011MainView extends Component {
     /*************************************************************** */
 
     renderhomeview() {
-
         return (
-
             <View style={{ flex: 1, justifyContent: 'center' }}>
                 <View style={styles.mainmenutabbarstyle} />
                 <View style={styles.mainscreen}>
@@ -1425,7 +1433,7 @@ export default class HMF01011MainView extends Component {
 
                         <TouchableOpacity
                             ref=''
-                            disabled={!rolemanagementEmpoyee[6]}
+                            // disabled={!rolemanagementEmpoyee[6]}
                             style={{ flex: 1 }}
                             onPress={this.onOpenCalendar.bind(this)}
                         >
@@ -1795,6 +1803,7 @@ export default class HMF01011MainView extends Component {
         )
     }
     rendersettingview() {
+        console.log("rendersettingview ==> syncCalendar : ",this.state.syncCalendar)
         return (
             <View style={{ flex: 1, flexDirection: 'column', }}>
                 <View style={styles.mainmenutabbarstyle} />
@@ -1822,10 +1831,9 @@ export default class HMF01011MainView extends Component {
                     </View>
                     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                         <Switch
-                            value={false}
-                            onTintColor="red"
+                            // onTintColor="red"
                             onValueChange={(value) => this.onChangeFunction({ syncCalendar: value })}
-                            value={this.state.syncCalendar} />
+                            value={SharedPreference.calendarAutoSync} />
                     </View>
                 </View>
 
@@ -1853,8 +1861,7 @@ export default class HMF01011MainView extends Component {
 
                 <View style={{ flex: 1, justifyContent: 'center', borderBottomWidth: 0.5, borderBottomColor: Colors.lightGrayTextColor }}>
                     <TouchableOpacity
-                        onPress={(this.select_sign_out.bind(this))}
-                    >
+                        onPress={(this.select_sign_out.bind(this))}>
                         <Text style={styles.settingleftredtext}>Sign Out</Text>
                     </TouchableOpacity>
                 </View>
@@ -1868,9 +1875,8 @@ export default class HMF01011MainView extends Component {
     }
 
     select_sign_out() {
-        console.log("select_sign_out")
-
         SharedPreference.profileObject = null
+        this.saveProfile.setProfile(null)
         this.props.navigation.navigate('RegisterScreen')
     }
 
@@ -2069,7 +2075,7 @@ export default class HMF01011MainView extends Component {
                 <TouchableOpacity style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }} onPress={() => { this.settabscreen(2) }}>
 
                     <Image
-                        style={page === 2 ?
+                        style={this.state.page === 2 ?
                             { width: ICON_SIZE, height: ICON_SIZE, tintColor: Colors.redTextColor } :
                             { width: ICON_SIZE, height: ICON_SIZE, tintColor: Colors.lightGrayTextColor }
                         }
@@ -2102,7 +2108,7 @@ export default class HMF01011MainView extends Component {
 
                         <TouchableOpacity style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }} onPress={() => { this.settabscreen(0) }}>
                             <Image
-                                style={page === 0 ?
+                                style={this.state.page === 0 ?
                                     { width: ICON_SIZE, height: ICON_SIZE, tintColor: Colors.redTextColor } :
                                     { width: ICON_SIZE, height: ICON_SIZE, tintColor: Colors.lightGrayTextColor }
                                 }
@@ -2115,7 +2121,7 @@ export default class HMF01011MainView extends Component {
 
                         <TouchableOpacity style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }} onPress={() => { this.settabscreen(1) }}>
                             <Image
-                                style={page === 1 ?
+                                style={this.state.page === 1 ?
                                     { width: ICON_SIZE, height: ICON_SIZE, tintColor: Colors.redTextColor } :
                                     { width: ICON_SIZE, height: ICON_SIZE, tintColor: Colors.lightGrayTextColor }
                                 }
@@ -2142,7 +2148,7 @@ export default class HMF01011MainView extends Component {
 
                             <Image
 
-                                style={page === 3 ?
+                                style={this.state.page === 3 ?
                                     { width: ICON_SIZE, height: ICON_SIZE, tintColor: Colors.redTextColor } :
                                     { width: ICON_SIZE, height: ICON_SIZE, tintColor: Colors.lightGrayTextColor }
                                 }
