@@ -47,6 +47,7 @@
     "react-native-wkwebview-reborn": "^1.21.0",
     "react-native-zip-archive": "^2.2.6",
     "react-navigation": "^2.5.5",
+    "react-pdf-reader": "^0.1.8",
     "utf8": "^3.0.0"
   },
   "rnpm": {

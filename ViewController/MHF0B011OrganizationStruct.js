@@ -25,7 +25,7 @@ import RestAPI from "../constants/RestAPI"
 let dataSource = [];
 let temphandbookData = [];
 let option=0;
-
+let org_code = '';
 export default class OrganizationStruct extends Component {
 
     constructor(props) {
@@ -53,6 +53,10 @@ export default class OrganizationStruct extends Component {
             dataSource = [];
             //console.log(DataResponse[0].data)
             // dataSource = DataResponse.org_lst;
+            org_code =DataResponse.org_code
+            console.log('org_code :', org_code)
+            console.log('DataResponse :', DataResponse)
+
             dataSource.push({
                     
                 org_code:DataResponse.org_code,

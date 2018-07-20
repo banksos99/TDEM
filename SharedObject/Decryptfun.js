@@ -8,14 +8,14 @@ import SharedPreference from "./../SharedObject/SharedPreference"
 var Decrypt = {
 
     decrypt(enc64) {
-
+        console.log("enc64 : ", enc64)
         if (enc64) {
 
             try {
 
                 console.log("start secretKey : ", SharedPreference.profileObject.client_secret)
                 let secretkey = sha512.digest(SharedPreference.profileObject.client_secret).slice(0, 16);
-                console.log("se cretKey : ")
+                console.log("se cretKey : ", secretkey)
 
                 let enc = base64.decode(base64.decode(enc64));
                 console.log("enc : ")
@@ -32,11 +32,11 @@ var Decrypt = {
                 console.log("decryptedBytes : ")
 
                 var decryptedText = aesjs.utils.utf8.fromBytes(decryptedBytes);
-                console.log("decryptedText : " )
+                console.log("decryptedText : ")
 
                 var result = decryptedText.split('.')[0];
-                console.log("1result : ")
-
+                console.log("result : ",result)
+                console.log("result 64  : ", base64.decode(result))
                 let numberstr = base64.decode(result).split('.');
                 console.log("numberstr : ")
 
@@ -44,7 +44,7 @@ var Decrypt = {
 
                 let aa = parseInt(numberstr[0]).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + '.' + numberstr[1];
                 // let bb =  base64.decode(result);
-                console.log("3result : ",aa)
+                console.log("3result : ", aa)
 
                 return aa
             } catch (error) {

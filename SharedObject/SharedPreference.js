@@ -9,11 +9,16 @@ export default {
     ANNOUNCEMENT_ASC_API: HOST + '/api/' + VERSION + '/announcement?sort=%2Bcreate_date',
     ANNOUNCEMENT_DSC_API: HOST + '/api/' + VERSION + '/announcement?sort=-create_date',
     ANNOUNCEMENT_DETAIL_API: HOST + '/api/' + VERSION + '/announcement/',
+
     PAYSLIP_LIST_API: HOST + '/api/' + VERSION + '/payslip/summary',
-    PAYSLIP_DETAIL_API: HOST + 'api/' + VERSION + '/payslip/',
+    PAYSLIP_DETAIL_API: HOST + '/api/' + VERSION + '/payslip/',
+    PAYSLIP_DOWNLOAD_API: HOST + '/api/' + VERSION + '/payslip/file/',
+
     OTSUMMARY_DETAIL: HOST + '/api/' + VERSION + '/ot/summary?',
     HANDBOOK_LIST: 'https://randomuser.me/api/?results=2',
+    
     // HANDBOOK_LIST: HOST + '/api/' + VERSION + '/handbooks',
+
     LEAVE_QUOTA_API: HOST + '/api/' + VERSION + '/leavequota/summary',
     NONPAYROLL_SUMMARY_API: HOST + '/api/' + VERSION + '/nonpayroll/summary',
     CALENDER_YEAR_API: HOST + '/api/' + VERSION + '/calendar?year=',
@@ -47,6 +52,8 @@ export default {
     TB_M_LEAVETYPE: [],
     company: 'TMAP-EM',
     deviceInfo: {},
-    calendarAutoSync: true
+    calendarAutoSync: true,
+    // MANAGER_STATUS:true,
+
 }
 
