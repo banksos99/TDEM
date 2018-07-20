@@ -81,15 +81,41 @@ export default class mainview extends Component {
         }
       });
 
-
-
     firebase.messaging().onMessage(payload => {
-      console.log('Opened when app is alive');
-      console.log("payload ", payload);
-
+      // console.log('Opened when app is alive');
+      // console.log("payload ", payload);
       const prefix = Platform.OS == 'android' ? 'ifimarketplace://ifimarketplace/' : 'ifimarketplace://'
       const url = `${prefix}tabs/messages/${payload.key}`;
-      console.log("url ", url);
+      // console.log("url ", url);
+    });
+
+
+    firebase.messaging().getInitialNotification()
+      .then((notification) => {
+        console.log('Notification which opened the app: ', notification);
+      });
+
+
+    const onBackgroundMessage = (msg) => {
+      // do something with msg
+      console.log('Message received when app was closed', msg);
+    }
+
+    const onForegroundMessage = (msg) => {
+      // do something with msg
+      console.log('Message received in open app', msg);
+    }
+
+    // use:
+    const unsubscribeOnMessage = messaging.onMessage(msg => {
+      const { opened_from_tray } = msg;
+
+      // opened_from_tray is a numeric boolean and takes values either 1 or 0
+      if (opened_from_tray) {
+        onBackgroundMessage(msg);
+      } else {
+        onForegroundMessage(msg);
+      }
     });
 
     // this.messageListener();

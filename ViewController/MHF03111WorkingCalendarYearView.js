@@ -758,14 +758,16 @@ export default class calendarYearView extends Component {
     }
 
     onloadPDFFile() {
+        this.onLoadAlertDialog()
+    }
+    onloadPDFFile1() {
 
-        //console.log("onloadPDFFile")
-        if (this.state.selectYear == "") {
-            return
-        }
+        console.log("onloadPDFFile")
+        // if (this.state.selectYear == "") {
+        //     return
+        // }
 
         let url = SharedPreference.HOST_API + '/api/v1/calendar/file?year=' + this.state.selectYear + "&company=TA"
-        // //console.log("url : ", url)
 
         fetch(url)
             .then((response) => response.json())
@@ -819,10 +821,12 @@ export default class calendarYearView extends Component {
 
     loadPdfFile(pdfPath, filename) {
 
+        pdfPath = "http://www.axmag.com/download/pdfurl-guide.pdf"
+        filename = "pdfurl.pdf"
+
         if (Platform.OS === 'android') {
             //console.log("Platform.OS : android havePermission : ", this.state.havePermission);
             //console.log("Platform.OS : DownloadDir : ", RNFetchBlob.fs.dirs.DownloadDir + file);
-
             if (this.state.havePermission) {
                 RNFetchBlob
                     .config({
@@ -849,18 +853,43 @@ export default class calendarYearView extends Component {
                 // //console.log('noWritePermission')
                 this.requestPDFPermission()
             }
-        } else {
-            // //console.log("downloadDelivery ==> RNFetchBlob ")
-            let dirs = RNFetchBlob.fs.dirs
+        } else {//iOS
+
+            console.log("load Pdf pdfPath : ", pdfPath)
+            console.log("load Pdf filename : ", filename)
+
+            // // //console.log("downloadDelivery ==> RNFetchBlob ")
+            // let dirs = RNFetchBlob.fs.dirs
+            // RNFetchBlob
+            //     .config({
+            //         path: dirs.DocumentDir + '/path-to-file.anything'
+            //     })
+            //     .fetch('GET', url, {
+            //     })
+            //     .then((res) => {
+            //         // //console.log('The file saved to ', res.path())
+            //     })
             RNFetchBlob
                 .config({
-                    path: dirs.DocumentDir + '/path-to-file.anything'
+                    fileCache: true,
+                    appendExt: 'pdf'
                 })
-                .fetch('GET', url, {
+                .fetch('GET', pdfPath)
+                .then((resp) => {
+                    console.log("WorkingCalendarYear pdf1 : ", resp);
+                    console.log("WorkingCalendarYear pdf2 : ", resp.path());
+                    RNFetchBlob.fs.exists(resp.path())
+                        .then((exist) => {
+                            console.log(`WorkingCalendarYear ==> file ${exist ? '' : 'not'} exists`)
+                        })
+                        .catch(() => { console.log('WorkingCalendarYear ==> err while checking') });
+
+                    RNFetchBlob.ios.openDocument(resp.path());
                 })
-                .then((res) => {
-                    // //console.log('The file saved to ', res.path())
-                })
+                .catch((errorMessage, statusCode) => {
+                    console.log('Error: ' + errorMessage);
+                    console.log('Status code: ' + statusCode);
+                });
         }
     }
 
@@ -1019,9 +1048,11 @@ export default class calendarYearView extends Component {
 
                             <TouchableOpacity onPress={() => {
                                 //////////console.log("yearPickerForDownloadPDFFileView");
-                                this.setState({
-                                    yearPickerForDownloadPDFFileView: true
-                                })
+                                // this.setState({
+                                //     yearPickerForDownloadPDFFileView: true
+                                // })
+                                //TODO Bell
+                                this.loadPdfFile()
                             }}>
                                 <Image
                                     style={styles.navRightButton}
