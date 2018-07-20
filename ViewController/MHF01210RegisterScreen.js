@@ -39,6 +39,7 @@ export default class RegisterActivity extends Component {
     }
 
     onRegister = async () => {
+
         Keyboard.dismiss()
         let data = await RegisterAPI(this.state.username, this.state.password)
         code = data[0]
@@ -54,8 +55,11 @@ export default class RegisterActivity extends Component {
             //     showCreatePin: true
             // })
             console.log("onRegister ==> onLoadLoginWithPin")
+            
             await this.onLoadLoginWithPin("001000200")
+
         } else {
+
             Alert.alert(
                 StringText.SERVER_ERROR_TITLE,
                 StringText.SERVER_ERROR_DESC,

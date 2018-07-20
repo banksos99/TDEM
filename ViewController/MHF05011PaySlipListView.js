@@ -44,6 +44,7 @@ let monthdictionary = {};
 let offine = 0;
 let pay_date_str = 0;
 
+
 export default class PaySlipActivity extends Component {
    
     constructor(props) {
@@ -65,9 +66,9 @@ export default class PaySlipActivity extends Component {
     }
     
     checkDataFormat(DataResponse) {
-        
+        console.log('DataResponse : ',DataResponse)
         if (DataResponse) {
-
+            console.log('DataResponse : ',DataResponse)
             console.log('DataResponse.years : ',DataResponse.years)
 
             dataSource = DataResponse;
@@ -298,7 +299,7 @@ export default class PaySlipActivity extends Component {
 
     onDetail(year, index) {
 
-        pay_date_str = dataSource.years[this.state.indexselectyear].detail[index].pay_date;
+        // pay_date_str = dataSource.years[this.state.indexselectyear].detail[index].pay_date;
 
         console.log('detail',pay_date_str)
 
@@ -387,10 +388,14 @@ export default class PaySlipActivity extends Component {
                 rollid = yearlistdata[year].monthlistdata[i].id
             }
         }
-        console.log('rollid', rollid)
+       
 
         let host = SharedPreference.PAYSLIP_DETAIL_API + rollid
 
+        console.log('host', host)
+        console.log('TOKEN', SharedPreference.TOKEN)
+
+        
         if (offine) {
 
             dataSource: PayslipDataDetail.detail[dataSource.years[year].detail[index].payroll_id]
@@ -402,14 +407,15 @@ export default class PaySlipActivity extends Component {
                 yearselected: year,
                 Datadetail: this.state.dataSource
             });
-        } else {
 
+        } else {
+            // console.log('rollid', rollid)
             return fetch(host, {
                 method: 'GET',
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
-                    Authorization: 'Bearer MS5IRjAxLmJjZGE4OGIyNzVjMjc1Yzg0MDU1ZDhlYWRlMGJmOTFlNDg4YTI1MGUyOTc0MjUxODUxMzk1ZjgwMWQ3ZGY3YTYyZGQ4YmUyOTE3OWViOGFlMGUwY2Y2NjIxNjViZmRkNjdiMzk5NzJjOGJiOGZlN2QwNWExZTIxNDU2M2YxOTZl=',
+                    Authorization: SharedPreference.TOKEN,
                 },
             })
                 .then((response) => response.json())
@@ -422,8 +428,9 @@ export default class PaySlipActivity extends Component {
                         // datadetail: PayslipDataDetail.detail[dataSource.years[year].detail[index].payroll_id]
 
                     }, function () {
-
-                        if (this.state.dataSource.status === '200') {
+                        console.log('status : ',this.state.dataSource.status);
+                        if (this.state.dataSource.status === 200) {
+                            console.log('payslip detail DataResponse : ',this.state.dataSource,rollid);
                             // console.log('DataResponse year : ',dataSource.data.years[year].year);
                             // this.setState(this.renderloadingscreen())
                             this.props.navigation.navigate('PayslipDetail', {
@@ -433,7 +440,8 @@ export default class PaySlipActivity extends Component {
                                 initialmonth: 0,
                                 monthselected: index,
                                 yearselected: year,
-                                Datadetail: this.state.dataSource
+                                Datadetail: this.state.dataSource,
+                                rollid:rollid
                             });
                         } else {
 

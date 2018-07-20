@@ -22,7 +22,7 @@ import PayslipDataDetail from "./../InAppData/Payslipdatadetail2"
 import SharedPreference from "./../SharedObject/SharedPreference"
 import Decryptfun from "./../SharedObject/Decryptfun"
 import Months from "./../constants/Month"
-
+// import PDFReader from "react-pdf-reader";
 //let month = ['January ', 'February ', 'March ', 'April ', 'MAY ', 'June ', 'July ', 'August ', 'September ', 'October ', 'November ', 'December '];
 //monthNames
 let currentmonth = new Date().getMonth();
@@ -51,7 +51,7 @@ export default class PayslipDetail extends Component {
             monthselected: this.props.navigation.getParam("monthselected", ""),
             yearselected: this.props.navigation.getParam("yearselected", ""),
             datadetail: this.props.navigation.getParam("Datadetail", ""),
-
+            rollid: this.props.navigation.getParam("rollid", ""),
         }
 
         // console.log('data detail :',this.state.datadetail.data.header.sum_income)
@@ -62,6 +62,7 @@ export default class PayslipDetail extends Component {
         console.log('initmonth :', this.state.initmonth)
         console.log('currentmonth :', currentmonth)
         console.log('currentyear :', currentyear)
+        console.log('rollid :', this.state.rollid)
         
     }
 
@@ -71,37 +72,40 @@ export default class PayslipDetail extends Component {
     }
 
     onDownloadPDFFile() {
-        // console.log('this.state.year : ' + this.state.year);
-        this.state.url = 'http://www.axmag.com/download/pdfurl-guide.pdf';
 
-        // this.state.url = 'https://s3.amazonaws.com/epubjs/books/moby-dick.epub';
-        Expo.FileSystem.downloadAsync(
-            this.state.url,
-            Expo.FileSystem.documentDirectory + 'pdfurl-guide.pdf'
-        )
-            .then(({ uri }) => {
-                Expo.WebBrowser.openBrowserAsync(this.state.url)
-            })
-            .catch(error => {
-                console.error(error);
-            });
+        console.log('PAYSLIP_DOWNLOAD_API : ', SharedPreference.PAYSLIP_DOWNLOAD_API+this.state.rollid)
+
+        // // console.log('this.state.year : ' + this.state.year);
+        // this.state.url = 'http://www.axmag.com/download/pdfurl-guide.pdf';
+
+        // // this.state.url = 'https://s3.amazonaws.com/epubjs/books/moby-dick.epub';
+        // Expo.FileSystem.downloadAsync(
+        //     this.state.url,
+        //     Expo.FileSystem.documentDirectory + 'pdfurl-guide.pdf'
+        // )
+        //     .then(({ uri }) => {
+        //         Expo.WebBrowser.openBrowserAsync(this.state.url)
+        //     })
+        //     .catch(error => {
+        //         console.error(error);
+        //     });
     }
 
     getPayslipDetailfromAPI() {
 
-        let rollid;
+        
 
         for(let i = 0 ; i < this.state.yearlist[this.state.yearselected].monthlistdata.length;i++){
 
             if (this.state.yearlist[this.state.yearselected].monthlistdata[i].month === this.state.monthselected + 1) {
 
-                rollid = this.state.yearlist[this.state.yearselected].monthlistdata[i].id
+                this.state.rollid = this.state.yearlist[this.state.yearselected].monthlistdata[i].id
             }
         }
         console.log('rollid :', rollid)
         
         if (rollid) {
-            let host = SharedPreference.PAYSLIP_DETAIL_API + rollid
+            let host = SharedPreference.PAYSLIP_DETAIL_API + this.state.rollid
 
             return fetch(host, {
                 method: 'GET',
@@ -136,6 +140,7 @@ export default class PayslipDetail extends Component {
                     console.error(error);
                 });
         } else {
+
             this.setState({
 
                 isscreenloading: false,

@@ -25,7 +25,7 @@ import RestAPI from "../constants/RestAPI"
 let dataSource = [];
 let temphandbookData = [];
 let option = 0;
-
+let org_code = '';
 
 export default class OrganizationStruct extends Component {
 
@@ -51,8 +51,9 @@ export default class OrganizationStruct extends Component {
 
         if (DataResponse) {
 
-            console.log('DataResponse :', DataResponse)
-            
+            console.log('org DataResponse :', DataResponse.org_code)
+            org_code =DataResponse.org_code
+            console.log('org_code :', org_code)
             dataSource = [];
             //console.log(DataResponse[0].data)
             // dataSource = DataResponse.org_lst;
@@ -261,7 +262,8 @@ export default class OrganizationStruct extends Component {
         data = data[1]
 
         if (code.SUCCESS == data.code) {
-            console.log('data.data.org_lst :', data.data.org_lst)
+            
+            console.log('data.data :', data.data)
             let temparr = []
             for (let i = 0; i < dataSource.length; i++) {
 

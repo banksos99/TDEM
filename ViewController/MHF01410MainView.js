@@ -39,7 +39,7 @@ let initannouncementTypetext = 'All';
 let initannouncementStatus = 'All';
 let initannouncementStatustext = 'All'
 // let page = 0;
-let orgcode = 60162305;
+let orgcode = '';//60162305;
 
 let managerstatus = false;
 let announcestatus = false;
@@ -72,8 +72,17 @@ export default class HMF01011MainView extends Component {
 
         console.log("MainView ====> profileObject ==> ", SharedPreference.profileObject)
         console.log("MainView ====> profileObject ==> employee_name ==> ", SharedPreference.profileObject.employee_name)
-    }
+        console.log("MainView ====> profileObject ==> role_authoried ==> ", SharedPreference.profileObject.role_authoried)
 
+        //Check Manager status
+        for (let i = 0; i < SharedPreference.profileObject.role_authoried.length; i++) {
+            if (SharedPreference.profileObject.role_authoried[1].module_function === 'HF0501') {
+                managerstatus = SharedPreference.profileObject.role_authoried[1].access
+            }
+
+        }
+        console.log("MainView ====> profileObject ==> managerstatus ==> ", managerstatus)
+    }
 
     loadData = async () => {
 
@@ -414,19 +423,44 @@ export default class HMF01011MainView extends Component {
 
     loadPayslipfromAPI = async () => {
 
-        let data = await RestAPI(SharedPreference.PAYSLIP_LIST_API)
+        this.APIPayslipCallback(await RestAPI(SharedPreference.PAYSLIP_LIST_API), 'PayslipList')
+
+        // let data = await RestAPI(SharedPreference.PAYSLIP_LIST_API)
+        // // console.log('data',data)
+        // code = data[0]
+        // data = data[1]
+        // console.log('data',data.data)
+        // if ((code.SUCCESS == data.code) | (code.NODATA == data.code)) {
+        //     this.props.navigation.navigate('PayslipList', {
+        //         dataResponse: data.data,
+        //     });
+        // } else {
+        //     this.onLoadErrorAlertDialog(data)
+        // }
+
+    }
+
+    APIPayslipCallback(data, rount) {
+
         code = data[0]
         data = data[1]
 
+        this.setState({
+            isscreenloading: false,
+        })
+
         if ((code.SUCCESS == data.code) | (code.NODATA == data.code)) {
-            this.props.navigation.navigate('PayslipList', {
-                dataResponse: data.data,
+
+            this.props.navigation.navigate(rount, {
+                DataResponse: data.data,
             });
+
         } else {
             this.onLoadErrorAlertDialog(data)
         }
 
     }
+
 
     loadClockInOutDetailfromAPI = async () => {
 
@@ -526,7 +560,10 @@ export default class HMF01011MainView extends Component {
         console.log('main menu option :', option)
         code = data[0]
         data = data[1]
-
+        //check org_code
+        if (option == 9) {
+            orgcode = 60162370
+        }
         if (code.SUCCESS == data.code) {
             this.props.navigation.navigate(rount, {
                 DataResponse: data.data,
@@ -1294,7 +1331,7 @@ export default class HMF01011MainView extends Component {
                 <View style={{ flex: 1, backgroundColor: 'white' }} >
                     <View style={{ flex: 1, flexDirection: 'row' }}>
                         <TouchableOpacity
-                            ref=''
+                            ref='MHF01411EmpInfo'
                             disabled={!rolemanagementEmpoyee[0]}
                             style={{ flex: 1 }}
                             onPress={this.onOpenEmployeeInfo.bind(this)}>
@@ -1318,7 +1355,7 @@ export default class HMF01011MainView extends Component {
                         </TouchableOpacity>
 
                         <TouchableOpacity
-                            ref=''
+                            ref='MHF01411Nonpayroll'
                             disabled={!rolemanagementEmpoyee[1]}
                             style={{ flex: 1 }}
                             onPress={this.onOpenNonpayroll.bind(this)}
@@ -1339,7 +1376,7 @@ export default class HMF01011MainView extends Component {
                             </View>
                         </TouchableOpacity>
                         <TouchableOpacity
-                            ref=''
+                            ref='MHF01411Payslip'
                             disabled={!rolemanagementEmpoyee[2]}
                             style={{ flex: 1 }}
                             onPress={this.onOpenPayslip.bind(this)}
@@ -1363,7 +1400,7 @@ export default class HMF01011MainView extends Component {
                     <View style={{ flex: 1, flexDirection: 'row' }}>
 
                         <TouchableOpacity
-                            ref=''
+                            ref='MHF01411LeaveQuota'
                             disabled={!rolemanagementEmpoyee[3]}
                             style={{ flex: 1 }}
                             onPress={this.onOpenLeaveQuota.bind(this)}
@@ -1385,7 +1422,7 @@ export default class HMF01011MainView extends Component {
                         </TouchableOpacity>
 
                         <TouchableOpacity
-                            ref=''
+                            ref='MHF01411ClockInOut'
                             disabled={!rolemanagementEmpoyee[4]}
                             style={{ flex: 1 }}
                             onPress={this.onOpenClockInOut.bind(this)}
@@ -1407,7 +1444,7 @@ export default class HMF01011MainView extends Component {
                         </TouchableOpacity>
 
                         <TouchableOpacity
-                            ref=''
+                            ref='MHF01411OTSummary'
                             disabled={!rolemanagementEmpoyee[5]}
                             style={{ flex: 1 }}
                             onPress={this.onOpenOTSummarySelf.bind(this)}
@@ -1432,7 +1469,7 @@ export default class HMF01011MainView extends Component {
                     <View style={{ flex: 1, flexDirection: 'row' }}>
 
                         <TouchableOpacity
-                            ref=''
+                            ref='MHF01411WorkingCalendar'
                             // disabled={!rolemanagementEmpoyee[6]}
                             style={{ flex: 1 }}
                             onPress={this.onOpenCalendar.bind(this)}
@@ -1454,7 +1491,7 @@ export default class HMF01011MainView extends Component {
                         </TouchableOpacity>
 
                         <TouchableOpacity
-                            ref=''
+                            ref='MHF01411Handbook'
                             disabled={!rolemanagementEmpoyee[7]}
                             style={{ flex: 1 }}
                             onPress={this.onOpenHandbook.bind(this)}
@@ -2069,7 +2106,7 @@ export default class HMF01011MainView extends Component {
 
     rendermanagertab() {
 
-        if (managerstatus) {
+        if (managerstatus === 'Y') {
 
             return (
                 <TouchableOpacity style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }} onPress={() => { this.settabscreen(2) }}>
