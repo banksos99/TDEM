@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Image } from 'react-native';
+import { View, Image,Alert } from 'react-native';
 
 import {
   StackNavigator,
@@ -14,7 +14,7 @@ import DeviceInfo from 'react-native-device-info';
 
 import firebase from 'react-native-firebase';
 import type, { RemoteMessage } from 'react-native-firebase';
-
+let mon = ['Jan','Feb','Mar','Apl','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
 export default class mainview extends Component {
 
   savePIN = new SavePIN()
@@ -30,6 +30,7 @@ export default class mainview extends Component {
   async componentDidMount() {
     console.log("App ==> componentDidMount")
     this.inactivecounting();
+    this.inappTimeInterval();
     const enabled = await firebase.messaging().hasPermission();
     if (enabled) {
       console.log("firebase ==> user has permissions")
@@ -147,15 +148,84 @@ export default class mainview extends Component {
         showpin: true,
         modalVisible: true
       });
-    }, 5000);
+    }, 500);
   }
 
-  toggleModal(visible) {
+  // toggleModal(visible) {
+  //   this.timer = setTimeout(() => {
+  //     this.setState({ showpin: false });
+  //   }, 500);
+  // };
+
+  inappTimeInterval() {
     this.timer = setTimeout(() => {
-      this.setState({ showpin: false });
-    }, 500);
+      this.onLoadAppInfo()
+      
+    }, 60000);
   };
 
+  getParsedDate() {
+
+    let date = new Date()
+
+    date = String(date).split(' ');
+
+    let days = String(date[0]).split('-');
+
+    let hours = String(date[4]).split(':');
+
+    let mon_num = 0
+
+    for (let i = 0; i < mon.length; i++) {
+      if (mon[i] === date[1]) {
+        mon_num = i + 1;
+      }
+
+    }
+    return date[3] + '-' + mon_num + '-' + date[2] + ' ' + hours[0] + ':' + hours[1] + ':' + hours[2];
+
+  }
+
+  onLoadAppInfo() {
+
+    let newdate = this.getParsedDate()
+
+    return fetch(SharedPreference.PULL_NOTIFICATION_API + newdate, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: SharedPreference.TOKEN,
+      },
+    })
+      .then((response) => response.json())
+      .then((responseJson) => {
+        try {
+          console.log('responseJson :', responseJson)
+
+          this.setState({
+
+
+          }, function () {
+
+            this.inappTimeInterval()
+
+          });
+
+        } catch (error) {
+
+          //console.log('erreo1 :', error);
+
+        }
+      })
+      .catch((error) => {
+
+        console.log('error :', error)
+
+
+      });
+  }
+  
   getdate(value) {
     this.setState({
       showpin: false
@@ -186,6 +256,7 @@ export default class mainview extends Component {
           source={require('./resource/SplashBg.png')}
           style={{ flex: 1 }} />
       </View>
+      
     );
   }
 }

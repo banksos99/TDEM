@@ -175,8 +175,6 @@ export default class PayslipDetail extends Component {
     }
     getPayslipDetailfromAPI() {
 
-
-
         for (let i = 0; i < this.state.yearlist[this.state.yearselected].monthlistdata.length; i++) {
 
             if (this.state.yearlist[this.state.yearselected].monthlistdata[i].month === this.state.monthselected + 1) {
@@ -184,9 +182,9 @@ export default class PayslipDetail extends Component {
                 this.state.rollid = this.state.yearlist[this.state.yearselected].monthlistdata[i].id
             }
         }
-        console.log('rollid :', rollid)
+        console.log('rollid :', this.state.rollid)
 
-        if (rollid) {
+        if (this.state.rollid) {
             let host = SharedPreference.PAYSLIP_DETAIL_API + this.state.rollid
 
             return fetch(host, {
@@ -194,7 +192,7 @@ export default class PayslipDetail extends Component {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
-                    Authorization: 'Bearer Mi5IRjA1MDEuZTExZGI3YjllYTY0MjNkNDVmYTYyNmNkMzI1ZDhlN2U3NmI4Mzk0NTZhMGU5ODcxYzJiMzJiYzYyZWFlOWUzZGFiMDlhN2Y2M2I1OTE5MTkzZWYwNTYzYjAxODNiYjA2M2RhODAyN2Q5OTE3ZWNhOGExMTBlNTgzYmI3NTkzMmI=',
+                    Authorization: SharedPreference.TOKEN,
                 },
             })
                 .then((response) => response.json())
@@ -550,7 +548,7 @@ export default class PayslipDetail extends Component {
         let sum_income_str = 0;
         let sum_deduct_str = 0;
         let bankicon = require('./../resource/images/bankIcon/blank.png')
-        if (this.state.datadetail) {
+        if (this.state.datadetail.data) {
             income = (Decryptfun.decrypt(this.state.datadetail.data.header.sum_income));
             deduct = (Decryptfun.decrypt(this.state.datadetail.data.header.sum_deduct));
             let tincome = parseFloat(income.replace(',', ''));

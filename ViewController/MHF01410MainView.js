@@ -21,7 +21,6 @@ import SaveAutoSyncCalendar from "../constants/SaveAutoSyncCalendar";
 
 import SaveProfile from "../constants/SaveProfile"
 
-
 const ROLL_ANNOUNCE = 10;
 
 let annountype = { 'All': 'All', 'Company Announcement': 'Company Announcement', 'Emergency Announcement': 'Emergency Announcement', 'Event Announcement': 'Event Announcement', 'General Announcement': 'General Announcement' };
@@ -42,7 +41,7 @@ let initannouncementStatustext = 'All'
 let orgcode = '';//60162305;
 
 let managerstatus = false;
-let announcestatus = false;
+let announcestatus = true;
 let rolemanagementEmpoyee = [1, 1, 1, 1, 1, 1, 0, 0];
 let rolemanagementManager = [0, 0, 0, 0];
 
@@ -76,8 +75,8 @@ export default class HMF01011MainView extends Component {
 
         //Check Manager status
         for (let i = 0; i < SharedPreference.profileObject.role_authoried.length; i++) {
-            if (SharedPreference.profileObject.role_authoried[1].module_function === 'HF0501') {
-                managerstatus = SharedPreference.profileObject.role_authoried[1].access
+            if (SharedPreference.profileObject.role_authoried[i].module_function === 'HF0501') {
+                managerstatus = 'Y'
             }
 
         }
@@ -346,7 +345,7 @@ export default class HMF01011MainView extends Component {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer MS5IRjAxLmJjZGE4OGIyNzVjMjc1Yzg0MDU1ZDhlYWRlMGJmOTFlNDg4YTI1MGUyOTc0MjUxODUxMzk1ZjgwMWQ3ZGY3YTYyZGQ4YmUyOTE3OWViOGFlMGUwY2Y2NjIxNjViZmRkNjdiMzk5NzJjOGJiOGZlN2QwNWExZTIxNDU2M2YxOTZl',
+                Authorization: SharedPreference.TOKEN,
             },
         })
             .then((response) => response.json())
@@ -2103,6 +2102,19 @@ export default class HMF01011MainView extends Component {
         }
 
     }
+    pushnodetailscreen() {
+
+      //  if (this.state.isscreenloading) {
+            return (
+                <View style={{ height: '100%', width: '100%', position: 'absolute', }}>
+                    <View style={{ backgroundColor: 'black', height: '100%', width: '100%', position: 'absolute', opacity: 0.7 }}>
+                    </View>
+                   
+                </View>
+            )
+       // }
+
+    }
 
     rendermanagertab() {
 
@@ -2197,6 +2209,7 @@ export default class HMF01011MainView extends Component {
                     </View>
                 </View>
                 {this.renderloadingscreen()}
+                {this.pushnodetailscreen()}
             </View>
         );
     }

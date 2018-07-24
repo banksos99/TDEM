@@ -5,7 +5,10 @@ const VERSION = 'v1'
 
 export default {
     TOKEN: '',
+
     INITIAL_MASTER_API: HOST + '/api/' + VERSION + '/initmaster/',
+    APPLICATION_INFO_API: HOST + '/api/' + VERSION + '/appinfo',
+    PULL_NOTIFICATION_API: HOST + '/api/' + VERSION + '/pullnotification?latest_date=',
     ANNOUNCEMENT_ASC_API: HOST + '/api/' + VERSION + '/announcement?sort=%2Bcreate_date',
     ANNOUNCEMENT_DSC_API: HOST + '/api/' + VERSION + '/announcement?sort=-create_date',
     ANNOUNCEMENT_DETAIL_API: HOST + '/api/' + VERSION + '/announcement/',
@@ -35,7 +38,7 @@ export default {
     EMP_INFO_CAREERPATH_API: HOST + '/api/' + VERSION + '/employee/',
     EMP_INFO_MANAGER_API: HOST + '/api/' + VERSION + '/employee/',
     ORGANIZ_STRUCTURE_API: HOST + '/api/' + VERSION + '/organization?type=CE&org_code=',
-    APPLICATION_INFO_API: HOST + '/api/' + VERSION + '/appinfo',
+   
 
     OTSUMMARY_LINE_CHART: HOST + '/api/' + VERSION + '/ot/history?org_code=',
     OTSUMMARY_BAR_CHART: HOST + '/api/' + VERSION + '/ot/average?org_code=',
