@@ -11,9 +11,8 @@ import {
     Image, Picker, WebView,
     FlatList,
     ActivityIndicator,
-    Alert
-    // LayoutAnimation
-
+    Alert,
+    Platform
 } from 'react-native';
 
 import Colors from "./../SharedObject/Colors"
@@ -46,7 +45,7 @@ let pay_date_str = 0;
 
 
 export default class PaySlipActivity extends Component {
-   
+
     constructor(props) {
         super(props);
 
@@ -54,29 +53,29 @@ export default class PaySlipActivity extends Component {
             isscreenloading: false,
             loadingtype: 0,
             isFetching: false,
-      
-            expand: false,
-            indexselectyear:0,
-            updatedHeight:50,
-            dataSource: []
-        };
 
+            expand: false,
+            indexselectyear: 0,
+            updatedHeight: 50,
+            dataSource: [],
+            selectYearArray: [2000, 2000, 2000]
+        };
         this.checkDataFormat(this.props.navigation.getParam("DataResponse", ""));
 
     }
-    
+
     checkDataFormat(DataResponse) {
-        console.log('DataResponse : ',DataResponse)
+        console.log('DataResponse : ', DataResponse)
         if (DataResponse) {
-            console.log('DataResponse : ',DataResponse)
-            console.log('DataResponse.years : ',DataResponse.years)
+            console.log('DataResponse : ', DataResponse)
+            console.log('DataResponse.years : ', DataResponse.years)
 
             dataSource = DataResponse;
 
             for (let i = 0; i < DataResponse.years.length; i++) {
 
                 yearnumber = DataResponse.years[i].year;
-            
+
                 if (DataResponse.years[i].detail) {
                     for (let j = DataResponse.years[i].detail.length - 1; j >= 0; j--) {
 
@@ -105,17 +104,41 @@ export default class PaySlipActivity extends Component {
             this.setState({
 
                 isFetching: false,
-             
+
                 // loadingviewheight: 0,
-                
+
             });
 
-            
+
         }
-        
+
         this.createPayslipItem();
-        
+
     }
+
+
+    async componentWillMount() {
+        await this.getArrayOfYear()
+    }
+
+    getArrayOfYear() {
+        var currentYear = new Date().getFullYear()
+        selectYearArray = []
+
+        for (let index = 0; index < 3; index++) {
+            let year = (currentYear - index)
+            selectYearArray.push(year)
+        }
+
+        this.setState({
+            selectYearArray: selectYearArray,
+        })
+
+        console.log("getArrayOfYear ==> selectYearArray : ", this.state.selectYearArray)
+
+    }
+
+
     createcomponent(i) {
 
         let havedata;
@@ -216,18 +239,18 @@ export default class PaySlipActivity extends Component {
                 key={i}>
 
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', }}>
-                <Text style={i > currentmonth && this.state.indexselectyear === 0 ?
-                        styles.payslipitemdetailHide:
+                    <Text style={i > currentmonth && this.state.indexselectyear === 0 ?
+                        styles.payslipitemdetailHide :
                         i === currentmonth && this.state.indexselectyear === 0 ?
-                        styles.payslipitemcurrentdetail:styles.payslipitemdetail}>
-                    {Month.monthNamesShort[i]}
+                            styles.payslipitemcurrentdetail : styles.payslipitemdetail}>
+                        {Month.monthNamesShort[i]}
                     </Text>
                 </View>
                 <View style={{ flex: 2, justifyContent: 'center', alignItems: 'center' }}>
                     <Text style={i > currentmonth && this.state.indexselectyear === 0 ?
-                        styles.payslipitemdetailHide:
+                        styles.payslipitemdetailHide :
                         i === currentmonth && this.state.indexselectyear === 0 ?
-                        styles.payslipitemcurrentdetail:styles.payslipitemdetail}>
+                            styles.payslipitemcurrentdetail : styles.payslipitemdetail}>
                         0.00
                         </Text>
                 </View>
@@ -293,7 +316,7 @@ export default class PaySlipActivity extends Component {
     onBack() {
 
 
-        this.props.navigation.navigate('HomeScreen');``
+        this.props.navigation.navigate('HomeScreen'); ``
 
     }
 
@@ -301,7 +324,7 @@ export default class PaySlipActivity extends Component {
 
         // pay_date_str = dataSource.years[this.state.indexselectyear].detail[index].pay_date;
 
-        console.log('detail',pay_date_str)
+        console.log('detail', pay_date_str)
 
         this.setState({
 
@@ -309,10 +332,10 @@ export default class PaySlipActivity extends Component {
             loadingtype: 3
 
         }, function () {
-// console.log(this.state.indexselectyear)
+            // console.log(this.state.indexselectyear)
             // this.setState(this.renderloadingscreen())
 
-            this.getPayslipDetailfromAPI(year,index)
+            this.getPayslipDetailfromAPI(year, index)
 
         });
 
@@ -322,26 +345,26 @@ export default class PaySlipActivity extends Component {
 
     onCurrentYear() {
 
-        
-      
+
+
         this.setState({
             indexselectyear: 0,
             expand: false,
-            updatedHeight : 50,
-            
+            updatedHeight: 50,
+
         }, function () {
-            
+
             this.setState(this.createPayslipItem)
             this.setState(this.PayslipItem())
         });
 
     }
     onLastYear() {
-       
+
         this.setState({
             indexselectyear: 1,
             expand: false,
-            updatedHeight : 50,
+            updatedHeight: 50,
 
         }, function () {
             this.setState(this.createPayslipItem)
@@ -351,13 +374,13 @@ export default class PaySlipActivity extends Component {
     }
 
     onLast2Year() {
-  
-        
+
+
 
         this.setState({
-            indexselectyear : 2,
-            expand : false,
-            updatedHeight : 50,
+            indexselectyear: 2,
+            expand: false,
+            updatedHeight: 50,
 
         }, function () {
             this.setState(this.createPayslipItem)
@@ -369,9 +392,9 @@ export default class PaySlipActivity extends Component {
 
     componentDidMount() {
         // console.log(Layout.window.width);
-       // this.fetchData()
+        // this.fetchData()
     }
- 
+
     onRefresh() {
 
         this.setState({ isFetching: true }, function () { this.fetchData() });
@@ -388,14 +411,14 @@ export default class PaySlipActivity extends Component {
                 rollid = yearlistdata[year].monthlistdata[i].id
             }
         }
-       
+
 
         let host = SharedPreference.PAYSLIP_DETAIL_API + rollid
 
         console.log('host', host)
         console.log('TOKEN', SharedPreference.TOKEN)
 
-        
+
         if (offine) {
 
             dataSource: PayslipDataDetail.detail[dataSource.years[year].detail[index].payroll_id]
@@ -428,9 +451,9 @@ export default class PaySlipActivity extends Component {
                         // datadetail: PayslipDataDetail.detail[dataSource.years[year].detail[index].payroll_id]
 
                     }, function () {
-                        console.log('status : ',this.state.dataSource.status);
+                        console.log('status : ', this.state.dataSource.status);
                         if (this.state.dataSource.status === 200) {
-                            console.log('payslip detail DataResponse : ',this.state.dataSource,rollid);
+                            console.log('payslip detail DataResponse : ', this.state.dataSource, rollid);
                             // console.log('DataResponse year : ',dataSource.data.years[year].year);
                             // this.setState(this.renderloadingscreen())
                             this.props.navigation.navigate('PayslipDetail', {
@@ -441,7 +464,7 @@ export default class PaySlipActivity extends Component {
                                 monthselected: index,
                                 yearselected: year,
                                 Datadetail: this.state.dataSource,
-                                rollid:rollid
+                                rollid: rollid
                             });
                         } else {
 
@@ -507,38 +530,38 @@ export default class PaySlipActivity extends Component {
         let social_fund = '0';
         let emp_pf_year = '0';
         let com_pf_year = '0';
-        
+
         // if (dataSource.years[this.state.indexselectyear].header) {exemption = Dcryptfun.decrypt(dataSource.years[this.state.indexselectyear].header.exemption);}
-        
+
         // if (dataSource.years[this.state.indexselectyear].header) {income_acc = Dcryptfun.decrypt(dataSource.years[this.state.indexselectyear].header.income_acc);}
-        
+
         // if (dataSource.years[this.state.indexselectyear].header) {tax_acc = Dcryptfun.decrypt(dataSource.years[this.state.indexselectyear].header.tax_acc);}
-        
+
         // if (dataSource.years[this.state.indexselectyear].header) {social_fund = Dcryptfun.decrypt(dataSource.years[this.state.indexselectyear].header.social_fund);}
-        
+
         // if (dataSource.years[this.state.indexselectyear].header) {emp_pf_year = Dcryptfun.decrypt(dataSource.years[this.state.indexselectyear].header.emp_pf_year);}
-        
+
         // if (dataSource.years[this.state.indexselectyear].header) {com_pf_year = Dcryptfun.decrypt(dataSource.years[this.state.indexselectyear].header.com_pf_year);}
-        
+
 
         return (
 
-            <View style={{ height:this.state.updatedHeight, backgroundColor: 'gray', flexDirection: 'column', overflow: 'hidden', marginLeft: 5, marginRight: 5, borderRadius: 5 }}>
+            <View style={{ height: this.state.updatedHeight, backgroundColor: 'gray', flexDirection: 'column', overflow: 'hidden', marginLeft: 5, marginRight: 5, borderRadius: 5 }}>
                 <View style={{ height: 49, width: '100%', backgroundColor: Colors.calendarLocationBoxColor, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }} >
 
-                    <Text style={{ flex: 5,  fontSize: 15, marginLeft: 10, fontWeight: 'bold' }}>ANNUAL</Text>
+                    <Text style={{ flex: 5, fontSize: 15, marginLeft: 10, fontWeight: 'bold' }}>ANNUAL</Text>
                     <TouchableOpacity style={{ flex: 1 }} onPress={(this.expand_collapse_Function.bind(this))}>
                         <Image
                             style={{ height: 80, width: 80 }}
                             source={this.state.expand === false ?
                                 require('./../resource/images/Expand.png') :
                                 require('./../resource/images/Collapse.png')}
-                            // resizeMode='cover'
+                        // resizeMode='cover'
                         />
                     </TouchableOpacity>
-                    
+
                 </View>
-                <View style={{height:1,width:'100%', backgroundColor:'gray'}}/>
+                <View style={{ height: 1, width: '100%', backgroundColor: 'gray' }} />
                 <View style={{ flex: 1, backgroundColor: Colors.calendarLocationBoxColor }}>
                     <View style={{ flex: 1, marginLeft: 10, marginRight: 10, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                         <Text style={styles.payslipAnnoualLeft}>Exemption</Text>
@@ -550,19 +573,19 @@ export default class PaySlipActivity extends Component {
                     </View>
                     <View style={{ flex: 1, marginLeft: 10, marginRight: 10, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                         <Text style={styles.payslipAnnoualLeft}>Year to date W/H Tax</Text>
-                        <Text style={styles.payslipAnnoualRight}numberOfLines={1}>{tax_acc}</Text>
+                        <Text style={styles.payslipAnnoualRight} numberOfLines={1}>{tax_acc}</Text>
                     </View>
                     <View style={{ flex: 1, marginLeft: 10, marginRight: 10, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                         <Text style={styles.payslipAnnoualLeft}>Social Security</Text>
-                        <Text style={styles.payslipAnnoualRight}numberOfLines={1}>{social_fund}</Text>
+                        <Text style={styles.payslipAnnoualRight} numberOfLines={1}>{social_fund}</Text>
                     </View>
                     <View style={{ flex: 1, marginLeft: 10, marginRight: 10, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                         <Text style={styles.payslipAnnoualLeft}>Employee Provident Fund</Text>
-                        <Text style={styles.payslipAnnoualRight}numberOfLines={1}>{emp_pf_year}</Text>
+                        <Text style={styles.payslipAnnoualRight} numberOfLines={1}>{emp_pf_year}</Text>
                     </View>
                     <View style={{ flex: 1, marginLeft: 10, marginRight: 10, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                         <Text style={styles.payslipAnnoualLeft}>Company Povident Fund</Text>
-                        <Text style={styles.payslipAnnoualRight}numberOfLines={1}>{com_pf_year}</Text>
+                        <Text style={styles.payslipAnnoualRight} numberOfLines={1}>{com_pf_year}</Text>
                     </View>
                 </View>
 
@@ -570,12 +593,12 @@ export default class PaySlipActivity extends Component {
 
         )
     }
-   
+
 
     PayslipItem() {
         return (
-            <View style={{ flex: 1, flexDirection: 'column',marginLeft:3,marginRight:3 }}>
-               {payslipItems}
+            <View style={{ flex: 1, flexDirection: 'column', marginLeft: 3, marginRight: 3 }}>
+                {payslipItems}
             </View>
 
         )
@@ -602,7 +625,7 @@ export default class PaySlipActivity extends Component {
     render() {
         return (
             <View style={{ flex: 1 }} >
-                <View style={[styles.navContainer,{flexDirection: 'column' }]}>
+                <View style={[styles.navContainer, { flexDirection: 'column' }]}>
                     <View style={styles.statusbarcontainer} />
                     <View style={{ height: 50, flexDirection: 'row', }}>
                         <View style={{ flex: 1, justifyContent: 'center', }}>
@@ -631,7 +654,7 @@ export default class PaySlipActivity extends Component {
 
                                 )}>
                                 <View style={this.state.indexselectyear === 2 ? styles.nonpayrolltabBG_ena : styles.nonpayrolltabBG_dis}>
-                                    <Text style={this.state.indexselectyear === 2 ? styles.leaveYearButton_ena : styles.leaveYearButton_dis}>2016</Text>
+                                    <Text style={this.state.indexselectyear === 2 ? styles.leaveYearButton_ena : styles.leaveYearButton_dis}>{this.state.selectYearArray[2]}</Text>
                                 </View>
                             </TouchableOpacity>
 
@@ -640,19 +663,17 @@ export default class PaySlipActivity extends Component {
                                 onPress={(this.onLastYear.bind(this))}
                             >
                                 <View style={this.state.indexselectyear === 1 ? styles.nonpayrolltabBG_ena : styles.nonpayrolltabBG_dis}>
-                                    <Text style={this.state.indexselectyear === 1 ? styles.leaveYearButton_ena : styles.leaveYearButton_dis}>2017</Text>
+                                    <Text style={this.state.indexselectyear === 1 ? styles.leaveYearButton_ena : styles.leaveYearButton_dis}>{this.state.selectYearArray[1]}</Text>
                                 </View>
                             </TouchableOpacity>
 
                             <TouchableOpacity
                                 style={{ flex: 1 }}
-                                onPress={(this.onCurrentYear.bind(this))}
-                            >
+                                onPress={(this.onCurrentYear.bind(this))}>
                                 <View style={this.state.indexselectyear === 0 ? styles.nonpayrolltabBG_ena : styles.nonpayrolltabBG_dis}>
-                                    <Text style={this.state.indexselectyear === 0 ? styles.leaveYearButton_ena : styles.leaveYearButton_dis}>2018</Text>
+                                    <Text style={this.state.indexselectyear === 0 ? styles.leaveYearButton_ena : styles.leaveYearButton_dis}>{this.state.selectYearArray[0]}</Text>
                                 </View>
                             </TouchableOpacity>
-
                             <View style={{ flex: 1, backgroundColor: Colors.backgroundcolor }} />
                         </View>
                         {/* <View style={{ height: 10,backgroundColor:Colors.calendarLocationBoxColor }}/> */}

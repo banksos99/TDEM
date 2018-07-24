@@ -17,11 +17,11 @@ export default async function getRestAPI(pin) {
         CUT_JSON: "700",
     }
 
-    console.log("LoginWithPin ==> callback  Register  : ", SharedPreference.REGISTER_API)
-    console.log("LoginWithPin ==> callback  client_pin  : ", pin)
-    console.log("LoginWithPin ==> callback  firebase_token  : ", SharedPreference.deviceInfo.firebaseToken)
-    console.log("LoginWithPin ==> callback  systemdn  : ", SharedPreference.company)
-    console.log("LoginWithPin ==> callback  Token  : ", SharedPreference.TOKEN)
+    // console.log("LoginWithPin ==> callback  Register  : ", SharedPreference.REGISTER_API)
+    // console.log("LoginWithPin ==> callback  client_pin  : ", pin)
+    // console.log("LoginWithPin ==> callback  firebase_token  : ", SharedPreference.deviceInfo.firebaseToken)
+    // console.log("LoginWithPin ==> callback  systemdn  : ", SharedPreference.company)
+    // console.log("LoginWithPin ==> callback  Token  : ", SharedPreference.TOKEN)
 
     return fetch(SharedPreference.REGISTER_API, {
         method: 'POST',

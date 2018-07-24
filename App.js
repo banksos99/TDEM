@@ -29,7 +29,6 @@ export default class mainview extends Component {
 
   async componentDidMount() {
     console.log("App ==> componentDidMount")
-
     this.inactivecounting();
     const enabled = await firebase.messaging().hasPermission();
     if (enabled) {

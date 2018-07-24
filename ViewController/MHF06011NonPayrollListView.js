@@ -4,7 +4,9 @@ import {
     View,
     TouchableOpacity,
     Image,
-    Alert
+    Alert,
+    Platform,
+    BackHandler
 } from 'react-native';
 
 import StringText from './../SharedObject/StringText'
@@ -25,11 +27,22 @@ export default class NonpayrollActivity extends Component {
             temparray: [],
             dataSource: this.props.navigation.getParam("dataResponse", ""),
             selectYear: this.props.navigation.getParam("selectYear", new Date().getFullYear()),
-            // selectYear: new Date().getFullYear(),
             currentYearData: [],
             lastYearData: []
         };
 
+    }
+
+    componentWillMount() {
+        if (Platform.OS !== 'android') return
+        BackHandler.addEventListener('hardwareBackPress', () => {
+            this.props.navigation.navigate('HomeScreen');
+            return true
+        })
+    }
+
+    onBack() {
+        this.props.navigation.navigate('HomeScreen');
     }
 
     renderRollItem() {
@@ -185,9 +198,7 @@ export default class NonpayrollActivity extends Component {
             { cancelable: false }
         )
     }
-    onBack() {
-        this.props.navigation.navigate('HomeScreen');
-    }
+   
 
     onDetail() {
         this.props.navigation.navigate('NonPayrollDetail');

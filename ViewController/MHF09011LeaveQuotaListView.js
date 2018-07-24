@@ -41,7 +41,7 @@ export default class LeaveQuotaActivity extends Component {
     }
 
     leaveQuotaListview() {
-        console.log(" this.state.dataSource  : ", this.state.dataSource)
+        console.log(" this.state.dataSource  : ", this.state.dataSource.code)
         if (this.state.dataSource.code != '200') {
             return (<View style={{
                 height: 50, justifyContent: 'center',
@@ -50,12 +50,12 @@ export default class LeaveQuotaActivity extends Component {
                 <Text style={{ fontFamily: font_medium }}>No result</Text>
             </View>)
         }
-            
+
         let dataArray = this.state.dataSource.data.years
         console.log("dataArray : ", dataArray)
         let yearArray = []
 
-        if(!dataArray){
+        if (!dataArray) {
             this.renderEmpty()
         }
 
@@ -69,10 +69,19 @@ export default class LeaveQuotaActivity extends Component {
                 yearArray = element.items
             }
         }
-        console.log("yearArray : ", yearArray)
-        if(yearArray.length){
 
-        
+        // console.log("yearArray : ", yearArray)
+
+        if (yearArray.length == 0) {
+            return (<View style={{
+                height: 50, justifyContent: 'center',
+                alignItems: 'center'
+            }}>
+                <Text style={{ fontFamily: font_medium }}>No result</Text>
+            </View>)
+
+        }
+
         return (
             <ScrollView style={styles.leavequotaBackground}>
                 <FlatList
@@ -125,14 +134,7 @@ export default class LeaveQuotaActivity extends Component {
                     )}
                 />
             </ScrollView>
-        )}
-        return (<View style={{
-            height: 50, justifyContent: 'center',
-            alignItems: 'center'
-        }}>
-            <Text style={{ fontFamily: font_medium }}>No result</Text>
-        </View>)
-
+        )
     }
 
     onLastYear() {
@@ -150,20 +152,20 @@ export default class LeaveQuotaActivity extends Component {
     renderTabYearSelect() {
         let lastYear = new Date().getFullYear() - 1
         // console.log("lastYear : ", lastYear)
-        if (this.state.dataSource.status != '200') {
-            return (
-                <View style={styles.selectYearContainer}>
-                    <View style={{ flex: 1, flexDirection: 'row' }}>
-                        <TouchableOpacity
-                            style={{ flex: 1 }} >
-                            <View style={this.state.selectYear === (lastYear + 1) ? styles.nonpayrolltabBG_ena : styles.nonpayrolltabBG_dis}>
-                                <Text style={this.state.selectYear === (lastYear + 1) ? styles.leaveYearButton_ena : styles.leaveYearButton_dis}>{lastYear + 1}</Text>
-                            </View>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={{ flex: 2 }} />
-                </View>)
-        }
+        // if (this.state.dataSource.status != '200') {
+        //     return (
+        //         <View style={styles.selectYearContainer}>
+        //             <View style={{ flex: 1, flexDirection: 'row' }}>
+        //                 <TouchableOpacity
+        //                     style={{ flex: 1 }} >
+        //                     <View style={this.state.selectYear === (lastYear + 1) ? styles.nonpayrolltabBG_ena : styles.nonpayrolltabBG_dis}>
+        //                         <Text style={this.state.selectYear === (lastYear + 1) ? styles.leaveYearButton_ena : styles.leaveYearButton_dis}>{lastYear + 1}</Text>
+        //                     </View>
+        //                 </TouchableOpacity>
+        //             </View>
+        //             <View style={{ flex: 2 }} />
+        //         </View>)
+        // }
 
         return (
             <View style={styles.selectYearContainer}>
@@ -199,6 +201,17 @@ export default class LeaveQuotaActivity extends Component {
     render() {
         return (
             <View style={styles.container} >
+                {/* <View style={styles.navContainer}>
+                    <TouchableOpacity onPress={(this.onBack.bind(this))}>
+                        <Image
+                            source={require('./../resource/images/Back.png')}
+                            resizeMode='contain'
+                        />
+                    </TouchableOpacity>
+                    <Text style={styles.navTitleTextTop}>Leave Quota</Text>
+                    <View style={styles.navRightContainer}>
+                    </View>
+                </View> */}
 
                 <View style={styles.navContainer}>
                     <TouchableOpacity style={styles.navLeftContainer} onPress={(this.onBack.bind(this))}>

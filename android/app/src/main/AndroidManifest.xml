@@ -1,11 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 package="com.toyotaasia.tdemconnect"
-android:versionCode="5"
-android:versionName="1.4">
+android:versionCode="7"
+android:versionName="1.6">
 
 <uses-permission android:name="android.permission.INTERNET" />
 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+
 
 <application
     android:name=".MainApplication"

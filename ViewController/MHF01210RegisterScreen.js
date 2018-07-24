@@ -39,7 +39,6 @@ export default class RegisterActivity extends Component {
     }
 
     onRegister = async () => {
-
         Keyboard.dismiss()
         let data = await RegisterAPI(this.state.username, this.state.password)
         code = data[0]
@@ -51,15 +50,9 @@ export default class RegisterActivity extends Component {
             this.saveProfile.setProfile(data.data)
             SharedPreference.profileObject = await this.saveProfile.getProfile()
             SharedPreference.TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, '1', SharedPreference.profileObject.client_token)
-            // this.setState({
-            //     showCreatePin: true
-            // })
             console.log("onRegister ==> onLoadLoginWithPin")
-            
             await this.onLoadLoginWithPin("001000200")
-
         } else {
-
             Alert.alert(
                 StringText.SERVER_ERROR_TITLE,
                 StringText.SERVER_ERROR_DESC,
@@ -76,7 +69,6 @@ export default class RegisterActivity extends Component {
         console.log("1login with pin111 ==> ", PIN)
         let data = await LoginWithPinAPI(PIN)
         console.log("2login with pin data ==> ", data)
-
         code = data[0]
         data = data[1]
 
@@ -86,10 +78,19 @@ export default class RegisterActivity extends Component {
         if (code.DUPLICATE_DATA == data.code) {
             // TODO Bell
             this.onOpenPinActivity()
-        } else {
+        } else if (code.SUCCESS == data.code) {
             this.setState({
                 showCreatePin: true
             })
+        } else {
+            Alert.alert(
+                StringText.SERVER_ERROR_TITLE,
+                StringText.SERVER_ERROR_DESC,
+                [
+                    { text: 'OK', onPress: () => console.log('OK Pressed') },
+                ],
+                { cancelable: false }
+            )
         }
     }
 
