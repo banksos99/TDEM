@@ -52,14 +52,12 @@ export default class PayslipDetail extends Component {
             rollid: this.props.navigation.getParam("rollid", ""),
             havePermission: false
         }
-
-        console.log('monthselected :', this.state.monthselected)
-        console.log('initialyear :', this.state.initialyear)
-
-        console.log('initmonth :', this.state.initmonth)
-        console.log('currentmonth :', currentmonth)
-        console.log('currentyear :', currentyear)
-        console.log('rollid :', this.state.rollid)
+        // console.log('monthselected :', this.state.monthselected)
+        // console.log('initialyear :', this.state.initialyear)
+        // console.log('initmonth :', this.state.initmonth)
+        // console.log('currentmonth :', currentmonth)
+        // console.log('currentyear :', currentyear)
+        // console.log('rollid :', this.state.rollid)
     }
 
     onBack() {
@@ -67,12 +65,8 @@ export default class PayslipDetail extends Component {
     }
 
     onDownloadPDFFile() {
-        // console.log("this.state.initialyear : ", this.state.initialyear)
-        // console.log("monthselected : ", this.state.monthselected)
-
         PAYSLIP_DOWNLOAD_API = SharedPreference.PAYSLIP_DOWNLOAD_API + this.state.rollid
-        // console.log('PAYSLIP_DOWNLOAD_API : ', PAYSLIP_DOWNLOAD_API)
-
+        console.log('PAYSLIP_DOWNLOAD_API : ', PAYSLIP_DOWNLOAD_API)
         pdfPath = PAYSLIP_DOWNLOAD_API
         filename = "Payslip_" + this.state.monthselected + "_" + this.state.initialyear + '.pdf'
         // console.log('PAYSLIP_DOWNLOAD_API : ', PAYSLIP_DOWNLOAD_API)

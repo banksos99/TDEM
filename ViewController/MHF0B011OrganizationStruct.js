@@ -15,7 +15,6 @@ import {
 } from 'react-native';
 
 import Colors from "./../SharedObject/Colors"
-import Layout from "./../SharedObject/Layout"
 import { styles } from "./../SharedObject/MainStyles"
 
 import orgdata from './../InAppData/OrgstructerData.json';
@@ -23,9 +22,9 @@ import SharedPreference from "./../SharedObject/SharedPreference"
 import RestAPI from "../constants/RestAPI"
 
 let dataSource = [];
-let temphandbookData = [];
 let option=0;
 let org_code = '';
+
 export default class OrganizationStruct extends Component {
 
     constructor(props) {

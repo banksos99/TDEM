@@ -5,10 +5,10 @@ export default async function resetPIN() {
     let code = {
         SUCCESS: "200",
         INVALID_API_KEY: "100",
-        INVALID_AUTH_TOKEN: "101",
         INVALID_API_SIGNATURE: "102",
         FAILED: "400",
         DOES_NOT_EXISTS: "401",
+        INVALID_AUTH_TOKEN: "403",
         NODATA: "404",
         DUPLICATE_DATA: "409",
         TIME_OUT: "500",
@@ -16,6 +16,9 @@ export default async function resetPIN() {
         UPDATE_APPLICATION: "600",
         CUT_JSON: "700",
     }
+
+    console.log("resetPIN ==> SharedPreference.SET_PIN_API : ",SharedPreference.SET_PIN_API)
+    console.log("resetPIN ==> SharedPreference.TOKEN : ",SharedPreference.TOKEN)
 
     return fetch(SharedPreference.SET_PIN_API, {
         method: 'POST',
@@ -34,7 +37,6 @@ export default async function resetPIN() {
             console.log("ResetPIN ==> callback success : ", responseJson)
             let object
             if (responseJson.status == code.SUCCESS) {
-                SharedPreference.profileObject = responseJson.data
                 object = [code, {
                     code: responseJson.status,
                     data: responseJson.data
@@ -45,10 +47,8 @@ export default async function resetPIN() {
                     data: responseJson.data
                 }]
             }
-
             console.log("ResetPIN ==> callback object : ", JSON.stringify(object))
             return object
-
         })
         .catch((error) => {
             object = [code, {

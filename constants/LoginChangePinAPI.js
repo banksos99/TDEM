@@ -16,7 +16,6 @@ export default async function changePin(oldPin, newPin) {
         UPDATE_APPLICATION: "600",
         CUT_JSON: "700",
     }
-
     return fetch(SharedPreference.SET_PIN_API, {
         method: 'POST',
         headers: {
@@ -36,7 +35,6 @@ export default async function changePin(oldPin, newPin) {
             console.log("changePin ==> callback success : ", responseJson)
             let object
             if (responseJson.status == code.SUCCESS) {
-                SharedPreference.profileObject = responseJson.data
                 object = [code, {
                     code: responseJson.status,
                     data: responseJson.data
@@ -47,7 +45,7 @@ export default async function changePin(oldPin, newPin) {
                     data: responseJson.data
                 }]
             }
-            console.log("changePin ==> callback object : ", JSON.stringify(object))
+            // console.log("changePin ==> callback object : ", JSON.stringify(object))
             return object
         })
         .catch((error) => {

@@ -1,7 +1,6 @@
 import SharedPreference from "../SharedObject/SharedPreference";
 
-export default async function getRestAPI(url) {
-
+export default async function getPDF(year, company) {
     let code = {
         SUCCESS: "200",
         INVALID_API_KEY: "100",
@@ -17,7 +16,8 @@ export default async function getRestAPI(url) {
         CUT_JSON: "700",
     }
 
-    console.log("url : ", url)
+    let url = SharedPreference.CALENDER_YEAR_PDF_API + year + "&company=" + company
+    console.log("calendarPDFAPI ==> url : ", url)
 
     return fetch(url, {
         method: 'GET',

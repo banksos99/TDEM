@@ -163,16 +163,16 @@ export default class PinActivity extends Component {
     }
 
     onResetPIN = async () => {
-        // console.log("onResetPIN")
+        console.log("onResetPIN")
         Alert.alert(
             StringText.ALERT_RESET_PIN_TITLE,
             StringText.ALERT_RESET_PIN_DESC,
             [{
                 text: 'Cancel', onPress: () => {
-                    await this.onLoginResetPinAPI()
                 }
             }, {
                 text: 'OK', onPress: () => {
+                    this.onReset()
                 }
             }
             ],
@@ -180,15 +180,25 @@ export default class PinActivity extends Component {
         )
     }
 
-    onLoginResetPinAPI = async () => {
+    onReset = async () => {
+        SharedPreference.profileObject = await this.saveProfile.getProfile()
+        SharedPreference.TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, '1', SharedPreference.profileObject.client_token)
+        this.onLoginResetPinAPI()
+    }
 
+
+    onLoginResetPinAPI = async () => {
         let data = await LoginResetPinAPI()
         code = data[0]
         data = data[1]
 
-        console.log("code.SUCCESS ", code.SUCCESS)
+        console.log("onLoginResetPinAPI : ", data.code)
 
         if (code.SUCCESS == data.code) {
+            SharedPreference.profileObject = null
+            this.saveProfile.setProfile(null)
+            this.props.navigation.navigate('RegisterScreen')
+        } else if (code.INVALID_AUTH_TOKEN == data.code) {
             SharedPreference.profileObject = null
             this.saveProfile.setProfile(null)
             this.props.navigation.navigate('RegisterScreen')
@@ -198,15 +208,12 @@ export default class PinActivity extends Component {
                 StringText.ALERT_CANNOT_DELETE_PIN_DESC,
                 [{
                     text: 'OK', onPress: () => {
-
                     }
                 }
                 ],
                 { cancelable: false }
             )
-
         }
-
     }
 
     render() {

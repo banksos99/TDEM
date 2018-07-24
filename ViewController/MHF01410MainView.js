@@ -74,12 +74,14 @@ export default class HMF01011MainView extends Component {
         console.log("MainView ====> profileObject ==> employee_name ==> ", SharedPreference.profileObject.employee_name)
         console.log("MainView ====> profileObject ==> role_authoried ==> ", SharedPreference.profileObject.role_authoried)
 
+
         //Check Manager status
         for (let i = 0; i < SharedPreference.profileObject.role_authoried.length; i++) {
             if (SharedPreference.profileObject.role_authoried[i].module_function === 'HF0501') {
                 managerstatus = SharedPreference.profileObject.role_authoried[1].access
             }
         }
+        
         console.log("MainView ====> profileObject ==> managerstatus ==> ", managerstatus)
     }
 
@@ -1852,7 +1854,7 @@ export default class HMF01011MainView extends Component {
                 </View>
                 <View style={{ flex: 1, justifyContent: 'center', borderBottomWidth: 0.5, borderBottomColor: Colors.lightGrayTextColor }}>
                     <TouchableOpacity
-                        onPress={(this.select_sign_out.bind(this))}>
+                        onPress={(this.onChangePIN.bind(this))}>
                         <Text style={styles.settinglefttext}>Change PIN</Text>
                     </TouchableOpacity>
                 </View>
@@ -1911,6 +1913,10 @@ export default class HMF01011MainView extends Component {
         SharedPreference.profileObject = null
         this.saveProfile.setProfile(null)
         this.props.navigation.navigate('RegisterScreen')
+    }
+
+    onChangePIN() {
+        this.props.navigation.navigate('ChangePINScreen')
     }
 
     renderpickerview() {

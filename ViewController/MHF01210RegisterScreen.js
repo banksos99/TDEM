@@ -154,8 +154,6 @@ export default class RegisterActivity extends Component {
         }
     }
 
-
-
     onClosePIN = () => {
         console.log("onClosePIN")
         this.setState({
@@ -164,9 +162,7 @@ export default class RegisterActivity extends Component {
             pin1: [],
             pin2: [],
         })
-        // this.state.showCreatePin = false
     }
-
 
     componentWillMount() {
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow.bind(this));
@@ -278,7 +274,6 @@ export default class RegisterActivity extends Component {
                                 />
                             </TouchableOpacity>
                         </View>
-
                         <View style={[styles.pinContainer, { backgroundColor: 'white' }]}>
                             <Image
                                 style={styles.pinImage}

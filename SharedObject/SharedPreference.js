@@ -4,6 +4,7 @@ const HOST = 'https://tdemconnect-dev.tdem.toyota-asia.com'
 const VERSION = 'v1'
 
 export default {
+    HOST: HOST,
     TOKEN: '',
     INITIAL_MASTER_API: HOST + '/api/' + VERSION + '/initmaster/',
     ANNOUNCEMENT_ASC_API: HOST + '/api/' + VERSION + '/announcement?sort=%2Bcreate_date',
@@ -16,12 +17,13 @@ export default {
 
     OTSUMMARY_DETAIL: HOST + '/api/' + VERSION + '/ot/summary?',
     HANDBOOK_LIST: 'https://randomuser.me/api/?results=2',
-    
+
     // HANDBOOK_LIST: HOST + '/api/' + VERSION + '/handbooks',
 
     LEAVE_QUOTA_API: HOST + '/api/' + VERSION + '/leavequota/summary',
     NONPAYROLL_SUMMARY_API: HOST + '/api/' + VERSION + '/nonpayroll/summary',
     CALENDER_YEAR_API: HOST + '/api/' + VERSION + '/calendar?year=',
+    CALENDER_YEAR_PDF_API: HOST + '/api/' + VERSION + '/calendar/file?year=',
 
     NON_PAYROLL_DETAIL_API: HOST + '/api/' + VERSION + '/nonpayroll?month=',
 
