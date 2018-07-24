@@ -12,6 +12,8 @@ import Authorization from "../SharedObject/Authorization";
 import LoginWithPinAPI from "../constants/LoginWithPinAPI"
 import SaveAutoSyncCalendar from "../constants/SaveAutoSyncCalendar";
 
+import LoginResetPinAPI from "../constants/LoginResetPinAPI"
+
 export default class PinActivity extends Component {
 
     savePIN = new SavePIN()
@@ -167,17 +169,44 @@ export default class PinActivity extends Component {
             StringText.ALERT_RESET_PIN_DESC,
             [{
                 text: 'Cancel', onPress: () => {
+                    await this.onLoginResetPinAPI()
                 }
             }, {
                 text: 'OK', onPress: () => {
-                    SharedPreference.profileObject = null
-                    this.saveProfile.setProfile(null)
-                    this.props.navigation.navigate('RegisterScreen')
                 }
             }
             ],
             { cancelable: false }
         )
+    }
+
+    onLoginResetPinAPI = async () => {
+
+        let data = await LoginResetPinAPI()
+        code = data[0]
+        data = data[1]
+
+        console.log("code.SUCCESS ", code.SUCCESS)
+
+        if (code.SUCCESS == data.code) {
+            SharedPreference.profileObject = null
+            this.saveProfile.setProfile(null)
+            this.props.navigation.navigate('RegisterScreen')
+        } else {
+            Alert.alert(
+                StringText.ALERT_CANNOT_DELETE_PIN_TITLE,
+                StringText.ALERT_CANNOT_DELETE_PIN_DESC,
+                [{
+                    text: 'OK', onPress: () => {
+
+                    }
+                }
+                ],
+                { cancelable: false }
+            )
+
+        }
+
     }
 
     render() {

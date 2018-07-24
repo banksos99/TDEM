@@ -76,10 +76,9 @@ export default class HMF01011MainView extends Component {
 
         //Check Manager status
         for (let i = 0; i < SharedPreference.profileObject.role_authoried.length; i++) {
-            if (SharedPreference.profileObject.role_authoried[1].module_function === 'HF0501') {
+            if (SharedPreference.profileObject.role_authoried[i].module_function === 'HF0501') {
                 managerstatus = SharedPreference.profileObject.role_authoried[1].access
             }
-
         }
         console.log("MainView ====> profileObject ==> managerstatus ==> ", managerstatus)
     }
@@ -87,15 +86,12 @@ export default class HMF01011MainView extends Component {
     loadData = async () => {
 
         autoSyncCalendarBool = await this.saveAutoSyncCalendar.getAutoSyncCalendar()
-        console.log("1MainView ==> autoSyncCalendarBool : ", autoSyncCalendarBool)
 
-        if(autoSyncCalendarBool == 'true'){
+        if (autoSyncCalendarBool == 'true') {
             autoSyncCalendarBool = true
-        }else{
+        } else {
             autoSyncCalendarBool = false
         }
-    
-        console.log("2MainView ==> autoSyncCalendarBool : ", autoSyncCalendarBool)
 
         if (autoSyncCalendarBool) {
             this.setState({
@@ -1840,7 +1836,7 @@ export default class HMF01011MainView extends Component {
         )
     }
     rendersettingview() {
-        console.log("rendersettingview ==> syncCalendar : ",this.state.syncCalendar)
+        console.log("rendersettingview ==> syncCalendar : ", this.state.syncCalendar)
         return (
             <View style={{ flex: 1, flexDirection: 'column', }}>
                 <View style={styles.mainmenutabbarstyle} />

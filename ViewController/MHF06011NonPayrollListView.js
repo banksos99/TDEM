@@ -16,11 +16,8 @@ import Colors from "./../SharedObject/Colors"
 import { styles } from "./../SharedObject/MainStyles"
 
 import Months from "./../constants/Month"
-//monthNamesShort
-//let month = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
 
 export default class NonpayrollActivity extends Component {
-
     constructor(props) {
         super(props);
         this.state = {
@@ -30,7 +27,6 @@ export default class NonpayrollActivity extends Component {
             currentYearData: [],
             lastYearData: []
         };
-
     }
 
     componentWillMount() {
@@ -198,7 +194,7 @@ export default class NonpayrollActivity extends Component {
             { cancelable: false }
         )
     }
-   
+
 
     onDetail() {
         this.props.navigation.navigate('NonPayrollDetail');

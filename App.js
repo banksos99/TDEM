@@ -13,7 +13,7 @@ import SavePIN from "./constants/SavePIN";
 import DeviceInfo from 'react-native-device-info';
 
 import firebase from 'react-native-firebase';
-import type, { RemoteMessage } from 'react-native-firebase';
+import type, { Notification, NotificationOpen } from 'react-native-firebase';
 
 export default class mainview extends Component {
 
@@ -80,57 +80,49 @@ export default class mainview extends Component {
         }
       });
 
-    firebase.messaging().onMessage(payload => {
-      // console.log('Opened when app is alive');
-      // console.log("payload ", payload);
-      const prefix = Platform.OS == 'android' ? 'ifimarketplace://ifimarketplace/' : 'ifimarketplace://'
-      const url = `${prefix}tabs/messages/${payload.key}`;
-      // console.log("url ", url);
-    });
-
-
-    firebase.messaging().getInitialNotification()
-      .then((notification) => {
-        console.log('Notification which opened the app: ', notification);
+    ///when open Application
+    notificationListener = firebase
+      .notifications()
+      .onNotification(notification => {
+        ///when open Application
+        console.log("notificationListener : ", notification)
+        console.log("notificationListener data : ", notification.data)
+        console.log("notificationListener _data : ", notification._data)
+        // If you want to see notification on mobile
+        // firebase.notifications().displayNotification(this.notification2)
+        console.log(`Recieved notification 2`);
       });
 
+    // this.notification2 = new firebase.notifications.Notification()
+    //   .setNotificationId('notificationId')
+    //   .setTitle('My notification title')
+    //   .setBody('My notification body')
+    //   .android.setChannelId('test')
+    //   .android.setClickAction('action')
+    //   .setData({
+    //     key1: 'value1',
+    //     key2: 'value2',
+    //   });
 
-    const onBackgroundMessage = (msg) => {
-      // do something with msg
-      console.log('Message received when app was closed', msg);
+
+    notificationOpen = await firebase.notifications().getInitialNotification();
+    if (notificationOpen) {
+
+      //When App Close and user touch 
+      console.log("push notification ==> notificationOpen ", notificationOpen)
+
+      // Get information about the notification that was opened
+      const notification = notificationOpen.notification;
+      console.log("push notification ==> notification ", notification)
+      console.log("notificationListener data : ", notification.data)
+      console.log("notificationListener _data : ", notification._data)
+
     }
-
-    const onForegroundMessage = (msg) => {
-      // do something with msg
-      console.log('Message received in open app', msg);
-    }
-
-    // use:
-    const unsubscribeOnMessage = messaging.onMessage(msg => {
-      const { opened_from_tray } = msg;
-
-      // opened_from_tray is a numeric boolean and takes values either 1 or 0
-      if (opened_from_tray) {
-        onBackgroundMessage(msg);
-      } else {
-        onForegroundMessage(msg);
-      }
-    });
-
-    // this.messageListener();
-    // this.notificationDisplayedListener();
-    // this.notificationListener();
-    // this.notificationOpenedListener();
-
   }
-
-  // componentWillUnmount() {
-  //   console.log("App ==> componentWillUnmount")
-  //   this.messageListener();
-  //   this.notificationDisplayedListener();
-  //   this.notificationListener();
-  //   this.notificationOpenedListener();
-  // }
+  componentWillUnmount() {
+    console.log("componentWillUnmount")
+    this.notificationListener();
+  }
 
   inactivecounting() {
     this.timer = setTimeout(() => {
