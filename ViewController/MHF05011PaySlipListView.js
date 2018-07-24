@@ -30,10 +30,8 @@ import Month from "../constants/Month"
 
 let monthlistdata = [];
 let yearlistdata = [];
-//let month = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
-//monthNamesShort
 let payslipItems = [];
-let dataSource = [];//DataResponse.dataSource[0].data;
+let dataSource = [];
 
 let initialyear = 0;
 
@@ -316,7 +314,7 @@ export default class PaySlipActivity extends Component {
     onBack() {
 
 
-        this.props.navigation.navigate('HomeScreen'); ``
+        this.props.navigation.navigate('HomeScreen');
 
     }
 

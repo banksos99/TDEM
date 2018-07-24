@@ -57,6 +57,8 @@ export default {
     deviceInfo: {},
     calendarAutoSync: true,
     // MANAGER_STATUS:true,
+    notipayslipID:0,
+    notipayAnnounceMentID:0,
 
 }
 

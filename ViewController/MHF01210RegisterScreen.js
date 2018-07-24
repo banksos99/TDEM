@@ -65,24 +65,20 @@ export default class RegisterActivity extends Component {
     }
 
     onLoadLoginWithPin = async (PIN) => {
-
-        console.log("1login with pin111 ==> ", PIN)
         let data = await LoginWithPinAPI(PIN)
-        console.log("2login with pin data ==> ", data)
+        console.log("1login with pin data ==> ", data)
         code = data[0]
         data = data[1]
 
-        console.log("login with DUPLICATE_DATA : ", code.DUPLICATE_DATA)
-        console.log("login with code : ", data.code)
+        console.log("2login with pin data ==> ", data.code)
 
-        if (code.DUPLICATE_DATA == data.code) {
-            // TODO Bell
+        if (code.DUPLICATE_DATA == data.code) {//409
             this.onOpenPinActivity()
-        } else if (code.SUCCESS == data.code) {
+        } else if (code.DOES_NOT_EXISTS == data.code) {//401
             this.setState({
                 showCreatePin: true
             })
-        } else {
+        } else {//200 
             Alert.alert(
                 StringText.SERVER_ERROR_TITLE,
                 StringText.SERVER_ERROR_DESC,

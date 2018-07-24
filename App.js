@@ -13,8 +13,11 @@ import SavePIN from "./constants/SavePIN";
 import DeviceInfo from 'react-native-device-info';
 
 import firebase from 'react-native-firebase';
-import type, { RemoteMessage } from 'react-native-firebase';
-let mon = ['Jan','Feb','Mar','Apl','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+
+
+
+import type, { Notification, NotificationOpen } from 'react-native-firebase';
+
 export default class mainview extends Component {
 
   savePIN = new SavePIN()
@@ -29,8 +32,11 @@ export default class mainview extends Component {
 
   async componentDidMount() {
     console.log("App ==> componentDidMount")
+
+
+    console.log('this.props.navigation',this.props.navigation)
     this.inactivecounting();
-    this.inappTimeInterval();
+    
     const enabled = await firebase.messaging().hasPermission();
     if (enabled) {
       console.log("firebase ==> user has permissions")
@@ -81,57 +87,73 @@ export default class mainview extends Component {
         }
       });
 
-    firebase.messaging().onMessage(payload => {
-      // console.log('Opened when app is alive');
-      // console.log("payload ", payload);
-      const prefix = Platform.OS == 'android' ? 'ifimarketplace://ifimarketplace/' : 'ifimarketplace://'
-      const url = `${prefix}tabs/messages/${payload.key}`;
-      // console.log("url ", url);
-    });
+    ///when open Application
+    notificationListener = firebase
+      .notifications()
+      .onNotification(notification => {
+        ///when open Application
+        console.log("notificationListener : ", notification)
+        console.log("notificationListener data : ", notification.data)
+        console.log("notificationListener _data : ", notification._data)
+        // If you want to see notification on mobile
+        // firebase.notifications().displayNotification(this.notification2)
+        console.log(`Recieved notification 2`);
 
+        SharedPreference.notipayslipID = notification._data.payslipID
 
-    firebase.messaging().getInitialNotification()
-      .then((notification) => {
-        console.log('Notification which opened the app: ', notification);
+        // Alert.alert(
+        //   'notificationListener',
+        //   notification._data.payslipID,
+        //   [
+        //     { text: 'OK', onPress: () => console.log('OK Pressed') },
+        //   ],
+        //   { cancelable: false }
+        // )
       });
 
 
-    const onBackgroundMessage = (msg) => {
-      // do something with msg
-      console.log('Message received when app was closed', msg);
+    // this.notification2 = new firebase.notifications.Notification()
+    //   .setNotificationId('notificationId')
+    //   .setTitle('My notification title')
+    //   .setBody('My notification body')
+    //   .android.setChannelId('test')
+    //   .android.setClickAction('action')
+    //   .setData({
+    //     key1: 'value1',
+    //     key2: 'value2',
+    //   });
+
+
+    notificationOpen = await firebase.notifications().getInitialNotification();
+    
+    if (notificationOpen) {
+
+      //When App Close and user touch 
+      console.log("push notification ==> notificationOpen ", notificationOpen)
+
+      // Get information about the notification that was opened
+      const notification = notificationOpen.notification;
+      console.log("push notification ==> notification ", notification)
+      console.log("notificationListener data : ", notification.data)
+      console.log("notificationListener _data : ", notification._data)
+
+      SharedPreference.notipayslipID = notification._data.payslipID
+
+      SharedPreference.notipayAnnounceMentID = notification._data.AnnouncementID
+      // Alert.alert(
+      //   'notificationOpen',
+      //   notification._data.payslipID,
+      //   [
+      //     { text: 'OK', onPress: () => console.log('OK Pressed') },
+      //   ],
+      //   { cancelable: false }
+      // )
     }
-
-    const onForegroundMessage = (msg) => {
-      // do something with msg
-      console.log('Message received in open app', msg);
-    }
-
-    // use:
-    const unsubscribeOnMessage = messaging.onMessage(msg => {
-      const { opened_from_tray } = msg;
-
-      // opened_from_tray is a numeric boolean and takes values either 1 or 0
-      if (opened_from_tray) {
-        onBackgroundMessage(msg);
-      } else {
-        onForegroundMessage(msg);
-      }
-    });
-
-    // this.messageListener();
-    // this.notificationDisplayedListener();
-    // this.notificationListener();
-    // this.notificationOpenedListener();
-
   }
-
-  // componentWillUnmount() {
-  //   console.log("App ==> componentWillUnmount")
-  //   this.messageListener();
-  //   this.notificationDisplayedListener();
-  //   this.notificationListener();
-  //   this.notificationOpenedListener();
-  // }
+  componentWillUnmount() {
+    console.log("componentWillUnmount")
+    this.notificationListener();
+  }
 
   inactivecounting() {
     this.timer = setTimeout(() => {
@@ -157,74 +179,11 @@ export default class mainview extends Component {
   //   }, 500);
   // };
 
-  inappTimeInterval() {
-    this.timer = setTimeout(() => {
-      this.onLoadAppInfo()
-      
-    }, 60000);
-  };
+  
 
-  getParsedDate() {
+  
 
-    let date = new Date()
-
-    date = String(date).split(' ');
-
-    let days = String(date[0]).split('-');
-
-    let hours = String(date[4]).split(':');
-
-    let mon_num = 0
-
-    for (let i = 0; i < mon.length; i++) {
-      if (mon[i] === date[1]) {
-        mon_num = i + 1;
-      }
-
-    }
-    return date[3] + '-' + mon_num + '-' + date[2] + ' ' + hours[0] + ':' + hours[1] + ':' + hours[2];
-
-  }
-
-  onLoadAppInfo() {
-
-    let newdate = this.getParsedDate()
-
-    return fetch(SharedPreference.PULL_NOTIFICATION_API + newdate, {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        Authorization: SharedPreference.TOKEN,
-      },
-    })
-      .then((response) => response.json())
-      .then((responseJson) => {
-        try {
-          console.log('responseJson :', responseJson)
-
-          this.setState({
-
-
-          }, function () {
-
-            this.inappTimeInterval()
-
-          });
-
-        } catch (error) {
-
-          //console.log('erreo1 :', error);
-
-        }
-      })
-      .catch((error) => {
-
-        console.log('error :', error)
-
-
-      });
-  }
+  
   
   getdate(value) {
     this.setState({

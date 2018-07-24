@@ -1,6 +1,6 @@
 import SharedPreference from "../SharedObject/SharedPreference";
 
-export default async function getRestAPI(pin) {
+export default async function resetPIN() {
 
     let code = {
         SUCCESS: "200",
@@ -17,13 +17,7 @@ export default async function getRestAPI(pin) {
         CUT_JSON: "700",
     }
 
-    // console.log("LoginWithPin ==> callback  Register  : ", SharedPreference.REGISTER_API)
-    // console.log("LoginWithPin ==> callback  client_pin  : ", pin)
-    // console.log("LoginWithPin ==> callback  firebase_token  : ", SharedPreference.deviceInfo.firebaseToken)
-    // console.log("LoginWithPin ==> callback  systemdn  : ", SharedPreference.company)
-    // console.log("LoginWithPin ==> callback  Token  : ", SharedPreference.TOKEN)
-
-    return fetch(SharedPreference.REGISTER_API, {
+    return fetch(SharedPreference.SET_PIN_API, {
         method: 'POST',
         headers: {
             Accept: 'application/json',
@@ -31,15 +25,13 @@ export default async function getRestAPI(pin) {
             Authorization: SharedPreference.TOKEN
         },
         body: JSON.stringify({
-            grant_type: "pinsignin",
-            client_pin: pin,
-            firebase_token: SharedPreference.deviceInfo.firebaseToken,
-            systemdn: SharedPreference.company
+            type: "reset",
+            systemdn: "TMAP-EM"
         }),
     })
         .then((response) => response.json())
         .then((responseJson) => {
-            console.log("RegisterAPI ==> callback success : ", responseJson)
+            console.log("ResetPIN ==> callback success : ", responseJson)
             let object
             if (responseJson.status == code.SUCCESS) {
                 SharedPreference.profileObject = responseJson.data
@@ -53,7 +45,8 @@ export default async function getRestAPI(pin) {
                     data: responseJson.data
                 }]
             }
-            console.log("RegisterAPI ==> callback object : ", JSON.stringify(object))
+
+            console.log("ResetPIN ==> callback object : ", JSON.stringify(object))
             return object
 
         })

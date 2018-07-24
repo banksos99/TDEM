@@ -60,10 +60,22 @@ export default class PayslipDetail extends Component {
         console.log('currentmonth :', currentmonth)
         console.log('currentyear :', currentyear)
         console.log('rollid :', this.state.rollid)
+        console.log('this.state.yearlist :',this.state.yearlist)
     }
 
     onBack() {
-        this.props.navigation.navigate('PayslipList');
+
+        SharedPreference.notipayslipID = 0
+
+        if (this.state.yearlist) {
+
+            this.props.navigation.navigate('PayslipList');
+
+        } else {
+
+            this.props.navigation.navigate('HomeScreen');
+        }
+
     }
 
     onDownloadPDFFile() {
@@ -174,8 +186,12 @@ export default class PayslipDetail extends Component {
         }
     }
     getPayslipDetailfromAPI() {
+        
+        this.state.rollid = 0
 
         for (let i = 0; i < this.state.yearlist[this.state.yearselected].monthlistdata.length; i++) {
+            
+            console.log(' loop  rollid :',  this.state.yearlist[this.state.yearselected].monthlistdata[i].id)
 
             if (this.state.yearlist[this.state.yearselected].monthlistdata[i].month === this.state.monthselected + 1) {
 
@@ -185,6 +201,7 @@ export default class PayslipDetail extends Component {
         console.log('rollid :', this.state.rollid)
 
         if (this.state.rollid) {
+
             let host = SharedPreference.PAYSLIP_DETAIL_API + this.state.rollid
 
             return fetch(host, {
@@ -324,7 +341,9 @@ export default class PayslipDetail extends Component {
     }
     nextmonthbuttonrender() {
 
-        if (this.state.yearselected === 0 && this.state.monthselected === currentmonth) {
+        
+
+        if (this.state.yearselected === 0 && this.state.monthselected === currentmonth | !this.state.yearlist) {
             return (
                 <View style={{ flex: 1 }}>
                     <Image
@@ -350,7 +369,7 @@ export default class PayslipDetail extends Component {
     }
     previoousbuttonrender() {
 
-        if (this.state.yearselected === 2 && this.state.monthselected === 0) {
+        if (this.state.yearselected === 2 && this.state.monthselected === 0 | !this.state.yearlist) {
             return (
                 // <TouchableOpacity style={{ flex: 1 }}>y
 
@@ -571,6 +590,16 @@ export default class PayslipDetail extends Component {
 
         }
 
+        let date_text = Months.monthNames[this.state.monthselected] + (this.state.initialyear - this.state.yearselected)
+
+        if (!this.state.yearlist) {
+
+            let temp = pay_date_str.split(' ')
+
+            date_text = temp[1] + ' ' + temp[2]
+
+        }
+
         return (
             <View style={{ flex: 1 }} >
 
@@ -617,7 +646,8 @@ export default class PayslipDetail extends Component {
 
                                 <Text style={{ fontSize: 21, color: Colors.redTextColor, textAlign: 'center', }}>
 
-                                    {Months.monthNames[this.state.monthselected] + (this.state.initialyear - this.state.yearselected)}
+                                    {date_text}
+
                                 </Text>
 
                             </View>

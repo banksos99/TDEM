@@ -20,6 +20,7 @@ import RestAPI from "../constants/RestAPI"
 import SaveAutoSyncCalendar from "../constants/SaveAutoSyncCalendar";
 
 import SaveProfile from "../constants/SaveProfile"
+import payslipDetail from "./MHF05012PaySlipDetailView";
 
 const ROLL_ANNOUNCE = 10;
 
@@ -42,8 +43,11 @@ let orgcode = '';//60162305;
 
 let managerstatus = false;
 let announcestatus = true;
-let rolemanagementEmpoyee = [1, 1, 1, 1, 1, 1, 0, 0];
+let rolemanagementEmpoyee = [1, 1, 1, 1, 1, 1, 0, 1];
 let rolemanagementManager = [0, 0, 0, 0];
+
+// SharedPreference.notipayAnnounceMentID = 1
+// SharedPreference.notipayslipID = 0
 
 export default class HMF01011MainView extends Component {
 
@@ -72,13 +76,22 @@ export default class HMF01011MainView extends Component {
         console.log("MainView ====> profileObject ==> ", SharedPreference.profileObject)
         console.log("MainView ====> profileObject ==> employee_name ==> ", SharedPreference.profileObject.employee_name)
         console.log("MainView ====> profileObject ==> role_authoried ==> ", SharedPreference.profileObject.role_authoried)
+        console.log("notopayslipID _data : ", SharedPreference.notipayslipID)
+
+        
+
+        
+        
 
         //Check Manager status
+
+        
         for (let i = 0; i < SharedPreference.profileObject.role_authoried.length; i++) {
             if (SharedPreference.profileObject.role_authoried[i].module_function === 'HF0501') {
-                managerstatus = 'Y'
-            }
 
+                managerstatus = 'Y'
+
+            }
         }
         console.log("MainView ====> profileObject ==> managerstatus ==> ", managerstatus)
     }
@@ -86,15 +99,12 @@ export default class HMF01011MainView extends Component {
     loadData = async () => {
 
         autoSyncCalendarBool = await this.saveAutoSyncCalendar.getAutoSyncCalendar()
-        console.log("1MainView ==> autoSyncCalendarBool : ", autoSyncCalendarBool)
 
-        if(autoSyncCalendarBool == 'true'){
+        if (autoSyncCalendarBool == 'true') {
             autoSyncCalendarBool = true
-        }else{
+        } else {
             autoSyncCalendarBool = false
         }
-    
-        console.log("2MainView ==> autoSyncCalendarBool : ", autoSyncCalendarBool)
 
         if (autoSyncCalendarBool) {
             this.setState({
@@ -107,10 +117,26 @@ export default class HMF01011MainView extends Component {
     async componentDidMount() {
         this.setState({
             page: 0,
+            
         })
+
         this.redertabview()
+
+        
+
         NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectivityChange);
+
         await this.loadData()
+
+        if (SharedPreference.notipayslipID) {
+
+            this.onOpenPayslipDetail()
+
+        } else if (SharedPreference.notipayAnnounceMentID) {
+
+            this.loadAnnouncementDetailfromAPI(SharedPreference.notipayAnnounceMentID,0)
+
+        }
     }
 
     componentWillUnmount() {
@@ -357,8 +383,11 @@ export default class HMF01011MainView extends Component {
                         isscreenloading: false,
                         announceDetailDataSource: responseJson,
                     }, function () {
+                        if (tempannouncementData.length) {
 
-                        tempannouncementData[index].attributes.read = true
+                            tempannouncementData[index].attributes.read = true
+                        }
+
 
                         this.props.navigation.navigate(path, {
                             DataResponse: this.state.announceDetailDataSource,
@@ -419,7 +448,74 @@ export default class HMF01011MainView extends Component {
             this.onLoadErrorAlertDialog(data)
         }
     }
+    loadPayslipDetailfromAPI() {
 
+        let host = SharedPreference.PAYSLIP_DETAIL_API + SharedPreference.notipayslipID
+
+        console.log('host', host)
+        console.log('TOKEN', SharedPreference.TOKEN)
+
+
+       
+            // console.log('rollid', rollid)
+            return fetch(host, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: SharedPreference.TOKEN,
+                },
+            })
+                .then((response) => response.json())
+                .then((responseJson) => {
+
+                    this.setState({
+
+                        isscreenloading: false,
+                        dataSource: responseJson
+
+                        // datadetail: PayslipDataDetail.detail[dataSource.years[year].detail[index].payroll_id]
+
+                    }, function () {
+                        console.log('status : ', this.state.dataSource.status);
+                        if (this.state.dataSource.status === 200) {
+                          
+                            this.props.navigation.navigate('PayslipDetail', {
+                                // DataResponse:dataSource,
+                                yearlist: 0,
+                                initialyear: 0,
+                                initialmonth: 0,
+                                monthselected: 0,
+                                yearselected: 0,
+                                Datadetail: this.state.dataSource,
+                                rollid: SharedPreference.notipayslipID
+                            });
+
+                         
+
+                        } else {
+
+                            Alert.alert(
+                                this.state.dataSource.errors[0].code,
+                                this.state.dataSource.errors[0].detail,
+                                [
+                                    { text: 'OK', onPress: () => console.log('OK Pressed') },
+                                ],
+                                { cancelable: false }
+                            )
+
+                        }
+
+                    });
+
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+
+                
+
+    }
     loadPayslipfromAPI = async () => {
 
         this.APIPayslipCallback(await RestAPI(SharedPreference.PAYSLIP_LIST_API), 'PayslipList')
@@ -825,6 +921,22 @@ export default class HMF01011MainView extends Component {
             this.loadPayslipfromAPI()
         });
     }
+    onOpenPayslipDetail() {
+
+        this.setState({
+
+            isscreenloading: true,
+            loadingtype: 3
+
+        }, function () {
+
+            this.setState(this.renderloadingscreen())
+            this.loadPayslipDetailfromAPI()
+            
+        });
+    }
+
+
 
     onOpenLeaveQuota() {
 
@@ -1285,6 +1397,11 @@ export default class HMF01011MainView extends Component {
         console.log("onChangeFunction ==> calendarAutoSync ==>  ", SharedPreference.calendarAutoSync)
 
         this.saveAutoSyncCalendar.setAutoSyncCalendar(newState.syncCalendar)
+    }
+
+    onPayslipDetail(){
+
+
     }
     /*************************************************************** */
     /*************************   render class ********************** */
@@ -1839,7 +1956,7 @@ export default class HMF01011MainView extends Component {
         )
     }
     rendersettingview() {
-        console.log("rendersettingview ==> syncCalendar : ",this.state.syncCalendar)
+        console.log("rendersettingview ==> syncCalendar : ", this.state.syncCalendar)
         return (
             <View style={{ flex: 1, flexDirection: 'column', }}>
                 <View style={styles.mainmenutabbarstyle} />
@@ -2209,7 +2326,7 @@ export default class HMF01011MainView extends Component {
                     </View>
                 </View>
                 {this.renderloadingscreen()}
-                {this.pushnodetailscreen()}
+      
             </View>
         );
     }

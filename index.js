@@ -5,9 +5,5 @@ import bgMessaging from './constants/BgMessaging';
 
 AppRegistry.registerComponent('tdemconnect', () => App);
 
-AppRegistry.registerHeadlessTask(
-    'RNFirebaseBackgroundMessage',
-    () => bgMessaging
-  );
-
-  
+// New task registration
+AppRegistry.registerHeadlessTask('RNFirebaseBackgroundMessage', () => bgMessaging); // <-- Add this line
