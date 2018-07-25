@@ -65,10 +65,21 @@ export default class PayslipDetail extends Component {
     }
 
     onDownloadPDFFile() {
+
         PAYSLIP_DOWNLOAD_API = SharedPreference.PAYSLIP_DOWNLOAD_API + this.state.rollid
+
         console.log('PAYSLIP_DOWNLOAD_API : ', PAYSLIP_DOWNLOAD_API)
         pdfPath = PAYSLIP_DOWNLOAD_API
-        filename = "Payslip_" + this.state.monthselected + "_" + this.state.initialyear + '.pdf'
+
+        month = (this.state.initialyear + 1)
+        numberMonth
+        if (month < 10) {
+            numberMonth = "0" + (month + 1)
+        } else {
+            numberMonth = month + 1
+        }
+
+        filename = "Payslip_" + this.state.monthselected + "_" + numberMonth + '.pdf'
         // console.log('PAYSLIP_DOWNLOAD_API : ', PAYSLIP_DOWNLOAD_API)
 
         if (Platform.OS === 'android') {
