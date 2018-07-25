@@ -12,6 +12,7 @@ import Authorization from "../SharedObject/Authorization";
 import LoginWithPinAPI from "../constants/LoginWithPinAPI"
 import SaveAutoSyncCalendar from "../constants/SaveAutoSyncCalendar";
 
+import LoginResetPinAPI from "../constants/LoginResetPinAPI"
 export default class PinActivity extends Component {
 
     savePIN = new SavePIN()
@@ -36,7 +37,7 @@ export default class PinActivity extends Component {
         if (code.SUCCESS == data.code) {
             SharedPreference.calendarAutoSync = await this.saveAutoSyncCalendar.getAutoSyncCalendar()
             await this.onLoadInitialMaster()
-            
+
         } else {
             if (this.state.failPin == 4) {
                 Alert.alert(
@@ -198,13 +199,7 @@ export default class PinActivity extends Component {
                 }
             }, {
                 text: 'OK', onPress: () => {
-<<<<<<< HEAD
-                    SharedPreference.profileObject = null
-                    this.saveProfile.setProfile(null)
-                    this.props.navigation.navigate('RegisterScreen')
-=======
                     this.onReset()
->>>>>>> 8828817c98322c55d21678b99fedf0ad6b00e54d
                 }
             }
             ],
@@ -212,8 +207,6 @@ export default class PinActivity extends Component {
         )
     }
 
-<<<<<<< HEAD
-=======
     onReset = async () => {
         SharedPreference.profileObject = await this.saveProfile.getProfile()
         SharedPreference.TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, '1', SharedPreference.profileObject.client_token)
@@ -250,7 +243,6 @@ export default class PinActivity extends Component {
         }
     }
 
->>>>>>> 8828817c98322c55d21678b99fedf0ad6b00e54d
     render() {
         return (
             <View style={styles.alertDialogContainer}>
