@@ -21,7 +21,8 @@ import SaveAutoSyncCalendar from "../constants/SaveAutoSyncCalendar";
 
 import SaveProfile from "../constants/SaveProfile"
 import payslipDetail from "./MHF05012PaySlipDetailView";
-
+import { months } from "moment";
+import Month from "../constants/Month"
 const ROLL_ANNOUNCE = 10;
 
 let annountype = { 'All': 'All', 'Company Announcement': 'Company Announcement', 'Emergency Announcement': 'Emergency Announcement', 'Event Announcement': 'Event Announcement', 'General Announcement': 'General Announcement' };
@@ -43,9 +44,9 @@ let orgcode = '';//60162305;
 
 let managerstatus = false;
 let announcestatus = true;
-let rolemanagementEmpoyee = [1, 1, 1, 1, 1, 1, 0, 1];
-let rolemanagementManager = [0, 0, 0, 0];
-
+let rolemanagementEmpoyee = [1, 1, 1, 1, 1, 1, 1, 1];
+let rolemanagementManager = [1, 1, 1, 1];
+let timerstatus;
 // SharedPreference.notipayAnnounceMentID = 1
 // SharedPreference.notipayslipID = 0
 
@@ -72,7 +73,7 @@ export default class HMF01011MainView extends Component {
             username: SharedPreference.profileObject.employee_name,
             page: 0
         }
-
+       // timerstatus = true;
         // console.log("MainView ====> profileObject ==> ", SharedPreference.profileObject)
         // console.log("MainView ====> profileObject ==> employee_name ==> ", SharedPreference.profileObject.employee_name)
         // console.log("MainView ====> profileObject ==> role_authoried ==> ", SharedPreference.profileObject.role_authoried)
@@ -81,9 +82,7 @@ export default class HMF01011MainView extends Component {
         
 
         
-        
-
-
+    
         //Check Manager status
 
         
@@ -98,6 +97,7 @@ export default class HMF01011MainView extends Component {
         console.log("MainView ====> profileObject ==> managerstatus ==> ", managerstatus)
     }
 
+    
     loadData = async () => {
 
         autoSyncCalendarBool = await this.saveAutoSyncCalendar.getAutoSyncCalendar()
@@ -117,18 +117,18 @@ export default class HMF01011MainView extends Component {
     }
 
     async componentDidMount() {
-        this.setState({
-            page: 0,
-            
-        })
+
+        if(!timerstatus){
+            this.inappTimeInterval();
+            timerstatus = true;
+        }
+        
+        //console.log('set inappTimeInterval')
+        this.setState({ page: 0,})
 
         this.redertabview()
 
-        
-
         NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectivityChange);
-
-        await this.loadData()
 
         if (SharedPreference.notipayslipID) {
 
@@ -139,7 +139,94 @@ export default class HMF01011MainView extends Component {
             this.loadAnnouncementDetailfromAPI(SharedPreference.notipayAnnounceMentID,0)
 
         }
+
+        await this.loadData()
+        
     }
+
+    // check inapp notofication
+
+    getParsedDate() {
+
+        let date = new Date()
+    
+        date = String(date).split(' ');
+    
+        let days = String(date[0]).split('-');
+    
+        let hours = String(date[4]).split(':');
+    
+        let mon_num = 0
+    
+        for (let i = 0; i < Month.monthNamesShort2.length; i++) {
+          if (Month.monthNamesShort2[i] === date[1]) {
+            mon_num = i + 1;
+          }
+
+        }
+        return date[3] + '-' + mon_num + '-' + date[2] + ' ' + hours[0] + ':' + hours[1] + ':' + hours[2];
+
+    }
+    onLoadInAppNoti() {
+
+        let newdate = this.getParsedDate()
+        console.log('host', SharedPreference.PULL_NOTIFICATION_API + newdate)
+        console.log('token', SharedPreference.TOKEN)
+        console.log('timerstatus',timerstatus)
+        return fetch(SharedPreference.PULL_NOTIFICATION_API + newdate, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                Authorization: SharedPreference.TOKEN,
+            },
+        })
+            .then((response) => response.json())
+            .then((responseJson) => {
+                try {
+                    if (timerstatus) {
+                        this.inappTimeInterval()
+                    }
+
+                    console.log('inapp responseJson :', responseJson)
+
+                    if (responseJson.status == 403) {
+                        timerstatus = false
+                        SharedPreference.profileObject = null
+                        this.saveProfile.setProfile(null)
+                        this.props.AppNavigatorPin.navigate('RegisterScreen')
+                        console.log('this.props.navigation :', this.props.navigation)
+                        console.log('this.state' + this.state.number)
+                    }
+
+                    this.setState({
+
+
+                    }, function () {
+
+
+
+                    });
+
+                } catch (error) {
+
+                    //console.log('erreo1 :', error);
+
+                }
+            })
+            .catch((error) => {
+
+                console.log('error :', error)
+
+            });
+    }
+
+    inappTimeInterval() {
+        this.timer = setTimeout(() => {
+            this.onLoadInAppNoti()
+
+        }, 60000);
+    };
 
     componentWillUnmount() {
         NetInfo.isConnected.removeEventListener('connectionChange', this.handleConnectivityChange);
@@ -591,10 +678,10 @@ export default class HMF01011MainView extends Component {
     }
 
     loadHandbooklistfromAPI = async () => {
-        console.log("loadHandbooklistfromAPI")
+        console.log("loadHandbooklistfromAPI",SharedPreference.HANDBOOK_LIST)
 
-        // this.APICallback(await RestAPI(SharedPreference.HANDBOOK_LIST), 'Handbooklist')
-        this.props.navigation.navigate('Handbooklist');
+        this.APICallback(await RestAPI(SharedPreference.HANDBOOK_LIST), 'Handbooklist')
+        // this.props.navigation.navigate('Handbooklist');
 
     }
 
@@ -654,7 +741,8 @@ export default class HMF01011MainView extends Component {
     }
 
     APICallback(data, rount, option) {
-        console.log('main menu option :', option)
+
+        console.log('main menu option :', data,option)
         code = data[0]
         data = data[1]
         //check org_code
@@ -2030,6 +2118,7 @@ export default class HMF01011MainView extends Component {
     }
 
     select_sign_out() {
+        timerstatus = false
         SharedPreference.profileObject = null
         this.saveProfile.setProfile(null)
         this.props.navigation.navigate('RegisterScreen')
