@@ -955,7 +955,34 @@ export const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
+    payslipTextCente_income_ena:{
+        color:'white',
+        fontSize: 15,
+        textAlign: 'left',
+        fontFamily: font_medium
 
+    },
+    payslipTextCente_income_dis:{
+        color: Colors.midnightblue,
+        fontSize: 15,
+        textAlign: 'left',
+        fontFamily: font_medium
+
+    },
+    payslipTextCente_deduct_ena:{
+        color: 'white',
+        fontSize: 15,
+        textAlign: 'left',
+        fontFamily: font_medium
+
+    },
+    payslipTextCente_deduct_dis:{
+        color: 'red',
+        fontSize: 15,
+        textAlign: 'left',
+        fontFamily: font_medium
+
+    },
     payslipTextLeft: {
         color: 'white',
         fontSize: 20,

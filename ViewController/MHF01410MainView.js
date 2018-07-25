@@ -73,10 +73,10 @@ export default class HMF01011MainView extends Component {
             page: 0
         }
 
-        console.log("MainView ====> profileObject ==> ", SharedPreference.profileObject)
-        console.log("MainView ====> profileObject ==> employee_name ==> ", SharedPreference.profileObject.employee_name)
-        console.log("MainView ====> profileObject ==> role_authoried ==> ", SharedPreference.profileObject.role_authoried)
-        console.log("notopayslipID _data : ", SharedPreference.notipayslipID)
+        // console.log("MainView ====> profileObject ==> ", SharedPreference.profileObject)
+        // console.log("MainView ====> profileObject ==> employee_name ==> ", SharedPreference.profileObject.employee_name)
+        // console.log("MainView ====> profileObject ==> role_authoried ==> ", SharedPreference.profileObject.role_authoried)
+        // console.log("notopayslipID _data : ", SharedPreference.notipayslipID)
 
         
 

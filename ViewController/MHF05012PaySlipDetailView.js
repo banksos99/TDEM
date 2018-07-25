@@ -79,6 +79,18 @@ export default class PayslipDetail extends Component {
     }
 
     onDownloadPDFFile() {
+
+        // this.setState({
+
+        //     isscreenloading: true,
+
+        // }, function () {
+
+        //     this.setState(this.renderloadingscreen())
+
+        // });
+
+        
         // console.log("this.state.initialyear : ", this.state.initialyear)
         // console.log("monthselected : ", this.state.monthselected)
 
@@ -185,6 +197,7 @@ export default class PayslipDetail extends Component {
             console.warn(err)
         }
     }
+
     getPayslipDetailfromAPI() {
         
         this.state.rollid = 0
@@ -341,9 +354,18 @@ export default class PayslipDetail extends Component {
     }
     nextmonthbuttonrender() {
 
-        
+        if (!this.state.yearlist) {
+            return (
+                <View style={{ flex: 1 }}>
+                    <Image
+                        style={{ width: 45, height: 45 }}
+                        source={require('./../resource/images/next_dis.png')}
+                        resizeMode='contain'
+                    />
+                </View>
+            )
 
-        if (this.state.yearselected === 0 && this.state.monthselected === currentmonth | !this.state.yearlist) {
+        } else if (this.state.yearselected === 0 && this.state.monthselected === currentmonth) {
             return (
                 <View style={{ flex: 1 }}>
                     <Image
@@ -367,9 +389,21 @@ export default class PayslipDetail extends Component {
         )
 
     }
-    previoousbuttonrender() {
 
-        if (this.state.yearselected === 2 && this.state.monthselected === 0 | !this.state.yearlist) {
+    previoousbuttonrender() {
+        if (!this.state.yearlist) {
+            return (
+
+
+                <Image
+                    style={{ width: 45, height: 45 }}
+                    source={require('./../resource/images/previous_dis.png')}
+
+                />
+
+            )
+
+        } else if (this.state.yearselected === 2 && this.state.monthselected === 0) {
             return (
                 // <TouchableOpacity style={{ flex: 1 }}>y
 
@@ -702,10 +736,10 @@ export default class PayslipDetail extends Component {
                             <TouchableOpacity style={{ flex: 1 }} onPress={(this.onShowIncomeView.bind(this))}>
                                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: 10 }}>
 
-                                    <Text style={styles.payslipTextCenter}>INCOME</Text>
+                                    <Text style={this.state.showincome?styles.payslipTextCente_income_ena:styles.payslipTextCente_income_dis}>INCOME</Text>
                                 </View>
                                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginBottom: 10 }}>
-                                    <Text style={styles.payslipTextCenter}>
+                                    <Text style={this.state.showincome?styles.payslipTextCente_income_ena:styles.payslipTextCente_income_dis}>
                                         {sum_income_str}
                                     </Text>
                                 </View>
@@ -714,10 +748,10 @@ export default class PayslipDetail extends Component {
                         <View style={{ flex: 1, marginTop: 5, marginLeft: 5, borderRadius: 5, backgroundColor: this.state.deductBG, flexDirection: 'column', }}>
                             <TouchableOpacity style={{ flex: 1 }} onPress={(this.onShowDeductView.bind(this))}>
                                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: 10 }}>
-                                    <Text style={styles.payslipTextCenter}>DEDUCT</Text>
+                                    <Text style={this.state.showincome?styles.payslipTextCente_deduct_dis:styles.payslipTextCente_deduct_ena}>DEDUCT</Text>
                                 </View>
                                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginBottom: 10 }}>
-                                    <Text style={styles.payslipTextCenter}>
+                                    <Text style={this.state.showincome?styles.payslipTextCente_deduct_dis:styles.payslipTextCente_deduct_ena}>
                                         {sum_deduct_str}
                                     </Text>
                                 </View>

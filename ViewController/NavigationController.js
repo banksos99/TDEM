@@ -133,7 +133,7 @@ export default class rootNavigation extends Component {
         };
     }
     async componentDidMount() {
-        this.inappTimeInterval();
+       // this.inappTimeInterval();
 
     }
     getParsedDate() {
@@ -176,14 +176,14 @@ export default class rootNavigation extends Component {
                     this.inappTimeInterval()
                     console.log('responseJson :', responseJson)
 
-                    // if (responseJson.status == 500) {
+                    if (responseJson.status == 403) {
 
                     SharedPreference.profileObject = null
                     this.saveProfile.setProfile(null)
                     this.props.navigation.navigate('RegisterScreen')
                     console.log('this.props.navigation :', this.props.navigation)
                     console.log('this.state' + this.state.number)
-                    //  }
+                     }
 
                     this.setState({
 
@@ -212,7 +212,7 @@ export default class rootNavigation extends Component {
         this.timer = setTimeout(() => {
             this.onLoadAppInfo()
 
-        }, 20000);
+        }, 200000);
     };
 
     async componentWillMount() {
