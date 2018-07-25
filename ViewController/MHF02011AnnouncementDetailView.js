@@ -15,31 +15,8 @@ import {
     Platform
 } from 'react-native';
 
-import Colors from "./../SharedObject/Colors"
-import Layout from "./../SharedObject/Layout"
 import { styles } from "./../SharedObject/MainStyles"
-// import { MonoText } from '../../components/StyledText';
-// import  DataResponse  from "../../InAppData/Payslipdatalist"
-import PayslipDataDetail from "./../InAppData/Payslipdatadetail2"
-// import api from "../../constants/APIService"
 import SharedPreference from "./../SharedObject/SharedPreference"
-import Dcryptfun from "./../SharedObject/Decryptfun"
-
-import RestAPI from "../constants/RestAPI"
-import Month from "../constants/Month"
-
-let monthlistdata = [];
-let yearlistdata = [];
-let payslipItems = [];
-let dataSource = [];
-
-let initialyear = 0;
-
-let temparray = [];
-let currentmonth = new Date().getMonth();
-let monthdictionary = {};
-let offine = 0;
-let pay_date_str = 0;
 
 
 export default class PaySlipActivity extends Component {

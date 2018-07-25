@@ -1,6 +1,7 @@
 import SharedPreference from "../SharedObject/SharedPreference";
+import Authorization from "../SharedObject/Authorization";
 
-export default async function changePin(oldPin, newPin) {
+export default async function changePin(oldPin, newPin,functionID) {
 
     let code = {
         SUCCESS: "200",
@@ -16,12 +17,19 @@ export default async function changePin(oldPin, newPin) {
         UPDATE_APPLICATION: "600",
         CUT_JSON: "700",
     }
+
+     // console.log("calendarPDFAPI ==>  functionID : ", functionID)
+     FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, functionID, SharedPreference.profileObject.client_token)
+     console.log("calendarPDFAPI ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
+
+
+
     return fetch(SharedPreference.SET_PIN_API, {
         method: 'POST',
         headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
-            Authorization: SharedPreference.TOKEN
+            Authorization: FUNCTION_TOKEN
         },
         body: JSON.stringify({
             type: "change",

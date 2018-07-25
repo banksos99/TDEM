@@ -1,6 +1,7 @@
 import SharedPreference from "../SharedObject/SharedPreference";
+import Authorization from "../SharedObject/Authorization";
 
-export default async function getRestAPI(url) {
+export default async function getRestAPI(url, functionID) {
 
     let code = {
         SUCCESS: "200",
@@ -17,14 +18,16 @@ export default async function getRestAPI(url) {
         CUT_JSON: "700",
     }
 
-    console.log("url : ", url)
+    console.log("setPinAPI ==>  functionID : ", functionID)
+    FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, functionID, SharedPreference.profileObject.client_token)
+    console.log("setPinAPI ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
 
     return fetch(url, {
         method: 'GET',
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            Authorization: SharedPreference.TOKEN,
+            Authorization: FUNCTION_TOKEN,
         },
     })
         .then((response) => response.json())

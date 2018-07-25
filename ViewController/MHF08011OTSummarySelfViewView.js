@@ -173,7 +173,7 @@ export default class OTSummaryDetail extends Component {
         let url = SharedPreference.OTSUMMARY_DETAIL + 'month=0' + tmonth + '&year=' + oyear
 
         // this.APICallback(await RestAPI(url), 'OTSummarySelfView')
-        let data = await RestAPI(url)
+        let data = await RestAPI(url,SharedPreference.FUNCTIONID_OT_SUMMARY)
         code = data[0]
         data = data[1]
 

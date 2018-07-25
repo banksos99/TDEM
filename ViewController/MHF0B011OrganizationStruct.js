@@ -22,7 +22,7 @@ import SharedPreference from "./../SharedObject/SharedPreference"
 import RestAPI from "../constants/RestAPI"
 
 let dataSource = [];
-let option=0;
+let option = 0;
 let org_code = '';
 
 export default class OrganizationStruct extends Component {
@@ -30,7 +30,7 @@ export default class OrganizationStruct extends Component {
     constructor(props) {
         super(props);
         this.state = {
-         
+
 
         }
 
@@ -48,30 +48,30 @@ export default class OrganizationStruct extends Component {
     }
     checkDataFormat(DataResponse) {
 
-        if(DataResponse){
+        if (DataResponse) {
             dataSource = [];
             //console.log(DataResponse[0].data)
             // dataSource = DataResponse.org_lst;
-            org_code =DataResponse.org_code
+            org_code = DataResponse.org_code
             console.log('org_code :', org_code)
             console.log('DataResponse :', DataResponse)
 
             dataSource.push({
-                    
-                org_code:DataResponse.org_code,
-                org_name:DataResponse.org_name,
-                org_level:DataResponse.org_level,
-                next_level:'true',
-                expand:0,
-                }
+
+                org_code: DataResponse.org_code,
+                org_name: DataResponse.org_name,
+                org_level: DataResponse.org_level,
+                next_level: 'true',
+                expand: 0,
+            }
 
             )
 
 
             // DataResponse.org_emp.map((item) => (
-                
+
             //     dataSource.push({
-                    
+
             //         org_code:0,
             //         org_name:item.employee_name,
             //         org_level:20,
@@ -80,7 +80,7 @@ export default class OrganizationStruct extends Component {
             //         position:item.employee_position,
             //         expand:0,
             //         }
-    
+
             //     )))
             // DataResponse.org_lst.map((item) => (
             // dataSource.push({
@@ -104,10 +104,10 @@ export default class OrganizationStruct extends Component {
                 
 
             }*/
-            
 
-            
-            console.log('dataSource :',dataSource)
+
+
+            console.log('dataSource :', dataSource)
         } else {
 
             console.log('orgdata : ', orgdata)
@@ -126,12 +126,12 @@ export default class OrganizationStruct extends Component {
 
     onClickOrgStruct(item, index) {
 
-        console.log('item :',item)
+        console.log('item :', item)
 
         if (item.org_code == 0) {
 
             // *** select emp info detail
-            console.log('load empinfo  :',item.emp_id)
+            console.log('load empinfo  :', item.emp_id)
             this.setState({
 
                 isscreenloading: true,
@@ -175,13 +175,13 @@ export default class OrganizationStruct extends Component {
                     });
                     let temparr = []
                     let statuscol = 1;
-                   // let org_level = 0;
+                    // let org_level = 0;
 
                     for (let i = 0; i < dataSource.length; i++) {
 
-                        if(statuscol == 0){
+                        if (statuscol == 0) {
 
-                            if(parseInt(item.org_level)  >= parseInt(dataSource[i].org_level)){
+                            if (parseInt(item.org_level) >= parseInt(dataSource[i].org_level)) {
 
                                 statuscol = 1;
                             }
@@ -189,7 +189,7 @@ export default class OrganizationStruct extends Component {
 
                         if (i === index) {
                             statuscol = 0;
-                          //  org_level =  dataSource[i].org_level;
+                            //  org_level =  dataSource[i].org_level;
                             temparr.push({
                                 org_code: dataSource[i].org_code,
                                 org_name: dataSource[i].org_name,
@@ -240,11 +240,8 @@ export default class OrganizationStruct extends Component {
 
 
     loadOrgStructureAPI = async () => {
-
         let url = SharedPreference.ORGANIZ_STRUCTURE_API + this.state.org_code
-        
-        this.APICallback(await RestAPI(url))
-
+        this.APICallback(await RestAPI(url, SharedPreference.FUNCTIONID_ORGANIZ_STRUCTURE))
     }
 
     APICallback(data) {
@@ -319,56 +316,45 @@ export default class OrganizationStruct extends Component {
     loadEmployeeListAPI = async () => {
 
         let url = SharedPreference.ORGANIZ_STRUCTURE_API + this.state.org_code
-        console.log('url  :',url)
-        this.APIEmpCallback(await RestAPI(url))
+        console.log('url  :', url)
+        this.APIEmpCallback(await RestAPI(url, SharedPreference.FUNCTIONID_ORGANIZ_STRUCTURE))
 
     }
+
     loadOrgStructureDetailAPI = async () => {
-
         let url = SharedPreference.EMP_INFO_MANAGER_API + this.state.org_code
-
         if (option == 2) {
             let today = new Date();
             url = SharedPreference.CLOCK_IN_OUT_MANAGER_API + this.state.org_code + '&month=0' + parseInt(today.getMonth() + 1) + '&year=' + today.getFullYear()
-
         }
-
-        console.log('url : ', url)
-        this.APIDetailCallback(await RestAPI(url))
-
+        this.APIDetailCallback(await RestAPI(url, SharedPreference.FUNCTIONID_ORGANIZ_STRUCTURE))
     }
-    APIEmpCallback(data) {
 
+    APIEmpCallback(data) {
         code = data[0]
         data = data[1]
-
         if (code.SUCCESS == data.code) {
-            console.log('data.data.org_lst :', data.data)
             this.props.navigation.navigate('EmployeeList', {
                 DataResponse: data,
-                Option:option
+                Option: option
             });
-
         } else {
             this.onLoadErrorAlertDialog(data)
         }
-      
     }
-    APIDetailCallback(data) {
 
+    APIDetailCallback(data) {
         code = data[0]
         data = data[1]
-
         if (code.SUCCESS == data.code) {
-            console.log('data.data.org_lst :', data)
             if (option == 2) {
                 this.props.navigation.navigate('ClockInOutSelfView', {
                     DataResponse: data,
                     manager: 1,
-                    previous:1,
+                    previous: 1,
                     employee_name: this.state.employee_name,
                     employee_position: this.state.employee_position,
-                    Option:option
+                    Option: option
                 });
 
             } else if (option == 1) {
@@ -376,17 +362,17 @@ export default class OrganizationStruct extends Component {
                 this.props.navigation.navigate('EmployeeInfoDetail', {
                     DataResponse: data.data,
                     manager: 1,
-                    previous:1,
-                    Option:option
+                    previous: 1,
+                    Option: option
                 });
             }
-
-
         } else {
             this.onLoadErrorAlertDialog(data)
         }
-      
+
     }
+
+    
     onLoadErrorAlertDialog(error) {
         this.setState({
             isscreenloading: false,
@@ -400,7 +386,7 @@ export default class OrganizationStruct extends Component {
                 }],
                 { cancelable: false }
             )
-        } else if(error.code == 404){
+        } else if (error.code == 404) {
 
             Alert.alert(
                 'MSTD0059AERR',
@@ -413,7 +399,7 @@ export default class OrganizationStruct extends Component {
                 { cancelable: false }
             )
 
-        }else{
+        } else {
             Alert.alert(
                 'MHF00002ACRI',
                 'System Error (API). Please contact system administrator.',
@@ -446,16 +432,16 @@ export default class OrganizationStruct extends Component {
     }
     render() {
         return (
-            <View style={{flex: 1}} >
-                
-                <View style={[styles.navContainer,{flexDirection: 'column' }]}>
+            <View style={{ flex: 1 }} >
+
+                <View style={[styles.navContainer, { flexDirection: 'column' }]}>
                     <View style={styles.statusbarcontainer} />
                     <View style={{ height: 50, flexDirection: 'row', }}>
-                        
+
                         <View style={{ flex: 1, justifyContent: 'center', }}>
-                        <View style={{ width: '100%', justifyContent: 'center', position: 'absolute', }}>
-                            <Text style={styles.navTitleTextTop}>Organization Structure</Text>
-                        </View>
+                            <View style={{ width: '100%', justifyContent: 'center', position: 'absolute', }}>
+                                <Text style={styles.navTitleTextTop}>Organization Structure</Text>
+                            </View>
                             <TouchableOpacity
                                 onPress={(this.onBack.bind(this))}>
                                 <Image
@@ -487,15 +473,15 @@ export default class OrganizationStruct extends Component {
                                                     <View style={{ flex: 1, flexDirection: 'column' }}>
                                                         <View style={{ flex: 1, justifyContent: 'center' }} >
                                                             <Text style={item.expand === 0 ?
-                                                                { marginLeft: (parseInt(item.org_level) ) * 2, color: Colors.grayTextColor, fontFamily: 'Prompt-Regular' } :
-                                                                { marginLeft: (parseInt(item.org_level) ) * 2, color: Colors.redTextColor, fontFamily: 'Prompt-Regular' }}
+                                                                { marginLeft: (parseInt(item.org_level)) * 2, color: Colors.grayTextColor, fontFamily: 'Prompt-Regular' } :
+                                                                { marginLeft: (parseInt(item.org_level)) * 2, color: Colors.redTextColor, fontFamily: 'Prompt-Regular' }}
 
                                                             >{item.org_name}</Text>
                                                         </View>
-                                                        <View style={item.org_code === 0 ? {height: 20, justifyContent: 'center' }:{height: 0, justifyContent: 'center' }} >
-                                                            <Text style={{marginLeft: (parseInt(item.org_level) ) * 2, color: Colors.grayTextColor, fontFamily: 'Prompt-Regular',fontSize:10}}
-                                                        >{item.position}</Text>
-                                                    </View>
+                                                        <View style={item.org_code === 0 ? { height: 20, justifyContent: 'center' } : { height: 0, justifyContent: 'center' }} >
+                                                            <Text style={{ marginLeft: (parseInt(item.org_level)) * 2, color: Colors.grayTextColor, fontFamily: 'Prompt-Regular', fontSize: 10 }}
+                                                            >{item.position}</Text>
+                                                        </View>
                                                     </View>
                                                     <Image
 

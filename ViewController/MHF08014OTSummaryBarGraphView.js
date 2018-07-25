@@ -225,17 +225,13 @@ export default class OTSummaryBarChart extends Component {
     // }
 
     loadOTSummarySelffromAPI = async (omonth, oyear) => {
-
         let tmonth = omonth.toString();
-     
         if (omonth < 10) {
             tmonth = '0' + omonth
         }
-
         let url = SharedPreference.OTSUMMARY_BAR_CHART + this.state.org_code + '&month=' + tmonth + '&year=' + oyear
         console.log('OT summary url  :', url)
-        this.APIDetailCallback(await RestAPI(url), 'OTBarChartView')
-
+        this.APIDetailCallback(await RestAPI(url,SharedPreference.FUNCTIONID_OT_SUMMARY), 'OTBarChartView')
     }
 
 

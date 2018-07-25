@@ -140,7 +140,7 @@ export default class calendarYearView extends Component {
 
     onLoadCalendarAPI = async (year, location) => {
         console.log("onLoadCalendarAPI ====> start")
-        let data = await RestAPI(SharedPreference.CALENDER_YEAR_API + year + '&company=' + location)
+        let data = await RestAPI(SharedPreference.CALENDER_YEAR_API + year + '&company=' + location, SharedPreference.FUNCTIONID_WORKING_CALENDAR)
         code = data[0]
         data = data[1]
 
@@ -189,18 +189,21 @@ export default class calendarYearView extends Component {
                 original[index] = object
             }
 
-            if (this.state.selectLocation == null) {
-                showLocation = await this.getFullLocation("TA")
-            } else {
-
-                showLocation = await this.getFullLocation(this.state.selectLocation)
-            }
+           
 
         } else {
-            showLocation = "Company"
+
+            // console.log("this.state.selectLocation : ", this.state.selectLocation)
+            // showLocation = "Company"
             year = new Date().getFullYear()
         }
 
+        if (this.state.selectLocation == null) {
+            showLocation = await this.getFullLocation("TA")
+        } else {
+
+            showLocation = await this.getFullLocation(this.state.selectLocation)
+        }
 
         console.log("getYearView : showLocation ==> ", showLocation)
         console.log("getYearView : year ==> ", year)
@@ -425,7 +428,7 @@ export default class calendarYearView extends Component {
         const month = moment(datetime).format('M');
         let monthObject = this.state.yearObject[(month - 1)]
         console.log("onPressCalendar ==> ", monthObject)
-        this.props.navigation.navigate('calendarMonthView',
+        this.props.navigation.navigate('calendarMonthView2',
             {
                 month: datetime,
                 monthObject: monthObject,
@@ -488,7 +491,7 @@ export default class calendarYearView extends Component {
         // console.log("openNewPage : RestAPI ")
         // console.log("openNewPage selectLocation : ", location)
 
-        let data = await RestAPI(SharedPreference.CALENDER_YEAR_API + this.state.selectYear + '&company=' + location)
+        let data = await RestAPI(SharedPreference.CALENDER_YEAR_API + this.state.selectYear + '&company=' + location, SharedPreference.FUNCTIONID_WORKING_CALENDAR)
         code = data[0]
         data = data[1]
 
@@ -796,10 +799,13 @@ export default class calendarYearView extends Component {
         )
     }
 
-    onDownloadPDFFile(pdfPath, filename) {
+    onDownloadPDFFile = async (pdfPath, filename) => {
         filename = "calendar_" + this.state.selectYear + '.pdf'
-
         console.log("onDownloadPDFFile: ", SharedPreference.HOST + pdfPath)
+
+        FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, SharedPreference.FUNCTIONID_WORKING_CALENDAR, SharedPreference.profileObject.client_token)
+        console.log("calendarPDFAPI ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
+
         if (Platform.OS === 'android') {
             RNFetchBlob
                 .config({
@@ -814,51 +820,38 @@ export default class calendarYearView extends Component {
                 })
                 .fetch('GET', SharedPreference.HOST + pdfPath, {
                     'Content-Type': 'application/pdf;base64',
-                    Authorization: SharedPreference.TOKEN
+                    Authorization: FUNCTION_TOKEN
                 })
                 .then((resp) => {
                     console.log("Android ==> LoadPDFFile ==> Load Success  : ", resp);
-                    // RNFetchBlob.android.actionViewIntent(resp.data, 'application/pdf')
                     this.setState({ isLoadingPDF: false })
-
                     Alert.alert(
                         StringText.CALENDAR_ALERT_PDF_TITLE_SUCCESS,
-                        StringText.CALENDAR_ALERT_PDF_DESC_SUCCESS_1 + filename +StringText.CALENDAR_ALERT_PDF_DESC_SUCCESS_2,
-                        [
-                            {
-                                text: 'OK', onPress: () => {
-                                    // this.addEventOnCalendar()
-                                    RNFetchBlob.android.actionViewIntent(resp.data, 'application/pdf')
-                                }
-                            },
-                            {
-                                text: 'Cancel', onPress: () => {
-                                }, style: 'cancel'
+                        StringText.CALENDAR_ALERT_PDF_DESC_SUCCESS_1 + filename + StringText.CALENDAR_ALERT_PDF_DESC_SUCCESS_2,
+                        [{
+                            text: 'OK', onPress: () => {
+                                RNFetchBlob.android.actionViewIntent(resp.data, 'application/pdf')
                             }
+                        },
+                        {
+                            text: 'Cancel', onPress: () => {
+                            }, style: 'cancel'
+                        }
                         ],
                         { cancelable: false }
                     )
-
-
                 })
                 .catch((errorCode, errorMessage) => {
+                    this.setState({ isLoadingPDF: false })
                     console.log("Android ==> LoadPDFFile ==> Load errorCode  : ", errorCode);
                     Alert.alert(
                         errorCode,
                         errorMessage,
-                        [
-                            {
-                                text: 'Cancel', onPress: () => {
-                                    console.log("Android ==> LoadPDFFile ==> Load errorCode  : ", errorCode);
-
-                                }, style: 'cancel'
-                            },
-                            {
-                                text: 'OK', onPress: () => {
-                                    // this.addEventOnCalendar()
-                                }
-                            },
-                        ],
+                        [{
+                            text: 'OK', onPress: () => {
+                                // this.addEventOnCalendar()
+                            }
+                        }],
                         { cancelable: false }
                     )
                 })
@@ -873,7 +866,7 @@ export default class calendarYearView extends Component {
                 })
                 .fetch('GET', pdfPath, {
                     'Content-Type': 'application/pdf;base64',
-                    Authorization: SharedPreference.TOKEN
+                    Authorization: FUNCTION_TOKEN
                 })
                 .then((resp) => {
 
@@ -883,13 +876,12 @@ export default class calendarYearView extends Component {
 
                     Alert.alert(
                         StringText.CALENDAR_ALERT_PDF_TITLE_SUCCESS,
-                        StringText.CALENDAR_ALERT_PDF_DESC_SUCCESS_1 + filename +StringText.CALENDAR_ALERT_PDF_DESC_SUCCESS_2,
+                        StringText.CALENDAR_ALERT_PDF_DESC_SUCCESS_1 + filename + StringText.CALENDAR_ALERT_PDF_DESC_SUCCESS_2,
                         [
                             {
                                 text: 'OK', onPress: () => {
                                     // this.addEventOnCalendar()
                                     RNFetchBlob.ios.openDocument(resp.path());
-
                                     // RNFetchBlob.android.actionViewIntent(resp.data, 'application/pdf')
                                 }
                             },
@@ -905,8 +897,15 @@ export default class calendarYearView extends Component {
                     // RNFetchBlob.ios.openDocument(resp.path());
                 })
                 .catch((errorMessage, statusCode) => {
-                    console.log('Error: ' + errorMessage);
-                    console.log('Status code: ' + statusCode);
+                    Alert.alert(
+                        errorCode,
+                        statusCode,
+                        [{
+                            text: 'OK', onPress: () => {
+                            }
+                        }],
+                        { cancelable: false }
+                    )
                 });
         }
     }

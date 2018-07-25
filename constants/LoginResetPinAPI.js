@@ -1,6 +1,7 @@
 import SharedPreference from "../SharedObject/SharedPreference";
+import Authorization from "../SharedObject/Authorization";
 
-export default async function resetPIN() {
+export default async function resetPIN(functionID) {
 
     let code = {
         SUCCESS: "200",
@@ -17,15 +18,22 @@ export default async function resetPIN() {
         CUT_JSON: "700",
     }
 
-    console.log("resetPIN ==> SharedPreference.SET_PIN_API : ",SharedPreference.SET_PIN_API)
-    console.log("resetPIN ==> SharedPreference.TOKEN : ",SharedPreference.TOKEN)
+    console.log("resetPIN ==>  functionID : ", functionID)
+    // console.log("LoginWithPin ==> callback  Register  : ", SharedPreference.REGISTER_API)
+    // console.log("LoginWithPin ==> callback  client_pin  : ", pin)
+    // console.log("LoginWithPin ==> callback  firebase_token  : ", SharedPreference.deviceInfo.firebaseToken)
+    // console.log("LoginWithPin ==> callback  systemdn  : ", SharedPreference.company)
+    // console.log("LoginWithPin ==> callback  Token  : ", SharedPreference.TOKEN)
+
+    FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, functionID, SharedPreference.profileObject.client_token)
+    console.log("resetPIN ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
 
     return fetch(SharedPreference.SET_PIN_API, {
         method: 'POST',
         headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
-            Authorization: SharedPreference.TOKEN
+            Authorization: FUNCTION_TOKEN
         },
         body: JSON.stringify({
             type: "reset",

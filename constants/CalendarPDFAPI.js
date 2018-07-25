@@ -1,6 +1,7 @@
 import SharedPreference from "../SharedObject/SharedPreference";
+import Authorization from "../SharedObject/Authorization";
 
-export default async function getPDF(year, company) {
+export default async function getPDF(year, company,functionID) {
     let code = {
         SUCCESS: "200",
         INVALID_API_KEY: "100",
@@ -16,6 +17,9 @@ export default async function getPDF(year, company) {
         CUT_JSON: "700",
     }
 
+    // console.log("calendarPDFAPI ==>  functionID : ", functionID)
+    FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, functionID, SharedPreference.profileObject.client_token)
+    console.log("calendarPDFAPI ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
     let url = SharedPreference.CALENDER_YEAR_PDF_API + year + "&company=" + company
     console.log("calendarPDFAPI ==> url : ", url)
 
@@ -24,7 +28,7 @@ export default async function getPDF(year, company) {
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            Authorization: SharedPreference.TOKEN,
+            Authorization: FUNCTION_TOKEN,
         },
     })
         .then((response) => response.json())

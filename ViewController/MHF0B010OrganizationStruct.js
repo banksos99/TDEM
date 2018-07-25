@@ -23,7 +23,6 @@ import SharedPreference from "./../SharedObject/SharedPreference"
 import RestAPI from "../constants/RestAPI"
 
 let dataSource = [];
-let temphandbookData = [];
 let option = 0;
 let org_code = '';
 
@@ -32,14 +31,14 @@ export default class OrganizationStruct extends Component {
     constructor(props) {
         super(props);
         this.state = {
-         
+
 
         }
 
         this.checkoption(this.props.navigation.getParam("Option", ""));
 
         this.checkDataFormat(this.props.navigation.getParam("DataResponse", ""));
-      
+
     }
     checkoption(data) {
         if (data) {
@@ -52,7 +51,7 @@ export default class OrganizationStruct extends Component {
         if (DataResponse) {
 
             console.log('org DataResponse :', DataResponse.org_code)
-            org_code =DataResponse.org_code
+            org_code = DataResponse.org_code
             console.log('org_code :', org_code)
             dataSource = [];
             //console.log(DataResponse[0].data)
@@ -88,7 +87,7 @@ export default class OrganizationStruct extends Component {
             //     ))
             // )
 
-           
+
         } else {
 
             console.log('orgdata : ', orgdata)
@@ -222,7 +221,7 @@ export default class OrganizationStruct extends Component {
             } else {
                 // *** select employee list
                 console.log('load empinfo  :', item)
-                
+
 
                 this.setState({
 
@@ -233,11 +232,11 @@ export default class OrganizationStruct extends Component {
 
                 }, function () {
                     console.log('option :', option)
-                    if (option == 1){
+                    if (option == 1) {
                         this.loadOTBarChartfromAPI()
-                        
-                    }else if(option == 2){
-    
+
+                    } else if (option == 2) {
+
                         this.loadOTLineChartfromAPI()
                     }
                 });
@@ -249,26 +248,19 @@ export default class OrganizationStruct extends Component {
 
 
     loadOrgStructureAPI = async () => {
-
         let url = SharedPreference.ORGANIZ_STRUCTURE_API + this.state.org_code
-
-        this.APICallback(await RestAPI(url))
-
+        this.APICallback(await RestAPI(url, SharedPreference.FUNCTIONID_ORGANIZ_STRUCTURE))
     }
 
     APICallback(data) {
-
         code = data[0]
         data = data[1]
-
         if (code.SUCCESS == data.code) {
-            
-            console.log('data.data :', data.data)
+            // console.log('data.data :', data.data)
             let temparr = []
             for (let i = 0; i < dataSource.length; i++) {
 
                 if (i === this.state.index_org_code) {
-
                     temparr.push({
                         org_code: dataSource[i].org_code,
                         org_name: dataSource[i].org_name,
@@ -277,22 +269,17 @@ export default class OrganizationStruct extends Component {
                         expand: data.data.org_lst.length,
 
                     })
-
                     // data.data.org_emp.map((item) => (
-                        temparr.push(
-                            {
-                                org_code: this.state.org_code,
-                                org_name: this.state.org_name,
-                                org_level: parseInt(dataSource[i].org_level) + 10,
-                                next_level: 'false',
-                            //    emp_id: item.employee_id,
-                                expand: 0,
+                    temparr.push(
+                        {
+                            org_code: this.state.org_code,
+                            org_name: this.state.org_name,
+                            org_level: parseInt(dataSource[i].org_level) + 10,
+                            next_level: 'false',
+                            expand: 0,
 
-                            }
-                         )
-
-                    // ))
-
+                        }
+                    )
                     data.data.org_lst.map((item) => (
                         temparr.push(
                             {
@@ -310,13 +297,9 @@ export default class OrganizationStruct extends Component {
                     temparr.push(
                         dataSource[i]
                     )
-
                 }
-
             }
             dataSource = temparr;
-            console.log('dataSource :', dataSource)
-
         } else {
             this.onLoadErrorAlertDialog(data)
         }
@@ -325,49 +308,37 @@ export default class OrganizationStruct extends Component {
         })
     }
 
-    
+
     loadOTLineChartfromAPI = async () => {
-
         let url = SharedPreference.OTSUMMARY_LINE_CHART + this.state.org_code
-        
-        this.APIDetailCallback(await RestAPI(url), 'OTLineChartView')
-
+        this.APIDetailCallback(await RestAPI(url, SharedPreference.FUNCTIONID_OT_SUMMARY), 'OTLineChartView')
     }
 
     loadOTBarChartfromAPI = async () => {
-
         let today = new Date();
-
         let url = SharedPreference.OTSUMMARY_BAR_CHART + this.state.org_code + '&month=0' + parseInt(today.getMonth() + 1) + '&year=' + today.getFullYear()
         console.log('url  :', url)
-        this.APIDetailCallback(await RestAPI(url), 'OTBarChartView')
-
+        this.APIDetailCallback(await RestAPI(url, SharedPreference.FUNCTIONID_OT_SUMMARY), 'OTBarChartView')
     }
 
 
-    APIDetailCallback(data,path) {
+    APIDetailCallback(data, path) {
         console.log('data  :', data)
         code = data[0]
         data = data[1]
-
         if (code.SUCCESS == data.code) {
-
             this.props.navigation.navigate(path, {
                 DataResponse: data.data,
-                org_name:this.state.org_name,
-                org_code:this.state.org_code
+                org_name: this.state.org_name,
+                org_code: this.state.org_code
             });
-
         } else {
-            
             this.onLoadErrorAlertDialog(data)
         }
-
     }
 
 
     onLoadErrorAlertDialog(error) {
-
         this.setState({
             isscreenloading: false,
         })
@@ -394,10 +365,9 @@ export default class OrganizationStruct extends Component {
         }
         console.log("error : ", error)
     }
+
     renderloadingscreen() {
-
         if (this.state.isscreenloading) {
-
             return (
                 <View style={{ height: '100%', width: '100%', position: 'absolute', }}>
                     <View style={{ backgroundColor: 'black', height: '100%', width: '100%', position: 'absolute', opacity: 0.7 }}>
@@ -409,8 +379,8 @@ export default class OrganizationStruct extends Component {
                 </View>
             )
         }
-
     }
+
     render() {
         return (
             <View style={{ flex: 1 }} >
@@ -454,13 +424,13 @@ export default class OrganizationStruct extends Component {
                                                     <View style={{ flex: 1, flexDirection: 'column' }}>
                                                         <View style={{ flex: 1, justifyContent: 'center' }} >
                                                             <Text style={item.expand === 0 ?
-                                                                { marginLeft: (parseInt(item.org_level) ) * 2, color: Colors.grayTextColor, fontFamily: 'Prompt-Regular' } :
-                                                                { marginLeft: (parseInt(item.org_level) ) * 2, color: Colors.redTextColor, fontFamily: 'Prompt-Regular' }}
+                                                                { marginLeft: (parseInt(item.org_level)) * 2, color: Colors.grayTextColor, fontFamily: 'Prompt-Regular' } :
+                                                                { marginLeft: (parseInt(item.org_level)) * 2, color: Colors.redTextColor, fontFamily: 'Prompt-Regular' }}
 
                                                             >{item.org_name}</Text>
                                                         </View>
                                                         <View style={item.org_code === 0 ? { height: 20, justifyContent: 'center' } : { height: 0, justifyContent: 'center' }} >
-                                                            <Text style={{ marginLeft: (parseInt(item.org_level) ) * 2, color: Colors.grayTextColor, fontFamily: 'Prompt-Regular', fontSize: 10 }}
+                                                            <Text style={{ marginLeft: (parseInt(item.org_level)) * 2, color: Colors.grayTextColor, fontFamily: 'Prompt-Regular', fontSize: 10 }}
                                                             >{item.position}</Text>
                                                         </View>
                                                     </View>

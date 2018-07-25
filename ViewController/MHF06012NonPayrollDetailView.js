@@ -58,7 +58,7 @@ export default class NonpayrollDetailView extends Component {
 
     onLoadAPI = async (month, year) => {
         // SharedPreference.NON_PAYROLL_DETAIL_API
-        let data = await RestAPI(SharedPreference.NON_PAYROLL_DETAIL_API + month + "&year=" + year)
+        let data = await RestAPI(SharedPreference.NON_PAYROLL_DETAIL_API + month + "&year=" + year, SharedPreference.FUNCTIONID_NON_PAYROLL)
         code = data[0]
         data = data[1]
         //console.log("nonPayRollCallback data : ", data)

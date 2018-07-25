@@ -49,6 +49,9 @@ let rolemanagementManager = [0, 0, 0, 0];
 // SharedPreference.notipayAnnounceMentID = 1
 // SharedPreference.notipayslipID = 0
 
+import Authorization from "../SharedObject/Authorization";
+
+
 export default class HMF01011MainView extends Component {
 
     saveAutoSyncCalendar = new SaveAutoSyncCalendar()
@@ -78,15 +81,15 @@ export default class HMF01011MainView extends Component {
         // console.log("MainView ====> profileObject ==> role_authoried ==> ", SharedPreference.profileObject.role_authoried)
         // console.log("notopayslipID _data : ", SharedPreference.notipayslipID)
 
-        
 
-        
-        
+
+
+
 
 
         //Check Manager status
 
-        
+
         for (let i = 0; i < SharedPreference.profileObject.role_authoried.length; i++) {
             if (SharedPreference.profileObject.role_authoried[i].module_function === 'HF0501') {
 
@@ -94,7 +97,7 @@ export default class HMF01011MainView extends Component {
 
             }
         }
-        
+
         console.log("MainView ====> profileObject ==> managerstatus ==> ", managerstatus)
     }
 
@@ -119,12 +122,12 @@ export default class HMF01011MainView extends Component {
     async componentDidMount() {
         this.setState({
             page: 0,
-            
+
         })
 
         this.redertabview()
 
-        
+
 
         NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectivityChange);
 
@@ -136,7 +139,7 @@ export default class HMF01011MainView extends Component {
 
         } else if (SharedPreference.notipayAnnounceMentID) {
 
-            this.loadAnnouncementDetailfromAPI(SharedPreference.notipayAnnounceMentID,0)
+            this.loadAnnouncementDetailfromAPI(SharedPreference.notipayAnnounceMentID, 0)
 
         }
     }
@@ -192,7 +195,7 @@ export default class HMF01011MainView extends Component {
     }
 
 
-    loadAnnouncementfromAPI() {
+    loadAnnouncementfromAPI = async () => {
 
         let totalroll = announcementData.length;
 
@@ -203,8 +206,11 @@ export default class HMF01011MainView extends Component {
         } else if (!totalroll) {
 
             totalroll = ROLL_ANNOUNCE
-
         }
+
+        // console.log("calendarPDFAPI ==>  functionID : ", functionID)
+        FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, SharedPreference.FUNCTIONID_ANNOUCEMENT, SharedPreference.profileObject.client_token)
+        console.log("calendarPDFAPI ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
 
         let hostApi = SharedPreference.ANNOUNCEMENT_ASC_API + '&offset=0&limit=' + totalroll
         if (ascendingSort) {
@@ -215,7 +221,7 @@ export default class HMF01011MainView extends Component {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                Authorization: SharedPreference.TOKEN,
+                Authorization: FUNCTION_TOKEN,
             },
         })
             .then((response) => response.json())
@@ -281,7 +287,7 @@ export default class HMF01011MainView extends Component {
             });
     }
 
-    loadAnnouncementMorefromAPI() {
+    loadAnnouncementMorefromAPI = async () => {
 
         let hostApi = SharedPreference.ANNOUNCEMENT_ASC_API + '&offset=' + announcementData.length + '&limit=' + ROLL_ANNOUNCE
         if (ascendingSort) {
@@ -289,12 +295,15 @@ export default class HMF01011MainView extends Component {
         }
         console.log('hostApi :', hostApi)
 
+        FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, SharedPreference.FUNCTIONID_ANNOUCEMENT, SharedPreference.profileObject.client_token)
+        console.log("calendarPDFAPI ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
+
         return fetch(hostApi, {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                Authorization: SharedPreference.TOKEN,
+                Authorization: FUNCTION_TOKEN,
             },
         })
             .then((response) => response.json())
@@ -362,10 +371,12 @@ export default class HMF01011MainView extends Component {
                     this.onLoadErrorAlertDialog(error)
                 });
             });
-
-
     }
-    loadAnnouncementDetailfromAPI(item, index) {
+
+    loadAnnouncementDetailfromAPI = async (item, index) => {
+
+        FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, SharedPreference.FUNCTIONID_ANNOUCEMENT, SharedPreference.profileObject.client_token)
+        console.log("calendarPDFAPI ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
 
         let path = 'AnnouncementDetail'
         return fetch(SharedPreference.ANNOUNCEMENT_DETAIL_API + item.id, {
@@ -373,7 +384,7 @@ export default class HMF01011MainView extends Component {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                Authorization: SharedPreference.TOKEN,
+                Authorization: FUNCTION_TOKEN,
             },
         })
             .then((response) => response.json())
@@ -432,13 +443,13 @@ export default class HMF01011MainView extends Component {
     loadEmployeeInfoformAPI = async () => {
 
         console.log("loadEmployeeInfoformAPI :", SharedPreference.profileObject.employee_id)
-        this.APICallback(await RestAPI(SharedPreference.EMP_INFO_CAREERPATH_API + SharedPreference.profileObject.employee_id), 'EmployeeInfoDetail')
+        this.APICallback(await RestAPI(SharedPreference.EMP_INFO_CAREERPATH_API + SharedPreference.profileObject.employee_id, SharedPreference.FUNCTIONID_EMPLOYEE_INFORMATION), 'EmployeeInfoDetail')
 
     }
 
     loadNonpayrollfromAPI = async () => {
 
-        let data = await RestAPI(SharedPreference.NONPAYROLL_SUMMARY_API)
+        let data = await RestAPI(SharedPreference.NONPAYROLL_SUMMARY_API, SharedPreference.FUNCTIONID_NON_PAYROLL)
         code = data[0]
         data = data[1]
 
@@ -450,108 +461,84 @@ export default class HMF01011MainView extends Component {
             this.onLoadErrorAlertDialog(data)
         }
     }
-    loadPayslipDetailfromAPI() {
-
+    loadPayslipDetailfromAPI = async () => {
         let host = SharedPreference.PAYSLIP_DETAIL_API + SharedPreference.notipayslipID
+        // console.log('host', host)
+        // console.log('TOKEN', SharedPreference.TOKEN)
+        // console.log("setPinAPI ==>  functionID : ", functionID)
+        let FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, SharedPreference.FUNCTIONID_PAYSLIP, SharedPreference.profileObject.client_token)
+        // console.log("setPinAPI ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
 
-        console.log('host', host)
-        console.log('TOKEN', SharedPreference.TOKEN)
+        return fetch(host, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                Authorization: FUNCTION_TOKEN,
+            },
+        })
+            .then((response) => response.json())
+            .then((responseJson) => {
+
+                this.setState({
+
+                    isscreenloading: false,
+                    dataSource: responseJson
+
+                    // datadetail: PayslipDataDetail.detail[dataSource.years[year].detail[index].payroll_id]
+
+                }, function () {
+                    console.log('status : ', this.state.dataSource.status);
+                    if (this.state.dataSource.status === 200) {
+
+                        this.props.navigation.navigate('PayslipDetail', {
+                            // DataResponse:dataSource,
+                            yearlist: 0,
+                            initialyear: 0,
+                            initialmonth: 0,
+                            monthselected: 0,
+                            yearselected: 0,
+                            Datadetail: this.state.dataSource,
+                            rollid: SharedPreference.notipayslipID
+                        });
 
 
-       
-            // console.log('rollid', rollid)
-            return fetch(host, {
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    Authorization: SharedPreference.TOKEN,
-                },
-            })
-                .then((response) => response.json())
-                .then((responseJson) => {
 
-                    this.setState({
+                    } else {
 
-                        isscreenloading: false,
-                        dataSource: responseJson
+                        Alert.alert(
+                            this.state.dataSource.errors[0].code,
+                            this.state.dataSource.errors[0].detail,
+                            [
+                                { text: 'OK', onPress: () => console.log('OK Pressed') },
+                            ],
+                            { cancelable: false }
+                        )
 
-                        // datadetail: PayslipDataDetail.detail[dataSource.years[year].detail[index].payroll_id]
+                    }
 
-                    }, function () {
-                        console.log('status : ', this.state.dataSource.status);
-                        if (this.state.dataSource.status === 200) {
-                          
-                            this.props.navigation.navigate('PayslipDetail', {
-                                // DataResponse:dataSource,
-                                yearlist: 0,
-                                initialyear: 0,
-                                initialmonth: 0,
-                                monthselected: 0,
-                                yearselected: 0,
-                                Datadetail: this.state.dataSource,
-                                rollid: SharedPreference.notipayslipID
-                            });
-
-                         
-
-                        } else {
-
-                            Alert.alert(
-                                this.state.dataSource.errors[0].code,
-                                this.state.dataSource.errors[0].detail,
-                                [
-                                    { text: 'OK', onPress: () => console.log('OK Pressed') },
-                                ],
-                                { cancelable: false }
-                            )
-
-                        }
-
-                    });
-
-                })
-                .catch((error) => {
-                    console.error(error);
                 });
 
-                
-
+            })
+            .catch((error) => {
+                console.error(error);
+            });
     }
     loadPayslipfromAPI = async () => {
-
-        this.APIPayslipCallback(await RestAPI(SharedPreference.PAYSLIP_LIST_API), 'PayslipList')
-
-        // let data = await RestAPI(SharedPreference.PAYSLIP_LIST_API)
-        // // console.log('data',data)
-        // code = data[0]
-        // data = data[1]
-        // console.log('data',data.data)
-        // if ((code.SUCCESS == data.code) | (code.NODATA == data.code)) {
-        //     this.props.navigation.navigate('PayslipList', {
-        //         dataResponse: data.data,
-        //     });
-        // } else {
-        //     this.onLoadErrorAlertDialog(data)
-        // }
-
+        this.APIPayslipCallback(await RestAPI(SharedPreference.PAYSLIP_LIST_API, SharedPreference.FUNCTIONID_PAYSLIP), 'PayslipList')
     }
 
     APIPayslipCallback(data, rount) {
-
         code = data[0]
         data = data[1]
-
         this.setState({
             isscreenloading: false,
         })
 
         if ((code.SUCCESS == data.code) | (code.NODATA == data.code)) {
-
             this.props.navigation.navigate(rount, {
                 DataResponse: data.data,
             });
-
         } else {
             this.onLoadErrorAlertDialog(data)
         }
@@ -560,23 +547,15 @@ export default class HMF01011MainView extends Component {
 
 
     loadClockInOutDetailfromAPI = async () => {
-
         let today = new Date();
-
         let url = SharedPreference.CLOCK_IN_OUT_API + SharedPreference.profileObject.employee_id + '&month=0' + parseInt(today.getMonth() + 1) + '&year=' + today.getFullYear()
-
-        this.APIClockInOutCallback(await RestAPI(url), 'ClockInOutSelfView')
-
+        this.APIClockInOutCallback(await RestAPI(url, SharedPreference.FUNCTIONID_CLOCK_IN_OUT), 'ClockInOutSelfView')
     }
 
     loadOTSummarySelffromAPI = async () => {
-
         let today = new Date();
-
         let url = SharedPreference.OTSUMMARY_DETAIL + 'month=0' + parseInt(today.getMonth() + 1) + '&year=' + today.getFullYear()
-
-        // this.APICallback(await RestAPI(url), 'OTSummarySelfView')
-        let data = await RestAPI(url)
+        let data = await RestAPI(url, SharedPreference.FUNCTIONID_OT_SUMMARY)
         code = data[0]
         data = data[1]
 
@@ -592,69 +571,43 @@ export default class HMF01011MainView extends Component {
 
     loadHandbooklistfromAPI = async () => {
         console.log("loadHandbooklistfromAPI")
-
-        // this.APICallback(await RestAPI(SharedPreference.HANDBOOK_LIST), 'Handbooklist')
         this.props.navigation.navigate('Handbooklist');
-
     }
 
     loadOTLineChartfromAPI = async () => {
-
         let today = new Date();
-
         let url = SharedPreference.OTSUMMARY_LINE_CHART + 'month=0' + parseInt(today.getMonth() + 1) + '&year=' + today.getFullYear()
-
-        this.APICallback(await RestAPI(url), 'OTLineChartView', 0)
-
+        this.APICallback(await RestAPI(url, SharedPreference.FUNCTIONID_OT_SUMMARY), 'OTLineChartView', 0)
     }
 
     loadOTBarChartfromAPI = async () => {
-
         let today = new Date();
-
         let url = SharedPreference.OTSUMMARY_BAR_CHART + 'month=0' + parseInt(today.getMonth() + 1) + '&year=' + today.getFullYear()
-
-        this.APICallback(await RestAPI(url), 'OTBarChartView', 0)
-
+        this.APICallback(await RestAPI(url, SharedPreference.FUNCTIONID_OT_SUMMARY), 'OTBarChartView', 0)
     }
 
     loadOrgStructerfromAPI = async () => {
-
-        let today = new Date();
-
         let url = SharedPreference.ORGANIZ_STRUCTURE_API + orgcode
-
-        this.APICallback(await RestAPI(url), 'OrgStructure', 1)
-
+        this.APICallback(await RestAPI(url, SharedPreference.FUNCTIONID_ORGANIZ_STRUCTURE), 'OrgStructure', 1)
     }
+
     loadOrgStructerClockInOutfromAPI = async () => {
-
-        let today = new Date();
-
         let url = SharedPreference.ORGANIZ_STRUCTURE_API + orgcode
-
-        this.APICallback(await RestAPI(url), 'OrgStructure', 2)
-
+        this.APICallback(await RestAPI(url, SharedPreference.FUNCTIONID_ORGANIZ_STRUCTURE), 'OrgStructure', 2)
     }
 
     loadOrgStructerOTAveragefromAPI = async () => {
-
-        let today = new Date();
-
         let url = SharedPreference.ORGANIZ_STRUCTURE_OT_API + orgcode
-        console.log('loadOrgStructerOTAveragefromAPI url : ', url)
-        this.APICallback(await RestAPI(url), 'OrganizationOTStruct', 1)
-
+        this.APICallback(await RestAPI(url, SharedPreference.FUNCTIONID_ORGANIZ_STRUCTURE), 'OrganizationOTStruct', 1)
     }
 
     loadOrgStructerOTHistoryfromAPI = async () => {
-        let today = new Date();
         let url = SharedPreference.ORGANIZ_STRUCTURE_OT_API + orgcode
-        this.APICallback(await RestAPI(url), 'OrganizationOTStruct', 2)
+        this.APICallback(await RestAPI(url, SharedPreference.FUNCTIONID_ORGANIZ_STRUCTURE), 'OrganizationOTStruct', 2)
     }
 
     APICallback(data, rount, option) {
-        console.log('main menu option :', option)
+
         code = data[0]
         data = data[1]
         //check org_code
@@ -674,24 +627,19 @@ export default class HMF01011MainView extends Component {
 
 
     APIClockInOutCallback(data, rount) {
-
         code = data[0]
         data = data[1]
-
         this.setState({
             isscreenloading: false,
         })
 
         if ((code.SUCCESS == data.code) | (code.NODATA == data.code)) {
-
             this.props.navigation.navigate(rount, {
                 DataResponse: data,
             });
-
         } else {
             this.onLoadErrorAlertDialog(data)
         }
-
     }
 
     onLoadErrorAlertDialog(error) {
@@ -723,8 +671,9 @@ export default class HMF01011MainView extends Component {
         console.log("error : ", error)
     }
 
+
     loadLeaveQuotafromAPI = async () => {
-        let data = await RestAPI(SharedPreference.LEAVE_QUOTA_API)
+        let data = await RestAPI(SharedPreference.LEAVE_QUOTA_API, SharedPreference.FUNCTIONID_LEAVE_QUOTA)
         code = data[0]
         data = data[1]
         console.log("nonPayRollCallback data : ", data)
@@ -738,36 +687,14 @@ export default class HMF01011MainView extends Component {
         }
     }
 
-    loadLeaveQuotafromAPI = async () => {
-        this.leaveQuotaCallback(await RestAPI(SharedPreference.LEAVE_QUOTA_API))
-    }
-
-    leaveQuotaCallback(data) {
-        code = data[0]
-        data = data[1]
-
-        this.props.navigation.navigate('LeavequotaList', {
-            dataResponse: data
-        });
-    }
-
     loadCalendarfromAPI = async (location) => {
-        console.log("location : ", location)
+
         let year = new Date().getFullYear()
+        let data = await RestAPI(SharedPreference.CALENDER_YEAR_API + year + '&company=' + company, SharedPreference.FUNCTIONID_WORKING_CALENDAR)
         let company = SharedPreference.profileObject.location
         if (company == null) {
             company = "TA"
         }
-        this.calendarCallback(await RestAPI(SharedPreference.CALENDER_YEAR_API + year + '&company=' + company))
-    }
-
-    calendarCallback(data) {
-
-        let company = SharedPreference.profileObject.location
-        if (company == null) {
-            company = "TA"
-        }
-
         code = data[0]
         data = data[1]
         console.log("calendarCallback : ", data)
@@ -783,15 +710,11 @@ export default class HMF01011MainView extends Component {
     //*****************************************************************************
 
 
-
     onOpenOrgaStructer() {
         this.setState({
-
             isscreenloading: true,
             loadingtype: 3
-
         }, function () {
-
             this.setState(this.renderloadingscreen())
             this.loadOrgStructerfromAPI()
         });
@@ -799,91 +722,67 @@ export default class HMF01011MainView extends Component {
     }
     onOpenOrgaStructerClockInOut() {
         this.setState({
-
             isscreenloading: true,
             loadingtype: 3
-
         }, function () {
-
             this.setState(this.renderloadingscreen())
             this.loadOrgStructerClockInOutfromAPI()
         });
-
     }
 
     onOpenOrgaStructerOTHistory() {
         this.setState({
-
             isscreenloading: true,
             loadingtype: 3
-
         }, function () {
-
             this.setState(this.renderloadingscreen())
             this.loadOrgStructerOTHistoryfromAPI()
         });
-
     }
+
     onOpenOrgaStructerOTAverage() {
         this.setState({
-
             isscreenloading: true,
             loadingtype: 3
-
         }, function () {
-
             this.setState(this.renderloadingscreen())
             this.loadOrgStructerOTAveragefromAPI()
         });
-
     }
+
 
     onOpenOrgaStructerOTHistory() {
         this.setState({
-
             isscreenloading: true,
             loadingtype: 3
-
         }, function () {
-
             this.setState(this.renderloadingscreen())
             this.loadOrgStructerOTHistoryfromAPI()
         });
-
     }
 
     onOpenAnnouncement() {
-
         this.setState({
-
             isscreenloading: true,
             loadingtype: 3
-
         }, function () {
-
             this.setState(this.renderloadingscreen())
             this.loadAnnouncementfromAPI()
         });
-
     }
+
     onOpenAnnouncementDetail(item, index) {
-
         this.setState({
-
             isscreenloading: true,
             loadingtype: 3
-
         }, function () {
             console.log('index :', index);
             this.setState(this.renderloadingscreen())
             this.loadAnnouncementDetailfromAPI(item, index)
-
         });
-
     }
 
     onOpenEmployeeInfo() {
-
         this.setState({
             isscreenloading: true,
             loadingtype: 3
@@ -891,153 +790,98 @@ export default class HMF01011MainView extends Component {
             this.setState(this.renderloadingscreen())
             this.loadEmployeeInfoformAPI()
         });
-
     }
 
     onOpenNonpayroll() {
-
         this.setState({
-
             isscreenloading: true,
             loadingtype: 3
-
         }, function () {
-
             this.setState(this.renderloadingscreen())
             this.loadNonpayrollfromAPI()
-
         });
-
     }
 
     onOpenPayslip() {
-
         this.setState({
-
             isscreenloading: true,
             loadingtype: 3
-
         }, function () {
-
             this.setState(this.renderloadingscreen())
             this.loadPayslipfromAPI()
         });
     }
+
     onOpenPayslipDetail() {
-
         this.setState({
-
             isscreenloading: true,
             loadingtype: 3
-
         }, function () {
-
             this.setState(this.renderloadingscreen())
             this.loadPayslipDetailfromAPI()
-            
         });
     }
 
-
-
     onOpenLeaveQuota() {
-
         this.setState({
-
             isscreenloading: true,
             loadingtype: 3
-
         }, function () {
-
             this.setState(this.renderloadingscreen())
             this.loadLeaveQuotafromAPI()
         });
-
     }
 
     onOpenClockInOut() {
-
         this.setState({
-
             isscreenloading: true,
             loadingtype: 3
-
         }, function () {
-
             this.setState(this.renderloadingscreen())
             this.loadClockInOutDetailfromAPI()
-
-
         });
-
     }
 
     onOpenOTSummarySelf() {
-
         this.setState({
-
             isscreenloading: true,
             loadingtype: 3
-
         }, function () {
-
             this.setState(this.renderloadingscreen())
             this.loadOTSummarySelffromAPI()
         });
-
     }
 
     onOpenCalendar() {
-
         this.setState({
-
             isscreenloading: true,
             loadingtype: 3
-
         }, function () {
-
             this.setState(this.renderloadingscreen())
             this.loadCalendarfromAPI()
         });
-
     }
 
     onOpenHandbook() {
-
         this.setState({
-
             isscreenloading: true,
             loadingtype: 3
-
         }, function () {
-
             this.setState(this.renderloadingscreen())
             this.loadHandbooklistfromAPI()
-
         });
-
     }
 
     onOpenOrgStruct() {
         this.setState({
-
             isscreenloading: true,
             loadingtype: 3
-
         }, function () {
-
             this.setState(this.renderloadingscreen())
             this.loadOrgStructerfromAPI()
-
         });
-
     }
 
-    // setEventIDFromDevice(eventArray) {
-    //     return AsyncStorage.setItem(this.state.calendarName, JSON.stringify(eventArray))
-    //         .then(json => console.log('success!'))
-    //         .catch(error => console.log('error!'));
-    // }
     /******************************************************************** */
     /*************************  selected tab view  ********************** */
     /******************************************************************** */
@@ -1056,7 +900,6 @@ export default class HMF01011MainView extends Component {
                 </View>
             )
         } else if (this.state.page === 2) {
-
             return (
                 <View style={{ flex: 1 }}>
                     {this.rendermanagerview()}
@@ -1064,30 +907,20 @@ export default class HMF01011MainView extends Component {
 
             )
         } else if (this.state.page === 3) {
-
             return (
                 <View style={{ flex: 1 }}>
                     {this.rendersettingview()}
                 </View>
-
             )
         }
-
     }
 
     settabscreen(tabnumber) {
-
-
-
-
         if (tabnumber === 1) {
-
             // check permission announcement
             if (announcestatus == false) {
-
                 return
             }
-
             //load data befor open announcement screen in first time
             if (announcementData.length) {
                 this.setState({
@@ -1101,11 +934,7 @@ export default class HMF01011MainView extends Component {
                 }, function () {
                     this.loadAnnouncementfromAPI()
                 });
-
-
             }
-
-
         } else {
             this.setState({
                 page: tabnumber
@@ -1119,205 +948,131 @@ export default class HMF01011MainView extends Component {
     expand_collapse_Function = () => {
 
         // LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-
         if (expandheight) {
-
             expandheight = 0;
-
             filterImageButton = require('./../resource/images/filter.png');
-
         }
         else {
-
             expandheight = 53;
-
             filterImageButton = require('./../resource/images/close.png');
         }
-
         this.setState({});
     }
 
     select_announce_sort = () => {
-
         if (ascendingSort == false) {
-
-            // tempannouncementData.sort(function (a, b) {
-            //     return a.index - b.index;
-            // });
             ascendingSort = true;
             sortImageButton = require('./../resource/images/ascending.png');
-
         }
         else {
-
-            // tempannouncementData.sort(function (a, b) {
-            //     return b.index - a.index;
-            // });
-
             ascendingSort = false;
             sortImageButton = require('./../resource/images/descending.png');
 
         }
         this.setState({
-
             isscreenloading: true,
-
             loadingtype: 3
-
         }, function () {
             announcementData = [];
-
             this.loadAnnouncementfromAPI();
         });
-
-
-        // this.setState({});
     }
 
     select_announce_type = () => {
-
         this.setState({
-
             loadingtype: 0
-
         }, function () {
-
             this.setState(this.select_search_announce())
         });
     }
 
     select_announce_status = () => {
-
         this.setState({
-
             loadingtype: 1
-
         }, function () {
-
             this.setState(this.select_search_announce())
         });
     }
 
     select_announce_all_type = () => {
-
-
-        this.setState({
-
-            announcementType: 'All',
-            announcementTypetext: 'All'
-        }, function () {
-
-            this.setState(this.select_announce_type())
-        });
-
-    }
-    select_announce_company_type = () => {
-
         this.setState({
             announcementType: 'All',
             announcementTypetext: 'All'
         }, function () {
-
             this.setState(this.select_announce_type())
         });
-
     }
+
     select_announce_company_type = () => {
-
         this.setState({
+            announcementType: 'All',
+            announcementTypetext: 'All'
+        }, function () {
+            this.setState(this.select_announce_type())
+        });
+    }
 
+    select_announce_company_type = () => {
+        this.setState({
             announcementType: 'Company Announcement',
             announcementTypetext: 'Company Announcement'
         }, function () {
-
             this.setState(this.select_announce_type())
         });
-
     }
+
     select_announce_emergency_type = () => {
-
-        //console.log('select_announce_read_type')
-
         this.setState({
-
             announcementType: 'Emergency Announcement',
             announcementTypetext: 'Emergency Announcement'
         }, function () {
-
             this.setState(this.select_announce_type())
         });
-
     }
+
     select_announce_event_type = () => {
-
-        //console.log('select_announce_read_type')
-
         this.setState({
-
             announcementType: 'Event Announcement',
             announcementTypetext: 'Event Announcement'
         }, function () {
-
             this.setState(this.select_announce_type())
         });
-
     }
+
     select_announce_general_type = () => {
-
-        //console.log('select_announce_read_type')
-
         this.setState({
-
             announcementType: 'General Announcement',
             announcementTypetext: 'General Announcement'
         }, function () {
-
             this.setState(this.select_announce_type())
         });
-
     }
 
     select_announce_all_status = () => {
-
-        //console.log('select_announce_read_type')
-
         this.setState({
-
             announcementStatus: 'All',
             announcementStatustext: 'All'
         }, function () {
-
             this.setState(this.select_announce_status())
         });
-
     }
+
     select_announce_read_status = () => {
-
-        //console.log('select_announce_read_type')
-
         this.setState({
-
             announcementStatus: true,
             announcementStatustext: 'Read'
         }, function () {
-
             this.setState(this.select_announce_status())
         });
-
     }
+
     select_announce_unread_status = () => {
-
-        //console.log('select_announce_read_type')
-
         this.setState({
-
             announcementStatus: false,
             announcementStatustext: 'Unread'
         }, function () {
-
             this.setState(this.select_announce_status())
         });
-
     }
 
     select_search_announce = () => {
@@ -1401,10 +1156,6 @@ export default class HMF01011MainView extends Component {
         this.saveAutoSyncCalendar.setAutoSyncCalendar(newState.syncCalendar)
     }
 
-    onPayslipDetail(){
-
-
-    }
     /*************************************************************** */
     /*************************   render class ********************** */
     /*************************************************************** */
@@ -1417,8 +1168,7 @@ export default class HMF01011MainView extends Component {
                     <Image
                         style={{ flex: 1 }}
                         source={require('./../resource/images/mainscreen.png')}
-                        resizeMode="contain"
-                    />
+                        resizeMode="contain" />
                     <View style={{ position: 'absolute', height: '40%', width: '80%', marginTop: '7%', marginLeft: '6%' }}>
                         <View style={{ flex: 1, flexDirection: 'row' }}>
                             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -2040,15 +1790,6 @@ export default class HMF01011MainView extends Component {
     }
 
     renderpickerview() {
-
-        // if (Platform.OS === 'android') {
-
-        //     return (
-        //         <View>
-        //         </View>
-        //     )
-
-        // } else 
         if (this.state.loadingtype == 1) {
 
             if (Platform.OS === 'android') {
@@ -2227,15 +1968,15 @@ export default class HMF01011MainView extends Component {
     }
     pushnodetailscreen() {
 
-      //  if (this.state.isscreenloading) {
-            return (
-                <View style={{ height: '100%', width: '100%', position: 'absolute', }}>
-                    <View style={{ backgroundColor: 'black', height: '100%', width: '100%', position: 'absolute', opacity: 0.7 }}>
-                    </View>
-                   
+        //  if (this.state.isscreenloading) {
+        return (
+            <View style={{ height: '100%', width: '100%', position: 'absolute', }}>
+                <View style={{ backgroundColor: 'black', height: '100%', width: '100%', position: 'absolute', opacity: 0.7 }}>
                 </View>
-            )
-       // }
+
+            </View>
+        )
+        // }
 
     }
 
@@ -2332,7 +2073,7 @@ export default class HMF01011MainView extends Component {
                     </View>
                 </View>
                 {this.renderloadingscreen()}
-      
+
             </View>
         );
     }
@@ -2340,7 +2081,6 @@ export default class HMF01011MainView extends Component {
 
 const shadow = {
     shadowColor: 'black',
-    // shadowRadius: 10,
     shadowOpacity: 0.1,
     elevation: 2,
     shadowOffset: { width: 0, height: 3 }

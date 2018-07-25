@@ -52,7 +52,7 @@ export default class OrganizationStruct extends Component {
     }
 
     componentDidMount() {
-       
+
     }
 
     onBack() {
@@ -79,23 +79,15 @@ export default class OrganizationStruct extends Component {
     }
 
     loadOrgStructureDetailAPI = async () => {
-
         let url = SharedPreference.EMP_INFO_MANAGER_API + this.state.org_code
-        console.log('url : ',url)
-        this.APICallback(await RestAPI(url))
-
+        this.APICallback(await RestAPI(url, SharedPreference.FUNCTIONID_EMPLOYEE_INFORMATION))
     }
 
     APICallback(data) {
-
         code = data[0]
         data = data[1]
-
         if (code.SUCCESS == data.code) {
-
-            console.log('data.data.org_lst :', data.data.org_lst)
             if (this.state.option) {
-
                 this.props.navigation.navigate('ClockInOutSelfView', {
                     DataResponse: data.data,
                     employee_name: this.state.employee_name,
@@ -112,11 +104,11 @@ export default class OrganizationStruct extends Component {
                 });
 
             }
-            
+
         } else {
             this.onLoadErrorAlertDialog(data)
         }
-        
+
     }
 
     onLoadErrorAlertDialog(error) {
@@ -167,14 +159,14 @@ export default class OrganizationStruct extends Component {
 
     render() {
         return (
-            <View style={{flex: 1}} >
-                
-                <View style={[styles.navContainer,{flexDirection: 'column' }]}>
+            <View style={{ flex: 1 }} >
+
+                <View style={[styles.navContainer, { flexDirection: 'column' }]}>
                     <View style={styles.statusbarcontainer} />
                     <View style={{ height: 50, flexDirection: 'row', }}>
                         <View style={{ flex: 1, justifyContent: 'center', }}>
-                            <TouchableOpacity 
-                            onPress={(this.onBack.bind(this))}>
+                            <TouchableOpacity
+                                onPress={(this.onBack.bind(this))}>
                                 <Image
                                     style={{ width: 50, height: 50 }}
                                     source={require('./../resource/images/Back.png')}
@@ -191,10 +183,10 @@ export default class OrganizationStruct extends Component {
                 </View>
                 <View style={{ flex: 1 }}>
                     <View style={{ flex: 1, flexDirection: 'column', }}>
-                        <View style={{ height: 50 ,justifyContent:'center'}}> 
-                        <Text style={{ marginLeft: 50, color: Colors.redTextColor, fontFamily: 'Prompt-Regular',fontSize:15 }}
-                                                        >{dataSource.data.org_name}
-                                                        </Text>
+                        <View style={{ height: 50, justifyContent: 'center' }}>
+                            <Text style={{ marginLeft: 50, color: Colors.redTextColor, fontFamily: 'Prompt-Regular', fontSize: 15 }}
+                            >{dataSource.data.org_name}
+                            </Text>
                         </View>
                         <View style={{ height: 1, backgroundColor: 'lightgray', justifyContent: 'flex-end' }} />
                         <View style={{ flex: 10 }}>
@@ -209,10 +201,10 @@ export default class OrganizationStruct extends Component {
                                             >
                                                 <View style={{ height: 49, flexDirection: 'row' }}>
                                                     <View style={{ flex: 1, justifyContent: 'center' }} >
-                                                        <Text style={{ marginLeft: 50, color: Colors.grayTextColor, fontFamily: 'Prompt-Regular',fontSize:12 }}
+                                                        <Text style={{ marginLeft: 50, color: Colors.grayTextColor, fontFamily: 'Prompt-Regular', fontSize: 12 }}
                                                         >{item.employee_name}
                                                         </Text>
-                                                        <Text style={{ marginLeft: 50, color: Colors.grayTextColor, fontFamily: 'Prompt-Regular',fontSize:10 }}
+                                                        <Text style={{ marginLeft: 50, color: Colors.grayTextColor, fontFamily: 'Prompt-Regular', fontSize: 10 }}
                                                         >{item.employee_position}
                                                         </Text>
                                                     </View>
@@ -231,7 +223,7 @@ export default class OrganizationStruct extends Component {
 
 
                                                 </View>
-                                            <View style={{ height: 1, backgroundColor: 'lightgray', justifyContent: 'flex-end' }} />
+                                                <View style={{ height: 1, backgroundColor: 'lightgray', justifyContent: 'flex-end' }} />
                                             </TouchableOpacity>
                                         </View>
 

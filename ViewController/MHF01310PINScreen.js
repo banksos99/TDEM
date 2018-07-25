@@ -31,13 +31,14 @@ export default class PinActivity extends Component {
 
     onLoadLoginWithPin = async (PIN) => {
         // console.log("login with pin ==> ", PIN)
-        let data = await LoginWithPinAPI(PIN)
+        let data = await LoginWithPinAPI(PIN, SharedPreference.FUNCTIONID_PIN)
         code = data[0]
         data = data[1]
+        console.log("onLoadLoginWithPin ==> ", data.code)
+
         if (code.SUCCESS == data.code) {
             SharedPreference.calendarAutoSync = await this.saveAutoSyncCalendar.getAutoSyncCalendar()
             await this.onLoadInitialMaster()
-
         } else {
             if (this.state.failPin == 4) {
                 Alert.alert(
@@ -71,33 +72,38 @@ export default class PinActivity extends Component {
             }
         }
     }
-    onLoadAppInfo = async () => {
 
-        let data = await RestAPI(SharedPreference.APPLICATION_INFO_API)
+    onLoadAppInfo = async () => {
+        //TODO After
+        let data = await RestAPI(SharedPreference.APPLICATION_INFO_API, SharedPreference.FUNCTIONID_GENERAL_INFORMATION_SHARING)
         code = data[0]
         data = data[1]
+
         if (code.SUCCESS == data.code) {
             console.log('app info data :', data.data.app_version, SharedPreference.deviceInfo)
-            let appversion = '1.0.0'
-            if (data.data.app_version === appversion) {
-                Alert.alert(
-                    'New Vresion Available',
-                    'This is a newer version available for dpwnload! Please update the app by vision the Apple Store',
-                    [
-                        { text: 'Update', onPress: () => console.log('OK Pressed') },
-                    ],
-                    { cancelable: false }
-                )
 
+            let appversion = SharedPreference.deviceInfo.appVersion
+            console.log('app_version ==> API :', data.data.app_version)
+            console.log('app_version ==> version App :', appversion)
+
+            if (data.code == code.SUCCESS) {
+                if (data.data.app_version === appversion) {
+                    Alert.alert(
+                        'New Vresion Available',
+                        'This is a newer version available for download! Please update the app by vision the Apple Store',
+                        [
+                            { text: 'Update', onPress: () => console.log('OK Pressed') },
+                        ],
+                        { cancelable: false }
+                    )
+                }
+                this.props.navigation.navigate('HomeScreen')
             }
-
-            this.props.navigation.navigate('HomeScreen')
         }
-
     }
 
     onLoadInitialMaster = async () => {
-        let data = await RestAPI(SharedPreference.INITIAL_MASTER_API)
+        let data = await RestAPI(SharedPreference.INITIAL_MASTER_API, SharedPreference.FUNCTIONID_GENERAL_INFORMATION_SHARING)
         code = data[0]
         data = data[1]
         if (code.SUCCESS == data.code) {
@@ -115,13 +121,6 @@ export default class PinActivity extends Component {
                 }
             }
             await this.onLoadAppInfo()
-            //this.props.navigation.navigate('HomeScreen')
-
-
-            // console.log("SharedPreference.NOTIFICATION_CATEGORY  ==> ", SharedPreference.NOTIFICATION_CATEGORY)
-            // console.log("SharedPreference.READ_TYPE  ==> ", SharedPreference.READ_TYPE)
-            // console.log("SharedPreference.COMPANY_LOCATION  ==> ", SharedPreference.COMPANY_LOCATION)
-            // console.log("SharedPreference.TB_M_LEAVETYPE  ==> ", SharedPreference.TB_M_LEAVETYPE)
 
         } else {
             Alert.alert(
@@ -137,7 +136,6 @@ export default class PinActivity extends Component {
 
     getPINFromDevice = async () => {
         pin = await this.savePIN.getPin()
-        // console.log("PinActivity ==> getPINFromDevice ==>pin : ", pin)
         this.state.savePin = pin
     }
 
@@ -147,7 +145,6 @@ export default class PinActivity extends Component {
             await this.getPINFromDevice()
         }
 
-        // console.log(">>>>>>> num : ", num);
         let origin = this.state.pin
 
         if (num == "-") {
@@ -163,7 +160,7 @@ export default class PinActivity extends Component {
         if (this.state.pin.length == 6) {
             // TODO Set Information
             SharedPreference.profileObject = await this.saveProfile.getProfile()
-            SharedPreference.TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, '1', SharedPreference.profileObject.client_token)
+            // SharedPreference.TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, '1', SharedPreference.profileObject.client_token)
             await this.onLoadLoginWithPin(this.state.pin)
         }
     }
@@ -209,13 +206,14 @@ export default class PinActivity extends Component {
 
     onReset = async () => {
         SharedPreference.profileObject = await this.saveProfile.getProfile()
-        SharedPreference.TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, '1', SharedPreference.profileObject.client_token)
+        // SharedPreference.TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, '1', SharedPreference.profileObject.client_token)
         this.onLoginResetPinAPI()
     }
 
 
     onLoginResetPinAPI = async () => {
-        let data = await LoginResetPinAPI()
+
+        let data = await LoginResetPinAPI(SharedPreference.FUNCTIONID_PIN)
         code = data[0]
         data = data[1]
 

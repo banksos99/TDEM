@@ -25,7 +25,6 @@ import PayslipDataDetail from "./../InAppData/Payslipdatadetail2"
 import SharedPreference from "./../SharedObject/SharedPreference"
 import Dcryptfun from "./../SharedObject/Decryptfun"
 
-import RestAPI from "../constants/RestAPI"
 import Month from "../constants/Month"
 
 let monthlistdata = [];
@@ -428,29 +427,20 @@ export default class PaySlipActivity extends Component {
         this.setState({ isFetching: true }, function () { this.fetchData() });
     }
 
-    getPayslipDetailfromAPI(year, index) {
+    getPayslipDetailfromAPI  = async (year, index) => {
 
         let rollid;
 
-        // console.log("yearlistdata year: ",year)
-        // console.log("yearlistdata index: ",index)
-        // console.log("yearlistdata lenght : ",yearlistdata[year].monthlistdata.length)
-
         for (let i = 0; i < yearlistdata[year].monthlistdata.length; i++) {
-            // console.log("yearlistdata index: ",index)
 
             if (yearlistdata[year].monthlistdata[i].month === index + 1) {
-                // console.log("yearlistdata : ",yearlistdata[year].monthlistdata[i])
                 rollid = yearlistdata[year].monthlistdata[i].id
             }
         }
-
-        // console.log("client_id : ",rollid)
-
         let host = SharedPreference.PAYSLIP_DETAIL_API + rollid
-        // console.log('host', host)
-        // console.log('TOKEN', SharedPreference.TOKEN)
-
+        // console
+        FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, SharedPreference.FUNCTIONID_PAYSLIP, SharedPreference.profileObject.client_token)
+        console.log("calendarPDFAPI ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
 
         if (offine) {
 
@@ -471,7 +461,7 @@ export default class PaySlipActivity extends Component {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
-                    Authorization: SharedPreference.TOKEN,
+                    Authorization: FUNCTION_TOKEN,
                 },
             })
                 .then((response) => response.json())
