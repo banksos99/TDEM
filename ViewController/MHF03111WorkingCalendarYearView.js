@@ -188,9 +188,6 @@ export default class calendarYearView extends Component {
                 let object = this.getMonthEvent((index + 1), calendarEventData)
                 original[index] = object
             }
-
-           
-
         } else {
 
             // console.log("this.state.selectLocation : ", this.state.selectLocation)

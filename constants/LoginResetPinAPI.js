@@ -19,12 +19,6 @@ export default async function resetPIN(functionID) {
     }
 
     console.log("resetPIN ==>  functionID : ", functionID)
-    // console.log("LoginWithPin ==> callback  Register  : ", SharedPreference.REGISTER_API)
-    // console.log("LoginWithPin ==> callback  client_pin  : ", pin)
-    // console.log("LoginWithPin ==> callback  firebase_token  : ", SharedPreference.deviceInfo.firebaseToken)
-    // console.log("LoginWithPin ==> callback  systemdn  : ", SharedPreference.company)
-    // console.log("LoginWithPin ==> callback  Token  : ", SharedPreference.TOKEN)
-
     FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, functionID, SharedPreference.profileObject.client_token)
     console.log("resetPIN ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
 

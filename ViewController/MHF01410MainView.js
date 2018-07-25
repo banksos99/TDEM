@@ -8,19 +8,9 @@ import {
 import { styles } from "./../SharedObject/MainStyles";
 import Colors from "./../SharedObject/Colors"
 import SharedPreference from "./../SharedObject/SharedPreference"
-
-// import payslipDataResponse from "./../InAppData/Payslipdatalist"
-// import announcementDataResponse from "./../InAppData/Announcementdata"
-// import leaveQuotaDataResponse from "./../InAppData/Leavequotalistdata"
-// import HandbookshelfDataResponse from "./../InAppData/HandbookListData"
-// import OTSelfDataResponse from "./../InAppData/OTSummarySelfData"
-// import nonPayRollAPI from "../api/NonPayRollAPI"
-
 import RestAPI from "../constants/RestAPI"
 import SaveAutoSyncCalendar from "../constants/SaveAutoSyncCalendar";
-
 import SaveProfile from "../constants/SaveProfile"
-import payslipDetail from "./MHF05012PaySlipDetailView";
 
 const ROLL_ANNOUNCE = 10;
 
