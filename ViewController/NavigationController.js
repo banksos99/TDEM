@@ -35,8 +35,6 @@ import pinScreen from "./MHF01310PINScreen";
 
 import SaveProfile from "../constants/SaveProfile"
 
-
-// OTLineChartView
 import OTLineChartView from "./MHF08013OTSummaryLineGraphView";
 import OTBarChartView from "./MHF08014OTSummaryBarGraphView";
 import OrganizationOTStruct from "./MHF0B010OrganizationStruct";
@@ -44,6 +42,8 @@ import announcementdetail from "./MHF02011AnnouncementDetailView"
 import SharedPreference from './../SharedObject/SharedPreference';
 
 let mon = ['Jan','Feb','Mar','Apl','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+
+import ChangePINScreen from "./ChangePINScreen"
 
 const AppNavigatorPin = createSwitchNavigator({
     RegisterScreen: { screen: registerScreen },
@@ -70,9 +70,10 @@ const AppNavigatorPin = createSwitchNavigator({
     OTLineChartView: { screen: OTLineChartView },
     OTBarChartView: { screen: OTBarChartView },
     OrganizationOTStruct: { screen: OrganizationOTStruct },
+    AnnouncementDetail:{screen:announcementdetail},
+    ChangePINScreen: { screen: ChangePINScreen }
 }, {
         initialRouteName: 'PinScreen',
-        // initialRouteName: 'HomeScreen',
         headerMode: 'none',
         transitionConfig: () => ({
             transitionSpec: {
@@ -110,9 +111,9 @@ const AppNavigatorRegister = createSwitchNavigator({
     OTBarChartView: { screen: OTBarChartView },
     OrganizationOTStruct: { screen: OrganizationOTStruct },
     AnnouncementDetail:{screen:announcementdetail},
+    ChangePINScreen: { screen: ChangePINScreen }
 }, {
         initialRouteName: 'RegisterScreen',
-        // initialRouteName: 'HomeScreen',
         headerMode: 'none',
         transitionConfig: () => ({
             transitionSpec: {
@@ -229,15 +230,6 @@ export default class rootNavigation extends Component {
             })
         }
     }
-
-    // getPINFromDevice = async () => {
-    //     pin = await this.savePIN.getPin()
-    //     if (pin.length > 0) {
-    //         this.setState({
-    //             hasPin: true
-    //         })
-    //     }
-    // }
 
     render() {
         if (this.state.hasPin == false) {

@@ -19,8 +19,10 @@ export default async function getRestAPI(username, password) {
     }
 
     console.log("getRestAPI ===> username : ", username, " ,  password :", password)
-    console.log("getRestAPI ===> register : ", SharedPreference.REGISTER_API)
-    console.log("getRestAPI ===> deviceInfo : ", SharedPreference.deviceInfo)
+    console.log("getRestAPI ===> SharedPreference.REGISTER_API : ", SharedPreference.REGISTER_API)
+    console.log("getRestAPI ===> SharedPreference.company : ", SharedPreference.company)
+    console.log("getRestAPI ===> SharedPreference.deviceInfo: ", SharedPreference.deviceInfo)
+
 
 
     return fetch(SharedPreference.REGISTER_API, {
@@ -40,14 +42,6 @@ export default async function getRestAPI(username, password) {
             device_os_version: SharedPreference.deviceInfo.deviceOSVersion,
             firebase_token: SharedPreference.deviceInfo.firebaseToken,
             app_version: SharedPreference.deviceInfo.appVersion
-            // username: "csuwathe",
-            // password: "1234@sdfg",
-            // device_model: "deviceModel",
-            // device_brand: "deviceBrand",
-            // device_os: "deviceOS",
-            // device_os_version: "deviceOSVersion",
-            // firebase_token: "firebaseToken",
-            // app_version: "appVersion"
         }),
     })
 

@@ -1,4 +1,3 @@
-
 var Authorization = {
     convert(empID, funcID, clientToken) {
         code = empID + "." + funcID + "." + clientToken

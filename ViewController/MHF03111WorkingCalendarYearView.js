@@ -9,8 +9,6 @@ import {
     Alert,
     ActivityIndicator,
     Platform,
-    FlatList,
-    SectionList,
     ScrollView
 } from 'react-native';
 
@@ -29,6 +27,8 @@ import RestAPI from "../constants/RestAPI"
 import EventCalendar from "../constants/EventCalendar"
 
 import SaveProfile from "../constants/SaveProfile"
+
+import CalendarPDFAPI from "../constants/CalendarPDFAPI"
 
 export default class calendarYearView extends Component {
 
@@ -68,7 +68,8 @@ export default class calendarYearView extends Component {
 
             havePermission: false,
             changeData: false,
-            newPage: false
+            newPage: false,
+            isLoadingPDF: false
 
         }
         console.log("setNewPicker index ==>  SharedPreference.COMPANY_LOCATION  ")
@@ -202,7 +203,6 @@ export default class calendarYearView extends Component {
 
 
         console.log("getYearView : showLocation ==> ", showLocation)
-
         console.log("getYearView : year ==> ", year)
 
         this.showAllMonthView()
@@ -481,15 +481,7 @@ export default class calendarYearView extends Component {
             isLoading: true
         })
 
-        // this.state.showLocation = this.state.selectLocation 
-        // this.state.locationPickerView = false
-
-        // console.log("getLocation selectLocation : ", this.state.selectLocation)
-        // this.resetCalendar()
-
         await this.openNewPage(this.state.selectLocation)
-
-
     }
 
     openNewPage = async (location) => {
@@ -609,7 +601,7 @@ export default class calendarYearView extends Component {
                             <View style={styles.alertDialogBoxContainer}>
                                 <Text style={[styles.alertDialogBoxText, {
                                     style: Text,
-                                }]}>{StringText.CALENDER_YEARVIEW_SELECT_YEAR_TITLE}</Text>
+                                }]}>{StringText.CALENDER_YEARVIEW_DOWNLOAD_PDF_TITLE}</Text>
                                 <ScrollView style={{ height: '40%' }}>
                                     {
                                         this.state.yearsPickerArray.map((i, index) => (
@@ -626,7 +618,7 @@ export default class calendarYearView extends Component {
                                         onPress={() => {
                                             this.setState({
                                                 yearPickerForDownloadPDFFileView: false,
-                                                isLoading: true
+                                                isLoadingPDF: true
                                             })
                                             this.onloadPDFFile();
                                         }}>
@@ -638,7 +630,6 @@ export default class calendarYearView extends Component {
                     </View >
                 )
             } else {
-
                 return (
                     <View style={styles.alertDialogContainer}>
                         {/* bg */}
@@ -659,7 +650,7 @@ export default class calendarYearView extends Component {
                                         onPress={() => {
                                             this.setState({
                                                 yearPickerForDownloadPDFFileView: false,
-                                                isLoading: true
+                                                isLoadingPDF: true
                                             })
                                             this.onloadPDFFile();
                                         }}>
@@ -757,48 +748,34 @@ export default class calendarYearView extends Component {
         this.props.navigation.navigate('HomeScreen');
     }
 
-    onloadPDFFile() {
-        this.onLoadAlertDialog()
-    }
-    onloadPDFFile1() {
+    onloadPDFFile = async () => {
 
         console.log("onloadPDFFile")
-        // if (this.state.selectYear == "") {
-        //     return
-        // }
 
-        let url = SharedPreference.HOST_API + '/api/v1/calendar/file?year=' + this.state.selectYear + "&company=TA"
+        // let url = SharedPreference.HOST_API + '/api/v1/calendar/file?year=' + this.state.selectYear + "&company=" + this.state.selectLocation
+        let data = await CalendarPDFAPI(this.state.selectYear, this.state.selectLocation)
+        code = data[0]
+        data = data[1]
 
-        fetch(url)
-            .then((response) => response.json())
-            .then((responseJson) => {
-                if (responseJson.status == 200) {
-                    //console.log("responseJson filename : ", responseJson.data[0].filename)
-                    //console.log("responseJson : ", responseJson.data[0].link)
-                    //console.log("responseJson : ", responseJson.data[0].filename)
+        console.log("onLoadPDFFIle : ", data)
+        if (code.SUCCESS == data.code) {
 
-                    if (responseJson.data[0].filename == null || responseJson.data[0].filename == 'undefined') {
-                        //console.log("responseJson filename  null")
-                        this.onLoadAlertDialog()
-                    } else {
+            // console.log("responseJson filename : ", responseJson.data[0].filename)
+            console.log("onLoadPDFFIle ==> responseJson : ", data.data[0].link)
+            console.log("onLoadPDFFIle ==> responseJson : ", data.data[0].filename)
 
-                        let pdfPath = responseJson.data[0].link
-                        let filename = responseJson.data[0].filename
-
-                        //console.log("responseJson filename  pdfPath : ", pdfPath, " , filename : ", filename)
-                        this.loadPdfFile(pdfPath, filename)
-                    }
-
-                } else {
-                    //console.log("state : ", responseJson.state)
-
-
-                }
-                // return responseJson
-            })
-            .catch((error) => {
+            if (data.data[0].filename == null || data.data[0].filename == 'undefined') {
                 this.onLoadAlertDialog()
-            });
+            } else {
+                let pdfPath = data.data[0].link
+                let filename = data.data[0].filename
+
+
+                this.onDownloadPDFFile(pdfPath, filename)
+            }
+        } else {
+            this.onLoadAlertDialog()
+        }
 
     }
 
@@ -819,72 +796,113 @@ export default class calendarYearView extends Component {
         )
     }
 
-    loadPdfFile(pdfPath, filename) {
+    onDownloadPDFFile(pdfPath, filename) {
+        filename = "calendar_" + this.state.selectYear + '.pdf'
 
-        pdfPath = "http://www.axmag.com/download/pdfurl-guide.pdf"
-        filename = "pdfurl.pdf"
-
+        console.log("onDownloadPDFFile: ", SharedPreference.HOST + pdfPath)
         if (Platform.OS === 'android') {
-            //console.log("Platform.OS : android havePermission : ", this.state.havePermission);
-            //console.log("Platform.OS : DownloadDir : ", RNFetchBlob.fs.dirs.DownloadDir + file);
-            if (this.state.havePermission) {
-                RNFetchBlob
-                    .config({
-                        addAndroidDownloads: {
-                            useDownloadManager: true,
-                            notification: false,
-                            path: RNFetchBlob.fs.dirs.DownloadDir + file,
-                            mime: 'application/pdf;base64',
-                            title: 'appTitle',
-                            description: 'shippingForm'
-                        }
-                    })
-                    .fetch('GET', url, {
-                        'Content-Type': 'application/pdf;base64'
-                    })
-                    .then((resp) => {
-                        // //console.log("resp : ", resp)
-                        RNFetchBlob.android.actionViewIntent(resp.data, 'application/pdf')
-                    })
-                    .catch((errorCode, errorMessage) => {
-                        // console.error({ error: errorCode, message: errorMessage })
-                    })
-            } else {
-                // //console.log('noWritePermission')
-                this.requestPDFPermission()
-            }
+            RNFetchBlob
+                .config({
+                    addAndroidDownloads: {
+                        useDownloadManager: true,
+                        notification: false,
+                        path: RNFetchBlob.fs.dirs.DownloadDir + '/' + filename,
+                        mime: 'application/pdf',
+                        title: 'appTitle',
+                        description: 'shippingForm'
+                    }
+                })
+                .fetch('GET', SharedPreference.HOST + pdfPath, {
+                    'Content-Type': 'application/pdf;base64',
+                    Authorization: SharedPreference.TOKEN
+                })
+                .then((resp) => {
+                    console.log("Android ==> LoadPDFFile ==> Load Success  : ", resp);
+                    // RNFetchBlob.android.actionViewIntent(resp.data, 'application/pdf')
+                    this.setState({ isLoadingPDF: false })
+
+                    Alert.alert(
+                        StringText.CALENDAR_ALERT_PDF_TITLE_SUCCESS,
+                        StringText.CALENDAR_ALERT_PDF_DESC_SUCCESS_1 + filename +StringText.CALENDAR_ALERT_PDF_DESC_SUCCESS_2,
+                        [
+                            {
+                                text: 'OK', onPress: () => {
+                                    // this.addEventOnCalendar()
+                                    RNFetchBlob.android.actionViewIntent(resp.data, 'application/pdf')
+                                }
+                            },
+                            {
+                                text: 'Cancel', onPress: () => {
+                                }, style: 'cancel'
+                            }
+                        ],
+                        { cancelable: false }
+                    )
+
+
+                })
+                .catch((errorCode, errorMessage) => {
+                    console.log("Android ==> LoadPDFFile ==> Load errorCode  : ", errorCode);
+                    Alert.alert(
+                        errorCode,
+                        errorMessage,
+                        [
+                            {
+                                text: 'Cancel', onPress: () => {
+                                    console.log("Android ==> LoadPDFFile ==> Load errorCode  : ", errorCode);
+
+                                }, style: 'cancel'
+                            },
+                            {
+                                text: 'OK', onPress: () => {
+                                    // this.addEventOnCalendar()
+                                }
+                            },
+                        ],
+                        { cancelable: false }
+                    )
+                })
         } else {//iOS
-
-            console.log("load Pdf pdfPath : ", pdfPath)
-            console.log("load Pdf filename : ", filename)
-
-            // // //console.log("downloadDelivery ==> RNFetchBlob ")
-            // let dirs = RNFetchBlob.fs.dirs
-            // RNFetchBlob
-            //     .config({
-            //         path: dirs.DocumentDir + '/path-to-file.anything'
-            //     })
-            //     .fetch('GET', url, {
-            //     })
-            //     .then((res) => {
-            //         // //console.log('The file saved to ', res.path())
-            //     })
+            console.log("loadPdf pdfPath : ", pdfPath)
+            console.log("loadPdf filename : ", filename)
             RNFetchBlob
                 .config({
                     fileCache: true,
-                    appendExt: 'pdf'
+                    appendExt: 'pdf',
+                    filename: filename
                 })
-                .fetch('GET', pdfPath)
+                .fetch('GET', pdfPath, {
+                    'Content-Type': 'application/pdf;base64',
+                    Authorization: SharedPreference.TOKEN
+                })
                 .then((resp) => {
-                    console.log("WorkingCalendarYear pdf1 : ", resp);
-                    console.log("WorkingCalendarYear pdf2 : ", resp.path());
-                    RNFetchBlob.fs.exists(resp.path())
-                        .then((exist) => {
-                            console.log(`WorkingCalendarYear ==> file ${exist ? '' : 'not'} exists`)
-                        })
-                        .catch(() => { console.log('WorkingCalendarYear ==> err while checking') });
 
-                    RNFetchBlob.ios.openDocument(resp.path());
+                    console.log("Android ==> LoadPDFFile ==> Load Success  : ", resp);
+                    // RNFetchBlob.android.actionViewIntent(resp.data, 'application/pdf')
+                    this.setState({ isLoadingPDF: false })
+
+                    Alert.alert(
+                        StringText.CALENDAR_ALERT_PDF_TITLE_SUCCESS,
+                        StringText.CALENDAR_ALERT_PDF_DESC_SUCCESS_1 + filename +StringText.CALENDAR_ALERT_PDF_DESC_SUCCESS_2,
+                        [
+                            {
+                                text: 'OK', onPress: () => {
+                                    // this.addEventOnCalendar()
+                                    RNFetchBlob.ios.openDocument(resp.path());
+
+                                    // RNFetchBlob.android.actionViewIntent(resp.data, 'application/pdf')
+                                }
+                            },
+                            {
+                                text: 'Cancel', onPress: () => {
+                                }, style: 'cancel'
+                            }
+                        ],
+                        { cancelable: false }
+                    )
+                    // console.log("WorkingCalendarYear pdf1 : ", resp);
+                    // console.log("WorkingCalendarYear pdf2 : ", resp.path());
+                    // RNFetchBlob.ios.openDocument(resp.path());
                 })
                 .catch((errorMessage, statusCode) => {
                     console.log('Error: ' + errorMessage);
@@ -914,16 +932,11 @@ export default class calendarYearView extends Component {
     }
 
     addEventOnCalendar = async () => {
-        // console.log("addEventOnCalendar")
-
         await this.eventCalendar._deleteEventCalendar()
-        // console.log("deleteEventCalendar")
-
 
         this.setState({
             isLoading: true
         })
-
         // console.log("this.state.calendarEventData 1 : ", this.state.calendarEventData)
         if (this.state.calendarEventData.code == 200) {
             let holidayArray = this.state.calendarEventData.data.holidays;
@@ -1026,6 +1039,29 @@ export default class calendarYearView extends Component {
         }
     }
 
+    renderDownloadProgressView() {
+        if (this.state.isLoadingPDF) {
+            return (
+                <View style={styles.alertDialogContainer}>
+                    <View style={styles.alertDialogBackgroudAlpha} />
+                    {/* bg */}
+                    <View style={styles.alertDialogContainer}>
+                        <View style={{
+                            width: "80%",
+                            height: 50,
+                            borderRadius: 10,
+                            backgroundColor: 'white',
+                            justifyContent: 'center',
+                            alignItems: 'center'
+                        }}>
+                            <ActivityIndicator />
+                        </View>
+                    </View>
+                </View >
+            )
+        }
+    }
+
     render() {
         return (
             <View style={styles.container} >
@@ -1047,12 +1083,12 @@ export default class calendarYearView extends Component {
                             </TouchableOpacity>
 
                             <TouchableOpacity onPress={() => {
-                                //////////console.log("yearPickerForDownloadPDFFileView");
-                                // this.setState({
-                                //     yearPickerForDownloadPDFFileView: true
-                                // })
+                                ////////console.log("yearPickerForDownloadPDFFileView");
+                                this.setState({
+                                    yearPickerForDownloadPDFFileView: true
+                                })
                                 //TODO Bell
-                                this.loadPdfFile()
+                                // this.loadPdfFile()
                             }}>
                                 <Image
                                     style={styles.navRightButton}
@@ -1087,6 +1123,7 @@ export default class calendarYearView extends Component {
                 </View >
                 {this.renderDialog()}
                 {this.renderProgressView()}
+                {this.renderDownloadProgressView()}
             </View>
         );
     }

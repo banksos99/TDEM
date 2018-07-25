@@ -189,7 +189,7 @@ export default class PinActivity extends Component {
     }
 
     onResetPIN = async () => {
-        // console.log("onResetPIN")
+        console.log("onResetPIN")
         Alert.alert(
             StringText.ALERT_RESET_PIN_TITLE,
             StringText.ALERT_RESET_PIN_DESC,
@@ -198,9 +198,13 @@ export default class PinActivity extends Component {
                 }
             }, {
                 text: 'OK', onPress: () => {
+<<<<<<< HEAD
                     SharedPreference.profileObject = null
                     this.saveProfile.setProfile(null)
                     this.props.navigation.navigate('RegisterScreen')
+=======
+                    this.onReset()
+>>>>>>> 8828817c98322c55d21678b99fedf0ad6b00e54d
                 }
             }
             ],
@@ -208,6 +212,45 @@ export default class PinActivity extends Component {
         )
     }
 
+<<<<<<< HEAD
+=======
+    onReset = async () => {
+        SharedPreference.profileObject = await this.saveProfile.getProfile()
+        SharedPreference.TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, '1', SharedPreference.profileObject.client_token)
+        this.onLoginResetPinAPI()
+    }
+
+
+    onLoginResetPinAPI = async () => {
+        let data = await LoginResetPinAPI()
+        code = data[0]
+        data = data[1]
+
+        console.log("onLoginResetPinAPI : ", data.code)
+
+        if (code.SUCCESS == data.code) {
+            SharedPreference.profileObject = null
+            this.saveProfile.setProfile(null)
+            this.props.navigation.navigate('RegisterScreen')
+        } else if (code.INVALID_AUTH_TOKEN == data.code) {
+            SharedPreference.profileObject = null
+            this.saveProfile.setProfile(null)
+            this.props.navigation.navigate('RegisterScreen')
+        } else {
+            Alert.alert(
+                StringText.ALERT_CANNOT_DELETE_PIN_TITLE,
+                StringText.ALERT_CANNOT_DELETE_PIN_DESC,
+                [{
+                    text: 'OK', onPress: () => {
+                    }
+                }
+                ],
+                { cancelable: false }
+            )
+        }
+    }
+
+>>>>>>> 8828817c98322c55d21678b99fedf0ad6b00e54d
     render() {
         return (
             <View style={styles.alertDialogContainer}>

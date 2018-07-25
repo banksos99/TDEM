@@ -52,6 +52,7 @@ export default class PayslipDetail extends Component {
             rollid: this.props.navigation.getParam("rollid", ""),
             havePermission: false
         }
+<<<<<<< HEAD
 
         console.log('monthselected :', this.state.monthselected)
         console.log('initialyear :', this.state.initialyear)
@@ -61,6 +62,14 @@ export default class PayslipDetail extends Component {
         console.log('currentyear :', currentyear)
         console.log('rollid :', this.state.rollid)
         console.log('this.state.yearlist :',this.state.yearlist)
+=======
+        // console.log('monthselected :', this.state.monthselected)
+        // console.log('initialyear :', this.state.initialyear)
+        // console.log('initmonth :', this.state.initmonth)
+        // console.log('currentmonth :', currentmonth)
+        // console.log('currentyear :', currentyear)
+        // console.log('rollid :', this.state.rollid)
+>>>>>>> 8828817c98322c55d21678b99fedf0ad6b00e54d
     }
 
     onBack() {
@@ -79,6 +88,7 @@ export default class PayslipDetail extends Component {
     }
 
     onDownloadPDFFile() {
+<<<<<<< HEAD
 
         // this.setState({
 
@@ -93,12 +103,23 @@ export default class PayslipDetail extends Component {
         
         // console.log("this.state.initialyear : ", this.state.initialyear)
         // console.log("monthselected : ", this.state.monthselected)
+=======
+>>>>>>> 8828817c98322c55d21678b99fedf0ad6b00e54d
 
         PAYSLIP_DOWNLOAD_API = SharedPreference.PAYSLIP_DOWNLOAD_API + this.state.rollid
-        // console.log('PAYSLIP_DOWNLOAD_API : ', PAYSLIP_DOWNLOAD_API)
 
+        console.log('PAYSLIP_DOWNLOAD_API : ', PAYSLIP_DOWNLOAD_API)
         pdfPath = PAYSLIP_DOWNLOAD_API
-        filename = "Payslip_" + this.state.monthselected + "_" + this.state.initialyear + '.pdf'
+
+        month = (this.state.initialyear + 1)
+        numberMonth
+        if (month < 10) {
+            numberMonth = "0" + (month + 1)
+        } else {
+            numberMonth = month + 1
+        }
+
+        filename = "Payslip_" + this.state.monthselected + "_" + numberMonth + '.pdf'
         // console.log('PAYSLIP_DOWNLOAD_API : ', PAYSLIP_DOWNLOAD_API)
 
         if (Platform.OS === 'android') {

@@ -111,7 +111,6 @@ export default class PaySlipActivity extends Component {
         }
 
         this.createPayslipItem();
-
     }
 
 
@@ -406,9 +405,6 @@ export default class PaySlipActivity extends Component {
     }
 
     onLast2Year() {
-
-
-
         this.setState({
             indexselectyear: 2,
             expand: false,
@@ -436,19 +432,24 @@ export default class PaySlipActivity extends Component {
 
         let rollid;
 
+        // console.log("yearlistdata year: ",year)
+        // console.log("yearlistdata index: ",index)
+        // console.log("yearlistdata lenght : ",yearlistdata[year].monthlistdata.length)
+
         for (let i = 0; i < yearlistdata[year].monthlistdata.length; i++) {
+            // console.log("yearlistdata index: ",index)
 
             if (yearlistdata[year].monthlistdata[i].month === index + 1) {
-
+                // console.log("yearlistdata : ",yearlistdata[year].monthlistdata[i])
                 rollid = yearlistdata[year].monthlistdata[i].id
             }
         }
 
+        // console.log("client_id : ",rollid)
 
         let host = SharedPreference.PAYSLIP_DETAIL_API + rollid
-
-        console.log('host', host)
-        console.log('TOKEN', SharedPreference.TOKEN)
+        // console.log('host', host)
+        // console.log('TOKEN', SharedPreference.TOKEN)
 
 
         if (offine) {

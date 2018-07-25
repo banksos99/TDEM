@@ -83,6 +83,7 @@ export default class HMF01011MainView extends Component {
         
         
 
+
         //Check Manager status
 
         
@@ -93,6 +94,7 @@ export default class HMF01011MainView extends Component {
 
             }
         }
+        
         console.log("MainView ====> profileObject ==> managerstatus ==> ", managerstatus)
     }
 
@@ -1972,7 +1974,7 @@ export default class HMF01011MainView extends Component {
                 </View>
                 <View style={{ flex: 1, justifyContent: 'center', borderBottomWidth: 0.5, borderBottomColor: Colors.lightGrayTextColor }}>
                     <TouchableOpacity
-                        onPress={(this.select_sign_out.bind(this))}>
+                        onPress={(this.onChangePIN.bind(this))}>
                         <Text style={styles.settinglefttext}>Change PIN</Text>
                     </TouchableOpacity>
                 </View>
@@ -2031,6 +2033,10 @@ export default class HMF01011MainView extends Component {
         SharedPreference.profileObject = null
         this.saveProfile.setProfile(null)
         this.props.navigation.navigate('RegisterScreen')
+    }
+
+    onChangePIN() {
+        this.props.navigation.navigate('ChangePINScreen')
     }
 
     renderpickerview() {
