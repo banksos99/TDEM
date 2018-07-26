@@ -253,64 +253,84 @@ export default class OrganizationStruct extends Component {
         data = data[1]
 
         if (code.SUCCESS == data.code) {
-            console.log('data.data.org_lst :', data.data.org_lst)
-            let temparr = []
-            for (let i = 0; i < dataSource.length; i++) {
+            console.log('data.data.org_lst2 :', data.data.org_lst)
+            if (data.data.org_lst) {
 
-                if (i === this.state.index_org_code) {
 
-                    temparr.push({
-                        org_code: dataSource[i].org_code,
-                        org_name: dataSource[i].org_name,
-                        org_level: dataSource[i].org_level,
-                        next_level: dataSource[i].next_level,
-                        expand: data.data.org_lst.length,
 
-                    })
+                let temparr = []
+                for (let i = 0; i < dataSource.length; i++) {
 
-                    data.data.org_emp.map((item) => (
+                    if (i === this.state.index_org_code) {
+
+                        temparr.push({
+                            org_code: dataSource[i].org_code,
+                            org_name: dataSource[i].org_name,
+                            org_level: dataSource[i].org_level,
+                            next_level: dataSource[i].next_level,
+                            expand: data.data.org_lst.length,
+
+                        })
+
+                        data.data.org_emp.map((item) => (
+                            temparr.push(
+                                {
+                                    org_code: 0,
+                                    org_name: item.employee_name,
+                                    org_level: parseInt(dataSource[i].org_level) + 10,
+                                    next_level: 'false',
+                                    emp_id: item.employee_id,
+                                    position: item.employee_position,
+                                    expand: 0,
+
+                                }
+                            )
+
+                        ))
+
+                        data.data.org_lst.map((item) => (
+                            temparr.push(
+                                {
+                                    org_code: item.org_code,
+                                    org_name: item.org_name,
+                                    org_level: item.org_level,
+                                    next_level: item.next_level,
+                                    expand: 0
+
+                                }
+                            )
+
+                        ))
+                    } else {
                         temparr.push(
-                            {
-                                org_code: 0,
-                                org_name: item.employee_name,
-                                org_level: parseInt(dataSource[i].org_level) + 10,
-                                next_level: 'false',
-                                emp_id: item.employee_id,
-                                position: item.employee_position,
-                                expand: 0,
-
-                            }
+                            dataSource[i]
                         )
 
-                    ))
-
-                    data.data.org_lst.map((item) => (
-                        temparr.push(
-                            {
-                                org_code: item.org_code,
-                                org_name: item.org_name,
-                                org_level: item.org_level,
-                                next_level: item.next_level,
-                                expand: 0
-
-                            }
-                        )
-
-                    ))
-                } else {
-                    temparr.push(
-                        dataSource[i]
-                    )
+                    }
 
                 }
+                dataSource = temparr;
+                console.log('dataSource :', dataSource)
+
+            } else {
+                Alert.alert(
+                    'No Data',
+                    'No data found',
+                    [{
+                        text: 'OK', onPress: () => {
+                            console.log("onLoadErrorAlertDialog")
+                        }
+                    }],
+                    { cancelable: false }
+                )
+
 
             }
-            dataSource = temparr;
-            console.log('dataSource :', dataSource)
 
         } else {
             this.onLoadErrorAlertDialog(data)
         }
+
         this.setState({
             isscreenloading: false,
         })
@@ -352,6 +372,12 @@ export default class OrganizationStruct extends Component {
         } else {
             this.onLoadErrorAlertDialog(data)
         }
+        this.setState({
+
+            isscreenloading: false,
+
+        })
+
       
     }
     APIDetailCallback(data) {
@@ -360,7 +386,7 @@ export default class OrganizationStruct extends Component {
         data = data[1]
 
         if (code.SUCCESS == data.code) {
-            console.log('data.data.org_lst :', data)
+            console.log('data.data.org_lst1 :', data)
             if (option == 2) {
                 this.props.navigation.navigate('ClockInOutSelfView', {
                     DataResponse: data,
@@ -385,6 +411,12 @@ export default class OrganizationStruct extends Component {
         } else {
             this.onLoadErrorAlertDialog(data)
         }
+
+        this.setState({
+
+            isscreenloading: false,
+
+        })
       
     }
     onLoadErrorAlertDialog(error) {

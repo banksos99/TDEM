@@ -137,84 +137,84 @@ export default class rootNavigation extends Component {
        // this.inappTimeInterval();
 
     }
-    getParsedDate() {
+    // getParsedDate() {
 
-        let date = new Date()
+    //     let date = new Date()
     
-        date = String(date).split(' ');
+    //     date = String(date).split(' ');
     
-        let days = String(date[0]).split('-');
+    //     let days = String(date[0]).split('-');
     
-        let hours = String(date[4]).split(':');
+    //     let hours = String(date[4]).split(':');
     
-        let mon_num = 0
+    //     let mon_num = 0
     
-        for (let i = 0; i < mon.length; i++) {
-          if (mon[i] === date[1]) {
-            mon_num = i + 1;
-          }
+    //     for (let i = 0; i < mon.length; i++) {
+    //       if (mon[i] === date[1]) {
+    //         mon_num = i + 1;
+    //       }
 
-        }
-        return date[3] + '-' + mon_num + '-' + date[2] + ' ' + hours[0] + ':' + hours[1] + ':' + hours[2];
+    //     }
+    //     return date[3] + '-' + mon_num + '-' + date[2] + ' ' + hours[0] + ':' + hours[1] + ':' + hours[2];
 
-    }
-    onLoadAppInfo() {
+    // }
+    // onLoadAppInfo() {
 
-        let newdate = this.getParsedDate()
-        console.log('host', SharedPreference.PULL_NOTIFICATION_API + newdate)
-        console.log('token', SharedPreference.TOKEN)
-        return fetch(SharedPreference.PULL_NOTIFICATION_API + newdate, {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                Authorization: SharedPreference.TOKEN,
-            },
-        })
-            .then((response) => response.json())
-            .then((responseJson) => {
-                try {
-                    this.inappTimeInterval()
-                    console.log('responseJson :', responseJson)
+    //     let newdate = this.getParsedDate()
+    //     console.log('host', SharedPreference.PULL_NOTIFICATION_API + newdate)
+    //     console.log('token', SharedPreference.TOKEN)
+    //     return fetch(SharedPreference.PULL_NOTIFICATION_API + newdate, {
+    //         method: 'GET',
+    //         headers: {
+    //             'Accept': 'application/json',
+    //             'Content-Type': 'application/json',
+    //             Authorization: SharedPreference.TOKEN,
+    //         },
+    //     })
+    //         .then((response) => response.json())
+    //         .then((responseJson) => {
+    //             try {
+    //                 this.inappTimeInterval()
+    //                 console.log('responseJson :', responseJson)
 
-                    if (responseJson.status == 403) {
+    //                 if (responseJson.status == 403) {
 
-                    SharedPreference.profileObject = null
-                    this.saveProfile.setProfile(null)
-                    this.props.navigation.navigate('RegisterScreen')
-                    console.log('this.props.navigation :', this.props.navigation)
-                    console.log('this.state' + this.state.number)
-                     }
+    //                 SharedPreference.profileObject = null
+    //                 this.saveProfile.setProfile(null)
+    //                 this.props.navigation.navigate('RegisterScreen')
+    //                 console.log('this.props.navigation :', this.props.navigation)
+    //                 console.log('this.state' + this.state.number)
+    //                  }
 
-                    this.setState({
+    //                 this.setState({
 
 
-                    }, function () {
+    //                 }, function () {
 
                         
 
-                    });
+    //                 });
 
-                } catch (error) {
+    //             } catch (error) {
 
-                    //console.log('erreo1 :', error);
+    //                 //console.log('erreo1 :', error);
 
-                }
-            })
-            .catch((error) => {
+    //             }
+    //         })
+    //         .catch((error) => {
 
-                console.log('error :', error)
+    //             console.log('error :', error)
 
 
-            });
-    }
+    //         });
+    // }
 
-    inappTimeInterval() {
-        this.timer = setTimeout(() => {
-            this.onLoadAppInfo()
+    // inappTimeInterval() {
+    //     this.timer = setTimeout(() => {
+    //         this.onLoadAppInfo()
 
-        }, 200000);
-    };
+    //     }, 200000);
+    // };
 
     async componentWillMount() {
         // number = await this.getPINFromDevice()

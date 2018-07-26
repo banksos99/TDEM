@@ -19,9 +19,9 @@ export default {
     PAYSLIP_DOWNLOAD_API: HOST + '/api/' + VERSION + '/payslip/file/',
 
     OTSUMMARY_DETAIL: HOST + '/api/' + VERSION + '/ot/summary?',
-    HANDBOOK_LIST: 'https://randomuser.me/api/?results=2',
+    // HANDBOOK_LIST: 'https://randomuser.me/api/?results=2',
 
-    // HANDBOOK_LIST: HOST + '/api/' + VERSION + '/handbooks',
+    HANDBOOK_LIST: HOST + '/api/' + VERSION + '/handbooks',
 
     LEAVE_QUOTA_API: HOST + '/api/' + VERSION + '/leavequota/summary',
     NONPAYROLL_SUMMARY_API: HOST + '/api/' + VERSION + '/nonpayroll/summary',

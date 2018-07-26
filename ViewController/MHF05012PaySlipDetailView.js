@@ -52,24 +52,12 @@ export default class PayslipDetail extends Component {
             rollid: this.props.navigation.getParam("rollid", ""),
             havePermission: false
         }
-<<<<<<< HEAD
-
-        console.log('monthselected :', this.state.monthselected)
-        console.log('initialyear :', this.state.initialyear)
-
-        console.log('initmonth :', this.state.initmonth)
-        console.log('currentmonth :', currentmonth)
-        console.log('currentyear :', currentyear)
-        console.log('rollid :', this.state.rollid)
-        console.log('this.state.yearlist :',this.state.yearlist)
-=======
         // console.log('monthselected :', this.state.monthselected)
         // console.log('initialyear :', this.state.initialyear)
         // console.log('initmonth :', this.state.initmonth)
         // console.log('currentmonth :', currentmonth)
         // console.log('currentyear :', currentyear)
         // console.log('rollid :', this.state.rollid)
->>>>>>> 8828817c98322c55d21678b99fedf0ad6b00e54d
     }
 
     onBack() {
@@ -88,23 +76,6 @@ export default class PayslipDetail extends Component {
     }
 
     onDownloadPDFFile() {
-<<<<<<< HEAD
-
-        // this.setState({
-
-        //     isscreenloading: true,
-
-        // }, function () {
-
-        //     this.setState(this.renderloadingscreen())
-
-        // });
-
-        
-        // console.log("this.state.initialyear : ", this.state.initialyear)
-        // console.log("monthselected : ", this.state.monthselected)
-=======
->>>>>>> 8828817c98322c55d21678b99fedf0ad6b00e54d
 
         PAYSLIP_DOWNLOAD_API = SharedPreference.PAYSLIP_DOWNLOAD_API + this.state.rollid
 
@@ -112,7 +83,7 @@ export default class PayslipDetail extends Component {
         pdfPath = PAYSLIP_DOWNLOAD_API
 
         month = (this.state.initialyear + 1)
-        numberMonth
+        let numberMonth = month
         if (month < 10) {
             numberMonth = "0" + (month + 1)
         } else {

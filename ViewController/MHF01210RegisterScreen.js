@@ -135,7 +135,9 @@ export default class RegisterActivity extends Component {
                     SharedPreference.TB_M_LEAVETYPE = element.TB_M_LEAVETYPE
                 }
             }
-            this.props.navigation.navigate('HomeScreen')
+            console.log('onLoadAppInfo:')
+            await this.onLoadAppInfo()
+            // this.props.navigation.navigate('HomeScreen')
 
             // console.log("SharedPreference.NOTIFICATION_CATEGORY  ==> ", SharedPreference.NOTIFICATION_CATEGORY)
             // console.log("SharedPreference.READ_TYPE  ==> ", SharedPreference.READ_TYPE)
@@ -152,6 +154,31 @@ export default class RegisterActivity extends Component {
                 { cancelable: false }
             )
         }
+    }
+
+    onLoadAppInfo = async () => {
+
+        let data = await RestAPI(SharedPreference.APPLICATION_INFO_API)
+        code = data[0]
+        data = data[1]
+        if (code.SUCCESS == data.code) {
+            console.log('app info data2 :', data)
+            let appversion = '1.0.0'
+            if (data.data.force_update === 'Y') {
+                Alert.alert(
+                    'New Version Available',
+                    'This is a newer version available for download! Please update the app by visiting the Apple Store',
+                    [
+                        { text: 'Update', onPress: () => console.log('OK Pressed') },
+                    ],
+                    { cancelable: false }
+                )
+
+            }
+
+           
+        }
+        this.props.navigation.navigate('HomeScreen')
     }
 
     onClosePIN = () => {

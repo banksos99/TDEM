@@ -10,6 +10,7 @@ import RestAPI from "../constants/RestAPI"
 import SaveProfile from "../constants/SaveProfile"
 import Authorization from "../SharedObject/Authorization";
 import LoginWithPinAPI from "../constants/LoginWithPinAPI"
+import LoginResetPinAPI from "../constants/LoginResetPinAPI"
 import SaveAutoSyncCalendar from "../constants/SaveAutoSyncCalendar";
 
 export default class PinActivity extends Component {
@@ -75,23 +76,40 @@ export default class PinActivity extends Component {
         let data = await RestAPI(SharedPreference.APPLICATION_INFO_API)
         code = data[0]
         data = data[1]
-        if (code.SUCCESS == data.code) {
-            console.log('app info data :', data.data.app_version, SharedPreference.deviceInfo)
+      if (code.SUCCESS == data.code) {
+            console.log('app info data1 :', data)
+            console.log('token :', SharedPreference.TOKEN)
             let appversion = '1.0.0'
-            if (data.data.app_version === appversion) {
+           if (data.data.force_update === 'Y') {
                 Alert.alert(
-                    'New Vresion Available',
-                    'This is a newer version available for dpwnload! Please update the app by vision the Apple Store',
+                    'New Version Available',
+                    'This is a newer version available for download! Please update the app by visiting the Apple Store',
                     [
                         { text: 'Update', onPress: () => console.log('OK Pressed') },
                     ],
                     { cancelable: false }
                 )
 
-            }
-
-            this.props.navigation.navigate('HomeScreen')
+           }
+            
         }
+        // else{
+
+        //     Alert.alert(
+        //         StringText.SERVER_ERROR_TITLE,
+        //         StringText.SERVER_ERROR_DESC,
+        //         [
+        //             { text: 'OK', onPress: () => console.log('OK Pressed') },
+        //         ],
+        //         { cancelable: false }
+        //     )
+
+
+        // }
+
+
+
+       this.props.navigation.navigate('HomeScreen')
 
     }
 
@@ -113,8 +131,9 @@ export default class PinActivity extends Component {
                     SharedPreference.TB_M_LEAVETYPE = element.TB_M_LEAVETYPE
                 }
             }
+            console.log('onLoadAppInfo:')
             await this.onLoadAppInfo()
-            //this.props.navigation.navigate('HomeScreen')
+            // this.props.navigation.navigate('HomeScreen')
 
 
             // console.log("SharedPreference.NOTIFICATION_CATEGORY  ==> ", SharedPreference.NOTIFICATION_CATEGORY)
@@ -198,13 +217,10 @@ export default class PinActivity extends Component {
                 }
             }, {
                 text: 'OK', onPress: () => {
-<<<<<<< HEAD
-                    SharedPreference.profileObject = null
-                    this.saveProfile.setProfile(null)
-                    this.props.navigation.navigate('RegisterScreen')
-=======
+                    // SharedPreference.profileObject = null
+                    // this.saveProfile.setProfile(null)
+                    // this.props.navigation.navigate('RegisterScreen')
                     this.onReset()
->>>>>>> 8828817c98322c55d21678b99fedf0ad6b00e54d
                 }
             }
             ],
@@ -212,8 +228,6 @@ export default class PinActivity extends Component {
         )
     }
 
-<<<<<<< HEAD
-=======
     onReset = async () => {
         SharedPreference.profileObject = await this.saveProfile.getProfile()
         SharedPreference.TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, '1', SharedPreference.profileObject.client_token)
@@ -250,7 +264,6 @@ export default class PinActivity extends Component {
         }
     }
 
->>>>>>> 8828817c98322c55d21678b99fedf0ad6b00e54d
     render() {
         return (
             <View style={styles.alertDialogContainer}>

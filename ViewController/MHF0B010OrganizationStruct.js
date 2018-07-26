@@ -102,6 +102,7 @@ export default class OrganizationStruct extends Component {
     }
 
     onBack() {
+
         this.props.navigation.navigate('HomeScreen');
     }
 
@@ -142,6 +143,7 @@ export default class OrganizationStruct extends Component {
 
                 if (item.expand === 0) {
                     // *** select expand
+                    console.log('expand  :')
                     this.setState({
 
                         isscreenloading: true,
@@ -245,6 +247,10 @@ export default class OrganizationStruct extends Component {
 
             }
         }
+
+
+
+
     }
 
 
@@ -258,70 +264,90 @@ export default class OrganizationStruct extends Component {
 
     APICallback(data) {
 
+        console.log('APICallback : ',data)
+
         code = data[0]
         data = data[1]
 
         if (code.SUCCESS == data.code) {
-            
+
             console.log('data.data :', data.data)
-            let temparr = []
-            for (let i = 0; i < dataSource.length; i++) {
+            if (data.data.org_lst) {
+                let temparr = []
+                for (let i = 0; i < dataSource.length; i++) {
 
-                if (i === this.state.index_org_code) {
+                    if (i === this.state.index_org_code) {
 
-                    temparr.push({
-                        org_code: dataSource[i].org_code,
-                        org_name: dataSource[i].org_name,
-                        org_level: dataSource[i].org_level,
-                        next_level: dataSource[i].next_level,
-                        expand: data.data.org_lst.length,
+                        temparr.push({
+                            org_code: dataSource[i].org_code,
+                            org_name: dataSource[i].org_name,
+                            org_level: dataSource[i].org_level,
+                            next_level: dataSource[i].next_level,
+                            expand: data.data.org_lst.length,
 
-                    })
+                        })
 
-                    // data.data.org_emp.map((item) => (
+                        // data.data.org_emp.map((item) => (
                         temparr.push(
                             {
                                 org_code: this.state.org_code,
                                 org_name: this.state.org_name,
                                 org_level: parseInt(dataSource[i].org_level) + 10,
                                 next_level: 'false',
-                            //    emp_id: item.employee_id,
+                                //    emp_id: item.employee_id,
                                 expand: 0,
-
-                            }
-                         )
-
-                    // ))
-
-                    data.data.org_lst.map((item) => (
-                        temparr.push(
-                            {
-                                org_code: item.org_code,
-                                org_name: item.org_name,
-                                org_level: item.org_level,
-                                next_level: item.next_level,
-                                expand: 0
 
                             }
                         )
 
-                    ))
-                } else {
-                    temparr.push(
-                        dataSource[i]
-                    )
+                        // ))
+
+                        data.data.org_lst.map((item) => (
+                            temparr.push(
+                                {
+                                    org_code: item.org_code,
+                                    org_name: item.org_name,
+                                    org_level: item.org_level,
+                                    next_level: item.next_level,
+                                    expand: 0
+
+                                }
+                            )
+
+                        ))
+                    } else {
+                        temparr.push(
+                            dataSource[i]
+                        )
+
+                    }
 
                 }
+                dataSource = temparr;
+                console.log('dataSource :', dataSource)
 
+            } else {
+
+                Alert.alert(
+                    'No Data',
+                    'No data found',
+                    [{
+                        text: 'OK', onPress: () => {
+                            console.log("onLoadErrorAlertDialog")
+                        }
+                    }],
+                    { cancelable: false }
+                )
             }
-            dataSource = temparr;
-            console.log('dataSource :', dataSource)
 
         } else {
             this.onLoadErrorAlertDialog(data)
         }
+
         this.setState({
+
             isscreenloading: false,
+
         })
     }
 
@@ -363,6 +389,9 @@ export default class OrganizationStruct extends Component {
             this.onLoadErrorAlertDialog(data)
         }
 
+        this.setState({
+            isscreenloading: false,
+        })
     }
 
 
