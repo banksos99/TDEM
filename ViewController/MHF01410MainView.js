@@ -107,8 +107,8 @@ export default class HMF01011MainView extends Component {
 
     async componentDidMount() {
 
-        if (!timerstatus) {
-            this.inappTimeInterval();
+        if(!timerstatus){
+          //  this.inappTimeInterval();
             timerstatus = true;
         }
 

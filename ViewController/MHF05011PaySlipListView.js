@@ -521,6 +521,24 @@ export default class PaySlipActivity extends Component {
         let emp_pf_year = '0';
         let com_pf_year = '0';
 
+        if (dataSource.years) {
+            
+            if (dataSource.years[this.state.indexselectyear].header) { exemption = Dcryptfun.decrypt(dataSource.years[this.state.indexselectyear].header.exemption); }
+
+            if (dataSource.years[this.state.indexselectyear].header) { income_acc = Dcryptfun.decrypt(dataSource.years[this.state.indexselectyear].header.income_acc); }
+
+            if (dataSource.years[this.state.indexselectyear].header) { tax_acc = Dcryptfun.decrypt(dataSource.years[this.state.indexselectyear].header.tax_acc); }
+
+            if (dataSource.years[this.state.indexselectyear].header) { social_fund = Dcryptfun.decrypt(dataSource.years[this.state.indexselectyear].header.social_fund); }
+
+            if (dataSource.years[this.state.indexselectyear].header) { emp_pf_year = Dcryptfun.decrypt(dataSource.years[this.state.indexselectyear].header.emp_pf_year); }
+
+            if (dataSource.years[this.state.indexselectyear].header) { com_pf_year = Dcryptfun.decrypt(dataSource.years[this.state.indexselectyear].header.com_pf_year); }
+
+        }
+        
+
+
         return (
 
             <View style={{ height: this.state.updatedHeight, backgroundColor: 'gray', flexDirection: 'column', overflow: 'hidden', marginLeft: 5, marginRight: 5, borderRadius: 5 }}>

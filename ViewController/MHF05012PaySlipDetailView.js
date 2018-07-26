@@ -56,14 +56,12 @@ export default class PayslipDetail extends Component {
             havePermission: false,
             yearArray: ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"]
         }
-
         // console.log('monthselected :', this.state.monthselected)
         // console.log('initialyear :', this.state.initialyear)
         // console.log('initmonth :', this.state.initmonth)
         // console.log('currentmonth :', currentmonth)
         // console.log('currentyear :', currentyear)
         // console.log('rollid :', this.state.rollid)
-        // console.log('this.state.yearlist :', this.state.yearlist)
     }
 
     onBack() {

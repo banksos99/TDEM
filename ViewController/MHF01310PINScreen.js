@@ -10,9 +10,9 @@ import RestAPI from "../constants/RestAPI"
 import SaveProfile from "../constants/SaveProfile"
 import Authorization from "../SharedObject/Authorization";
 import LoginWithPinAPI from "../constants/LoginWithPinAPI"
+import LoginResetPinAPI from "../constants/LoginResetPinAPI"
 import SaveAutoSyncCalendar from "../constants/SaveAutoSyncCalendar";
 
-import LoginResetPinAPI from "../constants/LoginResetPinAPI"
 export default class PinActivity extends Component {
 
     savePIN = new SavePIN()
@@ -27,6 +27,7 @@ export default class PinActivity extends Component {
             failPin: 0,
             savePin: ''
         }
+        console.log("PinActivity")
     }
 
     onLoadLoginWithPin = async (PIN) => {
@@ -74,39 +75,36 @@ export default class PinActivity extends Component {
     }
 
     onLoadAppInfo = async () => {
-        //TODO After
-        console.log("TODO After")
-        // let data = await RestAPI(SharedPreference.APPLICATION_INFO_API, SharedPreference.FUNCTIONID_GENERAL_INFORMATION_SHARING)
-        // code = data[0]
-        // data = data[1]
 
-        // if (code.SUCCESS == data.code) {
-        //     console.log('app info data :', data.data.app_version, SharedPreference.deviceInfo)
+        let data = await RestAPI(SharedPreference.APPLICATION_INFO_API)
+        code = data[0]
+        data = data[1]
+      if (code.SUCCESS == data.code) {
+            console.log('app info data1 :', data)
+            console.log('token :', SharedPreference.TOKEN)
+            let appversion = '1.0.0'
+           if (data.data.force_update === 'Y') {
+                Alert.alert(
+                    'New Version Available',
+                    'This is a newer version available for download! Please update the app by visiting the Apple Store',
+                    [
+                        { text: 'Update', onPress: () => console.log('OK Pressed') },
+                    ],
+                    { cancelable: false }
+                )
 
-        //     let appversion = SharedPreference.deviceInfo.appVersion
-        //     console.log('app_version ==> API :', data.data.app_version)
-        //     console.log('app_version ==> version App :', appversion)
-
-        //     if (data.code == code.SUCCESS) {
-        //         if (data.data.app_version === appversion) {
-        //             Alert.alert(
-        //                 'New Vresion Available',
-        //                 'This is a newer version available for download! Please update the app by vision the Apple Store',
-        //                 [
-        //                     { text: 'Update', onPress: () => console.log('OK Pressed') },
-        //                 ],
-        //                 { cancelable: false }
-        //             )
-        //         }
-        //         this.props.navigation.navigate('HomeScreen')
-        //     }
-        // }
+           }
+            
+        }
+       
+       this.props.navigation.navigate('HomeScreen')
     }
 
     onLoadInitialMaster = async () => {
         let data = await RestAPI(SharedPreference.INITIAL_MASTER_API, SharedPreference.FUNCTIONID_GENERAL_INFORMATION_SHARING)
         code = data[0]
         data = data[1]
+        console.log("onLoadInitialMaster : ",data.code)
         if (code.SUCCESS == data.code) {
             array = data.data
             for (let index = 0; index < array.length; index++) {
@@ -121,8 +119,10 @@ export default class PinActivity extends Component {
                     SharedPreference.TB_M_LEAVETYPE = element.TB_M_LEAVETYPE
                 }
             }
+            console.log('onLoadAppInfo:')
             // await this.onLoadAppInfo()
             this.props.navigation.navigate('HomeScreen')
+
 
         } else {
             Alert.alert(

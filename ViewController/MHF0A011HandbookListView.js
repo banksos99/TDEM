@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-
+import RNFetchBlob from 'react-native-fetch-blob'
 import {
     Text,
     StyleSheet,
@@ -9,7 +9,8 @@ import {
     Button,
     TouchableOpacity,
     Image, Picker, WebView,
-    FlatList
+    FlatList,
+    Platform
 } from 'react-native';
 
 import Colors from "./../SharedObject/Colors"
@@ -17,7 +18,7 @@ import Layout from "./../SharedObject/Layout"
 import { styles } from "./../SharedObject/MainStyles"
 
 import inappdata from "./../InAppData/HandbookListData"
-
+import SharedPreference from "./../SharedObject/SharedPreference"
 let dataSource = [];
 let temphandbookData = [];
 
@@ -34,7 +35,7 @@ export default class Handbookctivity extends Component {
     }
     checkDataFormat(DataResponse) {
 
-        if (DataResponse.data) {
+        if (DataResponse) {
             console.log('Handbookctivity DataResponse :',DataResponse)
             // dataSource = DataResponse.data;
             dataSource = DataResponse;
@@ -49,7 +50,120 @@ export default class Handbookctivity extends Component {
 
     }
 
+    onDownloadPDFFile() {
 
+        let PAYSLIP_DOWNLOAD_API  = SharedPreference.HOST + dataSource[0].handbook_cover
+
+        console.log('COVER_HANDBOOK : ', PAYSLIP_DOWNLOAD_API)
+        pdfPath = PAYSLIP_DOWNLOAD_API
+
+        month = (this.state.initialyear + 1)
+        let numberMonth = month
+        if (month < 10) {
+            numberMonth = "0" + (month + 1)
+        } else {
+            numberMonth = month + 1
+        }
+
+        filename = "Payslip_" + this.state.monthselected + "_" + numberMonth + '.pdf'
+        // console.log('PAYSLIP_DOWNLOAD_API : ', PAYSLIP_DOWNLOAD_API)
+
+        if (Platform.OS === 'android') {
+            RNFetchBlob
+                .config({
+                    addAndroidDownloads: {
+                        useDownloadManager: true,
+                        notification: false,
+                        path: RNFetchBlob.fs.dirs.DownloadDir + '/' + filename,
+                        mime: 'application/pdf',
+                        title: 'appTitle',
+                        description: 'shippingForm'
+                    }
+                })
+                .fetch('GET', pdfPath, {
+                    'Content-Type': 'application/pdf;base64',
+                    Authorization: SharedPreference.TOKEN
+                })
+                .then((resp) => {
+                    console.log("Android ==> LoadPDFFile ==> Load Success  : ", resp);
+                    RNFetchBlob.android.actionViewIntent(resp.data, 'application/pdf')
+                })
+                .catch((errorCode, errorMessage) => {
+                    console.log("Android ==> LoadPDFFile ==> Load errorCode  : ", errorCode);
+                    Alert.alert(
+                        errorCode,
+                        errorMessage,
+                        [
+                            {
+                                text: 'Cancel', onPress: () => {
+                                    console.log("Android ==> LoadPDFFile ==> Load errorCode  : ", errorCode);
+
+                                }, style: 'cancel'
+                            },
+                            {
+                                text: 'OK', onPress: () => {
+                                    this.addEventOnCalendar()
+                                }
+                            },
+                        ],
+                        { cancelable: false }
+                    )
+                })
+        } else {//iOS
+            console.log("loadPdf pdfPath : ", pdfPath)
+            console.log("loadPdf filename : ", filename)
+            RNFetchBlob
+                .config({
+                    fileCache: true,
+                    appendExt: 'png',
+                    filename: filename
+                })
+                .fetch('GET', pdfPath, {
+                    'Content-Type': 'application/pdf;base64',
+                    Authorization: SharedPreference.TOKEN
+                })
+                .then((resp) => {
+                    console.log("WorkingCalendarYear pdf1 : ", resp);
+                    console.log("WorkingCalendarYear pdf2 : ", resp.path());
+                    RNFetchBlob.fs.exists(resp.path())
+                        .then((exist) => {
+                            console.log(`WorkingCalendarYear ==> file ${exist ? '' : 'not'} exists`)
+                        })
+                        .catch(() => { console.log('WorkingCalendarYear ==> err while checking') });
+
+                    RNFetchBlob.ios.openDocument(resp.path());
+                })
+                .catch((errorMessage, statusCode) => {
+                    console.log('Error: ' + errorMessage);
+                    console.log('Status code: ' + statusCode);
+                });
+        }
+    }
+
+    requestPDFPermission = async () => {
+        console.log("requestPDFPermission")
+        try {
+            const granted = await PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+                {
+                    'title': "Permission",
+                    'message': 'External Storage Permission'
+                }
+            )
+            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                console.log("You can use the WRITE_EXTERNAL_STORAGE")
+
+                this.setState({
+                    havePermission: true
+                })
+                this.onDownloadPDFFile()
+            } else {
+                console.log("WRITE_EXTERNAL_STORAGE permission denied")
+            }
+        } catch (err) {
+            console.warn(err)
+        }
+    }
     componentDidMount() {
         //console.log(Layout.window.width);
         // this.fetchData()
@@ -58,7 +172,9 @@ export default class Handbookctivity extends Component {
         this.props.navigation.navigate('HomeScreen');
     }
     onDetail() {
+
         this.props.navigation.navigate('HandbookDetail');
+        
     }
     setrowstate() {
 
@@ -148,10 +264,12 @@ export default class Handbookctivity extends Component {
     }
 
     createShelfHandbook() {
-
+      
         temphandbookData = [];
 
         dataSource.map((item, i) => {
+
+            
 
             this.state.temparray.push(
 
@@ -186,7 +304,45 @@ export default class Handbookctivity extends Component {
             }
         });
     }
+
     createcomponent(i) {
+console.log('path : ',SharedPreference.HOST + dataSource[0].handbook_cover)
+
+        let path = '';
+
+        RNFetchBlob
+            .config({
+                fileCache: true,
+                appendExt: 'png',
+               
+            })
+            .fetch('GET', SharedPreference.HOST + dataSource[0].handbook_cover, {
+
+                'Content-Type': 'application/png;base64',
+                Authorization: SharedPreference.TOKEN
+            })
+            .then((res) => {
+
+                this.setState({
+                    
+                    imageView : <Image source={{ uri: Platform.OS === 'android' ? 'file://' + res.path() : '' + res.path() }} />
+                })
+                // the temp file path with file extension `png`
+
+                console.log('The file saved to ', this.state.imageView)
+             
+      
+                // Beware that when using a file path as Image source on Android,
+                // you must prepend "file://"" before the file path
+
+
+               
+
+             // console.log('imageView ', imageView.props.source.uri)
+
+             //  path = imageView.props.source.uri
+
+            })
 
         return (
             <View style={styles.handbookItem} key={i}>
@@ -201,8 +357,7 @@ export default class Handbookctivity extends Component {
                         <View style={{ flex: 1, margin: 5, justifyContent: 'center', alignItems: 'center' }}>
                             <Image
                                 style={{ width: '100%', height: '100%' }}
-                                // source={{ uri: dataSource[i].cover }}
-                                source={{ uri: 'https://www.computeroutpost.com.au/thumbs/374.jpg' }}
+                                source={this.state.imageView} 
                                 
                                 resizeMode='contain'
                             />

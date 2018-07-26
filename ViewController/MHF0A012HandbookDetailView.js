@@ -20,14 +20,16 @@ import {
 } from 'react-native';
 import { Epub, Streamer } from 'epubjs-rn';
 
-import BottomBar from '../component/BottomBar'
-import TopBar from '../component/TopBar'
+//import BottomBar from '../component/BottomBar'
+//import TopBar from '../component/TopBar'
 import Nav from '../component/Nav'
 import { styles } from "./../SharedObject/MainStyles"
 import Colors from '../SharedObject/Colors';
 
 let fontsizearr = ['50%', '80%', '100%', '120%', '150%', '180%'];
 let fontname = ['times', 'courier', 'arial', 'serif', 'cursive', 'fantasy', 'monospace'];
+let streamer = new Streamer();
+
 
 const instructions = Platform.select({
     ios: 'Press Cmd+R to reload,\n' +
@@ -75,24 +77,26 @@ export default class HandbookViewer extends Component {
 
         };
 
-        this.streamer = new Streamer();
+        
     }
 
     componentDidMount() {
 
         console.log('dsdsdadadad')
-        this.streamer.start()
+
+        
+        streamer.start()
             .then((origin) => {
-                this.setState({ origin })
-                return this.streamer.get(this.state.url);
+                setState({ origin })
+                return streamer.get(this.state.url);
             })
             .then((src) => {
-                return this.setState({ src });
+                return setState({ src });
             });
     }
 
     componentWillUnmount() {
-        this.streamer.kill();
+       streamer.kill();
     }
 
     toggleBars() {
@@ -506,6 +510,14 @@ export default class HandbookViewer extends Component {
 
 
     }
+    calculateWH(event) {
+        const l = event ? event.nativeEvent.layout : Dimensions.get('window'); // it doesn't always give the event
+        return {
+            vw: l.width / 100,
+            vh: l.height / 100
+        };
+    }
+
     render() {
 
         // if (this.state.flow === "paginated") {
@@ -514,7 +526,9 @@ export default class HandbookViewer extends Component {
         //   this.setState({flow: "paginated"});
         // }
         return (
-            <View style={{ flex: 1 }}>
+            <View 
+            style={{ flex: 1 }}
+            >
 
                 <View style={[styles.navContainer, { flexDirection: 'column' }]}>
                     <View style={styles.statusbarcontainer} />
@@ -547,101 +561,8 @@ export default class HandbookViewer extends Component {
 
                 {this.renderexpand()}
 
-                <Epub style={styles.epubreader}
-                    ref={component => this.epub = component}
-                    src={this.state.src}
-                    font={this.state.selectfontnametext}
-                    height='100%'
-                    fontSize={fontsizearr[this.state.fontsizelivel]}
-                    flow={this.state.flow}
-                    location={this.state.location}
-                    onLocationChange={(visibleLocation) => {
-                        console.log("locationChanged : ", visibleLocation.start.displayed)
-                        this.setState({
-                            currentpage: visibleLocation.start.displayed.page,
-                            totalpage: visibleLocation.start.displayed.total
-                        });
-                    }}
-                    onLocationsReady={(locations) => {
-                        console.log("location total", locations.total);
-                        this.setState({ sliderDisabled: false });
-                    }}
-                    onReady={(book) => {
-                        console.log("Table of Contents", book.toc)
-                        this.setState({
-                            book: book,
-                            title: book.package.metadata.title,
-                            toc: book.navigation.toc,
-                            isscreenloading: false
-                        });
-                    }}
-                    onPress={(cfi, position, rendition) => {
-                        this.toggleBars();
-                        console.log("press", cfi);
-                    }}
-                    onLongPress={(cfi, rendition, cfiRange) => {
-                        console.log("longpress", cfiRange);
-                    }}
-                    onViewAdded={(index) => {
-                        console.log("added", index)
-                    }}
-                    beforeViewRemoved={(index) => {
-                        console.log("removed", index)
-                    }}
-                    onSelected={(cfiRange, rendition, selected) => {
-
-                        let datatext = ''
-                        this.state.book.getRange(cfiRange).then((range) => {
-                            if (range) {
-                                datatext = range.startContainer.data.slice(range.startOffset, range.endOffset)
-                   
-                                let newdate = new Date().toString()
-                                let timearr = newdate.split('')
-                                this.state.hilightList.push(
-                                    {
-                                        link: cfiRange,
-                                        title: datatext,
-                                        date: newdate
-                                    })
-
-                            }
-
-                        });
-
-                        // Add marker
-
-                        rendition.highlight(cfiRange, {});
-
-                    }}
-                    onMarkClicked={(cfiRange) => {
-                        console.log("mark clicked", cfiRange)
-                    }}
-                    themes={{
-                        tan: {
-                            body: {
-                                //  "-webkit-user-select": "none",
-                                //"user-select": "none",
-                                //"background-color": "tan",
-                                'color': 'black',
-                                //  'background-color':'black',
-                                'fill': 'red',
-                                'font-family': 'cursive',
-                                'highlight': 'green'
-                                // 'font-size':'50%'
-                            }
-                        }
-                    }}
-                    theme="tan"
-                    highlights={{
-
-                    }}
-                    regenerateLocations={true}
-                    generateLocations={true}
-                    origin={this.state.origin}
-                    onError={(message) => {
-                        console.log("EPUBJS-Webview", message);
-                    }}
-                />
+                <Epub src={"https://s3.amazonaws.com/epubjs/books/moby-dick/OPS/package.opf"}
+		  flow={"paginated"} />
 
 
                 <View style={{ height: 30, justifyContent: 'center' }}>
