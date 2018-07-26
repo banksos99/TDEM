@@ -41,9 +41,10 @@ import OrganizationOTStruct from "./MHF0B010OrganizationStruct";
 import announcementdetail from "./MHF02011AnnouncementDetailView"
 import SharedPreference from './../SharedObject/SharedPreference';
 
-let mon = ['Jan','Feb','Mar','Apl','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+let mon = ['Jan', 'Feb', 'Mar', 'Apl', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
 import ChangePINScreen from "./ChangePINScreen"
+import Authorization from '../SharedObject/Authorization'
 
 const AppNavigatorPin = createSwitchNavigator({
     RegisterScreen: { screen: registerScreen },
@@ -65,12 +66,12 @@ const AppNavigatorPin = createSwitchNavigator({
     calendarYearView2: { screen: calendarYearView2 },
     calendarMonthView: { screen: calendarMonthView },
     calendarEventDetailView: { screen: calendarEventDetailView },
-    AnnouncementDetail:{screen:announcementdetail},
+    AnnouncementDetail: { screen: announcementdetail },
     ClockInOutSelfView: { screen: clockInOutSelfView },
     OTLineChartView: { screen: OTLineChartView },
     OTBarChartView: { screen: OTBarChartView },
     OrganizationOTStruct: { screen: OrganizationOTStruct },
-    AnnouncementDetail:{screen:announcementdetail},
+    AnnouncementDetail: { screen: announcementdetail },
     ChangePINScreen: { screen: ChangePINScreen }
 }, {
         initialRouteName: 'PinScreen',
@@ -110,7 +111,7 @@ const AppNavigatorRegister = createSwitchNavigator({
     OTLineChartView: { screen: OTLineChartView },
     OTBarChartView: { screen: OTBarChartView },
     OrganizationOTStruct: { screen: OrganizationOTStruct },
-    AnnouncementDetail:{screen:announcementdetail},
+    AnnouncementDetail: { screen: announcementdetail },
     ChangePINScreen: { screen: ChangePINScreen }
 }, {
         initialRouteName: 'RegisterScreen',
@@ -130,91 +131,14 @@ export default class rootNavigation extends Component {
         super(props);
         this.state = {
             hasPin: false,
-            number : "111111"
+            number: "111111"
         };
     }
     async componentDidMount() {
-       // this.inappTimeInterval();
+        // this.inappTimeInterval();
 
     }
-    // getParsedDate() {
-
-    //     let date = new Date()
-    
-    //     date = String(date).split(' ');
-    
-    //     let days = String(date[0]).split('-');
-    
-    //     let hours = String(date[4]).split(':');
-    
-    //     let mon_num = 0
-    
-    //     for (let i = 0; i < mon.length; i++) {
-    //       if (mon[i] === date[1]) {
-    //         mon_num = i + 1;
-    //       }
-
-    //     }
-    //     return date[3] + '-' + mon_num + '-' + date[2] + ' ' + hours[0] + ':' + hours[1] + ':' + hours[2];
-
-    // }
-    // onLoadAppInfo() {
-
-    //     let newdate = this.getParsedDate()
-    //     console.log('host', SharedPreference.PULL_NOTIFICATION_API + newdate)
-    //     console.log('token', SharedPreference.TOKEN)
-    //     return fetch(SharedPreference.PULL_NOTIFICATION_API + newdate, {
-    //         method: 'GET',
-    //         headers: {
-    //             'Accept': 'application/json',
-    //             'Content-Type': 'application/json',
-    //             Authorization: SharedPreference.TOKEN,
-    //         },
-    //     })
-    //         .then((response) => response.json())
-    //         .then((responseJson) => {
-    //             try {
-    //                 this.inappTimeInterval()
-    //                 console.log('responseJson :', responseJson)
-
-    //                 if (responseJson.status == 403) {
-
-    //                 SharedPreference.profileObject = null
-    //                 this.saveProfile.setProfile(null)
-    //                 this.props.navigation.navigate('RegisterScreen')
-    //                 console.log('this.props.navigation :', this.props.navigation)
-    //                 console.log('this.state' + this.state.number)
-    //                  }
-
-    //                 this.setState({
-
-
-    //                 }, function () {
-
-                        
-
-    //                 });
-
-    //             } catch (error) {
-
-    //                 //console.log('erreo1 :', error);
-
-    //             }
-    //         })
-    //         .catch((error) => {
-
-    //             console.log('error :', error)
-
-
-    //         });
-    // }
-
-    // inappTimeInterval() {
-    //     this.timer = setTimeout(() => {
-    //         this.onLoadAppInfo()
-
-    //     }, 200000);
-    // };
+   
 
     async componentWillMount() {
         // number = await this.getPINFromDevice()

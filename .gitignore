@@ -89,6 +89,7 @@ typings/
 # android
 android/.gradle
 android/.idea
+android/local.properties
 
 # iOS
 iOS/Pods

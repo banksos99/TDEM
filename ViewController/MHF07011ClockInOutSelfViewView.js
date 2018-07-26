@@ -47,7 +47,7 @@ export default class ClockInOutSelfView extends Component {
         });
         let today = new Date();
 
-        currentday = today.getDate()-1;
+        currentday = today.getDate() - 1;
         currentmonth = today.getMonth();
         this.state = {
             isscreenloading: false,
@@ -255,35 +255,21 @@ export default class ClockInOutSelfView extends Component {
         let today = new Date();
         let birthday = new Date(Months.monthNames[parseInt(omonth) - 1] + '1,' + oyear);
         firstday = birthday.getDay();
-        
+
         let url = SharedPreference.CLOCK_IN_OUT_API + SharedPreference.profileObject.employee_id + '&month=' + tmonth + '&year=' + oyear
         console.log('CLOCK_IN_OUT_API :', url)
 
-        // var monthnow = new Date(oyear, parseInt(omonth)-1, 1);
-        // var monthnext = new Date(oyear,omonth, 1);
-
-        // var date1_ms = monthnow.getTime();
-        // var date2_ms = monthnext.getTime();
-
-        // // Calculate the difference in milliseconds
-        // var difference_ms = date2_ms - date1_ms;
-        // var one_day = 1000 * 60 * 60 * 24;
-        // // var today = new Date();
-        // //displays 726
-
-        //  daymonth = Math.round(difference_ms / one_day)
-
-        this.APICallback(await RestAPI(url))
+        this.APICallback(await RestAPI(url, SharedPreference.FUNCTIONID_CLOCK_IN_OUT))
 
     }
 
     APICallback(data) {
-       
+
         code = data[0]
         data = data[1]
         console.log('CLOCK_IN_OUT_API data :', data)
         if (code.SUCCESS == data.code) {
-           
+
             this.state.tdataSource = [];
 
             for (let i = 0; i < data.data.items.length; i++) {
@@ -444,7 +430,7 @@ export default class ClockInOutSelfView extends Component {
             // isscreenloading: false,
 
         }, function () {
-            
+
             let tdate = initannouncementType.split(' ')
             let mdate = 0;
 

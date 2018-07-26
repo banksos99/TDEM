@@ -1,6 +1,7 @@
 import SharedPreference from "../SharedObject/SharedPreference";
-
-export default async function getRestAPI(pin) {
+import Authorization from "../SharedObject/Authorization";
+ 
+export default async function getRestAPI(pin, functionID) {
 
     let code = {
         SUCCESS: "200",
@@ -17,18 +18,20 @@ export default async function getRestAPI(pin) {
         CUT_JSON: "700",
     }
 
+    console.log("LoginWithPin ==> pin  : ", pin, " , functionID : ", functionID)
     // console.log("LoginWithPin ==> callback  Register  : ", SharedPreference.REGISTER_API)
     // console.log("LoginWithPin ==> callback  client_pin  : ", pin)
     // console.log("LoginWithPin ==> callback  firebase_token  : ", SharedPreference.deviceInfo.firebaseToken)
     // console.log("LoginWithPin ==> callback  systemdn  : ", SharedPreference.company)
-    // console.log("LoginWithPin ==> callback  Token  : ", SharedPreference.TOKEN)
+    let FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, functionID, SharedPreference.profileObject.client_token)
+    console.log("LoginWithPin ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
 
     return fetch(SharedPreference.REGISTER_API, {
         method: 'POST',
         headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
-            Authorization: SharedPreference.TOKEN
+            Authorization: FUNCTION_TOKEN
         },
         body: JSON.stringify({
             grant_type: "pinsignin",
@@ -39,7 +42,7 @@ export default async function getRestAPI(pin) {
     })
         .then((response) => response.json())
         .then((responseJson) => {
-            console.log("RegisterAPI ==> callback success : ", responseJson)
+            console.log("LoginWithPinAPI ==> callback success : ", responseJson)
             let object
             if (responseJson.status == code.SUCCESS) {
                 SharedPreference.profileObject = responseJson.data
@@ -53,9 +56,7 @@ export default async function getRestAPI(pin) {
                     data: responseJson.data
                 }]
             }
-            console.log("RegisterAPI ==> callback object : ", JSON.stringify(object))
             return object
-
         })
         .catch((error) => {
             object = [code, {

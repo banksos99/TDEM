@@ -88,7 +88,6 @@ export default class NonpayrollActivity extends Component {
     }
 
     customMonthContainer(monthNumber, amount) {
-        console.log("monthNumber : ", monthNumber, " , amount : ", amount)
 
         let currentYear = new Date().getFullYear()
         let currentMonth = new Date().getMonth() + 1
@@ -105,16 +104,11 @@ export default class NonpayrollActivity extends Component {
                     style={styles.button}
                     disable={amount}
                     onPress={() => {
-
-                        // if (amount == '0.00') {
-                        //     this.onLoadAlertDialog();
-                        // } else {
                         this.props.navigation.navigate('NonPayrollDetail', {
                             month: monthNumber,
                             selectYear: this.state.selectYear,
                             dataObject: this.state.dataSource
                         });
-                        // }
                     }}
                 >
                     <View style={styles.nonPayRollDetailContainer}>

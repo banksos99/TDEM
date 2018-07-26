@@ -24,8 +24,8 @@ import PayslipDataDetail from "./../InAppData/Payslipdatadetail2"
 // import api from "../../constants/APIService"
 import SharedPreference from "./../SharedObject/SharedPreference"
 import Dcryptfun from "./../SharedObject/Decryptfun"
+import Authorization from '../SharedObject/Authorization'
 
-import RestAPI from "../constants/RestAPI"
 import Month from "../constants/Month"
 
 let monthlistdata = [];
@@ -212,17 +212,17 @@ export default class PaySlipActivity extends Component {
                             styles.payslipitemlast :
                             styles.payslipitemdisable}
                             key={i}>
-                            
-                                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', }}>
-                                    <Text style={i === currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemmoneyred : styles.payslipitemdetail}>{Month.monthNamesShort[i]}</Text>
-                                </View>
-                                <View style={{ flex: 2, justifyContent: 'center', alignItems: 'center' }}>
-                                    <Text style={i === currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemmoneyred : styles.payslipitemdetail}>{net}</Text>
-                                </View>
-                                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', }}>
-    
-                                </View>
-                           
+
+                            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', }}>
+                                <Text style={i === currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemmoneyred : styles.payslipitemdetail}>{Month.monthNamesShort[i]}</Text>
+                            </View>
+                            <View style={{ flex: 2, justifyContent: 'center', alignItems: 'center' }}>
+                                <Text style={i === currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemmoneyred : styles.payslipitemdetail}>{net}</Text>
+                            </View>
+                            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', }}>
+
+                            </View>
+
                         </View>
                     );
 
@@ -348,7 +348,7 @@ export default class PaySlipActivity extends Component {
             ],
             { cancelable: false }
         )
-       
+
 
     }
     onDetail(year, index) {
@@ -428,33 +428,23 @@ export default class PaySlipActivity extends Component {
         this.setState({ isFetching: true }, function () { this.fetchData() });
     }
 
-    getPayslipDetailfromAPI(year, index) {
+    getPayslipDetailfromAPI = async (year, index) => {
 
         let rollid;
 
-        // console.log("yearlistdata year: ",year)
-        // console.log("yearlistdata index: ",index)
-        // console.log("yearlistdata lenght : ",yearlistdata[year].monthlistdata.length)
-
         for (let i = 0; i < yearlistdata[year].monthlistdata.length; i++) {
-            // console.log("yearlistdata index: ",index)
 
             if (yearlistdata[year].monthlistdata[i].month === index + 1) {
-                // console.log("yearlistdata : ",yearlistdata[year].monthlistdata[i])
                 rollid = yearlistdata[year].monthlistdata[i].id
             }
         }
-
-        // console.log("client_id : ",rollid)
-
         let host = SharedPreference.PAYSLIP_DETAIL_API + rollid
-        // console.log('host', host)
-        // console.log('TOKEN', SharedPreference.TOKEN)
-
+        // console
+        FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, SharedPreference.FUNCTIONID_PAYSLIP, SharedPreference.profileObject.client_token)
 
         if (offine) {
 
-            dataSource: PayslipDataDetail.detail[dataSource.years[year].detail[index].payroll_id]
+            // dataSource: PayslipDataDetail.detail[dataSource.years[year].detail[index].payroll_id]
             this.props.navigation.navigate('PaySlipDetail', {
                 yearlist: yearlistdata,
                 initialyear: initialyear,
@@ -471,14 +461,12 @@ export default class PaySlipActivity extends Component {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
-                    Authorization: SharedPreference.TOKEN,
+                    Authorization: FUNCTION_TOKEN,
                 },
             })
                 .then((response) => response.json())
                 .then((responseJson) => {
-
                     this.setState({
-
                         isscreenloading: false,
                         dataSource: responseJson
                         // datadetail: PayslipDataDetail.detail[dataSource.years[year].detail[index].payroll_id]
@@ -525,37 +513,6 @@ export default class PaySlipActivity extends Component {
 
 
     PayslipDetail() {
-
-        // var CryptoJS = require("crypto-js");
-
-        // var utf8 = require('utf8');
-        // var base64 = require('base-64');
-
-        // var orgtext = '121452';
-        // console.log('orgtext ',orgtext);
-        // var bytesd2 = base64.encode(orgtext);
-        // var textdecode = utf8.encode(bytesd2);
-        // console.log('textdecode ',textdecode);
-
-        // var encoded = 'Zm9vIMKpIGJhciDwnYyGIGJheg==';
-        // var bytes1 = base64.decode(textdecode);
-        // var text = utf8.decode(bytes1);
-        // console.log('textencode ', text);
-
-        // let mytext = 'my message';
-        // console.log("org text", mytext);
-        // var ciphertext = CryptoJS.AES.encrypt(mytext.toString(), 'zxcZXC');
-        // console.log("encrypted text", ciphertext.toString());
-
-        // var bytes = CryptoJS.AES.decrypt(ciphertext.toString(), 'zxcZXC');
-        // var plaintext = bytes.toString(CryptoJS.enc.Utf8);
-        // console.log("decrypted text", plaintext.toString());
-
-
-        // var bytes = CryptoJS.AES.decrypt('4ejgPP6u2s3RdwoRZX0PFkadzo1lVhcn9kB4iurRtt02lBOmgV2fabu7QSAPUtPe','zxcZXC');
-        // var plaintext = bytes.toString(CryptoJS.enc.Utf8);
-        // console.log("decrypted text", bytes);
-
 
         let exemption = '0';
         let income_acc = '0';

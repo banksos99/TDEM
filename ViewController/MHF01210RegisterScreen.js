@@ -9,8 +9,6 @@ import SavePIN from "./../constants/SavePIN"
 
 import SaveProfile from "./../constants/SaveProfile"
 import SharedPreference from "../SharedObject/SharedPreference";
-
-import Authorization from "../SharedObject/Authorization";
 import SaveTOKEN from "./../constants/SaveToken"
 
 import LoginWithPinAPI from "./../constants/LoginWithPinAPI"
@@ -39,6 +37,7 @@ export default class RegisterActivity extends Component {
     }
 
     onRegister = async () => {
+
         Keyboard.dismiss()
         let data = await RegisterAPI(this.state.username, this.state.password)
         code = data[0]
@@ -49,7 +48,7 @@ export default class RegisterActivity extends Component {
             //TODO 
             this.saveProfile.setProfile(data.data)
             SharedPreference.profileObject = await this.saveProfile.getProfile()
-            SharedPreference.TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, '1', SharedPreference.profileObject.client_token)
+            // SharedPreference.TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, '1', SharedPreference.profileObject.client_token)
             console.log("onRegister ==> onLoadLoginWithPin")
             await this.onLoadLoginWithPin("001000200")
         } else {
@@ -65,12 +64,12 @@ export default class RegisterActivity extends Component {
     }
 
     onLoadLoginWithPin = async (PIN) => {
-        let data = await LoginWithPinAPI(PIN)
-        console.log("1login with pin data ==> ", data)
+
+        let data = await LoginWithPinAPI(PIN, SharedPreference.FUNCTIONID_PIN)
+        console.log("onLoadLoginWithPin ==> ", data)
         code = data[0]
         data = data[1]
-
-        console.log("2login with pin data ==> ", data.code)
+        console.log("onLoadLoginWithPin ==> ", data.code)
 
         if (code.DUPLICATE_DATA == data.code) {//409
             this.onOpenPinActivity()
@@ -91,8 +90,8 @@ export default class RegisterActivity extends Component {
     }
 
     onSetPin = async () => {
-        console.log("Register SetPin : ", this.state.pin2)
-        let data = await SetPinAPI(this.state.pin2)
+
+        let data = await SetPinAPI(this.state.pin2, SharedPreference.FUNCTIONID_PIN)
         code = data[0]
         data = data[1]
 
@@ -118,7 +117,8 @@ export default class RegisterActivity extends Component {
     }
 
     onLoadInitialMaster = async () => {
-        let data = await RestAPI(SharedPreference.INITIAL_MASTER_API)
+        console.log("InitialMaster ")
+        let data = await RestAPI(SharedPreference.INITIAL_MASTER_API, SharedPreference.FUNCTIONID_GENERAL_INFORMATION_SHARING)
         code = data[0]
         data = data[1]
         if (code.SUCCESS == data.code) {

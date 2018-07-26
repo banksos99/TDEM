@@ -435,12 +435,12 @@ export const styles = StyleSheet.create({
         color: Colors.grayTextColor,
         fontFamily: font_medium
     },
-    userTitleText:{
+    userTitleText: {
         fontSize: scale * 15,
         color: Colors.grayTextColor,
         fontFamily: font_medium
     },
-    usernameText:{
+    usernameText: {
         fontSize: scale * 13,
         color: Colors.grayTextColor,
         fontFamily: font_medium
@@ -955,28 +955,28 @@ export const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    payslipTextCente_income_ena:{
-        color:'white',
-        fontSize: 15,
-        textAlign: 'left',
-        fontFamily: font_medium
-
-    },
-    payslipTextCente_income_dis:{
-        color: Colors.midnightblue,
-        fontSize: 15,
-        textAlign: 'left',
-        fontFamily: font_medium
-
-    },
-    payslipTextCente_deduct_ena:{
+    payslipTextCente_income_ena: {
         color: 'white',
         fontSize: 15,
         textAlign: 'left',
         fontFamily: font_medium
 
     },
-    payslipTextCente_deduct_dis:{
+    payslipTextCente_income_dis: {
+        color: Colors.midnightblue,
+        fontSize: 15,
+        textAlign: 'left',
+        fontFamily: font_medium
+
+    },
+    payslipTextCente_deduct_ena: {
+        color: 'white',
+        fontSize: 15,
+        textAlign: 'left',
+        fontFamily: font_medium
+
+    },
+    payslipTextCente_deduct_dis: {
         color: 'red',
         fontSize: 15,
         textAlign: 'left',
@@ -1199,17 +1199,17 @@ export const styles = StyleSheet.create({
         fontSize: 35 * scale,
         fontFamily: font_medium,
     },
-    clockinoutbodyhidetext:{
+    clockinoutbodyhidetext: {
         color: 'transparent',
         fontSize: 12 * scale,
         fontFamily: font_medium,
     },
-    clockinoutbodyredtext:{
+    clockinoutbodyredtext: {
         color: Colors.redTextColor,
         fontSize: 12 * scale,
         fontFamily: font_medium,
     },
-    clockinoutbodytext:{
+    clockinoutbodytext: {
         color: Colors.grayTextColor,
         fontSize: 12 * scale,
         fontFamily: font_medium,
@@ -1240,7 +1240,7 @@ export const styles = StyleSheet.create({
         fontSize: 12 * scale,
         fontFamily: font_medium,
     },
-    clockinoutweakdayalphatext:{
+    clockinoutweakdayalphatext: {
         color: Colors.grayTextColor,
         fontSize: 14 * scale,
         fontFamily: font_medium,
@@ -1321,8 +1321,18 @@ export const styles = StyleSheet.create({
         fontSize: 12 * scale,
         textAlign: 'left',
         fontFamily: font_medium
-
+    },
+    calendarDownloadContrainer: {
+        width: "80%",
+        height: 50,
+        borderRadius: 10,
+        backgroundColor: 'white',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    calendarDownloadCancelText: {
+        color: Colors.redTextColor,
+        fontSize: 12 * scale,
     }
 
-
-})
+    })

@@ -27,17 +27,19 @@ export default class PinActivity extends Component {
             failPin: 0,
             savePin: ''
         }
+        console.log("PinActivity")
     }
 
     onLoadLoginWithPin = async (PIN) => {
         // console.log("login with pin ==> ", PIN)
-        let data = await LoginWithPinAPI(PIN)
+        let data = await LoginWithPinAPI(PIN, SharedPreference.FUNCTIONID_PIN)
         code = data[0]
         data = data[1]
+        console.log("onLoadLoginWithPin ==> ", data.code)
+
         if (code.SUCCESS == data.code) {
             SharedPreference.calendarAutoSync = await this.saveAutoSyncCalendar.getAutoSyncCalendar()
             await this.onLoadInitialMaster()
-            
         } else {
             if (this.state.failPin == 4) {
                 Alert.alert(
@@ -71,6 +73,7 @@ export default class PinActivity extends Component {
             }
         }
     }
+
     onLoadAppInfo = async () => {
 
         let data = await RestAPI(SharedPreference.APPLICATION_INFO_API)
@@ -93,30 +96,15 @@ export default class PinActivity extends Component {
            }
             
         }
-        // else{
-
-        //     Alert.alert(
-        //         StringText.SERVER_ERROR_TITLE,
-        //         StringText.SERVER_ERROR_DESC,
-        //         [
-        //             { text: 'OK', onPress: () => console.log('OK Pressed') },
-        //         ],
-        //         { cancelable: false }
-        //     )
-
-
-        // }
-
-
-
+       
        this.props.navigation.navigate('HomeScreen')
-
     }
 
     onLoadInitialMaster = async () => {
-        let data = await RestAPI(SharedPreference.INITIAL_MASTER_API)
+        let data = await RestAPI(SharedPreference.INITIAL_MASTER_API, SharedPreference.FUNCTIONID_GENERAL_INFORMATION_SHARING)
         code = data[0]
         data = data[1]
+        console.log("onLoadInitialMaster : ",data.code)
         if (code.SUCCESS == data.code) {
             array = data.data
             for (let index = 0; index < array.length; index++) {
@@ -132,14 +120,9 @@ export default class PinActivity extends Component {
                 }
             }
             console.log('onLoadAppInfo:')
-            await this.onLoadAppInfo()
-            // this.props.navigation.navigate('HomeScreen')
+            // await this.onLoadAppInfo()
+            this.props.navigation.navigate('HomeScreen')
 
-
-            // console.log("SharedPreference.NOTIFICATION_CATEGORY  ==> ", SharedPreference.NOTIFICATION_CATEGORY)
-            // console.log("SharedPreference.READ_TYPE  ==> ", SharedPreference.READ_TYPE)
-            // console.log("SharedPreference.COMPANY_LOCATION  ==> ", SharedPreference.COMPANY_LOCATION)
-            // console.log("SharedPreference.TB_M_LEAVETYPE  ==> ", SharedPreference.TB_M_LEAVETYPE)
 
         } else {
             Alert.alert(
@@ -155,7 +138,6 @@ export default class PinActivity extends Component {
 
     getPINFromDevice = async () => {
         pin = await this.savePIN.getPin()
-        // console.log("PinActivity ==> getPINFromDevice ==>pin : ", pin)
         this.state.savePin = pin
     }
 
@@ -165,7 +147,6 @@ export default class PinActivity extends Component {
             await this.getPINFromDevice()
         }
 
-        // console.log(">>>>>>> num : ", num);
         let origin = this.state.pin
 
         if (num == "-") {
@@ -181,7 +162,7 @@ export default class PinActivity extends Component {
         if (this.state.pin.length == 6) {
             // TODO Set Information
             SharedPreference.profileObject = await this.saveProfile.getProfile()
-            SharedPreference.TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, '1', SharedPreference.profileObject.client_token)
+            // SharedPreference.TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, '1', SharedPreference.profileObject.client_token)
             await this.onLoadLoginWithPin(this.state.pin)
         }
     }
@@ -217,9 +198,6 @@ export default class PinActivity extends Component {
                 }
             }, {
                 text: 'OK', onPress: () => {
-                    // SharedPreference.profileObject = null
-                    // this.saveProfile.setProfile(null)
-                    // this.props.navigation.navigate('RegisterScreen')
                     this.onReset()
                 }
             }
@@ -230,13 +208,14 @@ export default class PinActivity extends Component {
 
     onReset = async () => {
         SharedPreference.profileObject = await this.saveProfile.getProfile()
-        SharedPreference.TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, '1', SharedPreference.profileObject.client_token)
+        // SharedPreference.TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, '1', SharedPreference.profileObject.client_token)
         this.onLoginResetPinAPI()
     }
 
 
     onLoginResetPinAPI = async () => {
-        let data = await LoginResetPinAPI()
+
+        let data = await LoginResetPinAPI(SharedPreference.FUNCTIONID_PIN)
         code = data[0]
         data = data[1]
 

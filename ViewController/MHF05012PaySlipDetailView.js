@@ -26,6 +26,9 @@ import Months from "./../constants/Month"
 let currentmonth = new Date().getMonth();
 let currentyear = new Date().getFullYear();
 
+import Authorization from '../SharedObject/Authorization'
+import StringText from '../SharedObject/StringText';
+
 export default class PayslipDetail extends Component {
 
     constructor(props) {
@@ -50,7 +53,8 @@ export default class PayslipDetail extends Component {
             yearselected: this.props.navigation.getParam("yearselected", ""),
             datadetail: this.props.navigation.getParam("Datadetail", ""),
             rollid: this.props.navigation.getParam("rollid", ""),
-            havePermission: false
+            havePermission: false,
+            yearArray: ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"]
         }
         // console.log('monthselected :', this.state.monthselected)
         // console.log('initialyear :', this.state.initialyear)
@@ -75,23 +79,17 @@ export default class PayslipDetail extends Component {
 
     }
 
-    onDownloadPDFFile() {
+    onDownloadPDFFile = async () => {
 
         PAYSLIP_DOWNLOAD_API = SharedPreference.PAYSLIP_DOWNLOAD_API + this.state.rollid
-
-        console.log('PAYSLIP_DOWNLOAD_API : ', PAYSLIP_DOWNLOAD_API)
         pdfPath = PAYSLIP_DOWNLOAD_API
 
-        month = (this.state.initialyear + 1)
-        let numberMonth = month
-        if (month < 10) {
-            numberMonth = "0" + (month + 1)
-        } else {
-            numberMonth = month + 1
-        }
 
-        filename = "Payslip_" + this.state.monthselected + "_" + numberMonth + '.pdf'
-        // console.log('PAYSLIP_DOWNLOAD_API : ', PAYSLIP_DOWNLOAD_API)
+        yearSelect = this.state.initialyear - this.state.yearselected
+
+        filename = "Payslip_" + this.state.yearArray[this.state.monthselected] + "_" + yearSelect + '.pdf'
+        FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, SharedPreference.FUNCTIONID_PAYSLIP, SharedPreference.profileObject.client_token)
+        // console.log("calendarPDFAPI ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
 
         if (Platform.OS === 'android') {
             RNFetchBlob
@@ -101,33 +99,28 @@ export default class PayslipDetail extends Component {
                         notification: false,
                         path: RNFetchBlob.fs.dirs.DownloadDir + '/' + filename,
                         mime: 'application/pdf',
-                        title: 'appTitle',
+                        title: filename,
                         description: 'shippingForm'
                     }
                 })
                 .fetch('GET', pdfPath, {
                     'Content-Type': 'application/pdf;base64',
-                    Authorization: SharedPreference.TOKEN
+                    Authorization: FUNCTION_TOKEN
                 })
                 .then((resp) => {
-                    console.log("Android ==> LoadPDFFile ==> Load Success  : ", resp);
+                    //console.log("Android ==> LoadPDFFile ==> Load Success  : ", resp);
                     RNFetchBlob.android.actionViewIntent(resp.data, 'application/pdf')
                 })
                 .catch((errorCode, errorMessage) => {
-                    console.log("Android ==> LoadPDFFile ==> Load errorCode  : ", errorCode);
+                    //console.log("Android ==> LoadPDFFile ==> Load errorCode  : ", errorCode);
                     Alert.alert(
-                        errorCode,
-                        errorMessage,
+                        StringText.ALERT_PAYSLIP_CANNOT_DOWNLOAD_TITLE,
+                        StringText.ALERT_PAYSLIP_CANNOT_DOWNLOAD_DESC,
                         [
-                            {
-                                text: 'Cancel', onPress: () => {
-                                    console.log("Android ==> LoadPDFFile ==> Load errorCode  : ", errorCode);
 
-                                }, style: 'cancel'
-                            },
                             {
                                 text: 'OK', onPress: () => {
-                                    this.addEventOnCalendar()
+                                    // this.addEventOnCalendar()
                                 }
                             },
                         ],
@@ -135,8 +128,8 @@ export default class PayslipDetail extends Component {
                     )
                 })
         } else {//iOS
-            console.log("loadPdf pdfPath : ", pdfPath)
-            console.log("loadPdf filename : ", filename)
+            //console.log("loadPdf pdfPath : ", pdfPath)
+            //console.log("loadPdf filename : ", filename)
             RNFetchBlob
                 .config({
                     fileCache: true,
@@ -145,22 +138,34 @@ export default class PayslipDetail extends Component {
                 })
                 .fetch('GET', pdfPath, {
                     'Content-Type': 'application/pdf;base64',
-                    Authorization: SharedPreference.TOKEN
+                    Authorization: FUNCTION_TOKEN
                 })
                 .then((resp) => {
-                    console.log("WorkingCalendarYear pdf1 : ", resp);
-                    console.log("WorkingCalendarYear pdf2 : ", resp.path());
+                    //console.log("WorkingCalendarYear pdf1 : ", resp);
+                    //console.log("WorkingCalendarYear pdf2 : ", resp.path());
                     RNFetchBlob.fs.exists(resp.path())
                         .then((exist) => {
-                            console.log(`WorkingCalendarYear ==> file ${exist ? '' : 'not'} exists`)
+                            //console.log(`WorkingCalendarYear ==> file ${exist ? '' : 'not'} exists`)
                         })
-                        .catch(() => { console.log('WorkingCalendarYear ==> err while checking') });
+                        .catch(() => {
+                            //console.log('WorkingCalendarYear ==> err while checking')
+                        });
 
                     RNFetchBlob.ios.openDocument(resp.path());
                 })
                 .catch((errorMessage, statusCode) => {
-                    console.log('Error: ' + errorMessage);
-                    console.log('Status code: ' + statusCode);
+                    Alert.alert(
+                        StringText.ALERT_PAYSLIP_CANNOT_DOWNLOAD_TITLE,
+                        StringText.ALERT_PAYSLIP_CANNOT_DOWNLOAD_DESC,
+                        [
+                            {
+                                text: 'OK', onPress: () => {
+                                    // this.addEventOnCalendar()
+                                }
+                            },
+                        ],
+                        { cancelable: false }
+                    )
                 });
         }
     }
@@ -190,13 +195,13 @@ export default class PayslipDetail extends Component {
         }
     }
 
-    getPayslipDetailfromAPI() {
-        
+    getPayslipDetailfromAPI = async () => {
+
         this.state.rollid = 0
 
         for (let i = 0; i < this.state.yearlist[this.state.yearselected].monthlistdata.length; i++) {
-            
-            console.log(' loop  rollid :',  this.state.yearlist[this.state.yearselected].monthlistdata[i].id)
+
+            console.log(' loop  rollid :', this.state.yearlist[this.state.yearselected].monthlistdata[i].id)
 
             if (this.state.yearlist[this.state.yearselected].monthlistdata[i].month === this.state.monthselected + 1) {
 
@@ -204,6 +209,10 @@ export default class PayslipDetail extends Component {
             }
         }
         console.log('rollid :', this.state.rollid)
+
+        FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, SharedPreference.FUNCTIONID_PAYSLIP, SharedPreference.profileObject.client_token)
+        console.log("calendarPDFAPI ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
+
 
         if (this.state.rollid) {
 
@@ -214,7 +223,7 @@ export default class PayslipDetail extends Component {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
-                    Authorization: SharedPreference.TOKEN,
+                    Authorization: FUNCTION_TOKEN,
                 },
             })
                 .then((response) => response.json())
@@ -728,10 +737,10 @@ export default class PayslipDetail extends Component {
                             <TouchableOpacity style={{ flex: 1 }} onPress={(this.onShowIncomeView.bind(this))}>
                                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: 10 }}>
 
-                                    <Text style={this.state.showincome?styles.payslipTextCente_income_ena:styles.payslipTextCente_income_dis}>INCOME</Text>
+                                    <Text style={this.state.showincome ? styles.payslipTextCente_income_ena : styles.payslipTextCente_income_dis}>INCOME</Text>
                                 </View>
                                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginBottom: 10 }}>
-                                    <Text style={this.state.showincome?styles.payslipTextCente_income_ena:styles.payslipTextCente_income_dis}>
+                                    <Text style={this.state.showincome ? styles.payslipTextCente_income_ena : styles.payslipTextCente_income_dis}>
                                         {sum_income_str}
                                     </Text>
                                 </View>
@@ -740,10 +749,10 @@ export default class PayslipDetail extends Component {
                         <View style={{ flex: 1, marginTop: 5, marginLeft: 5, borderRadius: 5, backgroundColor: this.state.deductBG, flexDirection: 'column', }}>
                             <TouchableOpacity style={{ flex: 1 }} onPress={(this.onShowDeductView.bind(this))}>
                                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: 10 }}>
-                                    <Text style={this.state.showincome?styles.payslipTextCente_deduct_dis:styles.payslipTextCente_deduct_ena}>DEDUCT</Text>
+                                    <Text style={this.state.showincome ? styles.payslipTextCente_deduct_dis : styles.payslipTextCente_deduct_ena}>DEDUCT</Text>
                                 </View>
                                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginBottom: 10 }}>
-                                    <Text style={this.state.showincome?styles.payslipTextCente_deduct_dis:styles.payslipTextCente_deduct_ena}>
+                                    <Text style={this.state.showincome ? styles.payslipTextCente_deduct_dis : styles.payslipTextCente_deduct_ena}>
                                         {sum_deduct_str}
                                     </Text>
                                 </View>
