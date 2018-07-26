@@ -31,7 +31,7 @@ import Colors from '../SharedObject/Colors';
 
 let fontsizearr = ['50%', '80%', '100%', '120%', '150%', '180%'];
 let fontname = ['times', 'courier', 'arial', 'serif', 'cursive', 'fantasy', 'monospace'];
-let streamer = new Streamer();
+
 
 
 const instructions = Platform.select({
@@ -41,11 +41,16 @@ const instructions = Platform.select({
         'Shake or press menu button for dev menu',
 });
 
+
+
 export default class HandbookViewer extends Component {
 
     constructor(props) {
+
         super(props);
+
         this.state = {
+
             flow: "paginated", // paginated || scrolled-continuous
             location: 1,
             url: "https://s3-us-west-2.amazonaws.com/pressbooks-samplefiles/MetamorphosisJacksonTheme/Metamorphosis-jackson.epub",
@@ -79,27 +84,39 @@ export default class HandbookViewer extends Component {
             titleTOC: 'Table Of Content',
 
         };
+        
+         this.streamer = new Streamer();
+
+        // this.streamer.start("8899")
+        // .then((origin) => {
+        //     console.log("Served from:", origin)
+        //     return this.streamer.get("https://s3.amazonaws.com/epubjs/books/moby-dick.epub");
+        // })
+        // .then((src) => {
+        //     console.log("Loading from:", src);
+        //     return this.setState({src});
+        // });
+
 
         
     }
 
     componentDidMount() {
-
-        console.log('dsdsdadadad')
-
         
-        streamer.start()
+        this.streamer.start()
             .then((origin) => {
-                setState({ origin })
-                return streamer.get(this.state.url);
+                this.setState({ origin })
+                return this.streamer.get(this.state.url);
             })
             .then((src) => {
-                return setState({ src });
+                return this.setState({ src });
             });
+
+        
     }
 
     componentWillUnmount() {
-       streamer.kill();
+       this.streamer.kill();
     }
 
     toggleBars() {
@@ -564,8 +581,18 @@ export default class HandbookViewer extends Component {
 
                 {this.renderexpand()}
 
-                <Epub src={"https://s3.amazonaws.com/epubjs/books/moby-dick/OPS/package.opf"}
-		  flow={"paginated"} />
+                <Epub style={styles.epubreader}
+                    ref={component => this.epub = component}
+                    src={this.state.src}
+                    font={this.state.selectfontnametext}
+                    height='100%'
+                    fontSize={fontsizearr[this.state.fontsizelivel]}
+                    flow={this.state.flow}
+                    location={this.state.location} 
+                    origin={this.state.origin}
+                    onError={(message) => {
+                        console.log("EPUBJS-Webview", message);
+                    }}/>
 
 
                 <View style={{ height: 30, justifyContent: 'center' }}>

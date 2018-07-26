@@ -40,8 +40,7 @@ class BookCover extends Component {
       });
     }
   
-    
-  
+
     refresh() {
       console.log('[BookCover] Refresh');
   
@@ -259,6 +258,7 @@ export default class Handbookctivity extends Component {
     onDetail() {
 
         this.props.navigation.navigate('HandbookDetail');
+
         
     }
     setrowstate() {
@@ -354,8 +354,7 @@ export default class Handbookctivity extends Component {
 
         dataSource.map((item, i) => {
 
-            
-
+        
             this.state.temparray.push(
 
                 this.createcomponent(i)
@@ -387,8 +386,10 @@ export default class Handbookctivity extends Component {
                 this.state.temparray = []
 
             }
+        
         });
     }
+    
 
     createcomponent(i) {
        // console.log('path : ', SharedPreference.HOST + dataSource[0].handbook_cover)
@@ -430,9 +431,9 @@ export default class Handbookctivity extends Component {
                             <BookCover
                                 // ref={bc => { this.bookCover = bc }}
                                 placeholderUrl={'https://facebook.github.io/react/logo-og.png'}
-                               // coverUrl={'https://tdemconnect-dev.tdem.toyota-asia.com/api/v1/handbooks/download?file=00021'}
-                                coverUrl={SharedPreference.HOST + dataSource[i].handbook_cover}
-                               // bookName={'book'+i}
+                               coverUrl={'https://tdemconnect-dev.tdem.toyota-asia.com/api/v1/handbooks/download?file=00021'}
+                                // coverUrl={SharedPreference.HOST + dataSource[i].handbook_cover}
+                                bookName={new Date().getTime()}
                             />
                         </View>
                     </View>
@@ -443,7 +444,12 @@ export default class Handbookctivity extends Component {
             </View>
         )
     }
+
+
+
     render() {
+
+
         return (
             <View style={{flex: 1}} >
                 

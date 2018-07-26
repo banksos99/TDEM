@@ -48,6 +48,7 @@
 		BA4C9B5E20F73E3800C47899 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BDD0D66C20F5F0AA00593D44 /* libReact.a */; };
 		BA4C9B8020F73FF900C47899 /* libRNFetchBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BA4C9B7F20F73FEB00C47899 /* libRNFetchBlob.a */; };
 		BA6B581C2109FC0E004C44C4 /* libRCTWKWebView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BDFDE90520F4E7D90094E5AB /* libRCTWKWebView.a */; };
+		BA6B584E210A117A004C44C4 /* libRCTOrientation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BDFDE8FE20F4E7220094E5AB /* libRCTOrientation.a */; };
 		BA8CB70520F72FB600FC1F92 /* libRNFirebase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E7D4B151F8AFD6F00699FE4 /* libRNFirebase.a */; };
 		BAF9561BB4526904D3EC6946 /* libPods-tdemconnect.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3CA56E1C6F131DAF32B1777B /* libPods-tdemconnect.a */; };
 		BAF9756920FD89CB0044C4ED /* SplashBg.png in Resources */ = {isa = PBXBuildFile; fileRef = BAF9753A20FD89CA0044C4ED /* SplashBg.png */; };
@@ -512,6 +513,7 @@
 				139105C61AF99C1200B5F7CC /* libRCTSettings.a in Frameworks */,
 				BA4C9B8020F73FF900C47899 /* libRNFetchBlob.a in Frameworks */,
 				BA6B581C2109FC0E004C44C4 /* libRCTWKWebView.a in Frameworks */,
+				BA6B584E210A117A004C44C4 /* libRCTOrientation.a in Frameworks */,
 				832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */,
 				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
 				BD6BCF8320F4AB1E00E7AB24 /* libRNSVG.a in Frameworks */,
