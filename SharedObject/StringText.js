@@ -29,14 +29,22 @@ export default {
 
 
   CALENDAR_ALERT_PDF_TITLE_SUCCESS: 'Success.',
+
   CALENDAR_ALERT_PDF_DESC_SUCCESS_1: 'Calendar ',
   CALENDAR_ALERT_PDF_DESC_SUCCESS_2: ' has been downloaded.',
+
+  CALENDAR_ALERT_PDF_TITLE_FAIL: 'Calendar ',
+  CALENDAR_ALERT_PDF_DESC_FAIL: 'No data',
 
   CALENDAR_ALERT_PDF_BUTTON_SUCCESS: 'OK',
 
 
   CALENDAR_MONTHVIEW_EVENT_TITLE: 'Event',
   CALENDAR_MONTHVIEW_NO_EVENT_TEXT: 'No event',
+
+  CALENDAR_MONTHVIEW_SELECT_NEW_PLACE_TITLE: 'Sorry',
+  CALENDAR_MONTHVIEW_SELECT_NEW_PLACE_DESC: 'No Data',
+  // 
 
   SERVER_ERROR_TITLE: 'MHF00002ACRI',
   SERVER_ERROR_DESC: 'System Error (API). Please contact system administrator.',
@@ -61,9 +69,13 @@ export default {
   CHANGE_PIN_SUCCESS_TITLE: 'Change PIN Success',
 
   CHANGE_PIN_FAIL_TITLE: 'Sorry',
-  CHANGE_PIN_FAIL_DESC: 'Confirm new PIN incorrect.Please try again',
+  CHANGE_PIN_FAIL_DESC: 'Current PIN incorrect.Please try again',
 
   CHANGE_PIN_NOT_MATCH_TITLE: 'Sorry',
   CHANGE_PIN_NOT_MATCH_DESC: ' PIN incorrect.Please try again',
+
+  ALERT_PAYSLIP_CANNOT_DOWNLOAD_TITLE: 'Sorry',
+  ALERT_PAYSLIP_CANNOT_DOWNLOAD_DESC: 'Cannot download file.',
+
 
 };

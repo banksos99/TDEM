@@ -73,7 +73,6 @@ export default class calendarMonthView extends Component {
     }
 
     render() {
-
         let eventObject = this.state.eventObject
         if (eventObject == 'undefined' || eventObject == null) {
             return (<View style={styles.calendarEventItemLeftView}>

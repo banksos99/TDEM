@@ -75,31 +75,32 @@ export default class PinActivity extends Component {
 
     onLoadAppInfo = async () => {
         //TODO After
-        let data = await RestAPI(SharedPreference.APPLICATION_INFO_API, SharedPreference.FUNCTIONID_GENERAL_INFORMATION_SHARING)
-        code = data[0]
-        data = data[1]
+        console.log("TODO After")
+        // let data = await RestAPI(SharedPreference.APPLICATION_INFO_API, SharedPreference.FUNCTIONID_GENERAL_INFORMATION_SHARING)
+        // code = data[0]
+        // data = data[1]
 
-        if (code.SUCCESS == data.code) {
-            console.log('app info data :', data.data.app_version, SharedPreference.deviceInfo)
+        // if (code.SUCCESS == data.code) {
+        //     console.log('app info data :', data.data.app_version, SharedPreference.deviceInfo)
 
-            let appversion = SharedPreference.deviceInfo.appVersion
-            console.log('app_version ==> API :', data.data.app_version)
-            console.log('app_version ==> version App :', appversion)
+        //     let appversion = SharedPreference.deviceInfo.appVersion
+        //     console.log('app_version ==> API :', data.data.app_version)
+        //     console.log('app_version ==> version App :', appversion)
 
-            if (data.code == code.SUCCESS) {
-                if (data.data.app_version === appversion) {
-                    Alert.alert(
-                        'New Vresion Available',
-                        'This is a newer version available for download! Please update the app by vision the Apple Store',
-                        [
-                            { text: 'Update', onPress: () => console.log('OK Pressed') },
-                        ],
-                        { cancelable: false }
-                    )
-                }
-                this.props.navigation.navigate('HomeScreen')
-            }
-        }
+        //     if (data.code == code.SUCCESS) {
+        //         if (data.data.app_version === appversion) {
+        //             Alert.alert(
+        //                 'New Vresion Available',
+        //                 'This is a newer version available for download! Please update the app by vision the Apple Store',
+        //                 [
+        //                     { text: 'Update', onPress: () => console.log('OK Pressed') },
+        //                 ],
+        //                 { cancelable: false }
+        //             )
+        //         }
+        //         this.props.navigation.navigate('HomeScreen')
+        //     }
+        // }
     }
 
     onLoadInitialMaster = async () => {
@@ -120,7 +121,8 @@ export default class PinActivity extends Component {
                     SharedPreference.TB_M_LEAVETYPE = element.TB_M_LEAVETYPE
                 }
             }
-            await this.onLoadAppInfo()
+            // await this.onLoadAppInfo()
+            this.props.navigation.navigate('HomeScreen')
 
         } else {
             Alert.alert(

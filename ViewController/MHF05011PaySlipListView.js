@@ -24,6 +24,7 @@ import PayslipDataDetail from "./../InAppData/Payslipdatadetail2"
 // import api from "../../constants/APIService"
 import SharedPreference from "./../SharedObject/SharedPreference"
 import Dcryptfun from "./../SharedObject/Decryptfun"
+import Authorization from '../SharedObject/Authorization'
 
 import Month from "../constants/Month"
 
@@ -211,17 +212,17 @@ export default class PaySlipActivity extends Component {
                             styles.payslipitemlast :
                             styles.payslipitemdisable}
                             key={i}>
-                            
-                                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', }}>
-                                    <Text style={i === currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemmoneyred : styles.payslipitemdetail}>{Month.monthNamesShort[i]}</Text>
-                                </View>
-                                <View style={{ flex: 2, justifyContent: 'center', alignItems: 'center' }}>
-                                    <Text style={i === currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemmoneyred : styles.payslipitemdetail}>{net}</Text>
-                                </View>
-                                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', }}>
-    
-                                </View>
-                           
+
+                            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', }}>
+                                <Text style={i === currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemmoneyred : styles.payslipitemdetail}>{Month.monthNamesShort[i]}</Text>
+                            </View>
+                            <View style={{ flex: 2, justifyContent: 'center', alignItems: 'center' }}>
+                                <Text style={i === currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemmoneyred : styles.payslipitemdetail}>{net}</Text>
+                            </View>
+                            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', }}>
+
+                            </View>
+
                         </View>
                     );
 
@@ -347,7 +348,7 @@ export default class PaySlipActivity extends Component {
             ],
             { cancelable: false }
         )
-       
+
 
     }
     onDetail(year, index) {
@@ -427,7 +428,7 @@ export default class PaySlipActivity extends Component {
         this.setState({ isFetching: true }, function () { this.fetchData() });
     }
 
-    getPayslipDetailfromAPI  = async (year, index) => {
+    getPayslipDetailfromAPI = async (year, index) => {
 
         let rollid;
 
@@ -440,11 +441,10 @@ export default class PaySlipActivity extends Component {
         let host = SharedPreference.PAYSLIP_DETAIL_API + rollid
         // console
         FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, SharedPreference.FUNCTIONID_PAYSLIP, SharedPreference.profileObject.client_token)
-        console.log("calendarPDFAPI ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
 
         if (offine) {
 
-            dataSource: PayslipDataDetail.detail[dataSource.years[year].detail[index].payroll_id]
+            // dataSource: PayslipDataDetail.detail[dataSource.years[year].detail[index].payroll_id]
             this.props.navigation.navigate('PaySlipDetail', {
                 yearlist: yearlistdata,
                 initialyear: initialyear,
@@ -466,9 +466,7 @@ export default class PaySlipActivity extends Component {
             })
                 .then((response) => response.json())
                 .then((responseJson) => {
-
                     this.setState({
-
                         isscreenloading: false,
                         dataSource: responseJson
                         // datadetail: PayslipDataDetail.detail[dataSource.years[year].detail[index].payroll_id]
@@ -516,56 +514,12 @@ export default class PaySlipActivity extends Component {
 
     PayslipDetail() {
 
-        // var CryptoJS = require("crypto-js");
-
-        // var utf8 = require('utf8');
-        // var base64 = require('base-64');
-
-        // var orgtext = '121452';
-        // console.log('orgtext ',orgtext);
-        // var bytesd2 = base64.encode(orgtext);
-        // var textdecode = utf8.encode(bytesd2);
-        // console.log('textdecode ',textdecode);
-
-        // var encoded = 'Zm9vIMKpIGJhciDwnYyGIGJheg==';
-        // var bytes1 = base64.decode(textdecode);
-        // var text = utf8.decode(bytes1);
-        // console.log('textencode ', text);
-
-        // let mytext = 'my message';
-        // console.log("org text", mytext);
-        // var ciphertext = CryptoJS.AES.encrypt(mytext.toString(), 'zxcZXC');
-        // console.log("encrypted text", ciphertext.toString());
-
-        // var bytes = CryptoJS.AES.decrypt(ciphertext.toString(), 'zxcZXC');
-        // var plaintext = bytes.toString(CryptoJS.enc.Utf8);
-        // console.log("decrypted text", plaintext.toString());
-
-
-        // var bytes = CryptoJS.AES.decrypt('4ejgPP6u2s3RdwoRZX0PFkadzo1lVhcn9kB4iurRtt02lBOmgV2fabu7QSAPUtPe','zxcZXC');
-        // var plaintext = bytes.toString(CryptoJS.enc.Utf8);
-        // console.log("decrypted text", bytes);
-
-
         let exemption = '0';
         let income_acc = '0';
         let tax_acc = '0';
         let social_fund = '0';
         let emp_pf_year = '0';
         let com_pf_year = '0';
-
-        // if (dataSource.years[this.state.indexselectyear].header) {exemption = Dcryptfun.decrypt(dataSource.years[this.state.indexselectyear].header.exemption);}
-
-        // if (dataSource.years[this.state.indexselectyear].header) {income_acc = Dcryptfun.decrypt(dataSource.years[this.state.indexselectyear].header.income_acc);}
-
-        // if (dataSource.years[this.state.indexselectyear].header) {tax_acc = Dcryptfun.decrypt(dataSource.years[this.state.indexselectyear].header.tax_acc);}
-
-        // if (dataSource.years[this.state.indexselectyear].header) {social_fund = Dcryptfun.decrypt(dataSource.years[this.state.indexselectyear].header.social_fund);}
-
-        // if (dataSource.years[this.state.indexselectyear].header) {emp_pf_year = Dcryptfun.decrypt(dataSource.years[this.state.indexselectyear].header.emp_pf_year);}
-
-        // if (dataSource.years[this.state.indexselectyear].header) {com_pf_year = Dcryptfun.decrypt(dataSource.years[this.state.indexselectyear].header.com_pf_year);}
-
 
         return (
 

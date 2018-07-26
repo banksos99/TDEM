@@ -16,7 +16,7 @@ export default class LoadPDFFile {
                             notification: false,
                             path: RNFetchBlob.fs.dirs.DownloadDir + file,
                             mime: 'application/pdf;base64',
-                            title: 'appTitle',
+                            title: file,
                             description: 'shippingForm'
                         }
                     })

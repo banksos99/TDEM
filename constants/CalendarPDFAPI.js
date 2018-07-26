@@ -17,11 +17,9 @@ export default async function getPDF(year, company,functionID) {
         CUT_JSON: "700",
     }
 
-    // console.log("calendarPDFAPI ==>  functionID : ", functionID)
     FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, functionID, SharedPreference.profileObject.client_token)
-    console.log("calendarPDFAPI ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
     let url = SharedPreference.CALENDER_YEAR_PDF_API + year + "&company=" + company
-    console.log("calendarPDFAPI ==> url : ", url)
+
 
     return fetch(url, {
         method: 'GET',

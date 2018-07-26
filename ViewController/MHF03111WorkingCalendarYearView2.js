@@ -11,6 +11,7 @@ import {
     Platform,
     ScrollView
 } from 'react-native';
+import Authorization from '../SharedObject/Authorization'
 
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 
@@ -811,7 +812,7 @@ export default class calendarYearView extends Component {
                         notification: false,
                         path: RNFetchBlob.fs.dirs.DownloadDir + '/' + filename,
                         mime: 'application/pdf',
-                        title: 'appTitle',
+                        title: filename,
                         description: 'shippingForm'
                     }
                 })

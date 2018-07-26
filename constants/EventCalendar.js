@@ -3,6 +3,7 @@ import RNCalendarEvents from 'react-native-calendar-events';
 
 import moment from 'moment'
 import SharedPreference from '../SharedObject/SharedPreference';
+import Authorization from "../SharedObject/Authorization";
 
 export default class EventCalendar {
 

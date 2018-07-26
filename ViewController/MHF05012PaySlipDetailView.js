@@ -26,6 +26,9 @@ import Months from "./../constants/Month"
 let currentmonth = new Date().getMonth();
 let currentyear = new Date().getFullYear();
 
+import Authorization from '../SharedObject/Authorization'
+import StringText from '../SharedObject/StringText';
+
 export default class PayslipDetail extends Component {
 
     constructor(props) {
@@ -50,17 +53,17 @@ export default class PayslipDetail extends Component {
             yearselected: this.props.navigation.getParam("yearselected", ""),
             datadetail: this.props.navigation.getParam("Datadetail", ""),
             rollid: this.props.navigation.getParam("rollid", ""),
-            havePermission: false
+            havePermission: false,
+            yearArray: ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"]
         }
 
-        console.log('monthselected :', this.state.monthselected)
-        console.log('initialyear :', this.state.initialyear)
-
-        console.log('initmonth :', this.state.initmonth)
-        console.log('currentmonth :', currentmonth)
-        console.log('currentyear :', currentyear)
-        console.log('rollid :', this.state.rollid)
-        console.log('this.state.yearlist :', this.state.yearlist)
+        // console.log('monthselected :', this.state.monthselected)
+        // console.log('initialyear :', this.state.initialyear)
+        // console.log('initmonth :', this.state.initmonth)
+        // console.log('currentmonth :', currentmonth)
+        // console.log('currentyear :', currentyear)
+        // console.log('rollid :', this.state.rollid)
+        // console.log('this.state.yearlist :', this.state.yearlist)
     }
 
     onBack() {
@@ -83,19 +86,12 @@ export default class PayslipDetail extends Component {
         PAYSLIP_DOWNLOAD_API = SharedPreference.PAYSLIP_DOWNLOAD_API + this.state.rollid
         pdfPath = PAYSLIP_DOWNLOAD_API
 
-        month = (this.state.initialyear + 1)
-        let numberMonth
-        if (month < 10) {
-            numberMonth = "0" + (month + 1)
-        } else {
-            numberMonth = month + 1
-        }
 
-        filename = "Payslip_" + this.state.monthselected + "_" + numberMonth + '.pdf'
-        // console.log('PAYSLIP_DOWNLOAD_API : ', PAYSLIP_DOWNLOAD_API)
+        yearSelect = this.state.initialyear - this.state.yearselected
+
+        filename = "Payslip_" + this.state.yearArray[this.state.monthselected] + "_" + yearSelect + '.pdf'
         FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, SharedPreference.FUNCTIONID_PAYSLIP, SharedPreference.profileObject.client_token)
-        console.log("calendarPDFAPI ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
-
+        // console.log("calendarPDFAPI ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
 
         if (Platform.OS === 'android') {
             RNFetchBlob
@@ -105,7 +101,7 @@ export default class PayslipDetail extends Component {
                         notification: false,
                         path: RNFetchBlob.fs.dirs.DownloadDir + '/' + filename,
                         mime: 'application/pdf',
-                        title: 'appTitle',
+                        title: filename,
                         description: 'shippingForm'
                     }
                 })
@@ -114,24 +110,19 @@ export default class PayslipDetail extends Component {
                     Authorization: FUNCTION_TOKEN
                 })
                 .then((resp) => {
-                    console.log("Android ==> LoadPDFFile ==> Load Success  : ", resp);
+                    //console.log("Android ==> LoadPDFFile ==> Load Success  : ", resp);
                     RNFetchBlob.android.actionViewIntent(resp.data, 'application/pdf')
                 })
                 .catch((errorCode, errorMessage) => {
-                    console.log("Android ==> LoadPDFFile ==> Load errorCode  : ", errorCode);
+                    //console.log("Android ==> LoadPDFFile ==> Load errorCode  : ", errorCode);
                     Alert.alert(
-                        errorCode,
-                        errorMessage,
+                        StringText.ALERT_PAYSLIP_CANNOT_DOWNLOAD_TITLE,
+                        StringText.ALERT_PAYSLIP_CANNOT_DOWNLOAD_DESC,
                         [
-                            {
-                                text: 'Cancel', onPress: () => {
-                                    console.log("Android ==> LoadPDFFile ==> Load errorCode  : ", errorCode);
 
-                                }, style: 'cancel'
-                            },
                             {
                                 text: 'OK', onPress: () => {
-                                    this.addEventOnCalendar()
+                                    // this.addEventOnCalendar()
                                 }
                             },
                         ],
@@ -139,8 +130,8 @@ export default class PayslipDetail extends Component {
                     )
                 })
         } else {//iOS
-            console.log("loadPdf pdfPath : ", pdfPath)
-            console.log("loadPdf filename : ", filename)
+            //console.log("loadPdf pdfPath : ", pdfPath)
+            //console.log("loadPdf filename : ", filename)
             RNFetchBlob
                 .config({
                     fileCache: true,
@@ -152,19 +143,31 @@ export default class PayslipDetail extends Component {
                     Authorization: FUNCTION_TOKEN
                 })
                 .then((resp) => {
-                    console.log("WorkingCalendarYear pdf1 : ", resp);
-                    console.log("WorkingCalendarYear pdf2 : ", resp.path());
+                    //console.log("WorkingCalendarYear pdf1 : ", resp);
+                    //console.log("WorkingCalendarYear pdf2 : ", resp.path());
                     RNFetchBlob.fs.exists(resp.path())
                         .then((exist) => {
-                            console.log(`WorkingCalendarYear ==> file ${exist ? '' : 'not'} exists`)
+                            //console.log(`WorkingCalendarYear ==> file ${exist ? '' : 'not'} exists`)
                         })
-                        .catch(() => { console.log('WorkingCalendarYear ==> err while checking') });
+                        .catch(() => {
+                            //console.log('WorkingCalendarYear ==> err while checking')
+                        });
 
                     RNFetchBlob.ios.openDocument(resp.path());
                 })
                 .catch((errorMessage, statusCode) => {
-                    console.log('Error: ' + errorMessage);
-                    console.log('Status code: ' + statusCode);
+                    Alert.alert(
+                        StringText.ALERT_PAYSLIP_CANNOT_DOWNLOAD_TITLE,
+                        StringText.ALERT_PAYSLIP_CANNOT_DOWNLOAD_DESC,
+                        [
+                            {
+                                text: 'OK', onPress: () => {
+                                    // this.addEventOnCalendar()
+                                }
+                            },
+                        ],
+                        { cancelable: false }
+                    )
                 });
         }
     }

@@ -42,6 +42,9 @@ let timerstatus;
 // SharedPreference.notipayAnnounceMentID = 1
 // SharedPreference.notipayslipID = 0
 
+const _format = 'YYYY-MM-DD hh:mm:ss'
+import moment from 'moment'
+
 import Authorization from "../SharedObject/Authorization";
 
 
@@ -68,7 +71,7 @@ export default class HMF01011MainView extends Component {
             username: SharedPreference.profileObject.employee_name,
             page: 0
         }
-      
+
         //Check Manager status
 
 
@@ -83,7 +86,7 @@ export default class HMF01011MainView extends Component {
         console.log("MainView ====> profileObject ==> managerstatus ==> ", managerstatus)
     }
 
-    
+
     loadData = async () => {
 
         autoSyncCalendarBool = await this.saveAutoSyncCalendar.getAutoSyncCalendar()
@@ -104,13 +107,13 @@ export default class HMF01011MainView extends Component {
 
     async componentDidMount() {
 
-        if(!timerstatus){
+        if (!timerstatus) {
             this.inappTimeInterval();
             timerstatus = true;
         }
-        
+
         //console.log('set inappTimeInterval')
-        this.setState({ page: 0,})
+        this.setState({ page: 0, })
 
         this.redertabview()
 
@@ -127,44 +130,26 @@ export default class HMF01011MainView extends Component {
         }
 
         await this.loadData()
-        
-    }
-
-    // check inapp notofication
-
-    getParsedDate() {
-
-        let date = new Date()
-    
-        date = String(date).split(' ');
-    
-        let days = String(date[0]).split('-');
-    
-        let hours = String(date[4]).split(':');
-    
-        let mon_num = 0
-    
-        for (let i = 0; i < Month.monthNamesShort2.length; i++) {
-          if (Month.monthNamesShort2[i] === date[1]) {
-            mon_num = i + 1;
-          }
-
-        }
-        return date[3] + '-' + mon_num + '-' + date[2] + ' ' + hours[0] + ':' + hours[1] + ':' + hours[2];
 
     }
-    onLoadInAppNoti() {
 
-        let newdate = this.getParsedDate()
-        console.log('host', SharedPreference.PULL_NOTIFICATION_API + newdate)
-        console.log('token', SharedPreference.TOKEN)
-        console.log('timerstatus',timerstatus)
+
+
+    onLoadInAppNoti = async () => {
+
+        let today = new Date()
+        const newdate = moment(today).format(_format).valueOf();
+        console.log("selectedDateMonth : ", newdate)
+        FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, 1, SharedPreference.profileObject.client_token)
+        // console.log("calendarPDFAPI ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
+        latest_date = "2018-01-01 12:00:00"
+
         return fetch(SharedPreference.PULL_NOTIFICATION_API + newdate, {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                Authorization: SharedPreference.TOKEN,
+                Authorization: FUNCTION_TOKEN,
             },
         })
             .then((response) => response.json())
@@ -173,9 +158,7 @@ export default class HMF01011MainView extends Component {
                     if (timerstatus) {
                         this.inappTimeInterval()
                     }
-
                     console.log('inapp responseJson :', responseJson)
-
                     if (responseJson.status == 403) {
                         timerstatus = false
                         SharedPreference.profileObject = null
@@ -210,7 +193,7 @@ export default class HMF01011MainView extends Component {
     inappTimeInterval() {
         this.timer = setTimeout(() => {
             this.onLoadInAppNoti()
-
+        // }, 2000);
         }, 60000);
     };
 
@@ -522,6 +505,7 @@ export default class HMF01011MainView extends Component {
         let data = await RestAPI(SharedPreference.NONPAYROLL_SUMMARY_API, SharedPreference.FUNCTIONID_NON_PAYROLL)
         code = data[0]
         data = data[1]
+        console.log("loadNonpayrollfromAPI  ==> data : ",data.data)
 
         if ((code.SUCCESS == data.code) | (code.NODATA == data.code)) {
             this.props.navigation.navigate('NonPayrollList', {
@@ -533,11 +517,7 @@ export default class HMF01011MainView extends Component {
     }
     loadPayslipDetailfromAPI = async () => {
         let host = SharedPreference.PAYSLIP_DETAIL_API + SharedPreference.notipayslipID
-        // console.log('host', host)
-        // console.log('TOKEN', SharedPreference.TOKEN)
-        // console.log("setPinAPI ==>  functionID : ", functionID)
         let FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, SharedPreference.FUNCTIONID_PAYSLIP, SharedPreference.profileObject.client_token)
-        // console.log("setPinAPI ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
 
         return fetch(host, {
             method: 'GET',
@@ -640,7 +620,7 @@ export default class HMF01011MainView extends Component {
     }
 
     loadHandbooklistfromAPI = async () => {
-        console.log("loadHandbooklistfromAPI",SharedPreference.HANDBOOK_LIST)
+        console.log("loadHandbooklistfromAPI", SharedPreference.HANDBOOK_LIST)
 
         this.APICallback(await RestAPI(SharedPreference.HANDBOOK_LIST), 'Handbooklist')
         // this.props.navigation.navigate('Handbooklist');

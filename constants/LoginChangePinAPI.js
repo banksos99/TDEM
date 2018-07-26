@@ -22,8 +22,6 @@ export default async function changePin(oldPin, newPin,functionID) {
      FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, functionID, SharedPreference.profileObject.client_token)
      console.log("calendarPDFAPI ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
 
-
-
     return fetch(SharedPreference.SET_PIN_API, {
         method: 'POST',
         headers: {

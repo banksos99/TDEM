@@ -165,65 +165,6 @@ export default class OTSummaryBarChart extends Component {
 
     }
 
-    // loadOTSummarySelffromAPI(omonth, oyear) {
-
-     
-    //     let tmonth = omonth.toString();
-     
-
-    //     if (omonth < 10) {
-    //         tmonth = '0' + omonth
-    //     }
-
-    //     return fetch(('http://192.168.2.189:8080/api/v1/ot/summary?month=' + tmonth + '&year=' + oyear), {
-    //         method: 'GET',
-    //         headers: {
-    //             'Accept': 'application/json',
-    //             'Content-Type': 'application/json',
-    //             Authorization: 'Bearer Mi5IRjA1MDEuZTExZGI3YjllYTY0MjNkNDVmYTYyNmNkMzI1ZDhlN2U3NmI4Mzk0NTZhMGU5ODcxYzJiMzJiYzYyZWFlOWUzZGFiMDlhN2Y2M2I1OTE5MTkzZWYwNTYzYjAxODNiYjA2M2RhODAyN2Q5OTE3ZWNhOGExMTBlNTgzYmI3NTkzMmI=',
-    //         },
-    //     })
-  
-    //         .then((response) => response.json())
-    //         .then((responseJson) => {
-
-    //             try {
-    //                 this.setState({
-
-    //                     isscreenloading: false,
-    //                     tdataSource: responseJson.data,
-
-    //                 }, function () {
-    //                     console.log('tosummary data : ',this.state.tdataSource)
-    //                     // this.state.tdataSource = responseJson;
-
-
-    //                 });
-
-    //             } catch (error) {
-
-    //                 //console.log('erreo1 :', error);
-
-    //             }
-    //         })
-    //         .catch((error) => {
-
-    //             Alert.alert(
-    //                 'MHF00002ACRI',
-    //                 'System Error (API). Please contact system administrator.',
-    //                 [
-    //                     { text: 'OK', onPress: () => console.log('OK Pressed') },
-    //                 ],
-    //                 { cancelable: false }
-    //             )
-
-    //             //console.log(error);
-
-    //         });
-
-
-    // }
-
     loadOTSummarySelffromAPI = async (omonth, oyear) => {
         let tmonth = omonth.toString();
         if (omonth < 10) {

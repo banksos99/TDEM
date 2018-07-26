@@ -44,6 +44,7 @@ import SharedPreference from './../SharedObject/SharedPreference';
 let mon = ['Jan', 'Feb', 'Mar', 'Apl', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
 import ChangePINScreen from "./ChangePINScreen"
+import Authorization from '../SharedObject/Authorization'
 
 const AppNavigatorPin = createSwitchNavigator({
     RegisterScreen: { screen: registerScreen },
