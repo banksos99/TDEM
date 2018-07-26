@@ -17,6 +17,7 @@ import { styles } from "./../SharedObject/MainStyles"
 
 import Months from "./../constants/Month"
 
+
 export default class NonpayrollActivity extends Component {
     constructor(props) {
         super(props);
@@ -29,13 +30,13 @@ export default class NonpayrollActivity extends Component {
         };
     }
 
-    componentWillMount() {
-        if (Platform.OS !== 'android') return
-        BackHandler.addEventListener('hardwareBackPress', () => {
-            this.props.navigation.navigate('HomeScreen');
-            return true
-        })
-    }
+    // componentWillMount() {
+    //     if (Platform.OS !== 'android') return
+    //     BackHandler.addEventListener('hardwareBackPress', () => {
+    //         this.props.navigation.navigate('HomeScreen');
+    //         return true
+    //     })
+    // }
 
     onBack() {
         this.props.navigation.navigate('HomeScreen');
@@ -87,11 +88,17 @@ export default class NonpayrollActivity extends Component {
         return Decrypt.decrypt(code);
     }
 
-    customMonthContainer(monthNumber, amount) {
+    customMonthContainer(monthNumber, amount, badge) {
         console.log("Nonpayroll ==> customMonthContainer ==> monthNumber : ", monthNumber)
         console.log("Nonpayroll ==> customMonthContainer ==> amount : ", amount)
 
-        amount = 10
+        // TODO Bell
+        // amount = 10
+
+        if (badge == null) {
+            badge = 0
+        }
+
         let currentYear = new Date().getFullYear()
         let currentMonth = new Date().getMonth() + 1
 
@@ -100,28 +107,37 @@ export default class NonpayrollActivity extends Component {
             if (!amount) {
                 amount = '0.00'
             }
-            return <View style={[styles.nonPayRollitem, {
-                backgroundColor: Colors.calendarRedDotColor,
-            }]}>
-                <TouchableOpacity
-                    style={styles.button}
-                    disable={amount}
-                    onPress={() => {
-                        this.props.navigation.navigate('NonPayrollDetail', {
-                            month: monthNumber,
-                            selectYear: this.state.selectYear,
-                            dataObject: this.state.dataSource
-                        });
-                    }}
-                >
-                    <View style={styles.nonPayRollDetailContainer}>
-                        <Text style={[styles.payslipitemdetail, { color: 'white' }]}>{Months.monthNamesShort[monthNumber - 1]}</Text>
+            return (<View style={styles.nonPayRollitemBg}>
+                <View style={[styles.nonPayRollitem, {
+                    backgroundColor: Colors.calendarRedDotColor
+                }]}>
+                    <TouchableOpacity
+                        style={styles.button}
+                        disable={amount}
+                        onPress={() => {
+                            this.props.navigation.navigate('NonPayrollDetail', {
+                                month: monthNumber,
+                                selectYear: this.state.selectYear,
+                                dataObject: this.state.dataSource
+                            });
+                        }}>
+                        <View style={styles.nonPayRollDetailContainer}>
+                            <Text style={[styles.payslipitemdetail, { color: 'white' }]}>{Months.monthNamesShort[monthNumber - 1]}</Text>
+                        </View>
+                        <View style={styles.nonPayRollDetailContainer}>
+                            <Text style={[styles.payslipitemmoney, { color: 'white' }]}>{amount}</Text>
+                        </View>
+                    </TouchableOpacity>
+                </View>
+                {badge != 0 ?
+                    <View style={styles.nonPayrollBadgeContrainer}>
+                        <Text style={styles.nonPayrollBadgeText}>
+                            {badge}
+                        </Text>
                     </View>
-                    <View style={styles.nonPayRollDetailContainer}>
-                        <Text style={[styles.payslipitemmoney, { color: 'white' }]}>{amount}</Text>
-                    </View>
-                </TouchableOpacity>
-            </View>
+                    : null}
+            </View>)
+
 
         } else if ((monthNumber > currentMonth) && (currentYear == this.state.selectYear)) {//After currentMonth
             // nodata
@@ -133,24 +149,33 @@ export default class NonpayrollActivity extends Component {
         } else if (amount) {//Normal Month - Has data 
             console.log('amount :', amount)
             return (
-                <View style={[styles.nonPayRollitem, {
-                    backgroundColor: Colors.calendarLocationBoxColor
-                }]}>
-                    <TouchableOpacity style={styles.button}
-                        onPress={() => {
-                            this.props.navigation.navigate('NonPayrollDetail', {
-                                month: monthNumber,
-                                selectYear: this.state.selectYear,
-                                dataObject: this.state.dataSource
-                            });
-                        }} >
-                        <View style={styles.nonPayRollDetailContainer}>
-                            <Text style={styles.payslipitemdetail}>{Months.monthNamesShort[monthNumber - 1]}</Text>
+                <View style={styles.nonPayRollitemBg}>
+                    <View style={[styles.nonPayRollitem, {
+                        backgroundColor: Colors.calendarLocationBoxColor
+                    }]}>
+                        <TouchableOpacity style={styles.button}
+                            onPress={() => {
+                                this.props.navigation.navigate('NonPayrollDetail', {
+                                    month: monthNumber,
+                                    selectYear: this.state.selectYear,
+                                    dataObject: this.state.dataSource
+                                });
+                            }} >
+                            <View style={styles.nonPayRollDetailContainer} >
+                                <Text style={styles.payslipitemdetail}>{Months.monthNamesShort[monthNumber - 1]}</Text>
+                            </View>
+                            <View style={styles.nonPayRollDetailContainer}>
+                                <Text style={styles.payslipitemmoney}>{amount}</Text>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+                    {badge != 0 ?
+                        <View style={styles.nonPayrollBadgeContrainer}>
+                            <Text style={styles.nonPayrollBadgeText}>
+                                {badge}
+                            </Text>
                         </View>
-                        <View style={styles.nonPayRollDetailContainer}>
-                            <Text style={styles.payslipitemmoney}>{amount}</Text>
-                        </View>
-                    </TouchableOpacity>
+                        : null}
                 </View>
             )
 
@@ -171,10 +196,10 @@ export default class NonpayrollActivity extends Component {
                             <Text style={styles.payslipitemdetail}>00.00</Text>
                         </View>
                     </TouchableOpacity>
+
                 </View>
             )
         }
-
     }
 
     onLoadAlertDialog() {

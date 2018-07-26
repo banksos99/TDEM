@@ -945,15 +945,39 @@ export const styles = StyleSheet.create({
     nonPayRollDetailContainer: {
         flex: 1, justifyContent: 'center', alignItems: 'center'
     },
-    nonPayRollitem: {
+    nonPayRollitem: {//TODO Bell
         flex: 1,
-        margin: 2,
+        // margin: 2,
         borderRadius: 5,
         borderWidth: 1,
         borderColor: Colors.lightGrayTextColor,
+        marginLeft: 1,
+        marginRight: 3,
+        marginTop: 2,
+        marginBottom: 2,
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    nonPayRollitemBg: {
+        flex: 1,
+    },
+
+    nonPayrollBadgeContrainer: {
+        position: 'absolute',
+        top: 0,
+        right: 0,
+        width: 20,
+        height: 20,
+        backgroundColor: Colors.redTextColor,
+        borderRadius: 20 / 2,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    nonPayrollBadgeText: {
+        color: 'white',
+        textAlign: 'center',
+        fontSize: 10
     },
     payslipTextCente_income_ena: {
         color: 'white',
@@ -1335,4 +1359,4 @@ export const styles = StyleSheet.create({
         fontSize: 12 * scale,
     }
 
-    })
+})

@@ -87,6 +87,9 @@ export default class mainview extends Component {
         }
       });
 
+      firebase.analytics().setCurrentScreen("Hello")
+      
+
     ///when open Application
     notificationListener = firebase
       .notifications()

@@ -135,11 +135,15 @@ export default class calendarYearView extends Component {
 
         this.setState({ isLoading: true })
         await this.onLoadCalendarAPI(year, location)
-
     }
 
     onLoadCalendarAPI = async (year, location) => {
-        console.log("onLoadCalendarAPI ====> start")
+        console.log("onLoadCalendarAPI ====> year : ", year, " , location : ", location)
+        console.log("location : ", this.state.selectLocation)
+
+        if (Platform.OS === "ios") {
+
+        }
         let data = await RestAPI(SharedPreference.CALENDER_YEAR_API + year + '&company=' + location, SharedPreference.FUNCTIONID_WORKING_CALENDAR)
         code = data[0]
         data = data[1]
@@ -288,8 +292,8 @@ export default class calendarYearView extends Component {
                             this.state.countDay.push(date.day);
                             const selectedDateMonth = moment(date.dateString).format(_format);
                             let checkSpecialHoliday = this.checkSpecialHoliday(selectedDateMonth);
-                            console.log("selectedDateMonth =====> : ", selectedDateMonth)
-                            console.log("checkSpecialHoliday =====> ", checkSpecialHoliday)
+                            // console.log("selectedDateMonth =====> : ", selectedDateMonth)
+                            // console.log("checkSpecialHoliday =====> ", checkSpecialHoliday)
 
                             if (checkSpecialHoliday == 'Y') {
                                 return <View style={styles.calendarDayContainer}>
@@ -448,10 +452,17 @@ export default class calendarYearView extends Component {
     }
 
     getShortLocation = async (fullLocation) => {
+        // console.log("getShortLocation : ", fullLocation)
         array = this.state.locationPicker
+        // console.log("getShortLocation array : ",array)
         for (let index = 0; index < array.length; index++) {
             const element = array[index];
+            // console.log("getShortLocation fullLocation : ", fullLocation)
+            // console.log("getShortLocation element label : ", element.label)
+            // console.log("getShortLocation element value : ", element.value)
+
             if (fullLocation == element.label) {
+                // console.log("getShortLocation selected : ", element.value)
                 return element.value
             }
         }
@@ -474,10 +485,23 @@ export default class calendarYearView extends Component {
     }
 
     getLocation = async () => {
+        //TODO Bell
+
+        if (Platform.OS === 'ios') {
+            locationShort = await this.getShortLocation(this.state.selectLocation)
+            console.log("locationShort : ", locationShort)
+            this.setState({
+                selectLocation: locationShort
+            })
+    
+        }
+
         this.setState({
             locationPickerView: false,
-            isLoading: true
+            isLoading: true,
         })
+
+
         await this.openNewPage(this.state.selectLocation)
     }
 
@@ -752,7 +776,7 @@ export default class calendarYearView extends Component {
             }
         } else {
 
-            
+
             Alert.alert(
                 StringText.CALENDAR_ALERT_PDF_TITLE_FAIL,
                 StringText.CALENDAR_ALERT_PDF_DESC_FAIL,

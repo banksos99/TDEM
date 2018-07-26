@@ -75,6 +75,7 @@ const AppNavigatorPin = createSwitchNavigator({
     ChangePINScreen: { screen: ChangePINScreen }
 }, {
         initialRouteName: 'PinScreen',
+        // initialRouteName: 'NonPayrollList',
         headerMode: 'none',
         transitionConfig: () => ({
             transitionSpec: {
@@ -115,6 +116,8 @@ const AppNavigatorRegister = createSwitchNavigator({
     ChangePINScreen: { screen: ChangePINScreen }
 }, {
         initialRouteName: 'RegisterScreen',
+        // initialRouteName: 'NonPayrollList',
+
         headerMode: 'none',
         transitionConfig: () => ({
             transitionSpec: {

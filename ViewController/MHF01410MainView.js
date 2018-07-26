@@ -3,7 +3,7 @@ import {
     View, Text, TouchableOpacity, Picker,
     Image, Switch, ActivityIndicator, ScrollView,
     Button, RefreshControl, Alert, NetInfo,
-    Platform, Dimensions
+    Platform, Dimensions,BackHandler
 } from "react-native";
 import { styles } from "./../SharedObject/MainStyles";
 import Colors from "./../SharedObject/Colors"
@@ -53,6 +53,8 @@ export default class HMF01011MainView extends Component {
     saveAutoSyncCalendar = new SaveAutoSyncCalendar()
     saveProfile = new SaveProfile()
 
+
+
     constructor(props) {
         super(props);
         this.state = {
@@ -86,6 +88,15 @@ export default class HMF01011MainView extends Component {
         console.log("MainView ====> profileObject ==> managerstatus ==> ", managerstatus)
     }
 
+    componentWillMount() {
+        if (Platform.OS !== 'android') return
+        BackHandler.addEventListener('hardwareBackPress', () => {
+            this.props.navigation.navigate('HomeScreen');
+            return true
+        })
+    }
+
+
 
     loadData = async () => {
 
@@ -107,8 +118,8 @@ export default class HMF01011MainView extends Component {
 
     async componentDidMount() {
 
-        if(!timerstatus){
-          //  this.inappTimeInterval();
+        if (!timerstatus) {
+            //  this.inappTimeInterval();
             timerstatus = true;
         }
 
@@ -193,7 +204,7 @@ export default class HMF01011MainView extends Component {
     inappTimeInterval() {
         this.timer = setTimeout(() => {
             this.onLoadInAppNoti()
-        // }, 2000);
+            // }, 2000);
         }, 60000);
     };
 
@@ -505,7 +516,7 @@ export default class HMF01011MainView extends Component {
         let data = await RestAPI(SharedPreference.NONPAYROLL_SUMMARY_API, SharedPreference.FUNCTIONID_NON_PAYROLL)
         code = data[0]
         data = data[1]
-        console.log("loadNonpayrollfromAPI  ==> data : ",data.data)
+        console.log("loadNonpayrollfromAPI  ==> data : ", data.data)
 
         if ((code.SUCCESS == data.code) | (code.NODATA == data.code)) {
             this.props.navigation.navigate('NonPayrollList', {
@@ -743,11 +754,13 @@ export default class HMF01011MainView extends Component {
     loadCalendarfromAPI = async (location) => {
 
         let year = new Date().getFullYear()
-        let data = await RestAPI(SharedPreference.CALENDER_YEAR_API + year + '&company=' + company, SharedPreference.FUNCTIONID_WORKING_CALENDAR)
         let company = SharedPreference.profileObject.location
-        if (company == null) {
+        if (company == null || company == undefined) {
             company = "TA"
         }
+
+        let data = await RestAPI(SharedPreference.CALENDER_YEAR_API + year + '&company=' + company, SharedPreference.FUNCTIONID_WORKING_CALENDAR)
+
         code = data[0]
         data = data[1]
         console.log("calendarCallback : ", data)

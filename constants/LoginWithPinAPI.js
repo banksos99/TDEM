@@ -1,7 +1,7 @@
 import SharedPreference from "../SharedObject/SharedPreference";
 import Authorization from "../SharedObject/Authorization";
- 
-export default async function getRestAPI(pin, functionID) {
+
+export default async function loginWithPinAPI(pin, functionID) {
 
     let code = {
         SUCCESS: "200",
@@ -19,10 +19,6 @@ export default async function getRestAPI(pin, functionID) {
     }
 
     console.log("LoginWithPin ==> pin  : ", pin, " , functionID : ", functionID)
-    // console.log("LoginWithPin ==> callback  Register  : ", SharedPreference.REGISTER_API)
-    // console.log("LoginWithPin ==> callback  client_pin  : ", pin)
-    // console.log("LoginWithPin ==> callback  firebase_token  : ", SharedPreference.deviceInfo.firebaseToken)
-    // console.log("LoginWithPin ==> callback  systemdn  : ", SharedPreference.company)
     let FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, functionID, SharedPreference.profileObject.client_token)
     console.log("LoginWithPin ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
 
