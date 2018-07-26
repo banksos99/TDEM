@@ -5,6 +5,9 @@
  */
 
 import React, { Component } from 'react';
+
+import Orientation from 'react-native-orientation';
+
 import {
     Platform,
     StyleSheet,

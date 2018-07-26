@@ -22,6 +22,87 @@ import SharedPreference from "./../SharedObject/SharedPreference"
 let dataSource = [];
 let temphandbookData = [];
 
+
+class BookCover extends Component {
+    constructor(props) {
+      super(props);
+      this.state = {
+        /* Set placeholder URL */
+        url: this.props.placeholderUrl
+      };
+  
+    }
+  
+    updateSource(newUrl){
+      console.log("Book updateSource : " + newUrl);
+      this.setState(previousState => {
+        return { url: Platform.OS === 'android' ? 'file://' + newUrl : '' + newUrl}
+      });
+    }
+  
+    
+  
+    refresh() {
+      console.log('[BookCover] Refresh');
+  
+      let dirs = RNFetchBlob.fs.dirs
+      let filename = this.props.bookName + '.png'
+      let targetFile = dirs.DocumentDir + '/cover/' + filename;
+  
+      let hasFile = false;
+  
+      RNFetchBlob.fs.exists(targetFile)
+        .then((exist) => {
+          hasFile = exist;
+          console.log("======================");
+          console.log("Has file : " + hasFile);
+          console.log("======================");
+          hasFile=false
+          if (hasFile) {
+            this.updateSource(targetFile);
+          } else {
+            RNFetchBlob
+              .config({
+                // response data will be saved to this path if it has access right.
+                path: targetFile
+              })
+              //.fetch('GET', 'https://facebook.github.io/react-native/img/header_logo.png', {
+
+              .fetch('GET', this.props.coverUrl, {
+                //some headers ..
+                'Content-Type': 'image/png;base64',
+                Authorization: SharedPreference.TOKEN
+
+              })
+              .then((res) => {
+                // the path should be dirs.DocumentDir + 'path-to-file.anything'
+                console.log('The file saved to ', res.path())
+                this.updateSource(targetFile);
+              })
+          }
+  
+        })
+        .catch(() => {
+          console.log('[Error] BookCover ==> Error on DidMounted')
+        });
+  
+    }
+
+    componentDidMount(){
+      console.log('[BookCover] componentDidMount');
+      this.refresh();
+    }
+  
+    render() {
+      return (
+        //<Text>Hello {this.props.name}!</Text>
+        <Image source={{ uri: this.state.url }}
+          style={{ width: '100%', height: '100%' }} />
+  
+      );
+    }
+  }
+
 export default class Handbookctivity extends Component {
 
     constructor(props) {
@@ -49,6 +130,10 @@ export default class Handbookctivity extends Component {
         this.createShelfHandbook();
 
     }
+
+
+
+    
 
     onDownloadPDFFile() {
 
@@ -306,43 +391,30 @@ export default class Handbookctivity extends Component {
     }
 
     createcomponent(i) {
-console.log('path : ',SharedPreference.HOST + dataSource[0].handbook_cover)
+       // console.log('path : ', SharedPreference.HOST + dataSource[0].handbook_cover)
 
-        let path = '';
+        // let path = '';
 
-        RNFetchBlob
-            .config({
-                fileCache: true,
-                appendExt: 'png',
-               
-            })
-            .fetch('GET', SharedPreference.HOST + dataSource[0].handbook_cover, {
+        // RNFetchBlob
+        //     .config({
+        //         fileCache: true,
+        //         appendExt: 'png',
 
-                'Content-Type': 'application/png;base64',
-                Authorization: SharedPreference.TOKEN
-            })
-            .then((res) => {
+        //     })
+        //     .fetch('GET', SharedPreference.HOST + dataSource[0].handbook_cover, {
 
-                this.setState({
-                    
-                    imageView : <Image source={{ uri: Platform.OS === 'android' ? 'file://' + res.path() : '' + res.path() }} />
-                })
-                // the temp file path with file extension `png`
+        //         'Content-Type': 'application/png;base64',
+        //         Authorization: SharedPreference.TOKEN
+        //     })
+        //     .then((res) => {
 
-                console.log('The file saved to ', this.state.imageView)
+        //         imageView: <Image source={{ uri: Platform.OS === 'android' ? 'file://' + res.path() : '' + res.path() }} />
+
+
+        //     })
+    
+        // console.log('The file saved to ', this.state.imageView)
              
-      
-                // Beware that when using a file path as Image source on Android,
-                // you must prepend "file://"" before the file path
-
-
-               
-
-             // console.log('imageView ', imageView.props.source.uri)
-
-             //  path = imageView.props.source.uri
-
-            })
 
         return (
             <View style={styles.handbookItem} key={i}>
@@ -355,11 +427,12 @@ console.log('path : ',SharedPreference.HOST + dataSource[0].handbook_cover)
                     }}
                     >
                         <View style={{ flex: 1, margin: 5, justifyContent: 'center', alignItems: 'center' }}>
-                            <Image
-                                style={{ width: '100%', height: '100%' }}
-                                source={this.state.imageView} 
-                                
-                                resizeMode='contain'
+                            <BookCover
+                                // ref={bc => { this.bookCover = bc }}
+                                placeholderUrl={'https://facebook.github.io/react/logo-og.png'}
+                               // coverUrl={'https://tdemconnect-dev.tdem.toyota-asia.com/api/v1/handbooks/download?file=00021'}
+                                coverUrl={SharedPreference.HOST + dataSource[i].handbook_cover}
+                               // bookName={'book'+i}
                             />
                         </View>
                     </View>
