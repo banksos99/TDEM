@@ -88,11 +88,14 @@ export default class NonpayrollActivity extends Component {
     }
 
     customMonthContainer(monthNumber, amount) {
+        console.log("Nonpayroll ==> customMonthContainer ==> monthNumber : ", monthNumber)
+        console.log("Nonpayroll ==> customMonthContainer ==> amount : ", amount)
 
+        amount = 10
         let currentYear = new Date().getFullYear()
         let currentMonth = new Date().getMonth() + 1
 
-        if ((currentMonth == monthNumber) && (currentYear == this.state.selectYear)) {
+        if ((currentMonth == monthNumber) && (currentYear == this.state.selectYear)) {//currentMonth
 
             if (!amount) {
                 amount = '0.00'
@@ -120,14 +123,14 @@ export default class NonpayrollActivity extends Component {
                 </TouchableOpacity>
             </View>
 
-        } else if ((monthNumber > currentMonth) && (currentYear == this.state.selectYear)) {
+        } else if ((monthNumber > currentMonth) && (currentYear == this.state.selectYear)) {//After currentMonth
             // nodata
             return <View style={[styles.nonPayRollitem, {
                 backgroundColor: 'white',
             }]}>
             </View>
 
-        } else if (amount) {
+        } else if (amount) {//Normal Month - Has data 
             console.log('amount :', amount)
             return (
                 <View style={[styles.nonPayRollitem, {
@@ -152,10 +155,10 @@ export default class NonpayrollActivity extends Component {
             )
 
 
-        } else {
-            return (
+        } else {//
+            return (//Normal Month - No data
                 <View style={[styles.nonPayRollitem, {
-                    backgroundColor: 'white',
+                    backgroundColor: "white",
                 }]}>
                     <TouchableOpacity style={styles.button}
                         onPress={() => {

@@ -1,0 +1,57 @@
+{
+    "status": 200,
+    "version": "1.0.0",
+    "meta": {
+        "request_date": "2018-07-25 20:52:41"
+    },
+    "data": [
+        {
+            "function_id": "PHF06010", 
+            "function_name": null,
+            "badge_count": 9,
+            "data_list": [
+                "902",
+                "895",
+                "894",
+                "897",
+                "896"
+            ],
+            "years": [
+                {
+                    "year": 2018,
+                    "detail": [
+                        {
+                            "month_no": 1,
+                            "badge": "3"
+                        },
+                        {
+                            "month_no": 2,
+                            "badge": "0"
+                        },
+                        {
+                            "month_no": 5,
+                            "badge": "4"
+                        },
+                        {
+                            "month_no": 6,
+                            "badge": "1"
+                        }
+                    ]
+                },
+                {
+                    "year": 2017,
+                    "detail": [
+                        {
+                            "month_no": 12,
+                            "badge": "2"
+                        }
+                    ]
+                },
+                {
+                    "year": 2016,
+                    "detail": []
+                }
+            ]
+        }
+    ]
+}
