@@ -1293,6 +1293,12 @@ export const styles = StyleSheet.create({
         // backgroundColor:'red',
         flex: 3
     },
+    epubbookname: {
+        textAlign:'center',
+        fontSize: 12 * scale,
+        color: Colors.thingrayTextColor,
+        fontFamily: font_medium
+    },
     empinfoTitleText: {
         color: Colors.grayTextColor,
         marginLeft: 20,

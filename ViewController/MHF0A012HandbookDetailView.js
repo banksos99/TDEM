@@ -6,7 +6,7 @@
 
 import React, { Component } from 'react';
 
-import Orientation from 'react-native-orientation';
+import RNFetchBlob from 'react-native-fetch-blob'
 
 import {
     Platform,
@@ -23,16 +23,14 @@ import {
 } from 'react-native';
 import { Epub, Streamer } from 'epubjs-rn';
 
-//import BottomBar from '../component/BottomBar'
-//import TopBar from '../component/TopBar'
+import BottomBar from '../component/BottomBar'
+import TopBar from '../component/TopBar'
 import Nav from '../component/Nav'
 import { styles } from "./../SharedObject/MainStyles"
 import Colors from '../SharedObject/Colors';
 
 let fontsizearr = ['50%', '80%', '100%', '120%', '150%', '180%'];
 let fontname = ['times', 'courier', 'arial', 'serif', 'cursive', 'fantasy', 'monospace'];
-
-
 
 const instructions = Platform.select({
     ios: 'Press Cmd+R to reload,\n' +
@@ -41,21 +39,17 @@ const instructions = Platform.select({
         'Shake or press menu button for dev menu',
 });
 
-
-
 export default class HandbookViewer extends Component {
 
     constructor(props) {
-
         super(props);
-
         this.state = {
-
             flow: "paginated", // paginated || scrolled-continuous
             location: 1,
-            url: "https://s3-us-west-2.amazonaws.com/pressbooks-samplefiles/MetamorphosisJacksonTheme/Metamorphosis-jackson.epub",
+            url: "https://s3.amazonaws.com/epubjs/books/moby-dick.epub",
            // url: "https://s3.amazonaws.com/epubjs/books/moby-dick.epub",
-            src: "",
+            //src:"https://s3-us-west-2.amazonaws.com/pressbooks-samplefiles/MetamorphosisJacksonTheme/Metamorphosis-jackson.epub",
+            src:'',
             origin: "",
             title: "",
             toc: [],
@@ -83,40 +77,105 @@ export default class HandbookViewer extends Component {
             showTOC: 1,
             titleTOC: 'Table Of Content',
 
+            handbook_file: this.props.navigation.getParam("handbook_file", ""),
+
         };
-        
+
+        console.log('handbook_file name : ', this.state.handbook_file)
          this.streamer = new Streamer();
 
-        // this.streamer.start("8899")
-        // .then((origin) => {
-        //     console.log("Served from:", origin)
-        //     return this.streamer.get("https://s3.amazonaws.com/epubjs/books/moby-dick.epub");
-        // })
-        // .then((src) => {
-        //     console.log("Loading from:", src);
-        //     return this.setState({src});
-        // });
-
-
-        
+        //  this.add('https://s3-us-west-2.amazonaws.com/pressbooks-samplefiles/MetamorphosisJacksonTheme/Metamorphosis-jackson.epub')
     }
 
     componentDidMount() {
-        
-        this.streamer.start()
-            .then((origin) => {
-                this.setState({ origin })
-                return this.streamer.get(this.state.url);
-            })
-            .then((src) => {
-                return this.setState({ src });
-            });
 
-        
+        // this.streamer.start()
+        // .then((origin) => {
+        //   this.setState({origin})
+        //   return this.streamer.get(this.state.url);
+        // })
+        // .then((src) => {
+        //   return this.setState({src});
+        // });
+
+        // RNFetchBlob.config({
+        //     fileCache : true
+        //   })
+        //   .fetch('GET', 'https://s3-us-west-2.amazonaws.com/pressbooks-samplefiles/MetamorphosisJacksonTheme/Metamorphosis-jackson.epub')
+        //   .then((src) => {
+        //     // remove cached file from storage
+        //      this.setState({src});
+        //   })
+      
+        // remove file by specifying a path
+       // RNFetchBlob.fs.unlink('some-file-path').then(() => {
+          // ...
+      //  })
+
+
+        // this.streamer.start()
+        // .then((origin) => {
+        //   console.log("Served from:", origin);
+        //   this.streamer.check('https://s3-us-west-2.amazonaws.com/pressbooks-samplefiles/MetamorphosisJacksonTheme/Metamorphosis-jackson.epub').then((t) => console.log(t));
+        //   return this.streamer.get("https://s3-us-west-2.amazonaws.com/pressbooks-samplefiles/MetamorphosisJacksonTheme/Metamorphosis-jackson.epub.zip");
+        // })
+        // .then((src) => {
+        //   console.log("Loading from:", src);
+        //   return this.setState({src});
+        // });
+
+
+        // RNFetchBlob.fs
+        // .readStream(
+        //     // file path
+        //     PATH_TO_THE_FILE,
+        //     // encoding, should be one of `base64`, `utf8`, `ascii`
+        //     'base64',
+        //     // (optional) buffer size, default to 4096 (4095 for BASE64 encoded data)
+        //     // when reading file in BASE64 encoding, buffer size must be multiples of 3.
+        //     4095)
+            
+        // .then((ifstream) => {
+        //     ifstream.open()
+        //     ifstream.onData((chunk) => {
+        //       // when encoding is `ascii`, chunk will be an array contains numbers
+        //       // otherwise it will be a string
+        //       data += chunk
+        //     })
+        //     ifstream.onError((err) => {
+        //       console.log('oops', err)
+        //     })
+        //     ifstream.onEnd(() => {  
+        //       //<Image source={{ uri : 'data:image/png,base64' + data }}
+        //     })
+        // })
+
+            
     }
+    // add(bookUrl) {
+    //    // let uri = new Uri(bookUrl);
+    //     const filename = this.filename(bookUrl);
+    //     return RNFetchBlob.config({
+    //         fileCache: true,
+    //         path: Dirs.DocumentDir + '/' + filename // NEW: especify path with epub filename
+    //     }).fetch("GET", bookUrl).then(res => {
+    //         const sourcePath = res.path();
+    //         const targetPath = `${Dirs.DocumentDir}/${this.root}/${filename}`;
+    //         const url = `${this.serverOrigin}/${filename}/`;
+    //         return unzip(sourcePath, targetPath).then(path => {
+    //             this.urls.push(bookUrl);
+    //             this.locals.push(url);
+    //             this.paths.push(path);
 
+    //             //remove this line for not delete the file from the cache
+    //             // res.flush();
+
+    //             return url;
+    //         });
+    //     });
+    //}
     componentWillUnmount() {
-       this.streamer.kill();
+        this.streamer.kill();
     }
 
     toggleBars() {
@@ -472,7 +531,7 @@ export default class HandbookViewer extends Component {
               </View>
             </TouchableOpacity>
           </View> */}
-                    {this.renderTableContent()}
+                    {/* {this.renderTableContent()} */}
                 </View>
             )
         }
@@ -530,14 +589,6 @@ export default class HandbookViewer extends Component {
 
 
     }
-    calculateWH(event) {
-        const l = event ? event.nativeEvent.layout : Dimensions.get('window'); // it doesn't always give the event
-        return {
-            vw: l.width / 100,
-            vh: l.height / 100
-        };
-    }
-
     render() {
 
         // if (this.state.flow === "paginated") {
@@ -546,9 +597,7 @@ export default class HandbookViewer extends Component {
         //   this.setState({flow: "paginated"});
         // }
         return (
-            <View 
-            style={{ flex: 1 }}
-            >
+            <View style={{ flex: 1 }}>
 
                 <View style={[styles.navContainer, { flexDirection: 'column' }]}>
                     <View style={styles.statusbarcontainer} />
@@ -582,17 +631,102 @@ export default class HandbookViewer extends Component {
                 {this.renderexpand()}
 
                 <Epub style={styles.epubreader}
-                    ref={component => this.epub = component}
+                   ref={component => this.epub = component}
                     src={this.state.src}
+
+                    flow={"paginated"}
                     font={this.state.selectfontnametext}
                     height='100%'
                     fontSize={fontsizearr[this.state.fontsizelivel]}
                     flow={this.state.flow}
-                    location={this.state.location} 
+                    location={this.state.location}
+                    onLocationChange={(visibleLocation) => {
+                        console.log("locationChanged : ", visibleLocation.start.displayed)
+                        this.setState({
+                            currentpage: visibleLocation.start.displayed.page,
+                            totalpage: visibleLocation.start.displayed.total
+                        });
+                    }}
+                    onLocationsReady={(locations) => {
+                        console.log("location total", locations.total);
+                        this.setState({ sliderDisabled: false });
+                    }}
+                    onReady={(book) => {
+                        console.log("Table of Contents", book.toc)
+                        this.setState({
+                            book: book,
+                            title: book.package.metadata.title,
+                            toc: book.navigation.toc,
+                            isscreenloading: false
+                        });
+                    }}
+                    onPress={(cfi, position, rendition) => {
+                        this.toggleBars();
+                        console.log("press", cfi);
+                    }}
+                    onLongPress={(cfi, rendition, cfiRange) => {
+                        console.log("longpress", cfiRange);
+                    }}
+                    onViewAdded={(index) => {
+                        console.log("added", index)
+                    }}
+                    beforeViewRemoved={(index) => {
+                        console.log("removed", index)
+                    }}
+                    onSelected={(cfiRange, rendition, selected) => {
+
+                        let datatext = ''
+                        this.state.book.getRange(cfiRange).then((range) => {
+                            if (range) {
+                                datatext = range.startContainer.data.slice(range.startOffset, range.endOffset)
+                   
+                                let newdate = new Date().toString()
+                                let timearr = newdate.split('')
+                                this.state.hilightList.push(
+                                    {
+                                        link: cfiRange,
+                                        title: datatext,
+                                        date: newdate
+                                    })
+
+                            }
+
+                        });
+
+                        // Add marker
+
+                        rendition.highlight(cfiRange, {});
+
+                    }}
+                    onMarkClicked={(cfiRange) => {
+                        console.log("mark clicked", cfiRange)
+                    }}
+                    themes={{
+                        tan: {
+                            body: {
+                                //  "-webkit-user-select": "none",
+                                //"user-select": "none",
+                                //"background-color": "tan",
+                                'color': 'black',
+                                //  'background-color':'black',
+                                'fill': 'red',
+                                'font-family': 'cursive',
+                                'highlight': 'green'
+                                // 'font-size':'50%'
+                            }
+                        }
+                    }}
+                    theme="tan"
+                    highlights={{
+
+                    }}
+                    regenerateLocations={true}
+                    generateLocations={true}
                     origin={this.state.origin}
                     onError={(message) => {
                         console.log("EPUBJS-Webview", message);
-                    }}/>
+                    }}
+                />
 
 
                 <View style={{ height: 30, justifyContent: 'center' }}>

@@ -16,7 +16,7 @@ import {
 import Colors from "./../SharedObject/Colors"
 import Layout from "./../SharedObject/Layout"
 import { styles } from "./../SharedObject/MainStyles"
-
+import Authorization from "./../SharedObject/Authorization";
 import inappdata from "./../InAppData/HandbookListData"
 import SharedPreference from "./../SharedObject/SharedPreference"
 let dataSource = [];
@@ -49,7 +49,7 @@ class BookCover extends Component {
       let targetFile = dirs.DocumentDir + '/cover/' + filename;
   
       let hasFile = false;
-  
+      let FUNCTION_TOKEN =  Authorization.convert(SharedPreference.profileObject.client_id, '1', SharedPreference.profileObject.client_token)
       RNFetchBlob.fs.exists(targetFile)
         .then((exist) => {
           hasFile = exist;
@@ -57,28 +57,31 @@ class BookCover extends Component {
           console.log("Has file : " + hasFile);
           console.log("======================");
           hasFile=false
-          if (hasFile) {
-            this.updateSource(targetFile);
-          } else {
+        //   if (hasFile) {
+        //     this.updateSource(targetFile);
+        //   } else {
+            
             RNFetchBlob
               .config({
                 // response data will be saved to this path if it has access right.
                 path: targetFile
               })
               //.fetch('GET', 'https://facebook.github.io/react-native/img/header_logo.png', {
-
+                
               .fetch('GET', this.props.coverUrl, {
                 //some headers ..
                 'Content-Type': 'image/png;base64',
-                Authorization: SharedPreference.TOKEN
+                Authorization: FUNCTION_TOKEN
 
               })
               .then((res) => {
                 // the path should be dirs.DocumentDir + 'path-to-file.anything'
+                
+                console.log('load cover TOKEN ', FUNCTION_TOKEN)
                 console.log('The file saved to ', res.path())
                 this.updateSource(targetFile);
               })
-          }
+        //   }
   
         })
         .catch(() => {
@@ -208,6 +211,7 @@ export default class Handbookctivity extends Component {
                 })
                 .then((resp) => {
                     console.log("WorkingCalendarYear pdf1 : ", resp);
+                    console.log("WorkingCalendarYear TOKEN : ", SharedPreference.TOKEN);
                     console.log("WorkingCalendarYear pdf2 : ", resp.path());
                     RNFetchBlob.fs.exists(resp.path())
                         .then((exist) => {
@@ -255,10 +259,11 @@ export default class Handbookctivity extends Component {
     onBack() {
         this.props.navigation.navigate('HomeScreen');
     }
-    onDetail() {
+    onDetail(i) {
 
-        this.props.navigation.navigate('HandbookDetail');
-
+        this.props.navigation.navigate('HandbookDetail', {
+            handbook_file: dataSource[i].handbook_file,
+        });
         
     }
     setrowstate() {
@@ -420,7 +425,8 @@ export default class Handbookctivity extends Component {
         return (
             <View style={styles.handbookItem} key={i}>
                 <TouchableOpacity style={{ flex: 1 }}
-                    onPress={(this.onDetail.bind(this))
+                 //   onPress={(this.onDetail.bind(this))
+                        onPress={() => { this.onDetail(i) }}>
 
                     }>
                     <View style={{
@@ -428,17 +434,19 @@ export default class Handbookctivity extends Component {
                     }}
                     >
                         <View style={{ flex: 1, margin: 5, justifyContent: 'center', alignItems: 'center' }}>
+
                             <BookCover
                                 // ref={bc => { this.bookCover = bc }}
                                 placeholderUrl={'https://facebook.github.io/react/logo-og.png'}
-                               coverUrl={'https://tdemconnect-dev.tdem.toyota-asia.com/api/v1/handbooks/download?file=00021'}
-                                // coverUrl={SharedPreference.HOST + dataSource[i].handbook_cover}
+                            //    coverUrl={'https://tdemconnect-dev.tdem.toyota-asia.com/api/v1/handbooks/download?file=00021'}
+                                coverUrl={SharedPreference.HOST+ dataSource[i].handbook_cover}
                                 bookName={new Date().getTime()}
                             />
+
                         </View>
                     </View>
                     <View style={{ flex: 2, justifyContent: 'center', alignItems: 'center', }}>
-                        <Text style={styles.payslipitemdetail}>{dataSource[i].handbook_title}</Text>
+                        <Text style={styles.epubbookname}>{dataSource[i].handbook_title}</Text>
                     </View>
                 </TouchableOpacity>
             </View>
