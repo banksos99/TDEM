@@ -429,7 +429,7 @@ export default class calendarYearView extends Component {
         const month = moment(datetime).format('M');
         let monthObject = this.state.yearObject[(month - 1)]
         console.log("onPressCalendar ==> ", monthObject)
-        this.props.navigation.navigate('calendarMonthView2',
+        this.props.navigation.navigate('calendarMonthView',
             {
                 month: datetime,
                 monthObject: monthObject,
