@@ -311,7 +311,7 @@ export default class calendarYearView extends Component {
                                         {date.day}</Text>
                                 </View>
                             } else if ((this.state.today.getDate() == date.day) && ((this.state.today.getMonth() + 1) == date.month)
-                                && (this.state.today.getFullYear() == date.year)) {
+                                && (this.state.today.getFullYear() == date.year)&& ((this.state.today.getMonth() + 1) == selectMonth)) {
                                 return <View style={styles.calendarCurrentDayCicleContainer}>
                                     <View style={styles.calendarCurrentDayCircle} />
                                     <Text style={styles.calendarCurrentDayText}>

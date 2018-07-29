@@ -428,7 +428,7 @@ export default class Handbookctivity extends Component {
                  //   onPress={(this.onDetail.bind(this))
                         onPress={() => { this.onDetail(i) }}>
 
-                    }>
+                    
                     <View style={{
                         flex: 5,
                     }}

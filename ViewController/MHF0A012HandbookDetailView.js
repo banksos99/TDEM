@@ -28,9 +28,12 @@ import TopBar from '../component/TopBar'
 import Nav from '../component/Nav'
 import { styles } from "./../SharedObject/MainStyles"
 import Colors from '../SharedObject/Colors';
+import SharedPreference from '../SharedObject/SharedPreference';
 
 let fontsizearr = ['50%', '80%', '100%', '120%', '150%', '180%'];
 let fontname = ['times', 'courier', 'arial', 'serif', 'cursive', 'fantasy', 'monospace'];
+
+const Uri = require("epubjs/lib/utils/url");
 
 const instructions = Platform.select({
     ios: 'Press Cmd+R to reload,\n' +
@@ -87,97 +90,98 @@ export default class HandbookViewer extends Component {
         //  this.add('https://s3-us-west-2.amazonaws.com/pressbooks-samplefiles/MetamorphosisJacksonTheme/Metamorphosis-jackson.epub')
     }
 
-    componentDidMount() {
+     componentDidMount() {
 
-        // this.streamer.start()
-        // .then((origin) => {
-        //   this.setState({origin})
-        //   return this.streamer.get(this.state.url);
-        // })
-        // .then((src) => {
-        //   return this.setState({src});
-        // });
-
-        // RNFetchBlob.config({
-        //     fileCache : true
-        //   })
-        //   .fetch('GET', 'https://s3-us-west-2.amazonaws.com/pressbooks-samplefiles/MetamorphosisJacksonTheme/Metamorphosis-jackson.epub')
-        //   .then((src) => {
-        //     // remove cached file from storage
-        //      this.setState({src});
-        //   })
-      
-        // remove file by specifying a path
-       // RNFetchBlob.fs.unlink('some-file-path').then(() => {
-          // ...
-      //  })
-
-
-        // this.streamer.start()
-        // .then((origin) => {
-        //   console.log("Served from:", origin);
-        //   this.streamer.check('https://s3-us-west-2.amazonaws.com/pressbooks-samplefiles/MetamorphosisJacksonTheme/Metamorphosis-jackson.epub').then((t) => console.log(t));
-        //   return this.streamer.get("https://s3-us-west-2.amazonaws.com/pressbooks-samplefiles/MetamorphosisJacksonTheme/Metamorphosis-jackson.epub.zip");
-        // })
-        // .then((src) => {
-        //   console.log("Loading from:", src);
-        //   return this.setState({src});
-        // });
-
-
-        // RNFetchBlob.fs
-        // .readStream(
-        //     // file path
-        //     PATH_TO_THE_FILE,
-        //     // encoding, should be one of `base64`, `utf8`, `ascii`
-        //     'base64',
-        //     // (optional) buffer size, default to 4096 (4095 for BASE64 encoded data)
-        //     // when reading file in BASE64 encoding, buffer size must be multiples of 3.
-        //     4095)
-            
-        // .then((ifstream) => {
-        //     ifstream.open()
-        //     ifstream.onData((chunk) => {
-        //       // when encoding is `ascii`, chunk will be an array contains numbers
-        //       // otherwise it will be a string
-        //       data += chunk
-        //     })
-        //     ifstream.onError((err) => {
-        //       console.log('oops', err)
-        //     })
-        //     ifstream.onEnd(() => {  
-        //       //<Image source={{ uri : 'data:image/png,base64' + data }}
-        //     })
-        // })
-
-            
-    }
-    // add(bookUrl) {
-    //    // let uri = new Uri(bookUrl);
-    //     const filename = this.filename(bookUrl);
-    //     return RNFetchBlob.config({
-    //         fileCache: true,
-    //         path: Dirs.DocumentDir + '/' + filename // NEW: especify path with epub filename
-    //     }).fetch("GET", bookUrl).then(res => {
-    //         const sourcePath = res.path();
-    //         const targetPath = `${Dirs.DocumentDir}/${this.root}/${filename}`;
-    //         const url = `${this.serverOrigin}/${filename}/`;
-    //         return unzip(sourcePath, targetPath).then(path => {
-    //             this.urls.push(bookUrl);
-    //             this.locals.push(url);
-    //             this.paths.push(path);
-
-    //             //remove this line for not delete the file from the cache
-    //             // res.flush();
-
-    //             return url;
-    //         });
-    //     });
-    //}
+        console.log('componentDidMount')
+    
+        // FUNCTION_TOKEN =  await Authorization.convert(SharedPreference.profileObject.client_id,'1', SharedPreference.profileObject.client_token)
+    
+        this.downloadEpubFile(this.state.url);
+    
+      }
+  
     componentWillUnmount() {
+        if (this.streamer)
         this.streamer.kill();
     }
 
+    downloadEpubFile(bookUrl) {
+
+        console.log('[EPub] downloadEpubFilep path', this.state.url);
+        console.log('[EPub] downloadEpubFile TOKEN', this.state.TOKEN);
+        let dirs = RNFetchBlob.fs.dirs;
+        let filename = this.filename(SharedPreference.HOST+ bookUrl);
+        let targetFile = dirs.DocumentDir + '/epub/' + filename + '.epub';
+    
+        RNFetchBlob
+          .config({
+            fileCache: true,
+            // response data will be saved to this path if it has access right.
+            path: targetFile
+          })
+          //.fetch('GET', 'https://facebook.github.io/react-native/img/header_logo.png', {
+          .fetch('GET', bookUrl, {
+    
+            Authorization: this.state.TOKEN
+
+          })
+          .then((res) => {
+            // the path should be dirs.DocumentDir + 'path-to-file.anything'
+            console.log('The file saved to ', res.path())
+            /*RNFetchBlob.fs.readFile(res.path(), 'utf8')
+                    .then((data) => {
+                      console.log(data);
+                    })*/
+    
+            let target = { url: Platform.OS === 'android' ? '' + res.path() : '' + res.path() }
+            this.startStreamer(target.url);
+            //this.startStreamer(this.state.url);
+          });
+    
+    
+      }
+    
+    
+      startStreamer(epubPath) {
+        console.log('Start Streamer and locating path ', epubPath)
+        this.streamer.start()
+          .then((origin) => {
+            this.setState({ origin })
+            //return this.streamer.get(this.state.url);
+            return this.streamer.get(epubPath);
+          })
+          .then((src) => {
+            console.log('Loading source ', src)
+            return this.setState({ src });
+          }).catch((err) => {
+            // scan file error
+            console.log('[HandBookDetail] Catch Error', err);
+            this.streamer.stop();
+            if (this.reloadCount < 3) {
+              this.downloadEpubFile(this.state.url)
+              this.reloadCount++;
+            } else {
+              console.log('[HandBookDetail] Reload count reach', err);
+              //this.props.navigation.navigate("Handbooklist");
+              Alert.alert("Handbook Error", "Cannot download handbook file.", [
+                {
+                  text: 'OK', onPress: () => {
+                    this.props.navigation.navigate("HomeScreen");
+                  }
+                }
+    
+              ]);
+            }
+          });
+      }
+    
+
+    
+      filename(bookUrl) {
+        let uri = new Uri(bookUrl);
+        return uri.filename.replace(".epub", "");
+      }
+    
     toggleBars() {
         this.setState({ showBars: !this.state.showBars });
     }
@@ -512,26 +516,26 @@ export default class HandbookViewer extends Component {
                         </View>
                     </View>
                     {/* <View style={{ height: 40, backgroundColor: 'blue', flexDirection: 'row' }}>
-            <TouchableOpacity style={{ flex: 1 }}
-              onPress={(this.onSelecteTable.bind(this))}
-            >
-              <View style={{ flex: 1, backgroundColor: 'red', justifyContent: 'center', alignItems: 'center' }}>
+                        <TouchableOpacity style={{ flex: 1 }}
+                            onPress={(this.onSelecteTable.bind(this))}
+                        >
+                            <View style={{ flex: 1, backgroundColor: 'red', justifyContent: 'center', alignItems: 'center' }}>
 
-                <Text style={{color:'white'}}>Table Of Content</Text>
+                                <Text style={{ color: 'white' }}>Table Of Content</Text>
 
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity style={{ flex: 1 }}
-              onPress={(this.onSelecteHilight.bind(this))}
-            >
-              <View style={{ flex: 1, backgroundColor: 'green' , justifyContent: 'center', alignItems: 'center'}}>
+                            </View>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={{ flex: 1 }}
+                            onPress={(this.onSelecteHilight.bind(this))}
+                        >
+                            <View style={{ flex: 1, backgroundColor: 'green', justifyContent: 'center', alignItems: 'center' }}>
 
-                <Text style={{color:'white'}}>Hightlight</Text>
+                                <Text style={{ color: 'white' }}>Hightlight</Text>
 
-              </View>
-            </TouchableOpacity>
-          </View> */}
-                    {/* {this.renderTableContent()} */}
+                            </View>
+                        </TouchableOpacity>
+                    </View> */}
+                    {this.renderTableContent()}
                 </View>
             )
         }
