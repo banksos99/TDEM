@@ -49,6 +49,7 @@
 		BA6B581C2109FC0E004C44C4 /* libRCTWKWebView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BDFDE90520F4E7D90094E5AB /* libRCTWKWebView.a */; };
 		BA6B584E210A117A004C44C4 /* libRCTOrientation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BDFDE8FE20F4E7220094E5AB /* libRCTOrientation.a */; };
 		BA8CB70520F72FB600FC1F92 /* libRNFirebase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E7D4B151F8AFD6F00699FE4 /* libRNFirebase.a */; };
+		BAB061E8210E0CE1001ABB73 /* libRNZipArchive.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BA0A8B6A21098D2F001BCCF4 /* libRNZipArchive.a */; };
 		BAF9561BB4526904D3EC6946 /* libPods-tdemconnect.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3CA56E1C6F131DAF32B1777B /* libPods-tdemconnect.a */; };
 		BAF9756920FD89CB0044C4ED /* SplashBg.png in Resources */ = {isa = PBXBuildFile; fileRef = BAF9753A20FD89CA0044C4ED /* SplashBg.png */; };
 		BD0A0EFC20EA3CD2006E652B /* EventKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BD0A0EFB20EA3CD2006E652B /* EventKit.framework */; };
@@ -522,6 +523,7 @@
 				DF46D30A24884FD7B38C7236 /* libFPStaticServer.a in Frameworks */,
 				BDD6B9C420FB768600ACF810 /* libRNDeviceInfo.a in Frameworks */,
 				BDD0D6AF20F61B6800593D44 /* libRCTAnimation.a in Frameworks */,
+				BAB061E8210E0CE1001ABB73 /* libRNZipArchive.a in Frameworks */,
 				054C3683295F42B897886912 /* libRNCalendarEvents.a in Frameworks */,
 				2C1775017702450792E6E251 /* libRNFS.a in Frameworks */,
 				3EDA61147ACF498F9F40A708 /* libz.tbd in Frameworks */,

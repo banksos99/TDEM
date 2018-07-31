@@ -311,7 +311,7 @@ export default class calendarYearView extends Component {
                                         {date.day}</Text>
                                 </View>
                             } else if ((this.state.today.getDate() == date.day) && ((this.state.today.getMonth() + 1) == date.month)
-                                && (this.state.today.getFullYear() == date.year)) {
+                                && (this.state.today.getFullYear() == date.year)&& ((this.state.today.getMonth() + 1) == selectMonth)) {
                                 return <View style={styles.calendarCurrentDayCicleContainer}>
                                     <View style={styles.calendarCurrentDayCircle} />
                                     <Text style={styles.calendarCurrentDayText}>
@@ -989,7 +989,7 @@ export default class calendarYearView extends Component {
                         }
 
                         //console.log("addEventOnCalendar ==> eventObject : ", eventObject);
-                        await this.eventCalendar.synchronizeCalendar(eventObject, 'EDEM');
+                        await this.eventCalendar.synchronizeCalendar(eventObject,this.state.selectLocation);
                         //console.log("==============Success==============")
                     }
                 }
