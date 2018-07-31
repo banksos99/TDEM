@@ -706,7 +706,8 @@ export default class HandbookViewer extends Component {
                                         link: cfiRange,
                                         title: datatext,
                                         date: newdate
-                                    })
+                                    }
+                                )
 
                             }
 
