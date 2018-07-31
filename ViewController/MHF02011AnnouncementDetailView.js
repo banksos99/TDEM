@@ -49,6 +49,7 @@ export default class PaySlipActivity extends Component {
     }
 
     render() {
+        const HTMLTemplate = `<span class="price bold some-class-name">$459.00</span>`;
         return (
             <View style={{ flex: 1 }} >
                 <View style={[styles.navContainer, { flexDirection: 'column' }]}>
@@ -74,7 +75,8 @@ export default class PaySlipActivity extends Component {
                 <ActivityIndicator />
             </View> */}
                 <WebView
-                    source={{ uri: 'https://github.com/facebook/react-native' }}
+                    //source={{ uri: 'https://github.com/facebook/react-native' }}
+                    source={{html: HTMLTemplate}}
                     style={{ marginTop: 0 }}
                 />
             </View >

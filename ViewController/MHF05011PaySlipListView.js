@@ -25,7 +25,7 @@ import PayslipDataDetail from "./../InAppData/Payslipdatadetail2"
 import SharedPreference from "./../SharedObject/SharedPreference"
 import Dcryptfun from "./../SharedObject/Decryptfun"
 import Authorization from '../SharedObject/Authorization'
-
+import StringText from '../SharedObject/StringText';
 import Month from "../constants/Month"
 
 let monthlistdata = [];
@@ -40,7 +40,7 @@ let currentmonth = new Date().getMonth();
 let monthdictionary = {};
 let offine = 0;
 let pay_date_str = 0;
-
+let indexselectyear = 0;
 
 export default class PaySlipActivity extends Component {
 
@@ -53,7 +53,7 @@ export default class PaySlipActivity extends Component {
             isFetching: false,
 
             expand: false,
-            indexselectyear: 0,
+           
             updatedHeight: 50,
             dataSource: [],
             selectYearArray: [2000, 2000, 2000]
@@ -142,22 +142,23 @@ export default class PaySlipActivity extends Component {
 
         if (dataSource.years) {
 
-            if (dataSource.years[this.state.indexselectyear].detail) {
+            if (dataSource.years[indexselectyear].detail) {
 
-                for (let j = 0; j < dataSource.years[this.state.indexselectyear].detail.length; j++) {
+                for (let j = 0; j < dataSource.years[indexselectyear].detail.length; j++) {
 
-                    if (dataSource.years[this.state.indexselectyear].detail[j].month_no === i + 1) {
+                    if (dataSource.years[indexselectyear].detail[j].month_no === i + 1) {
 
-                        havedata = dataSource.years[this.state.indexselectyear].detail[j]
+                        havedata = dataSource.years[indexselectyear].detail[j]
                         break
 
                     }
 
                 }
+                if (i > currentmonth && indexselectyear == 0) {
 
-                if (havedata) {
+                } else if (havedata) {
 
-                    let netsalary = 0;
+                        let netsalary = 0;
                     let pay_date;
 
                     if (havedata.net_salary) {
@@ -174,25 +175,25 @@ export default class PaySlipActivity extends Component {
                     }
 
                     return (
-                        <View style={i === currentmonth && this.state.indexselectyear === 0 ?
+                        <View style={i === currentmonth && indexselectyear === 0 ?
                             styles.payslipitemlast :
-                            i > currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemdisable : styles.payslipitem} key={i}>
+                            i > currentmonth && indexselectyear === 0 ? styles.payslipitemdisable : styles.payslipitem} key={i}>
                             <TouchableOpacity style={{ flex: 1 }}
-                                onPress={() => { this.onDetail(this.state.indexselectyear, i) }}
+                                onPress={() => { this.onDetail(indexselectyear, i) }}
                             >
 
                                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', }}>
-                                    <Text style={i === currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemmoneyred : styles.payslipitemdetail}>
+                                    <Text style={i === currentmonth && indexselectyear === 0 ? styles.payslipitemmoneyred : styles.payslipitemdetail}>
                                         {Month.monthNamesShort[i]}
                                     </Text>
                                 </View>
                                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                                    <Text style={i === currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemmoneyred : styles.payslipincome}>
+                                    <Text style={i === currentmonth && indexselectyear === 0 ? styles.payslipitemmoneyred : styles.payslipincome}>
                                         {(netsalary)}
                                     </Text>
                                 </View>
                                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', }}>
-                                    <Text style={i === currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemmoneyred : styles.payslipitemdetail}>
+                                    <Text style={i === currentmonth && indexselectyear === 0 ? styles.payslipitemmoneyred : styles.payslipitemdetail}>
                                         {pay_date}
                                     </Text>
                                 </View>
@@ -203,21 +204,22 @@ export default class PaySlipActivity extends Component {
 
                 let net = '0.00';
 
-                if (currentmonth < i && this.state.indexselectyear === 0) {
+                if (currentmonth < i && indexselectyear === 0) {
 
                     net = '';
 
                     return (
-                        <View style={i === currentmonth && this.state.indexselectyear === 0 ?
+                        <View style={i === currentmonth && indexselectyear === 0 ?
                             styles.payslipitemlast :
                             styles.payslipitemdisable}
                             key={i}>
+                            
 
                             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', }}>
-                                <Text style={i === currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemmoneyred : styles.payslipitemdetail}>{Month.monthNamesShort[i]}</Text>
+                                <Text style={i === currentmonth && indexselectyear === 0 ? styles.payslipitemmoneyred : styles.payslipitemdetail}>{Month.monthNamesShort[i]}</Text>
                             </View>
                             <View style={{ flex: 2, justifyContent: 'center', alignItems: 'center' }}>
-                                <Text style={i === currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemmoneyred : styles.payslipitemdetail}>{net}</Text>
+                                <Text style={i === currentmonth && indexselectyear === 0 ? styles.payslipitemmoneyred : styles.payslipitemdetail}>{net}</Text>
                             </View>
                             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', }}>
 
@@ -229,18 +231,18 @@ export default class PaySlipActivity extends Component {
 
                 }
                 return (
-                    <View style={i === currentmonth && this.state.indexselectyear === 0 ?
+                    <View style={i === currentmonth && indexselectyear === 0 ?
                         styles.payslipitemlast :
                         styles.payslipitemdisable}
                         key={i}>
                         <TouchableOpacity style={{ flex: 1 }}
-                            onPress={() => { this.onNoDataDetail(this.state.indexselectyear, i) }}
+                            onPress={() => { this.onNoDataDetail(indexselectyear, i) }}
                         >
                             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', }}>
-                                <Text style={i === currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemmoneyred : styles.payslipitemdetail}>{Month.monthNamesShort[i]}</Text>
+                                <Text style={i === currentmonth && indexselectyear === 0 ? styles.payslipitemmoneyred : styles.payslipitemdetail}>{Month.monthNamesShort[i]}</Text>
                             </View>
                             <View style={{ flex: 2, justifyContent: 'center', alignItems: 'center' }}>
-                                <Text style={i === currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemmoneyred : styles.payslipitemdetail}>{net}</Text>
+                                <Text style={i === currentmonth && indexselectyear === 0 ? styles.payslipitemmoneyred : styles.payslipitemdetail}>{net}</Text>
                             </View>
                             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', }}>
 
@@ -253,33 +255,53 @@ export default class PaySlipActivity extends Component {
         }
 
         return (
-            <View style={i === currentmonth && this.state.indexselectyear === 0 ?
+            <View style={i === currentmonth && indexselectyear === 0 ?
                 styles.payslipitemlast :
                 styles.payslipitemdisable}
                 key={i}>
-
-                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', }}>
-                    <Text style={i > currentmonth && this.state.indexselectyear === 0 ?
-                        styles.payslipitemdetailHide :
-                        i === currentmonth && this.state.indexselectyear === 0 ?
-                            styles.payslipitemcurrentdetail : styles.payslipitemdetail}>
-                        {Month.monthNamesShort[i]}
-                    </Text>
-                </View>
-                <View style={{ flex: 2, justifyContent: 'center', alignItems: 'center' }}>
-                    <Text style={i > currentmonth && this.state.indexselectyear === 0 ?
-                        styles.payslipitemdetailHide :
-                        i === currentmonth && this.state.indexselectyear === 0 ?
-                            styles.payslipitemcurrentdetail : styles.payslipitemdetail}>
-                        0.00
+                <TouchableOpacity style={{ flex: 1 }}
+                    onPress={() => {
+                        this.onLoadAlertDialog()
+                    }}
+                >
+                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', }}>
+                        <Text style={i > currentmonth && indexselectyear === 0 ?
+                            styles.payslipitemdetailHide :
+                            i === currentmonth && indexselectyear === 0 ?
+                                styles.payslipitemcurrentdetail : styles.payslipitemdetail}>
+                            {Month.monthNamesShort[i]}
                         </Text>
-                </View>
-                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', }}>
+                    </View>
+                    <View style={{ flex: 2, justifyContent: 'center', alignItems: 'center' }}>
+                        <Text style={i > currentmonth && indexselectyear === 0 ?
+                            styles.payslipitemdetailHide :
+                            i === currentmonth && indexselectyear === 0 ?
+                                styles.payslipitemcurrentdetail : styles.payslipitemdetail}>
+                            0.00
+                        </Text>
+                    </View>
+                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', }}>
 
-                </View>
+                    </View>
+                </TouchableOpacity>
             </View>
         )
 
+    }
+
+    onLoadAlertDialog() {
+        // //console.log("onLoadAlertDialog")
+        Alert.alert(
+            StringText.ALERT_NONPAYROLL_NODATA_TITLE,
+            StringText.ALERT_NONPAYROLL_NODATA_TITLE,
+            [{
+                text: StringText.ALERT_NONPAYROLL_NODATA_BUTTON, onPress: () => {
+                    // //console.log("onLoadAlertDialog")
+                }
+            },
+            ],
+            { cancelable: false }
+        )
     }
 
     createPayslipItem() {
@@ -376,10 +398,10 @@ export default class PaySlipActivity extends Component {
 
     onCurrentYear() {
 
-
+        indexselectyear= 0
 
         this.setState({
-            indexselectyear: 0,
+            
             expand: false,
             updatedHeight: 50,
 
@@ -391,9 +413,9 @@ export default class PaySlipActivity extends Component {
 
     }
     onLastYear() {
-
+        indexselectyear= 1
         this.setState({
-            indexselectyear: 1,
+            
             expand: false,
             updatedHeight: 50,
 
@@ -405,8 +427,9 @@ export default class PaySlipActivity extends Component {
     }
 
     onLast2Year() {
+        indexselectyear= 2
         this.setState({
-            indexselectyear: 2,
+            
             expand: false,
             updatedHeight: 50,
 
@@ -510,7 +533,7 @@ export default class PaySlipActivity extends Component {
 
     }
 
-
+    
 
     PayslipDetail() {
 
@@ -523,17 +546,17 @@ export default class PaySlipActivity extends Component {
 
         if (dataSource.years) {
             
-            if (dataSource.years[this.state.indexselectyear].header) { exemption = Dcryptfun.decrypt(dataSource.years[this.state.indexselectyear].header.exemption); }
+            if (dataSource.years[indexselectyear].header) { exemption = Dcryptfun.decrypt(dataSource.years[indexselectyear].header.exemption); }
 
-            if (dataSource.years[this.state.indexselectyear].header) { income_acc = Dcryptfun.decrypt(dataSource.years[this.state.indexselectyear].header.income_acc); }
+            if (dataSource.years[indexselectyear].header) { income_acc = Dcryptfun.decrypt(dataSource.years[indexselectyear].header.income_acc); }
 
-            if (dataSource.years[this.state.indexselectyear].header) { tax_acc = Dcryptfun.decrypt(dataSource.years[this.state.indexselectyear].header.tax_acc); }
+            if (dataSource.years[indexselectyear].header) { tax_acc = Dcryptfun.decrypt(dataSource.years[indexselectyear].header.tax_acc); }
 
-            if (dataSource.years[this.state.indexselectyear].header) { social_fund = Dcryptfun.decrypt(dataSource.years[this.state.indexselectyear].header.social_fund); }
+            if (dataSource.years[indexselectyear].header) { social_fund = Dcryptfun.decrypt(dataSource.years[indexselectyear].header.social_fund); }
 
-            if (dataSource.years[this.state.indexselectyear].header) { emp_pf_year = Dcryptfun.decrypt(dataSource.years[this.state.indexselectyear].header.emp_pf_year); }
+            if (dataSource.years[indexselectyear].header) { emp_pf_year = Dcryptfun.decrypt(dataSource.years[indexselectyear].header.emp_pf_year); }
 
-            if (dataSource.years[this.state.indexselectyear].header) { com_pf_year = Dcryptfun.decrypt(dataSource.years[this.state.indexselectyear].header.com_pf_year); }
+            if (dataSource.years[indexselectyear].header) { com_pf_year = Dcryptfun.decrypt(dataSource.years[indexselectyear].header.com_pf_year); }
 
         }
         
@@ -648,8 +671,8 @@ export default class PaySlipActivity extends Component {
                                 onPress={(this.onLast2Year.bind(this)
 
                                 )}>
-                                <View style={this.state.indexselectyear === 2 ? styles.nonpayrolltabBG_ena : styles.nonpayrolltabBG_dis}>
-                                    <Text style={this.state.indexselectyear === 2 ? styles.leaveYearButton_ena : styles.leaveYearButton_dis}>{this.state.selectYearArray[2]}</Text>
+                                <View style={indexselectyear === 2 ? styles.nonpayrolltabBG_ena : styles.nonpayrolltabBG_dis}>
+                                    <Text style={indexselectyear === 2 ? styles.leaveYearButton_ena : styles.leaveYearButton_dis}>{this.state.selectYearArray[2]}</Text>
                                 </View>
                             </TouchableOpacity>
 
@@ -657,16 +680,16 @@ export default class PaySlipActivity extends Component {
                                 style={{ flex: 1 }}
                                 onPress={(this.onLastYear.bind(this))}
                             >
-                                <View style={this.state.indexselectyear === 1 ? styles.nonpayrolltabBG_ena : styles.nonpayrolltabBG_dis}>
-                                    <Text style={this.state.indexselectyear === 1 ? styles.leaveYearButton_ena : styles.leaveYearButton_dis}>{this.state.selectYearArray[1]}</Text>
+                                <View style={indexselectyear === 1 ? styles.nonpayrolltabBG_ena : styles.nonpayrolltabBG_dis}>
+                                    <Text style={indexselectyear === 1 ? styles.leaveYearButton_ena : styles.leaveYearButton_dis}>{this.state.selectYearArray[1]}</Text>
                                 </View>
                             </TouchableOpacity>
 
                             <TouchableOpacity
                                 style={{ flex: 1 }}
                                 onPress={(this.onCurrentYear.bind(this))}>
-                                <View style={this.state.indexselectyear === 0 ? styles.nonpayrolltabBG_ena : styles.nonpayrolltabBG_dis}>
-                                    <Text style={this.state.indexselectyear === 0 ? styles.leaveYearButton_ena : styles.leaveYearButton_dis}>{this.state.selectYearArray[0]}</Text>
+                                <View style={indexselectyear === 0 ? styles.nonpayrolltabBG_ena : styles.nonpayrolltabBG_dis}>
+                                    <Text style={indexselectyear === 0 ? styles.leaveYearButton_ena : styles.leaveYearButton_dis}>{this.state.selectYearArray[0]}</Text>
                                 </View>
                             </TouchableOpacity>
                             <View style={{ flex: 1, backgroundColor: Colors.backgroundcolor }} />

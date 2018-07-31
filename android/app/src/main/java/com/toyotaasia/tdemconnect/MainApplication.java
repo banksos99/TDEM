@@ -56,7 +56,15 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
         new MainReactPackage(),
-
+            // new RNZipArchivePackage(),
+            // new SvgPackage(),
+            // new FPStaticServerPackage(),
+            // new OrientationPackage(),
+            // new RNFSPackage(),
+            // new RNFirebasePackage(),
+            // new RNFetchBlobPackage(),
+            // new RNDeviceInfo(),
+            // new CalendarEventsPackage(),
         new SvgPackage(),
         new RNZipArchivePackage(),
         new FPStaticServerPackage(),

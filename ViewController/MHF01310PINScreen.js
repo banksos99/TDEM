@@ -12,6 +12,8 @@ import LoginWithPinAPI from "../constants/LoginWithPinAPI"
 import LoginResetPinAPI from "../constants/LoginResetPinAPI"
 import SaveAutoSyncCalendar from "../constants/SaveAutoSyncCalendar";
 
+let listadder = {};
+
 export default class PinActivity extends Component {
 
     savePIN = new SavePIN()
@@ -27,7 +29,10 @@ export default class PinActivity extends Component {
             savePin: '',
             isLoading: false
         }
-        console.log("PinActivity")
+
+       
+
+        console.log("PinActivity", listadder)
     }
 
     onLoadLoginWithPin = async (PIN) => {
