@@ -219,8 +219,14 @@ export const styles = StyleSheet.create({
         justifyContent: 'flex-end',
     },
     calendarLocationBox: {
-        width: 120, marginTop: 10, marginBottom: 10, backgroundColor: Colors.calendarLocationBoxColor,
-        borderRadius: 5, borderColor: Colors.calendarLocationBorderBoxColor, borderWidth: 2, justifyContent: 'flex-end'
+        width: 120, 
+        marginTop: 10, 
+        marginBottom: 10, 
+        backgroundColor: Colors.calendarLocationBoxColor,
+        borderRadius: 5, 
+        borderColor: Colors.calendarLocationBorderBoxColor, 
+        borderWidth: 2, 
+        justifyContent: 'flex-end'
     },
     calendarRowBox: {
         flex: 1, backgroundColor: 'white', flexDirection: 'row'

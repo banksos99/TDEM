@@ -3,7 +3,7 @@ import {
     View, Text, TouchableOpacity, Picker,
     Image, Switch, ActivityIndicator, ScrollView,
     Button, RefreshControl, Alert, NetInfo,
-    Platform, Dimensions,BackHandler
+    Platform, Dimensions, BackHandler
 } from "react-native";
 import { styles } from "./../SharedObject/MainStyles";
 import Colors from "./../SharedObject/Colors"
@@ -85,7 +85,7 @@ export default class HMF01011MainView extends Component {
             }
         }
 
-        console.log("MainView ====> profileObject ==> managerstatus ==> ", managerstatus)
+        //console.log("MainView ====> profileObject ==> managerstatus ==> ", managerstatus)
     }
 
     componentWillMount() {
@@ -96,63 +96,64 @@ export default class HMF01011MainView extends Component {
         })
     }
 
-
-
     loadData = async () => {
+        //console.log("loadData")
+        let autoSyncCalendarBool = await this.saveAutoSyncCalendar.getAutoSyncCalendar()
+        //console.log("loadData ==> autoSyncCalendarBool 1 ==> : ", autoSyncCalendarBool)
 
-        autoSyncCalendarBool = await this.saveAutoSyncCalendar.getAutoSyncCalendar()
-
-        if (autoSyncCalendarBool == 'true') {
+        if(autoSyncCalendarBool == null){
             autoSyncCalendarBool = true
-        } else {
-            autoSyncCalendarBool = false
         }
 
-        if (autoSyncCalendarBool) {
-            this.setState({
-                syncCalendar: autoSyncCalendarBool
-            })
-        }
+
+        this.setState({
+            syncCalendar: autoSyncCalendarBool
+        })
+
+        //console.log("loadData ==> autoSyncCalendarBool 2 ==> : ", autoSyncCalendarBool)
         SharedPreference.calendarAutoSync = autoSyncCalendarBool
     }
 
     async componentDidMount() {
+        //console.log("componentDidMount")
 
         if (!timerstatus) {
-            //  this.inappTimeInterval();
             timerstatus = true;
         }
-
-        //console.log('set inappTimeInterval')
         this.setState({ page: 0, })
-
         this.redertabview()
 
         NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectivityChange);
-
         if (SharedPreference.notipayslipID) {
-
             this.onOpenPayslipDetail()
-
         } else if (SharedPreference.notipayAnnounceMentID) {
-
             this.loadAnnouncementDetailfromAPI(SharedPreference.notipayAnnounceMentID, 0)
-
         }
 
         await this.loadData()
 
     }
 
+    componentWillMount() {
+        //console.log("componentWillMount")
+    }
+
+    componentWillReceiveProps() {
+        //console.log("componentWillReceiveProps")
+    }
+
+    componentWillUnmount() {
+        //console.log("componentWillUnmount")
+    }
 
 
     onLoadInAppNoti = async () => {
 
         let today = new Date()
         const newdate = moment(today).format(_format).valueOf();
-        console.log("selectedDateMonth : ", newdate)
+        //console.log("selectedDateMonth : ", newdate)
         FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, 1, SharedPreference.profileObject.client_token)
-        // console.log("calendarPDFAPI ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
+        // //console.log("calendarPDFAPI ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
         latest_date = "2018-01-01 12:00:00"
 
         return fetch(SharedPreference.PULL_NOTIFICATION_API + newdate, {
@@ -169,20 +170,20 @@ export default class HMF01011MainView extends Component {
                     if (timerstatus) {
                         this.inappTimeInterval()
                     }
-                    console.log('inapp responseJson :', responseJson)
+                    //console.log('inapp responseJson :', responseJson)
                     if (responseJson.status == 403) {
                         timerstatus = false
                         SharedPreference.profileObject = null
                         this.saveProfile.setProfile(null)
                         this.props.AppNavigatorPin.navigate('RegisterScreen')
-                        console.log('this.props.navigation :', this.props.navigation)
-                        console.log('this.state' + this.state.number)
+                        //console.log('this.props.navigation :', this.props.navigation)
+                        //console.log('this.state' + this.state.number)
                     }
 
                     this.setState({
 
 
-                    }, function () {
+                    }, function() {
 
 
 
@@ -190,13 +191,13 @@ export default class HMF01011MainView extends Component {
 
                 } catch (error) {
 
-                    //console.log('erreo1 :', error);
+                    ////console.log('erreo1 :', error);
 
                 }
             })
             .catch((error) => {
 
-                console.log('error :', error)
+                //console.log('error :', error)
 
             });
     }
@@ -235,7 +236,7 @@ export default class HMF01011MainView extends Component {
             refreshing: true,
             annrefresh: true,
             page: 1
-        }, function () {
+        }, function() {
 
             let promise = this.loadAnnouncementfromAPI();
 
@@ -272,9 +273,9 @@ export default class HMF01011MainView extends Component {
             totalroll = ROLL_ANNOUNCE
         }
 
-        // console.log("calendarPDFAPI ==>  functionID : ", functionID)
+        // //console.log("calendarPDFAPI ==>  functionID : ", functionID)
         FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, SharedPreference.FUNCTIONID_ANNOUCEMENT, SharedPreference.profileObject.client_token)
-        console.log("calendarPDFAPI ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
+        //console.log("calendarPDFAPI ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
 
         let hostApi = SharedPreference.ANNOUNCEMENT_ASC_API + '&offset=0&limit=' + totalroll
         if (ascendingSort) {
@@ -296,7 +297,7 @@ export default class HMF01011MainView extends Component {
                         dataSource: responseJson,
                         announcepage: 0,
                         annrefresh: false
-                    }, function () {
+                    }, function() {
                         if (this.state.dataSource.status === 200) {
 
                             this.setState(this.renderloadingscreen());
@@ -343,7 +344,7 @@ export default class HMF01011MainView extends Component {
             .catch((error) => {
                 this.setState({
                     isscreenloading: false,
-                }, function () {
+                }, function() {
                     this.setState(this.renderloadingscreen());
                     // TODO Error
                     this.onLoadErrorAlertDialog(error)
@@ -357,10 +358,10 @@ export default class HMF01011MainView extends Component {
         if (ascendingSort) {
             hostApi = SharedPreference.ANNOUNCEMENT_DSC_API + '&offset=' + announcementData.length + '&limit=' + ROLL_ANNOUNCE
         }
-        console.log('hostApi :', hostApi)
+        //console.log('hostApi :', hostApi)
 
         FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, SharedPreference.FUNCTIONID_ANNOUCEMENT, SharedPreference.profileObject.client_token)
-        console.log("calendarPDFAPI ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
+        //console.log("calendarPDFAPI ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
 
         return fetch(hostApi, {
             method: 'GET',
@@ -378,10 +379,10 @@ export default class HMF01011MainView extends Component {
                         dataSource: responseJson,
                         announcepage: this.state.announcepage + 1,
                         loadmore: false
-                    }, function () {
+                    }, function() {
 
-                        console.log('this.state.dataSource.data :', this.state.dataSource.data)
-                        console.log('this.state.dataSource.status :', this.state.dataSource.status)
+                        //console.log('this.state.dataSource.data :', this.state.dataSource.data)
+                        //console.log('this.state.dataSource.status :', this.state.dataSource.status)
                         if (this.state.dataSource.status === 200) {
 
                             this.setState(this.renderloadingscreen());
@@ -409,14 +410,14 @@ export default class HMF01011MainView extends Component {
                                     }
                                 }
                             });
-                            console.log('announcementData :', announcementData.length)
+                            //console.log('announcementData :', announcementData.length)
                             this.setState(this.renderannouncementbody());
                             // } else {
                             //     Alert.alert(
                             //         this.state.dataSource.errors[0].code,
                             //         this.state.dataSource.errors[0].detail,
                             //         [
-                            //             { text: 'OK', onPress: () => console.log('OK Pressed') },
+                            //             { text: 'OK', onPress: () => //console.log('OK Pressed') },
                             //         ],
                             //         { cancelable: false }
                             //     )
@@ -429,7 +430,7 @@ export default class HMF01011MainView extends Component {
             .catch((error) => {
                 this.setState({
                     isscreenloading: false,
-                }, function () {
+                }, function() {
                     this.setState(this.renderloadingscreen());
                     // TODO Error
                     this.onLoadErrorAlertDialog(error)
@@ -440,7 +441,7 @@ export default class HMF01011MainView extends Component {
     loadAnnouncementDetailfromAPI = async (item, index) => {
 
         FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, SharedPreference.FUNCTIONID_ANNOUCEMENT, SharedPreference.profileObject.client_token)
-        console.log("calendarPDFAPI ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
+        //console.log("calendarPDFAPI ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
 
         let path = 'AnnouncementDetail'
         return fetch(SharedPreference.ANNOUNCEMENT_DETAIL_API + item.id, {
@@ -459,7 +460,7 @@ export default class HMF01011MainView extends Component {
 
                         isscreenloading: false,
                         announceDetailDataSource: responseJson,
-                    }, function () {
+                    }, function() {
                         if (tempannouncementData.length) {
 
                             tempannouncementData[index].attributes.read = true
@@ -474,7 +475,7 @@ export default class HMF01011MainView extends Component {
 
                 } catch (error) {
 
-                    //console.log('erreo1 :', error);
+                    ////console.log('erreo1 :', error);
 
                 }
             })
@@ -484,7 +485,7 @@ export default class HMF01011MainView extends Component {
 
                     isscreenloading: false,
 
-                }, function () {
+                }, function() {
 
                     this.setState(this.renderloadingscreen());
 
@@ -498,7 +499,7 @@ export default class HMF01011MainView extends Component {
                         { cancelable: false }
                     )
 
-                    console.log(error);
+                    //console.log(error);
                 });
 
             });
@@ -506,7 +507,7 @@ export default class HMF01011MainView extends Component {
 
     loadEmployeeInfoformAPI = async () => {
 
-        console.log("loadEmployeeInfoformAPI :", SharedPreference.profileObject.employee_id)
+        //console.log("loadEmployeeInfoformAPI :", SharedPreference.profileObject.employee_id)
         this.APICallback(await RestAPI(SharedPreference.EMP_INFO_CAREERPATH_API + SharedPreference.profileObject.employee_id, SharedPreference.FUNCTIONID_EMPLOYEE_INFORMATION), 'EmployeeInfoDetail')
 
     }
@@ -516,7 +517,7 @@ export default class HMF01011MainView extends Component {
         let data = await RestAPI(SharedPreference.NONPAYROLL_SUMMARY_API, SharedPreference.FUNCTIONID_NON_PAYROLL)
         code = data[0]
         data = data[1]
-        console.log("loadNonpayrollfromAPI  ==> data : ", data.data)
+        //console.log("loadNonpayrollfromAPI  ==> data : ", data.data)
 
         if ((code.SUCCESS == data.code) | (code.NODATA == data.code)) {
             this.props.navigation.navigate('NonPayrollList', {
@@ -548,8 +549,8 @@ export default class HMF01011MainView extends Component {
 
                     // datadetail: PayslipDataDetail.detail[dataSource.years[year].detail[index].payroll_id]
 
-                }, function () {
-                    console.log('status : ', this.state.dataSource.status);
+                }, function() {
+                    //console.log('status : ', this.state.dataSource.status);
                     if (this.state.dataSource.status === 200) {
 
                         this.props.navigation.navigate('PayslipDetail', {
@@ -631,7 +632,7 @@ export default class HMF01011MainView extends Component {
     }
 
     loadHandbooklistfromAPI = async () => {
-        console.log("loadHandbooklistfromAPI", SharedPreference.HANDBOOK_LIST)
+        //console.log("loadHandbooklistfromAPI", SharedPreference.HANDBOOK_LIST)
 
         this.APICallback(await RestAPI(SharedPreference.HANDBOOK_LIST), 'Handbooklist')
         // this.props.navigation.navigate('Handbooklist');
@@ -726,13 +727,13 @@ export default class HMF01011MainView extends Component {
                 'System Error (API). Please contact system administrator.',
                 [{
                     text: 'OK', onPress: () => {
-                        console.log("onLoadErrorAlertDialog")
+                        //console.log("onLoadErrorAlertDialog")
                     }
                 }],
                 { cancelable: false }
             )
         }
-        console.log("error : ", error)
+        //console.log("error : ", error)
     }
 
 
@@ -740,7 +741,7 @@ export default class HMF01011MainView extends Component {
         let data = await RestAPI(SharedPreference.LEAVE_QUOTA_API, SharedPreference.FUNCTIONID_LEAVE_QUOTA)
         code = data[0]
         data = data[1]
-        console.log("nonPayRollCallback data : ", data)
+        //console.log("nonPayRollCallback data : ", data)
 
         if (code.SUCCESS == data.code) {
             this.props.navigation.navigate('LeavequotaList', {
@@ -763,7 +764,7 @@ export default class HMF01011MainView extends Component {
 
         code = data[0]
         data = data[1]
-        console.log("calendarCallback : ", data)
+        //console.log("calendarCallback : ", data)
         this.props.navigation.navigate('calendarYearView', {
             dataResponse: data,
             selectYear: new Date().getFullYear(),
@@ -780,7 +781,7 @@ export default class HMF01011MainView extends Component {
         this.setState({
             isscreenloading: true,
             loadingtype: 3
-        }, function () {
+        }, function() {
             this.setState(this.renderloadingscreen())
             this.loadOrgStructerfromAPI()
         });
@@ -790,7 +791,7 @@ export default class HMF01011MainView extends Component {
         this.setState({
             isscreenloading: true,
             loadingtype: 3
-        }, function () {
+        }, function() {
             this.setState(this.renderloadingscreen())
             this.loadOrgStructerClockInOutfromAPI()
         });
@@ -800,7 +801,7 @@ export default class HMF01011MainView extends Component {
         this.setState({
             isscreenloading: true,
             loadingtype: 3
-        }, function () {
+        }, function() {
             this.setState(this.renderloadingscreen())
             this.loadOrgStructerOTHistoryfromAPI()
         });
@@ -810,7 +811,7 @@ export default class HMF01011MainView extends Component {
         this.setState({
             isscreenloading: true,
             loadingtype: 3
-        }, function () {
+        }, function() {
             this.setState(this.renderloadingscreen())
             this.loadOrgStructerOTAveragefromAPI()
         });
@@ -821,7 +822,7 @@ export default class HMF01011MainView extends Component {
         this.setState({
             isscreenloading: true,
             loadingtype: 3
-        }, function () {
+        }, function() {
             this.setState(this.renderloadingscreen())
             this.loadOrgStructerOTHistoryfromAPI()
         });
@@ -831,7 +832,7 @@ export default class HMF01011MainView extends Component {
         this.setState({
             isscreenloading: true,
             loadingtype: 3
-        }, function () {
+        }, function() {
             this.setState(this.renderloadingscreen())
             this.loadAnnouncementfromAPI()
         });
@@ -841,8 +842,8 @@ export default class HMF01011MainView extends Component {
         this.setState({
             isscreenloading: true,
             loadingtype: 3
-        }, function () {
-            console.log('index :', index);
+        }, function() {
+            //console.log('index :', index);
             this.setState(this.renderloadingscreen())
             this.loadAnnouncementDetailfromAPI(item, index)
         });
@@ -852,7 +853,7 @@ export default class HMF01011MainView extends Component {
         this.setState({
             isscreenloading: true,
             loadingtype: 3
-        }, function () {
+        }, function() {
             this.setState(this.renderloadingscreen())
             this.loadEmployeeInfoformAPI()
         });
@@ -862,7 +863,7 @@ export default class HMF01011MainView extends Component {
         this.setState({
             isscreenloading: true,
             loadingtype: 3
-        }, function () {
+        }, function() {
             this.setState(this.renderloadingscreen())
             this.loadNonpayrollfromAPI()
         });
@@ -872,7 +873,7 @@ export default class HMF01011MainView extends Component {
         this.setState({
             isscreenloading: true,
             loadingtype: 3
-        }, function () {
+        }, function() {
             this.setState(this.renderloadingscreen())
             this.loadPayslipfromAPI()
         });
@@ -882,7 +883,7 @@ export default class HMF01011MainView extends Component {
         this.setState({
             isscreenloading: true,
             loadingtype: 3
-        }, function () {
+        }, function() {
             this.setState(this.renderloadingscreen())
             this.loadPayslipDetailfromAPI()
         });
@@ -892,7 +893,7 @@ export default class HMF01011MainView extends Component {
         this.setState({
             isscreenloading: true,
             loadingtype: 3
-        }, function () {
+        }, function() {
             this.setState(this.renderloadingscreen())
             this.loadLeaveQuotafromAPI()
         });
@@ -902,7 +903,7 @@ export default class HMF01011MainView extends Component {
         this.setState({
             isscreenloading: true,
             loadingtype: 3
-        }, function () {
+        }, function() {
             this.setState(this.renderloadingscreen())
             this.loadClockInOutDetailfromAPI()
         });
@@ -912,7 +913,7 @@ export default class HMF01011MainView extends Component {
         this.setState({
             isscreenloading: true,
             loadingtype: 3
-        }, function () {
+        }, function() {
             this.setState(this.renderloadingscreen())
             this.loadOTSummarySelffromAPI()
         });
@@ -922,7 +923,7 @@ export default class HMF01011MainView extends Component {
         this.setState({
             isscreenloading: true,
             loadingtype: 3
-        }, function () {
+        }, function() {
             this.setState(this.renderloadingscreen())
             this.loadCalendarfromAPI()
         });
@@ -932,7 +933,7 @@ export default class HMF01011MainView extends Component {
         this.setState({
             isscreenloading: true,
             loadingtype: 3
-        }, function () {
+        }, function() {
             this.setState(this.renderloadingscreen())
             this.loadHandbooklistfromAPI()
         });
@@ -942,7 +943,7 @@ export default class HMF01011MainView extends Component {
         this.setState({
             isscreenloading: true,
             loadingtype: 3
-        }, function () {
+        }, function() {
             this.setState(this.renderloadingscreen())
             this.loadOrgStructerfromAPI()
         });
@@ -997,7 +998,7 @@ export default class HMF01011MainView extends Component {
                     page: tabnumber,
                     isscreenloading: true,
                     loadingtype: 3
-                }, function () {
+                }, function() {
                     this.loadAnnouncementfromAPI()
                 });
             }
@@ -1038,7 +1039,7 @@ export default class HMF01011MainView extends Component {
         this.setState({
             isscreenloading: true,
             loadingtype: 3
-        }, function () {
+        }, function() {
             announcementData = [];
             this.loadAnnouncementfromAPI();
         });
@@ -1047,7 +1048,7 @@ export default class HMF01011MainView extends Component {
     select_announce_type = () => {
         this.setState({
             loadingtype: 0
-        }, function () {
+        }, function() {
             this.setState(this.select_search_announce())
         });
     }
@@ -1055,7 +1056,7 @@ export default class HMF01011MainView extends Component {
     select_announce_status = () => {
         this.setState({
             loadingtype: 1
-        }, function () {
+        }, function() {
             this.setState(this.select_search_announce())
         });
     }
@@ -1064,7 +1065,7 @@ export default class HMF01011MainView extends Component {
         this.setState({
             announcementType: 'All',
             announcementTypetext: 'All'
-        }, function () {
+        }, function() {
             this.setState(this.select_announce_type())
         });
     }
@@ -1073,7 +1074,7 @@ export default class HMF01011MainView extends Component {
         this.setState({
             announcementType: 'All',
             announcementTypetext: 'All'
-        }, function () {
+        }, function() {
             this.setState(this.select_announce_type())
         });
     }
@@ -1082,7 +1083,7 @@ export default class HMF01011MainView extends Component {
         this.setState({
             announcementType: 'Company Announcement',
             announcementTypetext: 'Company Announcement'
-        }, function () {
+        }, function() {
             this.setState(this.select_announce_type())
         });
     }
@@ -1091,7 +1092,7 @@ export default class HMF01011MainView extends Component {
         this.setState({
             announcementType: 'Emergency Announcement',
             announcementTypetext: 'Emergency Announcement'
-        }, function () {
+        }, function() {
             this.setState(this.select_announce_type())
         });
     }
@@ -1100,7 +1101,7 @@ export default class HMF01011MainView extends Component {
         this.setState({
             announcementType: 'Event Announcement',
             announcementTypetext: 'Event Announcement'
-        }, function () {
+        }, function() {
             this.setState(this.select_announce_type())
         });
     }
@@ -1109,7 +1110,7 @@ export default class HMF01011MainView extends Component {
         this.setState({
             announcementType: 'General Announcement',
             announcementTypetext: 'General Announcement'
-        }, function () {
+        }, function() {
             this.setState(this.select_announce_type())
         });
     }
@@ -1118,7 +1119,7 @@ export default class HMF01011MainView extends Component {
         this.setState({
             announcementStatus: 'All',
             announcementStatustext: 'All'
-        }, function () {
+        }, function() {
             this.setState(this.select_announce_status())
         });
     }
@@ -1127,7 +1128,7 @@ export default class HMF01011MainView extends Component {
         this.setState({
             announcementStatus: true,
             announcementStatustext: 'Read'
-        }, function () {
+        }, function() {
             this.setState(this.select_announce_status())
         });
     }
@@ -1136,7 +1137,7 @@ export default class HMF01011MainView extends Component {
         this.setState({
             announcementStatus: false,
             announcementStatustext: 'Unread'
-        }, function () {
+        }, function() {
             this.setState(this.select_announce_status())
         });
     }
@@ -1149,7 +1150,7 @@ export default class HMF01011MainView extends Component {
 
                 isscreenloading: true,
 
-            }, function () {
+            }, function() {
 
                 this.setState(this.renderloadingscreen())
             });
@@ -1168,7 +1169,7 @@ export default class HMF01011MainView extends Component {
                     } else {
 
                         if (item.category === this.state.announcementType) {
-                            //console.log(item)
+                            ////console.log(item)
                             tempannouncementData.push(item)
 
                         }
@@ -1203,7 +1204,7 @@ export default class HMF01011MainView extends Component {
 
                 isscreenloading: false
 
-            }, function () {
+            }, function() {
 
                 this.setState(this.renderloadingscreen())
             });
@@ -1211,16 +1212,24 @@ export default class HMF01011MainView extends Component {
     }
 
     onChangeFunction(newState) {
-        console.log("onChangeFunction ==> ", newState.syncCalendar)
+        //console.log("onChangeFunction ==> ", newState)
+
         this.setState({
             syncCalendar: newState.syncCalendar
         });
         SharedPreference.calendarAutoSync = newState.syncCalendar
-
-        console.log("onChangeFunction ==> calendarAutoSync ==>  ", SharedPreference.calendarAutoSync)
-
         this.saveAutoSyncCalendar.setAutoSyncCalendar(newState.syncCalendar)
+        //console.log("onChangeFunction ==> calendarAutoSync ==>  ", SharedPreference.calendarAutoSync)
     }
+
+    // onChangeFunction = () => this.setState(state => ({
+    //     syncCalendar: !state.syncCalendar
+    // }))
+
+    // onSetWhenSwitch() {
+    //     //console.log("onSetWhenSwitch : ", this.state.syncCalendar)
+    //     this.saveAutoSyncCalendar.setAutoSyncCalendar(this.state.syncCalendar)
+    // }
 
     /*************************************************************** */
     /*************************   render class ********************** */
@@ -1576,10 +1585,10 @@ export default class HMF01011MainView extends Component {
                         var windowHeight = Dimensions.get('window').height,
                             height = event.nativeEvent.contentSize.height,
                             offset = event.nativeEvent.contentOffset.y;
-                        console.log('windowHeight : ', windowHeight - 120 - expandheight)
+                        //console.log('windowHeight : ', windowHeight - 120 - expandheight)
 
                         if ((height - (windowHeight - 120 - expandheight) < offset) & (this.state.enddragannounce)) {
-                            console.log('load more')
+                            //console.log('load more')
                             if (this.state.loadmore === false) {
                                 this._onLoadMore()
                             }
@@ -1774,7 +1783,9 @@ export default class HMF01011MainView extends Component {
         )
     }
     rendersettingview() {
-        console.log("rendersettingview ==> syncCalendar : ", this.state.syncCalendar)
+        //console.log("rendersettingview ==> this.state.syncCalendar : 1 ", this.state.syncCalendar)
+        //console.log("rendersettingview ==> SharedPreference.calendarAutoSync : 2 ", SharedPreference.calendarAutoSync)
+
         return (
             <View style={{ flex: 1, flexDirection: 'column', }}>
                 <View style={styles.mainmenutabbarstyle} />
@@ -1801,10 +1812,17 @@ export default class HMF01011MainView extends Component {
 
                     </View>
                     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                        <Switch
+                        {/* <Switch
                             // onTintColor="red"
+                            // onValueChange={(value) => this.onChangeFunction({ syncCalendar: value })}
+                            // onValueChange={SharedPreference.syncCalendar}
+                            // value={SharedPreference.syncCalendar} />
+                            /> */}
+                        <Switch
+                            // onValueChange={this.onChangeFunction}
                             onValueChange={(value) => this.onChangeFunction({ syncCalendar: value })}
-                            value={SharedPreference.calendarAutoSync} />
+                            value={this.state.syncCalendar}
+                        />
                     </View>
                 </View>
 
@@ -1911,7 +1929,7 @@ export default class HMF01011MainView extends Component {
                                 announcementStatus: itemValue,
                                 announcementStatustext: announstatus[itemValue],
 
-                            }, function () {
+                            }, function() {
                                 initannouncementStatustext = announstatus[itemValue];
                                 initannouncementStatus = itemValue;
                             })}>
@@ -1990,7 +2008,7 @@ export default class HMF01011MainView extends Component {
                             onValueChange={(itemValue, itemIndex) => this.setState({
                                 announcementType: itemValue,
                                 announcementTypetext: annountype[itemValue],
-                            }, function () {
+                            }, function() {
 
                                 initannouncementType = itemValue;
                                 initannouncementTypetext = annountype[itemValue];

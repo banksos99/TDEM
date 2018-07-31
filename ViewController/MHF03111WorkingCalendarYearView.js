@@ -248,13 +248,13 @@ export default class calendarYearView extends Component {
         for (let f = 0; f < month; f++) {
 
             let selectMonth = (f + 1)
-            console.log("Calendar ==> selectMonth : ", selectMonth)
+            // console.log("Calendar ==> selectMonth : ", selectMonth)
 
             let monthText = this.state.showYear + '-' + selectMonth + '-01'
             if (selectMonth < 10) {
                 monthText = this.state.showYear + '-0' + selectMonth + '-01'
             }
-            console.log("Calendar ==> monthText : ", monthText)
+            // console.log("Calendar ==> monthText : ", monthText)
             this.state.countDay = []
 
             monthView.push(
@@ -289,6 +289,9 @@ export default class calendarYearView extends Component {
                         }}
 
                         dayComponent={({ date, state }) => {
+                            // console.log("selectedDateMonth dayComponent =====> : ", date)
+                            // console.log("selectedDateMonth dayComponent =====> state : ", state)
+
                             this.state.countDay.push(date.day);
                             const selectedDateMonth = moment(date.dateString).format(_format);
                             let checkSpecialHoliday = this.checkSpecialHoliday(selectedDateMonth);
@@ -310,16 +313,16 @@ export default class calendarYearView extends Component {
                                     <Text style={{ fontSize: 10, textAlign: 'right', color: state === 'disabled' ? 'white' : Colors.calendarGrayText }}>
                                         {date.day}</Text>
                                 </View>
-                            } else if ((this.state.today.getDate() == date.day) && ((this.state.today.getMonth() + 1) == date.month)
-                                && (this.state.today.getFullYear() == date.year)) {
-                                return <View style={styles.calendarCurrentDayCicleContainer}>
-                                    <View style={styles.calendarCurrentDayCircle} />
-                                    <Text style={styles.calendarCurrentDayText}>
-                                        {date.day}</Text>
-                                </View>
                             } else if ((this.state.countDay.length % 7) == 0 || (this.state.countDay.length % 7) == 1) {//Holiday
                                 return <View style={styles.calendarDayContainer}>
                                     <Text style={{ fontSize: 10, textAlign: 'right', color: state === 'disabled' ? 'white' : Colors.redTextColor }}>
+                                        {date.day}</Text>
+                                </View>
+                            } else if ((this.state.today.getDate() == date.day) && ((this.state.today.getMonth() + 1) == date.month)
+                                && (this.state.today.getFullYear() == date.year)) {
+                                return <View style={styles.calendarCurrentDayCicleContainer}>
+                                    <View style={[styles.calendarCurrentDayCircle,{backgroundColor : state ==='disabled' ? 'white':'red'}]} />
+                                    <Text style={styles.calendarCurrentDayText}>
                                         {date.day}</Text>
                                 </View>
                             } else {
@@ -493,7 +496,7 @@ export default class calendarYearView extends Component {
             this.setState({
                 selectLocation: locationShort
             })
-    
+
         }
 
         this.setState({
@@ -758,14 +761,22 @@ export default class calendarYearView extends Component {
         this.props.navigation.navigate('HomeScreen');
     }
 
-    onloadPDFFile = async () => {
+    onloadPDFFile11 = async () => {
+        // EventCalendar._findEventCalendar()
+        await this.eventCalendar._findEventCalendar()
+        this.setState({
+            isLoadingPDF: false
+        })
 
-        console.log("onloadPDFFile")
+    }
+
+    onloadPDFFile = async () => {
+        // console.log("onloadPDFFile")
         let data = await CalendarPDFAPI(this.state.selectYear, this.state.selectLocation)
         code = data[0]
         data = data[1]
 
-        console.log("onLoadPDFFIle : ", data)
+        // console.log("onLoadPDFFIle : ", data)
         if (code.SUCCESS == data.code) {
             if (data.data[0].filename == null || data.data[0].filename == 'undefined') {
                 this.onLoadAlertDialog()
@@ -775,8 +786,6 @@ export default class calendarYearView extends Component {
                 this.onDownloadPDFFile(pdfPath, filename)
             }
         } else {
-
-
             Alert.alert(
                 StringText.CALENDAR_ALERT_PDF_TITLE_FAIL,
                 StringText.CALENDAR_ALERT_PDF_DESC_FAIL,
@@ -934,6 +943,7 @@ export default class calendarYearView extends Component {
                 },
                 {
                     text: 'OK', onPress: () => {
+                        console.log("start addEventOnCalendar")
                         this.addEventOnCalendar()
                     }
                 },
@@ -943,15 +953,22 @@ export default class calendarYearView extends Component {
     }
 
     addEventOnCalendar = async () => {
-        await this.eventCalendar._deleteEventCalendar()
 
         this.setState({
             isLoading: true
         })
+
+        this.state.isLoading = true
+
+
+        await this.eventCalendar._deleteEventCalendar()
+
+
         // console.log("this.state.calendarEventData 1 : ", this.state.calendarEventData)
         if (this.state.calendarEventData.code == 200) {
             let holidayArray = this.state.calendarEventData.data.holidays;
-            // console.log("this.state.calendarEventData 2 : ", this.state.calendarEventData.data.holidays)
+
+            console.log("this.state.calendarEventData ==> ", this.state.calendarEventData.data.holidays)
             for (let index = 0; index < holidayArray.length; index++) {
                 const daysArray = holidayArray[index].days
                 for (let f = 0; f < daysArray.length; f++) {
@@ -987,9 +1004,10 @@ export default class calendarYearView extends Component {
                             };
                             eventObject = copy
                         }
+                        console.log("addEventOnCalendar ==> eventObject : ", eventObject);
+                        console.log("addEventOnCalendar ==> showlocation : ", this.state.showLocation);
 
-                        //console.log("addEventOnCalendar ==> eventObject : ", eventObject);
-                        await this.eventCalendar.synchronizeCalendar(eventObject, 'EDEM');
+                        await this.eventCalendar.synchronizeCalendar(eventObject, this.state.showLocation);
                         //console.log("==============Success==============")
                     }
                 }

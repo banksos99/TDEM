@@ -3,10 +3,13 @@ import { AsyncStorage } from 'react-native';
 export default class SaveAutoSyncCalendar {
 
     getAutoSyncCalendar = async () => {
-        AsyncStorage.getItem('calendar').then((value) => {
-            console.log("getAutoSyncCalendar : " + value);
-            return value
-        });
+        // AsyncStorage.getItem('calendar').then((value) => {
+        //     console.log("SaveAutoSyncCalendar ==> getAutoSyncCalendar : " + value);
+        //     return value
+        // });
+        var value = await AsyncStorage.getItem("calendar");
+        return JSON.parse(value)
+
     }
 
     setAutoSyncCalendar(calendar) {
