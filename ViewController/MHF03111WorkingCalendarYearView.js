@@ -989,7 +989,7 @@ export default class calendarYearView extends Component {
                         }
 
                         //console.log("addEventOnCalendar ==> eventObject : ", eventObject);
-                        await this.eventCalendar.synchronizeCalendar(eventObject, 'EDEM');
+                        await this.eventCalendar.synchronizeCalendar(eventObject,this.state.selectLocation);
                         //console.log("==============Success==============")
                     }
                 }

@@ -61,6 +61,8 @@ export default {
     // MANAGER_STATUS:true,
     notipayslipID: 0,
     notipayAnnounceMentID: 0,
+    HandbookHighlightList: [],
+
 
     FUNCTIONID_SPLASH: 'HF0111',
     FUNCTIONID_REGISTER: 'HF0121',

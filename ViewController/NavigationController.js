@@ -41,12 +41,15 @@ import OrganizationOTStruct from "./MHF0B010OrganizationStruct";
 import announcementdetail from "./MHF02011AnnouncementDetailView"
 import SharedPreference from './../SharedObject/SharedPreference';
 
+//import TestView from "./TestView";
+
 let mon = ['Jan', 'Feb', 'Mar', 'Apl', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
 import ChangePINScreen from "./ChangePINScreen"
 import Authorization from '../SharedObject/Authorization'
 
 const AppNavigatorPin = createSwitchNavigator({
+    //TestView: { screen: TestView },
     RegisterScreen: { screen: registerScreen },
     PinScreen: { screen: pinScreen },
     HomeScreen: { screen: homeScreen },
@@ -66,7 +69,6 @@ const AppNavigatorPin = createSwitchNavigator({
     calendarYearView2: { screen: calendarYearView2 },
     calendarMonthView: { screen: calendarMonthView },
     calendarEventDetailView: { screen: calendarEventDetailView },
-    AnnouncementDetail: { screen: announcementdetail },
     ClockInOutSelfView: { screen: clockInOutSelfView },
     OTLineChartView: { screen: OTLineChartView },
     OTBarChartView: { screen: OTBarChartView },
@@ -74,6 +76,7 @@ const AppNavigatorPin = createSwitchNavigator({
     AnnouncementDetail: { screen: announcementdetail },
     ChangePINScreen: { screen: ChangePINScreen }
 }, {
+    //    initialRouteName: 'HandbookDetail',
         initialRouteName: 'PinScreen',
         // initialRouteName: 'NonPayrollList',
         headerMode: 'none',
@@ -89,6 +92,7 @@ const AppNavigatorPin = createSwitchNavigator({
 
 
 const AppNavigatorRegister = createSwitchNavigator({
+    //TestView: { screen: TestView },
     RegisterScreen: { screen: registerScreen },
     PinScreen: { screen: pinScreen },
     HomeScreen: { screen: homeScreen },
@@ -115,6 +119,7 @@ const AppNavigatorRegister = createSwitchNavigator({
     AnnouncementDetail: { screen: announcementdetail },
     ChangePINScreen: { screen: ChangePINScreen }
 }, {
+    // initialRouteName: 'HandbookDetail',
         initialRouteName: 'RegisterScreen',
         // initialRouteName: 'NonPayrollList',
 
@@ -142,7 +147,6 @@ export default class rootNavigation extends Component {
 
     }
    
-
     async componentWillMount() {
         // number = await this.getPINFromDevice()
         profile = await this.getProfileObject()

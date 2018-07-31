@@ -633,7 +633,7 @@ export default class HMF01011MainView extends Component {
     loadHandbooklistfromAPI = async () => {
         console.log("loadHandbooklistfromAPI", SharedPreference.HANDBOOK_LIST)
 
-        this.APICallback(await RestAPI(SharedPreference.HANDBOOK_LIST), 'Handbooklist')
+        this.APICallback(await RestAPI(SharedPreference.HANDBOOK_LIST,SharedPreference.FUNCTIONID_HANDBOOK), 'Handbooklist')
         // this.props.navigation.navigate('Handbooklist');
 
     }
