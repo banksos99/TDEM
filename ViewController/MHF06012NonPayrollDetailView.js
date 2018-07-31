@@ -6,7 +6,8 @@ import {
     View,
     TouchableOpacity,
     Image,
-    ActivityIndicator
+    ActivityIndicator,
+    Alert
 
 } from 'react-native';
 
@@ -17,6 +18,7 @@ import RestAPI from "../constants/RestAPI"
 
 // import customData from './../InAppData/non-payroll-detail-data.json';
 import Decrypt from './../SharedObject/Decryptfun'
+import StringText from './../SharedObject/StringText'
 import moment from 'moment'
 
 export default class NonpayrollDetailView extends Component {

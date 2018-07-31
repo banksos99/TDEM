@@ -33,6 +33,7 @@ import SharedPreference from '../SharedObject/SharedPreference';
 
 let fontsizearr = ['50%', '80%', '100%', '120%', '150%', '180%'];
 let fontname = ['times', 'courier', 'arial', 'serif', 'cursive', 'fantasy', 'monospace'];
+let HandbookHighlightList=[];
 
 const Uri = require("epubjs/lib/utils/url");
 
@@ -92,15 +93,33 @@ export default class HandbookViewer extends Component {
         
     }
 
-     componentDidMount() {
+    componentDidMount() {
 
-       this.downloadEpubFile(SharedPreference.HOST + this.state.handbook_file);
-    //    this.downloadEpubFile('https://s3-us-west-2.amazonaws.com/pressbooks-samplefiles/MetamorphosisJacksonTheme/Metamorphosis-jackson.epub');
-      }
+        this.downloadEpubFile(SharedPreference.HOST + this.state.handbook_file);
+
+        for (let i = 0; i < SharedPreference.Handbook.length; i++) {
+
+            if (SharedPreference.Handbook[i].handbook_name === this.state.handbook_file) {
+
+                HandbookHighlightList = SharedPreference.Handbook[i].handbook_file
+
+            }
+
+        }
+
+        console.log('[EPub] componentDidMount : ', HandbookHighlightList);
+        //    this.downloadEpubFile('https://s3-us-west-2.amazonaws.com/pressbooks-samplefiles/MetamorphosisJacksonTheme/Metamorphosis-jackson.epub');
+    }
   
     componentWillUnmount() {
+
+        SharedPreference.Handbook.push({
+            handbook_name: this.state.handbook_file,
+            handbook_file: HandbookHighlightList
+        })
+        console.log('[EPub] componentWillUnmount : ', SharedPreference.Handbook);
         if (this.streamer)
-        this.streamer.kill();
+            this.streamer.kill();
     }
 
     downloadEpubFile(bookUrl) {
@@ -231,7 +250,7 @@ export default class HandbookViewer extends Component {
 
         if (this.state.typeTOC) {
 
-            this.props.navigation.navigate('HomeScreen');
+            this.props.navigation.navigate('Handbooklist');
 
         } else {
             this.setState({
@@ -570,7 +589,7 @@ export default class HandbookViewer extends Component {
 
             <ScrollView style={{ height: '40%' }}>
                 {
-                    SharedPreference.HandbookHighlightList.map((item, index) => (
+                    HandbookHighlightList.map((item, index) => (
                         <TouchableOpacity style={styles.button}
                             onPress={() => this._onhilight(item)}
                             key={index + 100}>
@@ -658,9 +677,9 @@ export default class HandbookViewer extends Component {
                     onReady={(book) => {
 
                         // add old highlight
-                        for (let i = 0; i < SharedPreference.HandbookHighlightList.length; i++) {
+                        for (let i = 0; i < HandbookHighlightList.length; i++) {
 
-                            this.epub.rendition.highlight(SharedPreference.HandbookHighlightList[i].link, {});
+                            this.epub.rendition.highlight(HandbookHighlightList[i].link, {});
 
                         }
 
@@ -701,7 +720,7 @@ export default class HandbookViewer extends Component {
                                 let newdate = new Date().toString()
                                 let timearr = newdate.split('')
                                 
-                                SharedPreference.HandbookHighlightList.push(
+                                HandbookHighlightList.push(
                                     {
                                         link: cfiRange,
                                         title: datatext,

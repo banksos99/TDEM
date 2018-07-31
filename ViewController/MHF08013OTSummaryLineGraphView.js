@@ -37,7 +37,7 @@ import Colors from "./../SharedObject/Colors"
 import Layout from "./../SharedObject/Layout"
 import { styles } from "./../SharedObject/MainStyles"
 // import AnnounceTable from "../../components/TableviewCell"
-import PureChart from 'react-native-pure-chart';
+//import PureChart from 'react-native-pure-chart';
 
 import LineChartAerage from "./LineChartAerage";
 // import PINScreen from './MHF01310PINScreen';

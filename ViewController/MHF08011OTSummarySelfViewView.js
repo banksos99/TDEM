@@ -81,7 +81,7 @@ export default class OTSummaryDetail extends Component {
     checkDataFormat(DataResponse) {
         
         if (DataResponse) {
-
+            console.log('tosummary DataResponse : ', DataResponse)
             this.state.tdataSource = DataResponse.detail.items;
             this.state.headerdataSource = DataResponse.header
             console.log('tosummary data : ', this.state.tdataSource)

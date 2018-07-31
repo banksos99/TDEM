@@ -250,12 +250,22 @@ export default class HMF01011MainView extends Component {
     }
     _onLoadMore() {
 
+        // this.setState({
+        //     loadingtype: 3,
+        //     isscreenloading: true,
+        //     loadmore: true,
+        //     page: 1,
+        // });
         this.setState({
-            loadingtype: 3,
             isscreenloading: true,
+            loadingtype: 3,
             loadmore: true,
-            page: 1,
+          
+        }, function () {
+            this.setState(this.renderloadingscreen())
+            this.loadAnnouncementMorefromAPI()
         });
+        
     }
 
 
@@ -300,7 +310,7 @@ export default class HMF01011MainView extends Component {
                         if (this.state.dataSource.status === 200) {
 
                             this.setState(this.renderloadingscreen());
-
+console.log('this.state.dataSource.data: ',this.state.dataSource.data)
                             tempannouncementData = []
                             announcementData = this.state.dataSource.data;
                             announcementData.map((item, i) => {
@@ -441,7 +451,7 @@ export default class HMF01011MainView extends Component {
 
         FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, SharedPreference.FUNCTIONID_ANNOUCEMENT, SharedPreference.profileObject.client_token)
         console.log("calendarPDFAPI ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
-
+        console.log('ANNOUNCEMENT_DETAIL_API : ',SharedPreference.ANNOUNCEMENT_DETAIL_API + item.id)
         let path = 'AnnouncementDetail'
         return fetch(SharedPreference.ANNOUNCEMENT_DETAIL_API + item.id, {
             method: 'GET',
@@ -622,7 +632,7 @@ export default class HMF01011MainView extends Component {
 
         if ((code.SUCCESS == data.code) | (code.NODATA == data.code)) {
             this.props.navigation.navigate('OTSummarySelfView', {
-                dataResponse: data.data,
+                DataResponse: data.data,
             });
         } else {
             this.onLoadErrorAlertDialog(data)

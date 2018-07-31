@@ -62,7 +62,7 @@ export default {
     notipayslipID: 0,
     notipayAnnounceMentID: 0,
     HandbookHighlightList: [],
-
+    Handbook: [],
 
     FUNCTIONID_SPLASH: 'HF0111',
     FUNCTIONID_REGISTER: 'HF0121',

@@ -146,19 +146,25 @@ export default class Handbookctivity extends Component {
     }
 
     checkDataFormat(DataResponse) {
+        console.log('dataSource :', dataSource.length)
+        if (dataSource.length == 0) {
 
-        if (DataResponse) {
-            console.log('Handbookctivity DataResponse :',DataResponse)
-            // dataSource = DataResponse.data;
-            dataSource = DataResponse;
-           
-        } else {
-            console.log('inappdata :',inappdata.dataSource.data.detail)
-            dataSource = inappdata.dataSource.data.detail.items;
-            
+            if (DataResponse) {
+
+                console.log('Handbookctivity DataResponse :', DataResponse)
+                // dataSource = DataResponse.data;
+                dataSource = DataResponse;
+
+            } else {
+                console.log('inappdata :', inappdata.dataSource.data.detail)
+                dataSource = inappdata.dataSource.data.detail.items;
+
+            }
+
+            this.createShelfHandbook();
+
         }
 
-        this.createShelfHandbook();
 
     }
 
