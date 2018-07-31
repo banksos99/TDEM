@@ -21,18 +21,20 @@ import inappdata from "./../InAppData/HandbookListData"
 import SharedPreference from "./../SharedObject/SharedPreference"
 let dataSource = [];
 let temphandbookData = [];
-
-
+let FUNCTION_TOKEN;
 class BookCover extends Component {
     constructor(props) {
       super(props);
       this.state = {
-        /* Set placeholder URL */
-        url: this.props.placeholderUrl
-      };
-  
+            /* Set placeholder URL */
+            url: this.props.placeholderUrl
+        };
+        this.updateToken();
     }
-  
+    updateToken = async () => {
+        FUNCTION_TOKEN =  await Authorization.convert(SharedPreference.profileObject.client_id,'1', SharedPreference.profileObject.client_token)
+
+    }
     updateSource(newUrl){
       console.log("Book updateSource : " + newUrl);
       this.setState(previousState => {
@@ -49,7 +51,7 @@ class BookCover extends Component {
       let targetFile = dirs.DocumentDir + '/cover/' + filename;
   
       let hasFile = false;
-      let FUNCTION_TOKEN =  Authorization.convert(SharedPreference.profileObject.client_id, '1', SharedPreference.profileObject.client_token)
+      
       RNFetchBlob.fs.exists(targetFile)
         .then((exist) => {
           hasFile = exist;
@@ -262,7 +264,8 @@ export default class Handbookctivity extends Component {
     onDetail(i) {
 
         this.props.navigation.navigate('HandbookDetail', {
-            handbook_file: dataSource[i].handbook_file,
+            handbook_file: SharedPreference.HOST + dataSource[i].handbook_file,
+            FUNCTION_TOKEN: FUNCTION_TOKEN
         });
         
     }
@@ -437,7 +440,7 @@ export default class Handbookctivity extends Component {
 
                             <BookCover
                                 // ref={bc => { this.bookCover = bc }}
-                                placeholderUrl={'https://facebook.github.io/react/logo-og.png'}
+                              //  placeholderUrl={'https://facebook.github.io/react/logo-og.png'}
                             //    coverUrl={'https://tdemconnect-dev.tdem.toyota-asia.com/api/v1/handbooks/download?file=00021'}
                                 coverUrl={SharedPreference.HOST+ dataSource[i].handbook_cover}
                                 bookName={new Date().getTime()}
