@@ -41,18 +41,18 @@ export default class calendarMonthView extends Component {
         if (eventObject[0].all_day == 'N') {
             return (<View style={styles.calendarEventContainer}>
                 <View style={styles.calendarEventViewContainer}>
-                    <View style={{ width: '50%', paddingLeft: 10 }}>
+                    <View style={{ width: '40%', paddingLeft: 10 }}>
                         <Text style={styles.calendarEventTimeText}>Start</Text>
                     </View>
-                    <View style={{ width: '50%' }}>
+                    <View style={{ width: '60%' }}>
                         <Text style={styles.calendarEventTimeDetialText}>{moment(eventObject[0].time_start).format(_format)}</Text>
                     </View>
                 </View>
                 <View style={styles.calendarEventViewContainer}>
-                    <View style={{ width: '50%', paddingLeft: 10 }}>
+                    <View style={{ width: '40%', paddingLeft: 10 }}>
                         <Text style={styles.calendarEventTimeText}>End</Text>
                     </View>
-                    <View style={{ width: '50%' }}>
+                    <View style={{ width: '60%' }}>
                         <Text style={styles.calendarEventTimeDetialText}>{moment(eventObject[0].time_end).format(_format)}
                         </Text>
                     </View>

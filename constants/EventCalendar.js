@@ -30,8 +30,13 @@ export default class EventCalendar {
             }
         }
     }
+    _findEventCalendar = async () => {
+        calendarEvent = await RNCalendarEvents.findCalendars()
+        console.log("calendarEvent ==> findEventCalendar ==> ", calendarEvent)
+    }
 
     _addEventsToCalendar = async (eventObject, location) => {
+        console.log("AddEventsToCalendar ==> eventObject ==> ", eventObject)
         let format = 'YYYY-MM-DDTHH:mm:ss.sss'
         let momentStart = moment(eventObject.time_start).format(format);
         let momentEnd = moment(eventObject.time_end).format(format);
@@ -47,7 +52,8 @@ export default class EventCalendar {
             endDate: momentEnd + "Z",
             location: location,
             timeZone: 'Asia/Bangkok',
-            allDay: alldayBool
+            allDay: alldayBool,
+            notes: eventObject.description
         }
 
         await RNCalendarEvents.authorizationStatus().then(fulfilled => {
