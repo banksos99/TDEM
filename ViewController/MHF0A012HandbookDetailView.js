@@ -103,16 +103,13 @@ export default class HandbookViewer extends Component {
         return true;
     }
 
-<<<<<<< HEAD
     componentWillUnmount() {
-        console.log("componentWillUnmount")
         BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
         SharedPreference.Handbook.push({
             handbook_name: this.state.handbook_file,
             handbook_file: HandbookHighlightList
         })
 
-=======
         let tempHB = [];
 
         for (let i = 0; i < SharedPreference.Handbook.length; i++) {
@@ -123,7 +120,7 @@ export default class HandbookViewer extends Component {
                     handbook_file: HandbookHighlightList
 
                 })
-            }else{
+            } else {
                 tempHB.push(
                     SharedPreference.Handbook[i]
                 )
@@ -131,20 +128,11 @@ export default class HandbookViewer extends Component {
             }
         }
 
-        // SharedPreference.Handbook.push({
-        //     handbook_name: this.state.handbook_file,
-        //     handbook_file: HandbookHighlightList
-        // })
-        console.log('[EPub] componentWillUnmount : ', SharedPreference.Handbook);
->>>>>>> 4b17a3ab74420b8476245900931dcd89b8ef7ef1
         if (this.streamer)
             this.streamer.kill();
     }
 
     downloadEpubFile(bookUrl) {
-
-        console.log('[EPub] downloadEpubFilep path', bookUrl);
-        console.log('[EPub] downloadEpubFile TOKEN', this.state.FUNCTION_TOKEN);
 
         let dirs = RNFetchBlob.fs.dirs;
         let filename = this.filename(bookUrl);

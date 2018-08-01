@@ -213,17 +213,10 @@ export default class HMF01011MainView extends Component {
             .then((response) => response.json())
             .then((responseJson) => {
                 try {
-<<<<<<< HEAD
-                    if (timerstatus) {
-                        this.inappTimeInterval()
-                    }
-                    console.log('inapp responseJson :', responseJson)
-=======
                     
                     
                     console.log('inapp responseJson :', responseJson)
      
->>>>>>> 4b17a3ab74420b8476245900931dcd89b8ef7ef1
                     if (responseJson.status == 403) {
 
                         this.onAutenticateErrorAlertDialog()
