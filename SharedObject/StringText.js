@@ -49,6 +49,8 @@ export default {
   CALENDAR_MONTHVIEW_SELECT_NEW_PLACE_TITLE: 'Sorry',
   CALENDAR_MONTHVIEW_SELECT_NEW_PLACE_DESC: 'No Data',
   // 
+  REGISTER_INVALID_TITLE: 'Sorry',
+  REGISTER_INVALID_DESC: 'Invalid User ID or Password.',
 
   SERVER_ERROR_TITLE: 'MHF00002ACRI',
   SERVER_ERROR_DESC: 'System Error (API). Please contact system administrator.',

@@ -73,6 +73,8 @@ export default class calendarYearView extends Component {
             changeData: false,
             newPage: false,
             isLoadingPDF: false,
+
+            page: this.props.navigation.getParam("page", 2),
         }
 
         this.LocaleConfig()
@@ -96,7 +98,6 @@ export default class calendarYearView extends Component {
 
     setNewPicker() {
         array = SharedPreference.COMPANY_LOCATION
-        // loactionArray = locationPicker
         locationArray = []
 
         for (let index = 0; index < array.length; index++) {
@@ -105,9 +106,7 @@ export default class calendarYearView extends Component {
                 label: element.value,
                 value: element.key
             })
-            //console.log("setNewPicker index ==>  : ", locationArray[index])
         }
-        //console.log("setNewPicker locationArray : ", locationArray)
         this.state.locationPicker = locationArray
     }
 
@@ -115,9 +114,8 @@ export default class calendarYearView extends Component {
         this.getYearSelect()
         this.getYearView(this.state.selectYear, this.state.dataResponse)
 
-        //console.log("SharedPreference.calendarAutoSync : ", SharedPreference.calendarAutoSync)
-
-        if (SharedPreference.calendarAutoSync == true) {
+        console.log("page : ", this.state.page)
+        if ((SharedPreference.calendarAutoSync == true) && (this.state.page == 1)) {
             await this.onSynWithCalendar()
         }
     }
@@ -135,9 +133,6 @@ export default class calendarYearView extends Component {
     }
 
     loadDataFromAPI = async (year, location) => {
-        //console.log("loadDataFromAPI year ==>: ", year)
-        //console.log("loadDataFromAPI location ==>: ", location)
-
         // reset api
         this.setState({
             countDay: [],
@@ -154,9 +149,6 @@ export default class calendarYearView extends Component {
         //console.log("onLoadCalendarAPI ====> year : ", year, " , location : ", location)
         //console.log("location : ", this.state.selectLocation)
 
-        if (Platform.OS === "ios") {
-
-        }
         let data = await RestAPI(SharedPreference.CALENDER_YEAR_API + year + '&company=' + location, SharedPreference.FUNCTIONID_WORKING_CALENDAR)
         code = data[0]
         data = data[1]

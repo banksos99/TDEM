@@ -79,8 +79,6 @@ export default class HMF01011MainView extends Component {
 
 
         for (let i = 0; i < SharedPreference.profileObject.role_authoried.length; i++) {
-
-
             // if (SharedPreference.profileObject.role_authoried[i].module_function === 'HF0501') {
 
             //     managerstatus = 'Y'
@@ -122,11 +120,7 @@ export default class HMF01011MainView extends Component {
             //     case 'HF0A01': {
 
             //     }
-
-
             // }
-
-
 
         }
 
@@ -146,7 +140,7 @@ export default class HMF01011MainView extends Component {
         let autoSyncCalendarBool = await this.saveAutoSyncCalendar.getAutoSyncCalendar()
         //console.log("loadData ==> autoSyncCalendarBool 1 ==> : ", autoSyncCalendarBool)
 
-        if(autoSyncCalendarBool == null){
+        if (autoSyncCalendarBool == null) {
             autoSyncCalendarBool = true
         }
 
@@ -161,9 +155,8 @@ export default class HMF01011MainView extends Component {
 
     async componentDidMount() {
         //console.log("componentDidMount")
-
         if (!timerstatus) {
-             this.inappTimeInterval();
+            this.inappTimeInterval();
             timerstatus = true;
         }
         this.setState({ page: 0, })
@@ -175,31 +168,15 @@ export default class HMF01011MainView extends Component {
         } else if (SharedPreference.notipayAnnounceMentID) {
             this.loadAnnouncementDetailfromAPI(SharedPreference.notipayAnnounceMentID, 0)
         }
-
         await this.loadData()
-
     }
-
-    componentWillMount() {
-        //console.log("componentWillMount")
-    }
-
-    componentWillReceiveProps() {
-        //console.log("componentWillReceiveProps")
-    }
-
-    componentWillUnmount() {
-        //console.log("componentWillUnmount")
-    }
-
 
     onLoadInAppNoti = async () => {
-
         let today = new Date()
         const newdate = moment(today).format(_format).valueOf();
-        console.log("selectedDateMonth : ", newdate)
+        // console.log("selectedDateMonth : ", newdate)
         FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, 1, SharedPreference.profileObject.client_token)
-        console.log("calendarPDFAPI ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
+        // console.log("calendarPDFAPI ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
         latest_date = "2018-01-01 12:00:00"
 
         return fetch(SharedPreference.PULL_NOTIFICATION_API + newdate, {
@@ -213,16 +190,14 @@ export default class HMF01011MainView extends Component {
             .then((response) => response.json())
             .then((responseJson) => {
                 try {
-                    
-                    
                     console.log('inapp responseJson :', responseJson)
-     
+
                     if (responseJson.status == 403) {
 
                         this.onAutenticateErrorAlertDialog()
-                       // this.select_sign_out()
-                        
-                    }else{
+                        // this.select_sign_out()
+
+                    } else {
                         if (timerstatus) {
                             this.inappTimeInterval()
                         }
@@ -232,7 +207,7 @@ export default class HMF01011MainView extends Component {
                     this.setState({
 
 
-                    }, function() {
+                    }, function () {
 
 
 
@@ -285,7 +260,7 @@ export default class HMF01011MainView extends Component {
             refreshing: true,
             annrefresh: true,
             page: 1
-        }, function() {
+        }, function () {
 
             let promise = this.loadAnnouncementfromAPI();
 
@@ -310,12 +285,12 @@ export default class HMF01011MainView extends Component {
             isscreenloading: true,
             loadingtype: 3,
             loadmore: true,
-          
+
         }, function () {
             this.setState(this.renderloadingscreen())
             this.loadAnnouncementMorefromAPI()
         });
-        
+
     }
 
 
@@ -356,7 +331,7 @@ export default class HMF01011MainView extends Component {
                         dataSource: responseJson,
                         announcepage: 0,
                         annrefresh: false
-                    }, function() {
+                    }, function () {
                         if (this.state.dataSource.status === 200) {
 
                             this.setState(this.renderloadingscreen());
@@ -403,10 +378,10 @@ export default class HMF01011MainView extends Component {
             .catch((error) => {
                 this.setState({
                     isscreenloading: false,
-                }, function() {
+                }, function () {
                     this.setState(this.renderloadingscreen());
                     // TODO Error
-                    this.onLoadErrorAlertDialog(error,'Announcement')
+                    this.onLoadErrorAlertDialog(error, 'Announcement')
                 });
             });
     }
@@ -438,7 +413,7 @@ export default class HMF01011MainView extends Component {
                         dataSource: responseJson,
                         announcepage: this.state.announcepage + 1,
                         loadmore: false
-                    }, function() {
+                    }, function () {
 
                         //console.log('this.state.dataSource.data :', this.state.dataSource.data)
                         //console.log('this.state.dataSource.status :', this.state.dataSource.status)
@@ -489,10 +464,10 @@ export default class HMF01011MainView extends Component {
             .catch((error) => {
                 this.setState({
                     isscreenloading: false,
-                }, function() {
+                }, function () {
                     this.setState(this.renderloadingscreen());
                     // TODO Error
-                    this.onLoadErrorAlertDialog(error,'announcement')
+                    this.onLoadErrorAlertDialog(error, 'announcement')
                 });
             });
     }
@@ -535,7 +510,7 @@ export default class HMF01011MainView extends Component {
                                 DataResponse: this.state.announceDetailDataSource,
                             });
 
-                            });
+                        });
 
                     } else {
 
@@ -561,7 +536,7 @@ export default class HMF01011MainView extends Component {
 
                     isscreenloading: false,
 
-                }, function() {
+                }, function () {
 
                     this.setState(this.renderloadingscreen());
 
@@ -600,10 +575,10 @@ export default class HMF01011MainView extends Component {
                 dataResponse: data.data,
             });
 
-        }else if(code.INVALID_AUTH_TOKEN == data.code){  
+        } else if (code.INVALID_AUTH_TOKEN == data.code) {
             this.onAutenticateErrorAlertDialog(data)
         } else {
-            this.onLoadErrorAlertDialog(data,'NonPayroll')
+            this.onLoadErrorAlertDialog(data, 'NonPayroll')
         }
     }
     loadPayslipDetailfromAPI = async () => {
@@ -628,7 +603,7 @@ export default class HMF01011MainView extends Component {
 
                     // datadetail: PayslipDataDetail.detail[dataSource.years[year].detail[index].payroll_id]
 
-                }, function() {
+                }, function () {
                     //console.log('status : ', this.state.dataSource.status);
                     if (this.state.dataSource.status === 200) {
 
@@ -678,11 +653,11 @@ export default class HMF01011MainView extends Component {
             this.props.navigation.navigate(rount, {
                 DataResponse: data.data,
             });
-        }else if(code.INVALID_AUTH_TOKEN == data.code){  
+        } else if (code.INVALID_AUTH_TOKEN == data.code) {
             this.onAutenticateErrorAlertDialog(data)
-        
+
         } else {
-            this.onLoadErrorAlertDialog(data,rount)
+            this.onLoadErrorAlertDialog(data, rount)
         }
 
     }
@@ -705,11 +680,11 @@ export default class HMF01011MainView extends Component {
             this.props.navigation.navigate('OTSummarySelfView', {
                 DataResponse: data.data,
             });
-        }else if(code.INVALID_AUTH_TOKEN == data.code){  
+        } else if (code.INVALID_AUTH_TOKEN == data.code) {
             this.onAutenticateErrorAlertDialog(data)
-        
+
         } else {
-            this.onLoadErrorAlertDialog(data,'OTSummary')
+            this.onLoadErrorAlertDialog(data, 'OTSummary')
         }
 
     }
@@ -717,7 +692,7 @@ export default class HMF01011MainView extends Component {
     loadHandbooklistfromAPI = async () => {
         //console.log("loadHandbooklistfromAPI", SharedPreference.HANDBOOK_LIST)
 
-        this.APICallback(await RestAPI(SharedPreference.HANDBOOK_LIST,SharedPreference.FUNCTIONID_HANDBOOK), 'Handbooklist')
+        this.APICallback(await RestAPI(SharedPreference.HANDBOOK_LIST, SharedPreference.FUNCTIONID_HANDBOOK), 'Handbooklist')
         // this.props.navigation.navigate('Handbooklist');
 
     }
@@ -802,7 +777,7 @@ export default class HMF01011MainView extends Component {
             });
         } else {
 
-            this.onLoadErrorAlertDialog(data,rount)
+            this.onLoadErrorAlertDialog(data, rount)
         }
     }
 
@@ -839,7 +814,7 @@ export default class HMF01011MainView extends Component {
             rount + ' NoData',
             [{
                 text: 'OK', onPress: () => {
-                   
+
                 }
             }],
             { cancelable: false }
@@ -858,7 +833,7 @@ export default class HMF01011MainView extends Component {
             'NODATA Exits',
             [{
                 text: 'OK', onPress: () => {
-                    
+
                 }
             }],
             { cancelable: false }
@@ -917,7 +892,7 @@ export default class HMF01011MainView extends Component {
 
         } else {
 
-            this.onLoadErrorAlertDialog(data,'LeaveQuota')
+            this.onLoadErrorAlertDialog(data, 'LeaveQuota')
         }
     }
 
@@ -937,7 +912,8 @@ export default class HMF01011MainView extends Component {
         this.props.navigation.navigate('calendarYearView', {
             dataResponse: data,
             selectYear: new Date().getFullYear(),
-            location: company
+            location: company,
+            page: 1
         });
     }
 
@@ -950,7 +926,7 @@ export default class HMF01011MainView extends Component {
         this.setState({
             isscreenloading: true,
             loadingtype: 3
-        }, function() {
+        }, function () {
             this.setState(this.renderloadingscreen())
             this.loadOrgStructerfromAPI()
         });
@@ -960,7 +936,7 @@ export default class HMF01011MainView extends Component {
         this.setState({
             isscreenloading: true,
             loadingtype: 3
-        }, function() {
+        }, function () {
             this.setState(this.renderloadingscreen())
             this.loadOrgStructerClockInOutfromAPI()
         });
@@ -970,7 +946,7 @@ export default class HMF01011MainView extends Component {
         this.setState({
             isscreenloading: true,
             loadingtype: 3
-        }, function() {
+        }, function () {
             this.setState(this.renderloadingscreen())
             this.loadOrgStructerOTHistoryfromAPI()
         });
@@ -980,7 +956,7 @@ export default class HMF01011MainView extends Component {
         this.setState({
             isscreenloading: true,
             loadingtype: 3
-        }, function() {
+        }, function () {
             this.setState(this.renderloadingscreen())
             this.loadOrgStructerOTAveragefromAPI()
         });
@@ -991,7 +967,7 @@ export default class HMF01011MainView extends Component {
         this.setState({
             isscreenloading: true,
             loadingtype: 3
-        }, function() {
+        }, function () {
             this.setState(this.renderloadingscreen())
             this.loadOrgStructerOTHistoryfromAPI()
         });
@@ -1001,7 +977,7 @@ export default class HMF01011MainView extends Component {
         this.setState({
             isscreenloading: true,
             loadingtype: 3
-        }, function() {
+        }, function () {
             this.setState(this.renderloadingscreen())
             this.loadAnnouncementfromAPI()
         });
@@ -1011,7 +987,7 @@ export default class HMF01011MainView extends Component {
         this.setState({
             isscreenloading: true,
             loadingtype: 3
-        }, function() {
+        }, function () {
             //console.log('index :', index);
             this.setState(this.renderloadingscreen())
             this.loadAnnouncementDetailfromAPI(item, index)
@@ -1022,7 +998,7 @@ export default class HMF01011MainView extends Component {
         this.setState({
             isscreenloading: true,
             loadingtype: 3
-        }, function() {
+        }, function () {
             this.setState(this.renderloadingscreen())
             this.loadEmployeeInfoformAPI()
         });
@@ -1032,7 +1008,7 @@ export default class HMF01011MainView extends Component {
         this.setState({
             isscreenloading: true,
             loadingtype: 3
-        }, function() {
+        }, function () {
             this.setState(this.renderloadingscreen())
             this.loadNonpayrollfromAPI()
         });
@@ -1042,7 +1018,7 @@ export default class HMF01011MainView extends Component {
         this.setState({
             isscreenloading: true,
             loadingtype: 3
-        }, function() {
+        }, function () {
             this.setState(this.renderloadingscreen())
             this.loadPayslipfromAPI()
         });
@@ -1052,7 +1028,7 @@ export default class HMF01011MainView extends Component {
         this.setState({
             isscreenloading: true,
             loadingtype: 3
-        }, function() {
+        }, function () {
             this.setState(this.renderloadingscreen())
             this.loadPayslipDetailfromAPI()
         });
@@ -1062,7 +1038,7 @@ export default class HMF01011MainView extends Component {
         this.setState({
             isscreenloading: true,
             loadingtype: 3
-        }, function() {
+        }, function () {
             this.setState(this.renderloadingscreen())
             this.loadLeaveQuotafromAPI()
         });
@@ -1072,7 +1048,7 @@ export default class HMF01011MainView extends Component {
         this.setState({
             isscreenloading: true,
             loadingtype: 3
-        }, function() {
+        }, function () {
             this.setState(this.renderloadingscreen())
             this.loadClockInOutDetailfromAPI()
         });
@@ -1082,7 +1058,7 @@ export default class HMF01011MainView extends Component {
         this.setState({
             isscreenloading: true,
             loadingtype: 3
-        }, function() {
+        }, function () {
             this.setState(this.renderloadingscreen())
             this.loadOTSummarySelffromAPI()
         });
@@ -1092,7 +1068,7 @@ export default class HMF01011MainView extends Component {
         this.setState({
             isscreenloading: true,
             loadingtype: 3
-        }, function() {
+        }, function () {
             this.setState(this.renderloadingscreen())
             this.loadCalendarfromAPI()
         });
@@ -1102,7 +1078,7 @@ export default class HMF01011MainView extends Component {
         this.setState({
             isscreenloading: true,
             loadingtype: 3
-        }, function() {
+        }, function () {
             this.setState(this.renderloadingscreen())
             this.loadHandbooklistfromAPI()
         });
@@ -1112,7 +1088,7 @@ export default class HMF01011MainView extends Component {
         this.setState({
             isscreenloading: true,
             loadingtype: 3
-        }, function() {
+        }, function () {
             this.setState(this.renderloadingscreen())
             this.loadOrgStructerfromAPI()
         });
@@ -1167,7 +1143,7 @@ export default class HMF01011MainView extends Component {
                     page: tabnumber,
                     isscreenloading: true,
                     loadingtype: 3
-                }, function() {
+                }, function () {
                     this.loadAnnouncementfromAPI()
                 });
             }
@@ -1208,7 +1184,7 @@ export default class HMF01011MainView extends Component {
         this.setState({
             isscreenloading: true,
             loadingtype: 3
-        }, function() {
+        }, function () {
             announcementData = [];
             this.loadAnnouncementfromAPI();
         });
@@ -1217,7 +1193,7 @@ export default class HMF01011MainView extends Component {
     select_announce_type = () => {
         this.setState({
             loadingtype: 0
-        }, function() {
+        }, function () {
             this.setState(this.select_search_announce())
         });
     }
@@ -1225,7 +1201,7 @@ export default class HMF01011MainView extends Component {
     select_announce_status = () => {
         this.setState({
             loadingtype: 1
-        }, function() {
+        }, function () {
             this.setState(this.select_search_announce())
         });
     }
@@ -1234,7 +1210,7 @@ export default class HMF01011MainView extends Component {
         this.setState({
             announcementType: 'All',
             announcementTypetext: 'All'
-        }, function() {
+        }, function () {
             this.setState(this.select_announce_type())
         });
     }
@@ -1243,7 +1219,7 @@ export default class HMF01011MainView extends Component {
         this.setState({
             announcementType: 'All',
             announcementTypetext: 'All'
-        }, function() {
+        }, function () {
             this.setState(this.select_announce_type())
         });
     }
@@ -1252,7 +1228,7 @@ export default class HMF01011MainView extends Component {
         this.setState({
             announcementType: 'Company Announcement',
             announcementTypetext: 'Company Announcement'
-        }, function() {
+        }, function () {
             this.setState(this.select_announce_type())
         });
     }
@@ -1261,7 +1237,7 @@ export default class HMF01011MainView extends Component {
         this.setState({
             announcementType: 'Emergency Announcement',
             announcementTypetext: 'Emergency Announcement'
-        }, function() {
+        }, function () {
             this.setState(this.select_announce_type())
         });
     }
@@ -1270,7 +1246,7 @@ export default class HMF01011MainView extends Component {
         this.setState({
             announcementType: 'Event Announcement',
             announcementTypetext: 'Event Announcement'
-        }, function() {
+        }, function () {
             this.setState(this.select_announce_type())
         });
     }
@@ -1279,7 +1255,7 @@ export default class HMF01011MainView extends Component {
         this.setState({
             announcementType: 'General Announcement',
             announcementTypetext: 'General Announcement'
-        }, function() {
+        }, function () {
             this.setState(this.select_announce_type())
         });
     }
@@ -1288,7 +1264,7 @@ export default class HMF01011MainView extends Component {
         this.setState({
             announcementStatus: 'All',
             announcementStatustext: 'All'
-        }, function() {
+        }, function () {
             this.setState(this.select_announce_status())
         });
     }
@@ -1297,7 +1273,7 @@ export default class HMF01011MainView extends Component {
         this.setState({
             announcementStatus: true,
             announcementStatustext: 'Read'
-        }, function() {
+        }, function () {
             this.setState(this.select_announce_status())
         });
     }
@@ -1306,7 +1282,7 @@ export default class HMF01011MainView extends Component {
         this.setState({
             announcementStatus: false,
             announcementStatustext: 'Unread'
-        }, function() {
+        }, function () {
             this.setState(this.select_announce_status())
         });
     }
@@ -1319,7 +1295,7 @@ export default class HMF01011MainView extends Component {
 
                 isscreenloading: true,
 
-            }, function() {
+            }, function () {
 
                 this.setState(this.renderloadingscreen())
             });
@@ -1373,7 +1349,7 @@ export default class HMF01011MainView extends Component {
 
                 isscreenloading: false
 
-            }, function() {
+            }, function () {
 
                 this.setState(this.renderloadingscreen())
             });
@@ -1412,8 +1388,8 @@ export default class HMF01011MainView extends Component {
                     <Image
                         style={{ flex: 1 }}
                         source={require('./../resource/images/mainscreen.png')}
-                       // resizeMode="contain" 
-                       />
+                    // resizeMode="contain" 
+                    />
                     <View style={{ position: 'absolute', height: '40%', width: '80%', marginTop: '7%', marginLeft: '6%' }}>
                         <View style={{ flex: 1, flexDirection: 'row' }}>
                             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -2099,7 +2075,7 @@ export default class HMF01011MainView extends Component {
                                 announcementStatus: itemValue,
                                 announcementStatustext: announstatus[itemValue],
 
-                            }, function() {
+                            }, function () {
                                 initannouncementStatustext = announstatus[itemValue];
                                 initannouncementStatus = itemValue;
                             })}>
@@ -2178,7 +2154,7 @@ export default class HMF01011MainView extends Component {
                             onValueChange={(itemValue, itemIndex) => this.setState({
                                 announcementType: itemValue,
                                 announcementTypetext: annountype[itemValue],
-                            }, function() {
+                            }, function () {
 
                                 initannouncementType = itemValue;
                                 initannouncementTypetext = annountype[itemValue];

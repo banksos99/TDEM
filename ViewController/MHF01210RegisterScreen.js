@@ -37,24 +37,20 @@ export default class RegisterActivity extends Component {
     }
 
     onRegister = async () => {
-
         Keyboard.dismiss()
         let data = await RegisterAPI(this.state.username, this.state.password)
         code = data[0]
         data = data[1]
         console.log("onRegister ==> data : ", data)
-
         if (code.SUCCESS == data.code) {
-            //TODO 
             this.saveProfile.setProfile(data.data)
             SharedPreference.profileObject = await this.saveProfile.getProfile()
-            // SharedPreference.TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, '1', SharedPreference.profileObject.client_token)
             console.log("onRegister ==> onLoadLoginWithPin")
             await this.onLoadLoginWithPin("001000200")
         } else {
             Alert.alert(
-                StringText.SERVER_ERROR_TITLE,
-                StringText.SERVER_ERROR_DESC,
+                StringText.REGISTER_INVALID_TITLE,
+                StringText.REGISTER_INVALID_DESC,
                 [
                     { text: 'OK', onPress: () => console.log('OK Pressed') },
                 ],
@@ -170,7 +166,7 @@ export default class RegisterActivity extends Component {
 
             }
 
-           
+
         }
         this.props.navigation.navigate('HomeScreen')
     }
