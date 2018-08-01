@@ -10,16 +10,15 @@ import RNFetchBlob from 'react-native-fetch-blob'
 
 import {
     Platform,
-    StyleSheet,
     Text,
     View,
     Image,
     TouchableOpacity,
     ScrollView,
-    Modal,
     ActivityIndicator,
     Picker,
     Alert,
+    BackHandler
 } from 'react-native';
 
 import { Epub, Streamer } from 'epubjs-rn';
@@ -33,28 +32,22 @@ import SharedPreference from '../SharedObject/SharedPreference';
 
 let fontsizearr = ['50%', '80%', '100%', '120%', '150%', '180%'];
 let fontname = ['times', 'courier', 'arial', 'serif', 'cursive', 'fantasy', 'monospace'];
-let HandbookHighlightList=[];
+let HandbookHighlightList = [];
 
 const Uri = require("epubjs/lib/utils/url");
-
-const instructions = Platform.select({
-    ios: 'Press Cmd+R to reload,\n' +
-        'Cmd+D or shake for dev menu',
-    android: 'Double tap R on your keyboard to reload,\n' +
-        'Shake or press menu button for dev menu',
-});
 
 export default class HandbookViewer extends Component {
 
     constructor(props) {
         super(props);
+        this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
         this.state = {
             flow: "paginated", // paginated || scrolled-continuous
             location: 0,
-           // url: "https://s3.amazonaws.com/epubjs/books/moby-dick.epub",
-           // url: "https://s3.amazonaws.com/epubjs/books/moby-dick.epub",
+            // url: "https://s3.amazonaws.com/epubjs/books/moby-dick.epub",
+            // url: "https://s3.amazonaws.com/epubjs/books/moby-dick.epub",
             //src:"https://s3-us-west-2.amazonaws.com/pressbooks-samplefiles/MetamorphosisJacksonTheme/Metamorphosis-jackson.epub",
-            src:'',
+            src: '',
             origin: "",
             title: "",
             toc: [],
@@ -83,35 +76,39 @@ export default class HandbookViewer extends Component {
             titleTOC: 'Table Of Content',
 
             handbook_file: this.props.navigation.getParam("handbook_file", ""),
-            FUNCTION_TOKEN:this.props.navigation.getParam("FUNCTION_TOKEN", ""),
+            FUNCTION_TOKEN: this.props.navigation.getParam("FUNCTION_TOKEN", ""),
         };
 
-        console.log('handbook_file name : ', this.state.handbook_file)
-        console.log('FUNCTION_TOKEN : ', this.state.FUNCTION_TOKEN)
         this.streamer = new Streamer();
         this.reloadCount = 0;
-        
     }
 
     componentDidMount() {
-
         this.downloadEpubFile(SharedPreference.HOST + this.state.handbook_file);
-
         for (let i = 0; i < SharedPreference.Handbook.length; i++) {
-
             if (SharedPreference.Handbook[i].handbook_name === this.state.handbook_file) {
-
                 HandbookHighlightList = SharedPreference.Handbook[i].handbook_file
-
             }
-
         }
-
-        console.log('[EPub] componentDidMount : ', HandbookHighlightList);
-        //    this.downloadEpubFile('https://s3-us-west-2.amazonaws.com/pressbooks-samplefiles/MetamorphosisJacksonTheme/Metamorphosis-jackson.epub');
     }
-  
+
+    componentWillMount() {
+        console.log("componentWillMount")
+        BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
+    }
+
+    handleBackButtonClick() {
+        console.log("handleBackButtonClick")
+        this.onBack()
+        return true;
+    }
+
     componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
+        SharedPreference.Handbook.push({
+            handbook_name: this.state.handbook_file,
+            handbook_file: HandbookHighlightList
+        })
 
         let tempHB = [];
 
@@ -123,7 +120,7 @@ export default class HandbookViewer extends Component {
                     handbook_file: HandbookHighlightList
 
                 })
-            }else{
+            } else {
                 tempHB.push(
                     SharedPreference.Handbook[i]
                 )
@@ -131,51 +128,43 @@ export default class HandbookViewer extends Component {
             }
         }
 
-        // SharedPreference.Handbook.push({
-        //     handbook_name: this.state.handbook_file,
-        //     handbook_file: HandbookHighlightList
-        // })
-        console.log('[EPub] componentWillUnmount : ', SharedPreference.Handbook);
         if (this.streamer)
             this.streamer.kill();
     }
 
     downloadEpubFile(bookUrl) {
 
-        console.log('[EPub] downloadEpubFilep path', bookUrl);
-        console.log('[EPub] downloadEpubFile TOKEN', this.state.FUNCTION_TOKEN);
-
         let dirs = RNFetchBlob.fs.dirs;
         let filename = this.filename(bookUrl);
         let targetFile = dirs.DocumentDir + '/epub/' + filename + '.epub';
-    
-        RNFetchBlob
-          .config({
-            fileCache: true,
-            // response data will be saved to this path if it has access right.
-            path: targetFile
-          })
-          //.fetch('GET', 'https://facebook.github.io/react-native/img/header_logo.png', {
-          .fetch('GET', bookUrl, {
-    
-            Authorization: this.state.FUNCTION_TOKEN
 
-          })
-          .then((res) => {
-            // the path should be dirs.DocumentDir + 'path-to-file.anything'
-            console.log('The file saved to ', res.path())
-            /*RNFetchBlob.fs.readFile(res.path(), 'utf8')
-                    .then((data) => {
-                      console.log(data);
-                    })*/
-    
-            let target = { url: Platform.OS === 'android' ? '' + res.path() : '' + res.path() }
-            this.startStreamer(target.url);
-            //this.startStreamer(this.state.url);
-          });
-    
-      }
-    
+        RNFetchBlob
+            .config({
+                fileCache: true,
+                // response data will be saved to this path if it has access right.
+                path: targetFile
+            })
+            //.fetch('GET', 'https://facebook.github.io/react-native/img/header_logo.png', {
+            .fetch('GET', bookUrl, {
+
+                Authorization: this.state.FUNCTION_TOKEN
+
+            })
+            .then((res) => {
+                // the path should be dirs.DocumentDir + 'path-to-file.anything'
+                console.log('The file saved to ', res.path())
+                /*RNFetchBlob.fs.readFile(res.path(), 'utf8')
+                        .then((data) => {
+                          console.log(data);
+                        })*/
+
+                let target = { url: Platform.OS === 'android' ? '' + res.path() : '' + res.path() }
+                this.startStreamer(target.url);
+                //this.startStreamer(this.state.url);
+            });
+
+    }
+
     startStreamer(epubPath) {
         console.log('Start Streamer and locating path ', epubPath)
         this.streamer.start()
@@ -210,7 +199,7 @@ export default class HandbookViewer extends Component {
                 }
             });
     }
-    
+
     filename(bookUrl) {
         let uri = new Uri(bookUrl);
         return uri.filename.replace(".epub", "");
@@ -329,7 +318,7 @@ export default class HandbookViewer extends Component {
             selectfontnametext: fontselected
         }, function () {
 
-            
+
 
         });
 
@@ -589,8 +578,8 @@ export default class HandbookViewer extends Component {
                                 key={index + 100}>
                                 <View style={{ justifyContent: 'center', height: 40, marginLeft: 20, marginRight: 20 }}>
                                     {/* <View style={{ flex: 1, ustifyContent: 'center', flexDirection: 'column' }}> */}
-                                        <Text style={styles.epubTocText} numberOfLines={1}> {item.label}</Text>
-                                        {/* <Text style={styles.epubHighlighttitleText} numberOfLines={1}> {item.title}</Text> */}
+                                    <Text style={styles.epubTocText} numberOfLines={1}> {item.label}</Text>
+                                    {/* <Text style={styles.epubHighlighttitleText} numberOfLines={1}> {item.title}</Text> */}
                                     {/* </View> */}
                                 </View>
                                 <View style={{ height: 1, backgroundColor: Colors.calendarLocationBoxColor }}>
@@ -612,10 +601,10 @@ export default class HandbookViewer extends Component {
                             onPress={() => this._onhilight(item)}
                             key={index + 100}>
                             <View style={{ justifyContent: 'center', height: 40, marginLeft: 20, marginRight: 20 }}>
-                            <View style={{ flex: 1, ustifyContent: 'center', flexDirection: 'column' }}>
-                                        <Text style={styles.epubHighlightdateText} numberOfLines={1}> {item.date}</Text>
-                                        <Text style={styles.epubHighlighttitleText} numberOfLines={1}> {item.title}</Text>
-                                    </View>
+                                <View style={{ flex: 1, ustifyContent: 'center', flexDirection: 'column' }}>
+                                    <Text style={styles.epubHighlightdateText} numberOfLines={1}> {item.date}</Text>
+                                    <Text style={styles.epubHighlighttitleText} numberOfLines={1}> {item.title}</Text>
+                                </View>
                             </View>
                             <View style={{ height: 1, backgroundColor: Colors.calendarLocationBoxColor }}>
 
@@ -669,7 +658,7 @@ export default class HandbookViewer extends Component {
                 {this.renderexpand()}
 
                 <Epub style={styles.epubreader}
-                   ref={component => this.epub = component}
+                    ref={component => this.epub = component}
                     src={this.state.src}
 
                     flow={"paginated"}
@@ -687,9 +676,9 @@ export default class HandbookViewer extends Component {
                     }}
 
                     onLocationsReady={(locations) => {
-                        
+
                         this.setState({ sliderDisabled: false });
-                       
+
                     }}
 
                     onReady={(book) => {
@@ -734,10 +723,10 @@ export default class HandbookViewer extends Component {
                         this.state.book.getRange(cfiRange).then((range) => {
                             if (range) {
                                 datatext = range.startContainer.data.slice(range.startOffset, range.endOffset)
-                   
+
                                 let newdate = new Date().toString()
                                 let timearr = newdate.split('')
-                                
+
                                 HandbookHighlightList.push(
                                     {
                                         link: cfiRange,
@@ -752,7 +741,7 @@ export default class HandbookViewer extends Component {
 
                         console.log("cfiRange", cfiRange)
                         // Add marker
-                       
+
                         //   rendition.highlight(cfiRange, {});
                         this.epub.rendition.highlight(cfiRange, {});
 
@@ -770,7 +759,7 @@ export default class HandbookViewer extends Component {
                                 //  'background-color':'black',
                                 //'fill': 'red',
                                 //'font-family': 'cursive',
-                               // 'highlight': 'green'
+                                // 'highlight': 'green'
                                 // 'font-size':'50%'
                             }
                         }

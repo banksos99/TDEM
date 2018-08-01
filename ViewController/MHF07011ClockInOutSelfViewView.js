@@ -15,8 +15,8 @@ import {
     Platform,
     ActivityIndicator,
     Alert,
-    moment
-
+    moment,
+    BackHandler
 } from 'react-native';
 
 import Colors from "./../SharedObject/Colors"
@@ -27,8 +27,6 @@ import { styles } from "./../SharedObject/MainStyles"
 import Months from "./../constants/Month"
 import RestAPI from "../constants/RestAPI"
 
-//monthNames
-//let MONTH_LIST = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
 let firstday;
 let daymonth;
@@ -41,6 +39,7 @@ export default class ClockInOutSelfView extends Component {
     constructor(props) {
 
         super(props);
+        this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
 
         let ds = new ListView.DataSource({
             rowHasChanged: (r1, r2) => r1 !== r2
@@ -93,6 +92,21 @@ export default class ClockInOutSelfView extends Component {
 
         }
     }
+
+
+    componentWillMount() {
+        BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
+    }
+
+    componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
+    }
+
+    handleBackButtonClick() {
+        this.onBack()
+        return true;
+    }
+
 
     checkDataFormat(DataResponse) {
 
@@ -216,10 +230,6 @@ export default class ClockInOutSelfView extends Component {
 
         console.log('init data : ', this.state.months[0])
 
-    }
-
-    componentWillMount() {
-        // this._fetchMore(this.state.page);
     }
 
     onBack() {

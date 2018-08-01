@@ -8,14 +8,13 @@ import {
     StatusBar,
     Button,
     TouchableOpacity,
-    Image, Picker, WebView,
-    FlatList,
+    Image,
     Alert,
-    ActivityIndicator
+    ActivityIndicator,
+    BackHandler
 } from 'react-native';
 
 import Colors from "./../SharedObject/Colors"
-import Layout from "./../SharedObject/Layout"
 import { styles } from "./../SharedObject/MainStyles"
 
 import orgdata from './../InAppData/OrgstructerData.json';
@@ -23,16 +22,14 @@ import SharedPreference from "./../SharedObject/SharedPreference"
 import RestAPI from "../constants/RestAPI"
 
 let dataSource = [];
-let temphandbookData = [];
 
 export default class OrganizationStruct extends Component {
 
     constructor(props) {
         super(props);
-
+        this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
         this.state = {
             option: this.props.navigation.getParam("Option", "")
-
         };
 
         this.checkDataFormat(this.props.navigation.getParam("DataResponse", ""));
@@ -51,8 +48,17 @@ export default class OrganizationStruct extends Component {
         }
     }
 
-    componentDidMount() {
+    componentWillMount() {
+        BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
+    }
 
+    componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
+    }
+
+    handleBackButtonClick() {
+        this.onBack()
+        return true;
     }
 
     onBack() {

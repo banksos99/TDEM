@@ -5,7 +5,7 @@ import {
     View,
     TouchableOpacity,
     Image,
-
+    BackHandler
 } from 'react-native';
 
 import Colors from "./../SharedObject/Colors"
@@ -16,6 +16,7 @@ export default class LeaveQuotaActivity extends Component {
 
     constructor(props) {
         super(props);
+        this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
         this.state = {
             item: this.props.navigation.getParam("item", ""),
             dataResponse: this.props.navigation.getParam("dataResponse", ""),
@@ -23,6 +24,20 @@ export default class LeaveQuotaActivity extends Component {
         };
         this.checkParameter()
     }
+
+    componentWillMount() {
+        BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
+    }
+
+    componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
+    }
+
+    handleBackButtonClick() {
+        this.onBack()
+        return true;
+    }
+
 
     checkParameter() {
         const format = 'DD/MM/YYYY'

@@ -13,7 +13,6 @@ import StringText from "../SharedObject/StringText";
 
 import LoginChangePinAPI from './../constants/LoginChangePinAPI';
 
-
 export default class NonpayrollActivity extends Component {
     constructor(props) {
         super(props);

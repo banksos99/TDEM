@@ -2,17 +2,10 @@ import React, { Component } from 'react';
 
 import {
     Text,
-    StyleSheet,
-    ScrollView,
     View,
-    StatusBar,
-    Button,
     TouchableOpacity,
-    Image, Picker, WebView,
-    FlatList,
-    ActivityIndicator,
-    Alert,
-    Platform
+    Image, WebView,
+    BackHandler
 } from 'react-native';
 
 import { styles } from "./../SharedObject/MainStyles"
@@ -23,29 +16,33 @@ export default class PaySlipActivity extends Component {
 
     constructor(props) {
         super(props);
-
-        this.state = {
-
-        };
+        this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
         this.checkDataFormat(this.props.navigation.getParam("DataResponse", ""));
-
     }
 
     checkDataFormat(DataResponse) {
         console.log('DataResponse : ', DataResponse)
         if (DataResponse) {
-
-
         }
-
-
     }
+
+    componentWillMount() {
+        BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
+    }
+
+    componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
+    }
+
+    handleBackButtonClick() {
+        this.onBack()
+        return true;
+    }
+
+
     onBack() {
-
         SharedPreference.notipayAnnounceMentID = 0
-
         this.props.navigation.navigate('HomeScreen');
-
     }
 
     render() {
@@ -76,7 +73,7 @@ export default class PaySlipActivity extends Component {
             </View> */}
                 <WebView
                     //source={{ uri: 'https://github.com/facebook/react-native' }}
-                    source={{html: HTMLTemplate}}
+                    source={{ html: HTMLTemplate }}
                     style={{ marginTop: 0 }}
                 />
             </View >

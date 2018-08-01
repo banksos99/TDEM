@@ -7,8 +7,8 @@ import {
     TouchableOpacity,
     Image,
     ActivityIndicator,
-    Alert
-
+    Alert,
+    BackHandler
 } from 'react-native';
 
 import { styles } from "./../SharedObject/MainStyles"
@@ -24,6 +24,7 @@ import moment from 'moment'
 export default class NonpayrollDetailView extends Component {
     constructor(props) {
         super(props);
+        this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
         this.state = {
             dataSource: "",
             monthYear: 'April 2018',
@@ -32,16 +33,26 @@ export default class NonpayrollDetailView extends Component {
             selectYear: this.props.navigation.getParam("selectYear", ""),
             selectMonth: this.props.navigation.getParam("month", ""),
         }
-        //console.log(" NonpayrollDetailView ========")
-        //console.log("dataSource : ", this.state.dataObject)
-        //console.log("selectYear : ", this.state.selectYear)
-
     }
 
     componentDidMount() {
         // ////console.log("nonpayrollDetailView ")
         this.loadDataFromAPI()
 
+    }
+
+    componentWillMount() {
+        BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
+    }
+
+    componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
+    }
+
+    handleBackButtonClick() {
+        // console.log("handleBackButtonClick")
+        this.onBack()
+        return true;
     }
 
     convertDateTime(date) {

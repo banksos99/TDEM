@@ -3,15 +3,12 @@ import React, { Component } from 'react';
 
 import {
     Text,
-    StyleSheet,
     ScrollView,
     View,
-    StatusBar,
-    Button,
     TouchableOpacity,
-    Image, Picker, WebView,
-    ActivityIndicator
-
+    Image,
+    ActivityIndicator,
+    BackHandler
 } from 'react-native';
 
 import Colors from "./../SharedObject/Colors"
@@ -40,6 +37,7 @@ export default class EmpInfoDetail extends Component {
     constructor(props) {
 
         super(props);
+        this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
 
         this.state = {
             url: '',
@@ -79,8 +77,19 @@ export default class EmpInfoDetail extends Component {
             empinfodetail = DataResponse;
         }
 
-        console.log('careerpathlist :', careerpathlist)
-        console.log('empinfodetail :', empinfodetail)
+    }
+
+    componentWillMount() {
+        BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
+    }
+
+    componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
+    }
+
+    handleBackButtonClick() {
+        this.onBack()
+        return true;
     }
 
     onBack() {
@@ -534,7 +543,7 @@ export default class EmpInfoDetail extends Component {
             if (empinfodetail.education.toeic) {
                 toeic = empinfodetail.education.toeic
             }
-            
+
             graduate = empinfodetail.education.graduate_year
             degree = empinfodetail.education.degree
             gpa = empinfodetail.education.gpa
@@ -711,7 +720,7 @@ export default class EmpInfoDetail extends Component {
     render() {
 
         let position = ''
-        
+
         if (empinfodetail.career_paths) {
 
             position = empinfodetail.career_paths[0].position

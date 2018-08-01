@@ -11,20 +11,19 @@ import {
     ActivityIndicator,
     Platform,
     PermissionsAndroid,
-    Alert
+    Alert,
+    BackHandler
 } from 'react-native';
 
 import Colors from "./../SharedObject/Colors"
 import Layout from "./../SharedObject/Layout"
 import { styles } from "./../SharedObject/MainStyles"
 // import AnnounceTable from "../../components/TableviewCell"
-import PayslipDataDetail from "./../InAppData/Payslipdatadetail2"
 import SharedPreference from "./../SharedObject/SharedPreference"
 import Decryptfun from "./../SharedObject/Decryptfun"
 import Months from "./../constants/Month"
 
 let currentmonth = new Date().getMonth();
-let currentyear = new Date().getFullYear();
 
 import Authorization from '../SharedObject/Authorization'
 import StringText from '../SharedObject/StringText';
@@ -34,6 +33,7 @@ export default class PayslipDetail extends Component {
     constructor(props) {
 
         super(props);
+        this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
 
         this.state = {
             url: '',
@@ -56,16 +56,23 @@ export default class PayslipDetail extends Component {
             havePermission: false,
             yearArray: ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"]
         }
-        // console.log('monthselected :', this.state.monthselected)
-        // console.log('initialyear :', this.state.initialyear)
-        // console.log('initmonth :', this.state.initmonth)
-        // console.log('currentmonth :', currentmonth)
-        // console.log('currentyear :', currentyear)
-        // console.log('rollid :', this.state.rollid)
     }
 
-    onBack() {
+    componentWillMount() {
+        BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
+    }
+ 
+    componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
+    }
+ 
+    handleBackButtonClick() {
+        this.onBack()
+        return true;
+    }
 
+
+    onBack() {
         SharedPreference.notipayslipID = 0
 
         if (this.state.yearlist) {

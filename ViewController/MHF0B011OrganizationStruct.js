@@ -2,16 +2,14 @@ import React, { Component } from 'react';
 
 import {
     Text,
-    StyleSheet,
     ScrollView,
     View,
-    StatusBar,
-    Button,
     TouchableOpacity,
-    Image, Picker, WebView,
-    FlatList,
+    Image,
     Alert,
-    ActivityIndicator
+    ActivityIndicator,
+    BackHandler
+
 } from 'react-native';
 
 import Colors from "./../SharedObject/Colors"
@@ -29,25 +27,32 @@ export default class OrganizationStruct extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-
-
-        }
-
-
+        this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
         this.checkoption(this.props.navigation.getParam("Option", ""));
-
         this.checkDataFormat(this.props.navigation.getParam("DataResponse", ""));
-
     }
+
     checkoption(data) {
         if (data) {
             option = data
         }
         console.log('option :', option)
     }
-    checkDataFormat(DataResponse) {
 
+    componentWillMount() {
+        BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
+    }
+
+    componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
+    }
+
+    handleBackButtonClick() {
+        this.onBack()
+        return true;
+    }
+
+    checkDataFormat(DataResponse) {
         if (DataResponse) {
             dataSource = [];
             //console.log(DataResponse[0].data)
@@ -367,7 +372,7 @@ export default class OrganizationStruct extends Component {
 
         })
 
-      
+
     }
 
     APIDetailCallback(data) {
@@ -402,10 +407,10 @@ export default class OrganizationStruct extends Component {
             isscreenloading: false,
 
         })
-      
+
     }
 
-    
+
     onLoadErrorAlertDialog(error) {
         this.setState({
             isscreenloading: false,

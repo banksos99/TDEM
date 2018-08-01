@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Text, TouchableOpacity, Image } from "react-native";
+import { View, Text, TouchableOpacity, Image, BackHandler } from "react-native";
 
 import { styles } from "./../SharedObject/MainStyles"
 import Colors from "./../SharedObject/Colors"
@@ -12,6 +12,7 @@ export default class calendarMonthView extends Component {
 
     constructor(props) {
         super(props);
+        this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
         this.state = {
             type: this.props.navigation.getParam("type", ""),
             eventObject: this.props.navigation.getParam("eventObject", ""),
@@ -25,7 +26,6 @@ export default class calendarMonthView extends Component {
     }
 
     onBackPrevious() {
-        console.log("calendarMonthView dataResponse : ", this.state.dataResponse)
         this.props.navigation.navigate('calendarMonthView',
             {
                 month: this.state.monthText,
@@ -34,6 +34,20 @@ export default class calendarMonthView extends Component {
                 location: this.state.location
             });
     }
+
+    componentWillMount() {
+        BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
+    }
+
+    componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
+    }
+
+    handleBackButtonClick() {
+        this.onBack()
+        return true;
+    }
+
 
     getAllday() {
         let eventObject = this.state.eventObject

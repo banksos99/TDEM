@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Text, TouchableOpacity, Image, ScrollView, ActivityIndicator } from "react-native";
+import { View, Text, TouchableOpacity, Image, ScrollView, ActivityIndicator, BackHandler } from "react-native";
 import { styles } from "./../SharedObject/MainStyles"
 import { Calendar } from 'react-native-calendars';
 import Colors from "./../SharedObject/Colors"
@@ -23,6 +23,7 @@ export default class calendarEventDetailView extends Component {
 
     constructor(props) {
         super(props);
+        this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
         this.state = {
             countDay: [],
             today: new Date(),
@@ -39,12 +40,23 @@ export default class calendarEventDetailView extends Component {
             location: this.props.navigation.getParam("location", ""),
             isLoading: false
         }
-        console.log("calendarEventDetailView ==> ", this.state.monthObject)
+        //console.log("calendarEventDetailView ==> ", this.state.monthObject)
 
     }
 
+    componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
+    }
+ 
+    handleBackButtonClick() {
+        this.onBack()
+        return true;
+    }
+    
     componentWillMount() {
         this.getDataOnView()
+        BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
+
     }
 
     getDataOnView() {
@@ -54,8 +66,8 @@ export default class calendarEventDetailView extends Component {
 
         if (this.state.monthObject) {
             if (selectedMonth == this.state.monthObject.month) {
-                //console.log("componentWillMonth : ", selectedMonth)
-                //console.log("this.state.monthObject.month : ", this.state.monthObject.month)
+                ////console.log("componentWillMonth : ", selectedMonth)
+                ////console.log("this.state.monthObject.month : ", this.state.monthObject.month)
 
                 this.state.dayObject = this.state.monthObject.days;
                 const original = {}
@@ -63,20 +75,20 @@ export default class calendarEventDetailView extends Component {
 
                     const datemonth = this.state.dayObject[index].date;
                     if (this.state.dayObject[index].special_holiday == "Y") {
-                        //console.log("selectedMonth ==> Y")
+                        ////console.log("selectedMonth ==> Y")
                         const copy = {
                             ...original, [datemonth]: { marked: true, selectedColor: Colors.calendarBlueText }
                         };
                         original = copy
                     } else if (this.state.dayObject[index].special_holiday == "N") {
-                        //console.log("selectedMonth ==> N")
+                        ////console.log("selectedMonth ==> N")
                         const copy = {
                             ...original, [datemonth]: { marked: true, selectedColor: Colors.calendarRedText }
                         };
                         original = copy
 
                     } else {//W
-                        //console.log("selectedMonth ==> W")
+                        ////console.log("selectedMonth ==> W")
                         let count = this.state.dayObject[index].events.length;
                         if (count > 1) {
                             const copy = {
@@ -107,14 +119,11 @@ export default class calendarEventDetailView extends Component {
 
     onBack() {
         let year = moment(this.state.monthText).format(_formatYear)
-        console.log("WorkingCalendar : onBack year ==> ", year)
-        console.log("WorkingCalendar : onBack dataResponse ==> ", this.state.dataResponse)
         this.props.navigation.navigate('calendarYearView', {
             selectYear: year,
             dataResponse: this.state.dataResponse,
             location: this.state.location
         });
-        // back
     }
 
     getDataObject(datetime) {
@@ -127,7 +136,7 @@ export default class calendarEventDetailView extends Component {
     }
 
     onDaySelect = (day) => {
-        //////console.log('this.state._markedDates : ', this.state._markedDates);
+        ////////console.log('this.state._markedDates : ', this.state._markedDates);
         if (!this.state._markedDates) {
             return
         }
@@ -145,7 +154,7 @@ export default class calendarEventDetailView extends Component {
         };
 
 
-        // //////console.log("copy : ", copy);
+        // ////////console.log("copy : ", copy);
         const updatedMarkedDates = {
             ...this.state._markedDates,
             ...{
@@ -160,13 +169,13 @@ export default class calendarEventDetailView extends Component {
         })
 
         if (this.state.selectedDay == _selectedDay) {
-            //////console.log("_selectedDay =========>  viewSection false : " + _selectedDay);
+            ////////console.log("_selectedDay =========>  viewSection false : " + _selectedDay);
             this.setState({
                 viewSection: false,
                 selectedDay: "",
             });
         } else {
-            //////console.log("_selectedDay =========>  viewSection true : " + _selectedDay);
+            ////////console.log("_selectedDay =========>  viewSection true : " + _selectedDay);
             this.setState({
                 viewSection: true,
                 selectedDay: _selectedDay,
@@ -175,7 +184,7 @@ export default class calendarEventDetailView extends Component {
     }
 
     onPressToday() {//TODO
-        console.log("onPressToday")
+        //console.log("onPressToday")
         this.setState({ isLoading: true })
         this.onLoadCalendarAPI(new Date().getFullYear(), this.state.location)
     }
@@ -196,17 +205,17 @@ export default class calendarEventDetailView extends Component {
 
     onLoadCalendarAPI = async (year, location) => {
 
-        console.log("onLoadCalendarAPI ==> year : ", year, " , location : ", location)
+        //console.log("onLoadCalendarAPI ==> year : ", year, " , location : ", location)
 
         let data = await RestAPI(SharedPreference.CALENDER_YEAR_API + year + '&company=' + location, SharedPreference.FUNCTIONID_WORKING_CALENDAR)
         code = data[0]
         data = data[1]
 
-        console.log("calendarCallback : ", data.code)
+        //console.log("calendarCallback : ", data.code)
 
         if (code.SUCCESS == data.code) {
             let monthArray = data.data.holidays
-            //console.log("responseJson ======> monthArray.length ===> ", monthArray.length);
+            ////console.log("responseJson ======> monthArray.length ===> ", monthArray.length);
 
             let today = new Date()
             let _format = 'M'
@@ -244,15 +253,15 @@ export default class calendarEventDetailView extends Component {
     }
 
     onLoadCalendarAPI11 = async (year, company) => {
-        ////console.log("onLoadCalendarAPI : ", year, ' , company : ', company)
+        //////console.log("onLoadCalendarAPI : ", year, ' , company : ', company)
         return fetch(SharedPreference.HOST_API + '/api/' + SharedPreference.API_VERSION + '/calendar?year=' + year)
             .then((response) => response.json())
             .then((responseJson) => {
-                //console.log("responseJson ======> ", responseJson.status);
+                ////console.log("responseJson ======> ", responseJson.status);
 
                 if (responseJson.status == '200') {
                     let monthArray = responseJson.data.holidays
-                    //console.log("responseJson ======> monthArray.length ===> ", monthArray.length);
+                    ////console.log("responseJson ======> monthArray.length ===> ", monthArray.length);
 
                     let today = new Date()
                     let _format = 'M'
@@ -276,7 +285,7 @@ export default class calendarEventDetailView extends Component {
                 return responseJson
             })
             .catch((error) => {
-                ////console.log("responseJson error : ", error);
+                //////console.log("responseJson error : ", error);
 
                 Alert.alert(
                     StringText.ALERT_CANNOT_CONNECT_TITLE,
@@ -307,7 +316,7 @@ export default class calendarEventDetailView extends Component {
     }
 
     getEventView(array) {
-        // ////console.log("object : ", object)
+        // //////console.log("object : ", object)
         if (array == 'undefined' || array == null) {
             return (<View style={{
                 flex: 1, justifyContent: 'center',

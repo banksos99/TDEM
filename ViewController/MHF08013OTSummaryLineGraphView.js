@@ -2,46 +2,18 @@ import React, { Component } from 'react';
 
 import {
     Text,
-    StyleSheet,
-    ScrollView,
     View,
-    StatusBar,
-    Button,
     TouchableOpacity,
     ListView,
-    RefreshControl,
-    Image, Picker, WebView,
-    Platform,
-    ActivityIndicator
+    Image,
+    BackHandler
 
 } from 'react-native';
-// import Svg,{
-//     Circle,
-//     Ellipse,
-//     G,
-//     LinearGradient,
-//     RadialGradient,
-//     Line,
-//     Path,
-//     Polygon,
-//     Polyline,
-//     Rect,
-//     Text,
-//     Symbol,
-//     Use,
-//     Defs,
-//     Stop
-// } from 'react-native-svg';
 
 import Colors from "./../SharedObject/Colors"
 import Layout from "./../SharedObject/Layout"
 import { styles } from "./../SharedObject/MainStyles"
-// import AnnounceTable from "../../components/TableviewCell"
-//import PureChart from 'react-native-pure-chart';
-
 import LineChartAerage from "./LineChartAerage";
-// import PINScreen from './MHF01310PINScreen';
-// import lineChart from 'react-native-pure-chart/examples/pure-chart/components/line-chart';
 
 let MONTH_LIST = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
@@ -50,10 +22,11 @@ export default class OTSummaryLineChart extends Component {
     constructor(props) {
 
         super(props);
+        this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
 
         let ds = new ListView.DataSource({
             rowHasChanged: (r1, r2) => r1 !== r2
-          });
+        });
         this.state = {
             isscreenloading: false,
             dataSource: ds,
@@ -88,44 +61,51 @@ export default class OTSummaryLineChart extends Component {
         //     this.state.arr.push(item)
 
         // });
-        console.log('org_name : ',this.state.org_name)
+        console.log('org_name : ', this.state.org_name)
 
     }
 
     checkDataFormat(DataResponse) {
-        
+
         if (DataResponse) {
-            
+
             let today = new Date();
             date = today.getDate() + "/" + parseInt(today.getMonth() + 1) + "/" + today.getFullYear();
             this.state.initialyear = today.getFullYear();
             this.state.initialmonth = parseInt(today.getMonth() - 1);
-            this.state.announcementTypetext = MONTH_LIST[this.state.initialmonth + 1]+' '+this.state.initialyear;
+            this.state.announcementTypetext = MONTH_LIST[this.state.initialmonth + 1] + ' ' + this.state.initialyear;
             for (let i = this.state.initialmonth + 13; i > this.state.initialmonth; i--) {
 
                 if (i === 11) {
 
                     this.state.initialyear--;
                 }
-                this.state.months.push(MONTH_LIST[i % 12] +' '+ this.state.initialyear)
+                this.state.months.push(MONTH_LIST[i % 12] + ' ' + this.state.initialyear)
             }
 
             this.state.tdataSource = DataResponse;
-            console.log('tosummary data : ',this.state.tdataSource)
+            console.log('tosummary data : ', this.state.tdataSource)
 
         }
     }
 
     componentWillMount() {
-        // this._fetchMore(this.state.page);
+        BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
+    }
+
+    componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
+    }
+
+    handleBackButtonClick() {
+        this.onBack()
+        return true;
     }
 
     onBack() {
-
         this.props.navigation.navigate('OrganizationOTStruct');
-
     }
-   
+
     renderloadingscreen() {
 
         if (this.state.isscreenloading) {
@@ -142,13 +122,13 @@ export default class OTSummaryLineChart extends Component {
 
     }
 
-   onLayout = event => {
-    if (this.state.dimensions) return // layout was already called
-    let {width, height} = event.nativeEvent.layout
-    this.setState({dimensions: {width, height}})
-    console.log('dimensions :',width);
+    onLayout = event => {
+        if (this.state.dimensions) return // layout was already called
+        let { width, height } = event.nativeEvent.layout
+        this.setState({ dimensions: { width, height } })
+        console.log('dimensions :', width);
 
-  }
+    }
 
     render() {
         // this.state.datasource.map((i, index) => (
@@ -156,7 +136,7 @@ export default class OTSummaryLineChart extends Component {
         // ))
         // //console.log(this.state.tdataSource.data.detail.items)
         let step = Layout.window.width;
-        let listData  = [20,100,5,150,30,190,30,30,30,30,100,30,30];
+        let listData = [20, 100, 5, 150, 30, 190, 30, 30, 30, 30, 100, 30, 30];
         let max = 200;
         let shiftdown = 50
         let shiftRight = 70
@@ -176,19 +156,19 @@ export default class OTSummaryLineChart extends Component {
         let linecolor = Colors.redTextColor;
 
         let sampleData = [
-            {x: '-01-01', y: 30},
-            {x: '-01-02', y: 180},
-            {x: '-01-03', y: 170},
-            {x: '-01-04', y: 150},
-            {x: '-01-05', y: 10},
-            {x: '-01-05', y: 10},
-            {x: '-01-05', y: 10},
-            {x: '-01-05', y: 10},
-            {x: '-01-05', y: 10},
-            {x: '-01-05', y: 10},
-            {x: '-01-05', y: 10},
-            {x: '-01-05', y: 10},
-            {x: '-01-05', y: 10},
+            { x: '-01-01', y: 30 },
+            { x: '-01-02', y: 180 },
+            { x: '-01-03', y: 170 },
+            { x: '-01-04', y: 150 },
+            { x: '-01-05', y: 10 },
+            { x: '-01-05', y: 10 },
+            { x: '-01-05', y: 10 },
+            { x: '-01-05', y: 10 },
+            { x: '-01-05', y: 10 },
+            { x: '-01-05', y: 10 },
+            { x: '-01-05', y: 10 },
+            { x: '-01-05', y: 10 },
+            { x: '-01-05', y: 10 },
         ]
 
         let w = 20;
@@ -207,30 +187,30 @@ export default class OTSummaryLineChart extends Component {
             // this.state.dataSource.map((item, index) => (
             <View style={{ flex: 1, backgroundColor: Colors.backgroundColor }} >
                 <View style={[styles.navContainer, { flexDirection: 'column' }]}>
-                <View style={styles.statusbarcontainer} />
-                <View style={{ height: 50, flexDirection: 'row', }}>
-                    <View style={{ flex: 1, justifyContent: 'center', }}>
-                        <TouchableOpacity onPress={(this.onBack.bind(this))}>
-                            <Image
-                                style={{ width: 50, height: 50 }}
-                                source={require('./../resource/images/Back.png')}
-                                resizeMode='contain'
-                            />
-                        </TouchableOpacity>
-                    </View>
-                    <View style={{ flex: 4, justifyContent: 'center', alignItems: 'center' }}>
-                        <Text style={styles.navTitleTextTop}>Overtime History</Text>
-                    </View>
-                    <View style={{ flex: 1, }}>
-                    </View>
+                    <View style={styles.statusbarcontainer} />
+                    <View style={{ height: 50, flexDirection: 'row', }}>
+                        <View style={{ flex: 1, justifyContent: 'center', }}>
+                            <TouchableOpacity onPress={(this.onBack.bind(this))}>
+                                <Image
+                                    style={{ width: 50, height: 50 }}
+                                    source={require('./../resource/images/Back.png')}
+                                    resizeMode='contain'
+                                />
+                            </TouchableOpacity>
+                        </View>
+                        <View style={{ flex: 4, justifyContent: 'center', alignItems: 'center' }}>
+                            <Text style={styles.navTitleTextTop}>Overtime History</Text>
+                        </View>
+                        <View style={{ flex: 1, }}>
+                        </View>
                     </View>
                 </View>
                 <View style={{ flex: 1 }}>
 
                 </View>
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                    <Text style={{color:'#555555',fontFamily:'Prompt-Regular'}}>Total Overtime History</Text>
-                    <Text style={{color:'#555555',fontFamily:'Prompt-Regular'}}>{this.state.tdataSource.org_name}</Text>
+                    <Text style={{ color: '#555555', fontFamily: 'Prompt-Regular' }}>Total Overtime History</Text>
+                    <Text style={{ color: '#555555', fontFamily: 'Prompt-Regular' }}>{this.state.tdataSource.org_name}</Text>
                 </View>
                 <View style={{ flex: 8, }}>
                     <View style={{ flex: 1, flexDirection: 'row' }}>

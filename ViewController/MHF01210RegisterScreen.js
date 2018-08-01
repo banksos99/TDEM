@@ -137,12 +137,6 @@ export default class RegisterActivity extends Component {
             }
             console.log('onLoadAppInfo:')
             await this.onLoadAppInfo()
-            // this.props.navigation.navigate('HomeScreen')
-
-            // console.log("SharedPreference.NOTIFICATION_CATEGORY  ==> ", SharedPreference.NOTIFICATION_CATEGORY)
-            // console.log("SharedPreference.READ_TYPE  ==> ", SharedPreference.READ_TYPE)
-            // console.log("SharedPreference.COMPANY_LOCATION  ==> ", SharedPreference.COMPANY_LOCATION)
-            // console.log("SharedPreference.TB_M_LEAVETYPE  ==> ", SharedPreference.TB_M_LEAVETYPE)
 
         } else {
             Alert.alert(
