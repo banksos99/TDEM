@@ -7,21 +7,21 @@
 	<key>AD_UNIT_ID_FOR_INTERSTITIAL_TEST</key>
 	<string>ca-app-pub-3940256099942544/4411468910</string>
 	<key>CLIENT_ID</key>
-	<string>317451656624-qt1rsp0oijv1s409lf743b3haalro8fb.apps.googleusercontent.com</string>
+	<string>166754553752-ump0r40c4qaji98ilabcrkokpfkcav4e.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.317451656624-qt1rsp0oijv1s409lf743b3haalro8fb</string>
+	<string>com.googleusercontent.apps.166754553752-ump0r40c4qaji98ilabcrkokpfkcav4e</string>
 	<key>API_KEY</key>
-	<string>AIzaSyAPGi6MxFMIpRyRMOU-qiDMeHsK-NYAPBY</string>
+	<string>AIzaSyA5R_VQfkG7Z2EWpMR7IVYFxbOk9WgJkoo</string>
 	<key>GCM_SENDER_ID</key>
-	<string>317451656624</string>
+	<string>166754553752</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.toyotaasia.tdemconnect</string>
+	<string>asia.technobrave.TDEMConnect</string>
 	<key>PROJECT_ID</key>
-	<string>tdemconnect</string>
+	<string>tdem-connect</string>
 	<key>STORAGE_BUCKET</key>
-	<string>tdemconnect.appspot.com</string>
+	<string>tdem-connect.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<true></true>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -33,8 +33,8 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:317451656624:ios:c4efca517c12a3e2</string>
+	<string>1:166754553752:ios:7c0b6be574bb6a2f</string>
 	<key>DATABASE_URL</key>
-	<string>https://tdemconnect.firebaseio.com</string>
+	<string>https://tdem-connect.firebaseio.com</string>
 </dict>
 </plist>

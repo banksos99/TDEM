@@ -104,9 +104,9 @@ export default class NonpayrollActivity extends Component {
 
         if ((currentMonth == monthNumber) && (currentYear == this.state.selectYear)) {//currentMonth
 
-            if (!amount) {
+            if (amount) {
                 amount = '0.00'
-            }
+            
             return (<View style={styles.nonPayRollitemBg}>
                 <View style={[styles.nonPayRollitem, {
                     backgroundColor: Colors.calendarRedDotColor
@@ -136,7 +136,43 @@ export default class NonpayrollActivity extends Component {
                         </Text>
                     </View>
                     : null}
-            </View>)
+            </View>
+
+            )}
+
+            return (<View style={styles.nonPayRollitemBg}>
+                <View style={[styles.nonPayRollitem, {
+                    backgroundColor: Colors.calendarRedDotColor
+                }]}>
+                    <TouchableOpacity
+                        style={styles.button}
+                        disable={amount}
+                        // onPress={() => {
+                        //     this.props.navigation.navigate('NonPayrollDetail', {
+                        //         month: monthNumber,
+                        //         selectYear: this.state.selectYear,
+                        //         dataObject: this.state.dataSource
+                        //     });
+                        // }}
+                        >
+                        <View style={styles.nonPayRollDetailContainer}>
+                            <Text style={[styles.payslipitemdetail, { color: 'white' }]}>{Months.monthNamesShort[monthNumber - 1]}</Text>
+                        </View>
+                        <View style={styles.nonPayRollDetailContainer}>
+                            <Text style={[styles.payslipitemmoney, { color: 'white' }]}>{amount}</Text>
+                        </View>
+                    </TouchableOpacity>
+                </View>
+                {badge != 0 ?
+                    <View style={styles.nonPayrollBadgeContrainer}>
+                        <Text style={styles.nonPayrollBadgeText}>
+                            {badge}
+                        </Text>
+                    </View>
+                    : null}
+            </View>
+            
+            )}
 
 
         } else if ((monthNumber > currentMonth) && (currentYear == this.state.selectYear)) {//After currentMonth
