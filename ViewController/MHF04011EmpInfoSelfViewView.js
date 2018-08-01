@@ -19,6 +19,7 @@ import PayslipDataDetail from "./../InAppData/Payslipdatadetail2"
 import SharedPreference from "./../SharedObject/SharedPreference"
 import Decryptfun from "./../SharedObject/Decryptfun"
 import Months from "./../constants/Month"
+import firebase from 'react-native-firebase';
 
 let month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 let martial = ['Single ', 'Married ', 'Widow ', 'Divorced ', 'No married ', 'Separated ', 'July ', 'Unknown'];
@@ -61,6 +62,8 @@ export default class EmpInfoDetail extends Component {
         }
 
         this.checkDataFormat(this.props.navigation.getParam("DataResponse", ""));
+        firebase.analytics().setCurrentScreen(SharedPreference.FUNCTIONID_CALENDAR_EVENT)
+
 
     }
 

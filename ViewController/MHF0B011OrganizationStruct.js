@@ -18,6 +18,7 @@ import { styles } from "./../SharedObject/MainStyles"
 import orgdata from './../InAppData/OrgstructerData.json';
 import SharedPreference from "./../SharedObject/SharedPreference"
 import RestAPI from "../constants/RestAPI"
+import firebase from 'react-native-firebase';
 
 let dataSource = [];
 let option = 0;
@@ -30,6 +31,8 @@ export default class OrganizationStruct extends Component {
         this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
         this.checkoption(this.props.navigation.getParam("Option", ""));
         this.checkDataFormat(this.props.navigation.getParam("DataResponse", ""));
+        firebase.analytics().setCurrentScreen(SharedPreference.FUNCTIONID_ORGANIZ_STRUCTURE)
+
     }
 
     checkoption(data) {

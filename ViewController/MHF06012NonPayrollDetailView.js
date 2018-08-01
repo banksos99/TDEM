@@ -20,6 +20,7 @@ import RestAPI from "../constants/RestAPI"
 import Decrypt from './../SharedObject/Decryptfun'
 import StringText from './../SharedObject/StringText'
 import moment from 'moment'
+import firebase from 'react-native-firebase';
 
 export default class NonpayrollDetailView extends Component {
     constructor(props) {
@@ -33,12 +34,12 @@ export default class NonpayrollDetailView extends Component {
             selectYear: this.props.navigation.getParam("selectYear", ""),
             selectMonth: this.props.navigation.getParam("month", ""),
         }
+        firebase.analytics().setCurrentScreen(SharedPreference.FUNCTIONID_NON_PAYROLL)
+
     }
 
     componentDidMount() {
-        // ////console.log("nonpayrollDetailView ")
         this.loadDataFromAPI()
-
     }
 
     componentWillMount() {

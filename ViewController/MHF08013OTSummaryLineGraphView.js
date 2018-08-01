@@ -14,6 +14,8 @@ import Colors from "./../SharedObject/Colors"
 import Layout from "./../SharedObject/Layout"
 import { styles } from "./../SharedObject/MainStyles"
 import LineChartAerage from "./LineChartAerage";
+import firebase from 'react-native-firebase';
+import SharedPreference from "./../SharedObject/SharedPreference"
 
 let MONTH_LIST = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
@@ -55,12 +57,7 @@ export default class OTSummaryLineChart extends Component {
         }
 
         this.checkDataFormat(this.props.navigation.getParam("DataResponse", ""));
-
-        // this.state.dataSource.map((item, i) => {
-
-        //     this.state.arr.push(item)
-
-        // });
+        firebase.analytics().setCurrentScreen(SharedPreference.FUNCTIONID_OT_SUMMARY)
         console.log('org_name : ', this.state.org_name)
 
     }

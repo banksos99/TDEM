@@ -27,6 +27,8 @@ export default class PinActivity extends Component {
             savePin: '',
             isLoading: false
         }
+        firebase.analytics().setCurrentScreen(SharedPreference.FUNCTIONID_PIN)
+
     }
 
 

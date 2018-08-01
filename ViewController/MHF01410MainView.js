@@ -191,32 +191,20 @@ export default class HMF01011MainView extends Component {
             .then((responseJson) => {
                 try {
                     console.log('inapp responseJson :', responseJson)
-
                     if (responseJson.status == 403) {
-
                         this.onAutenticateErrorAlertDialog()
                         // this.select_sign_out()
-
                     } else {
                         if (timerstatus) {
                             this.inappTimeInterval()
                         }
-
                     }
-
                     this.setState({
-
-
                     }, function () {
-
-
-
                     });
 
                 } catch (error) {
-
                     ////console.log('erreo1 :', error);
-
                 }
             })
             .catch((error) => {

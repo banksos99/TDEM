@@ -14,8 +14,6 @@ import {
     BackHandler
 } from 'react-native';
 
-
-
 import Colors from "./../SharedObject/Colors"
 import { styles } from "./../SharedObject/MainStyles"
 // import AnnounceTable from "../../components/TableviewCell"
@@ -23,6 +21,7 @@ import BarChartCompare from "./BarChartCompare";
 import BarChartIndiv from "./BarChartIndividual";
 import SharedPreference from "./../SharedObject/SharedPreference"
 import RestAPI from "../constants/RestAPI"
+import firebase from 'react-native-firebase';
 
 let MONTH_LIST = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 let monthstr = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
@@ -65,6 +64,8 @@ export default class OTSummaryBarChart extends Component {
         }
 
         this.checkDataFormat(this.props.navigation.getParam("DataResponse", ""));
+        firebase.analytics().setCurrentScreen(SharedPreference.FUNCTIONID_OT_SUMMARY)
+
     }
 
     checkDataFormat(DataResponse) {

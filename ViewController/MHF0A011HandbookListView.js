@@ -20,6 +20,9 @@ import { styles } from "./../SharedObject/MainStyles"
 import Authorization from "./../SharedObject/Authorization";
 import inappdata from "./../InAppData/HandbookListData"
 import SharedPreference from "./../SharedObject/SharedPreference"
+import StringText from '../SharedObject/StringText';
+import firebase from 'react-native-firebase';
+
 let dataSource = [];
 let temphandbookData = [];
 let FUNCTION_TOKEN;
@@ -129,13 +132,13 @@ export default class Handbookctivity extends Component {
     constructor(props) {
         super(props);
         this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
-
         this.state = {
             temparray: [],
         };
 
         this.updateToken()
         this.checkDataFormat(this.props.navigation.getParam("DataResponse", ""));
+        firebase.analytics().setCurrentScreen(SharedPreference.FUNCTIONID_HANDBOOK)
     }
 
     componentWillMount() {

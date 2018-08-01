@@ -11,6 +11,8 @@ import {
 import Colors from "./../SharedObject/Colors"
 import { styles } from "./../SharedObject/MainStyles"
 import moment from 'moment'
+import firebase from 'react-native-firebase';
+import SharedPreference from "./../SharedObject/SharedPreference"
 
 export default class LeaveQuotaActivity extends Component {
 
@@ -23,6 +25,8 @@ export default class LeaveQuotaActivity extends Component {
             selectYear: this.props.navigation.getParam("selectYear", "")
         };
         this.checkParameter()
+        firebase.analytics().setCurrentScreen(SharedPreference.FUNCTIONID_LEAVE_QUOTA)
+
     }
 
     componentWillMount() {

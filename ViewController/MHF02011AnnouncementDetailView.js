@@ -10,6 +10,7 @@ import {
 
 import { styles } from "./../SharedObject/MainStyles"
 import SharedPreference from "./../SharedObject/SharedPreference"
+import firebase from 'react-native-firebase';
 
 
 export default class PaySlipActivity extends Component {
@@ -18,6 +19,7 @@ export default class PaySlipActivity extends Component {
         super(props);
         this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
         this.checkDataFormat(this.props.navigation.getParam("DataResponse", ""));
+        firebase.analytics().setCurrentScreen(SharedPreference.FUNCTIONID_PAYSLIP)
     }
 
     checkDataFormat(DataResponse) {

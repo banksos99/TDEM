@@ -44,9 +44,6 @@ export default class HandbookViewer extends Component {
         this.state = {
             flow: "paginated", // paginated || scrolled-continuous
             location: 0,
-            // url: "https://s3.amazonaws.com/epubjs/books/moby-dick.epub",
-            // url: "https://s3.amazonaws.com/epubjs/books/moby-dick.epub",
-            //src:"https://s3-us-west-2.amazonaws.com/pressbooks-samplefiles/MetamorphosisJacksonTheme/Metamorphosis-jackson.epub",
             src: '',
             origin: "",
             title: "",
@@ -81,6 +78,8 @@ export default class HandbookViewer extends Component {
 
         this.streamer = new Streamer();
         this.reloadCount = 0;
+
+
     }
 
     componentDidMount() {

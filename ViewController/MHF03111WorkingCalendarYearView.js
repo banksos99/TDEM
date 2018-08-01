@@ -27,10 +27,9 @@ import StringText from '../SharedObject/StringText'
 
 import RestAPI from "../constants/RestAPI"
 import EventCalendar from "../constants/EventCalendar"
-
 import SaveProfile from "../constants/SaveProfile"
-
 import CalendarPDFAPI from "../constants/CalendarPDFAPI"
+import firebase from 'react-native-firebase';
 
 export default class calendarYearView extends Component {
 
@@ -81,6 +80,8 @@ export default class calendarYearView extends Component {
         this.onPressCalendar = this.onPressCalendar.bind(this)
         this.getYearSelect()
         this.setNewPicker()
+        firebase.analytics().setCurrentScreen(SharedPreference.FUNCTIONID_CALENDAR_EVENT)
+
     }
 
     componentWillMount() {

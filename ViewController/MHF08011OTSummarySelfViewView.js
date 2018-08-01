@@ -60,11 +60,11 @@ export default class OTSummaryDetail extends Component {
             initialmonth: 0,
 
             dateselected: 0,
-
-
         }
         
         this.checkDataFormat(this.props.navigation.getParam("DataResponse", ""));
+        firebase.analytics().setCurrentScreen(SharedPreference.FUNCTIONID_OT_SUMMARY)
+
 
     }
     componentWillMount() {

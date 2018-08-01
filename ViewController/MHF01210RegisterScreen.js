@@ -13,6 +13,7 @@ import SaveTOKEN from "./../constants/SaveToken"
 
 import LoginWithPinAPI from "./../constants/LoginWithPinAPI"
 import RestAPI from "./../constants/RestAPI"
+import firebase from 'react-native-firebase';
 
 export default class RegisterActivity extends Component {
 
@@ -34,6 +35,8 @@ export default class RegisterActivity extends Component {
             password: '',
             versionCode: "Version : " + SharedPreference.deviceInfo.buildNumber
         }
+        firebase.analytics().setCurrentScreen(SharedPreference.FUNCTIONID_REGISTER)
+
     }
 
     onRegister = async () => {

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Image,Alert } from 'react-native';
+import { View, Image, Alert } from 'react-native';
 
 import {
   StackNavigator,
@@ -13,9 +13,6 @@ import SavePIN from "./constants/SavePIN";
 import DeviceInfo from 'react-native-device-info';
 
 import firebase from 'react-native-firebase';
-
-
-
 import type, { Notification, NotificationOpen } from 'react-native-firebase';
 
 export default class mainview extends Component {
@@ -31,21 +28,17 @@ export default class mainview extends Component {
   }
 
   async componentDidMount() {
-    console.log("App ==> componentDidMount")
-
-
-    console.log('this.props.navigation',this.props.navigation)
     this.inactivecounting();
-    
+
     const enabled = await firebase.messaging().hasPermission();
     if (enabled) {
-      console.log("firebase ==> user has permissions")
+      // console.log("firebase ==> user has permissions")
     } else {
       try {
         await firebase.messaging().requestPermission();
-        console.log("firebase ==> User has authorised")
+        // console.log("firebase ==> User has authorised")
       } catch (error) {
-        console.log("firebase ==> error")
+        // console.log("firebase ==> error")
       }
     }
 
@@ -75,7 +68,7 @@ export default class mainview extends Component {
 
     await firebase.messaging().getToken()
       .then((token) => {
-        console.log('firebase ==> message Device FCM Token: ', token);
+        // console.log('firebase ==> message Device FCM Token: ', token);
         SharedPreference.deviceInfo = {
           "deviceModel": deviceModel,
           "deviceBrand": deviceBrand,
@@ -87,74 +80,26 @@ export default class mainview extends Component {
         }
       });
 
-      firebase.analytics().setCurrentScreen("Hello")
-      
+    firebase.analytics().setCurrentScreen("TDEMCONNECT MAIN")
 
     ///when open Application
     notificationListener = firebase
       .notifications()
       .onNotification(notification => {
-        ///when open Application
-        console.log("notificationListener : ", notification)
-        console.log("notificationListener data : ", notification.data)
-        console.log("notificationListener _data : ", notification._data)
-        // If you want to see notification on mobile
-        // firebase.notifications().displayNotification(this.notification2)
-        console.log(`Recieved notification 2`);
-
         SharedPreference.notipayslipID = notification._data.payslipID
 
-        // Alert.alert(
-        //   'notificationListener',
-        //   notification._data,
-        //   [
-        //     { text: 'OK', onPress: () => console.log('OK Pressed') },
-        //   ],
-        //   { cancelable: false }
-        // )
       });
 
-
-    // this.notification2 = new firebase.notifications.Notification()
-    //   .setNotificationId('notificationId')
-    //   .setTitle('My notification title')
-    //   .setBody('My notification body')
-    //   .android.setChannelId('test')
-    //   .android.setClickAction('action')
-    //   .setData({
-    //     key1: 'value1',
-    //     key2: 'value2',
-    //   });
-
-
     notificationOpen = await firebase.notifications().getInitialNotification();
-    
+
+
     if (notificationOpen) {
-
-      //When App Close and user touch 
-      console.log("push notification ==> notificationOpen ", notificationOpen)
-
-      // Get information about the notification that was opened
       const notification = notificationOpen.notification;
-      console.log("push notification ==> notification ", notification)
-      console.log("notificationListener data : ", notification.data)
-      console.log("notificationListener _data : ", notification._data)
-
       SharedPreference.notipayslipID = notification._data.payslipID
-
       SharedPreference.notipayAnnounceMentID = notification._data.AnnouncementID
-      // Alert.alert(
-      //   'notificationOpen',
-      //   notification._data,
-      //   [
-      //     { text: 'OK', onPress: () => console.log('OK Pressed') },
-      //   ],
-      //   { cancelable: false }
-      // )
     }
   }
   componentWillUnmount() {
-    console.log("componentWillUnmount")
     this.notificationListener();
   }
 
@@ -176,18 +121,6 @@ export default class mainview extends Component {
     }, 500);
   }
 
-  // toggleModal(visible) {
-  //   this.timer = setTimeout(() => {
-  //     this.setState({ showpin: false });
-  //   }, 500);
-  // };
-
-  
-
-  
-
-  
-  
   getdate(value) {
     this.setState({
       showpin: false
@@ -218,7 +151,7 @@ export default class mainview extends Component {
           source={require('./resource/SplashBg.png')}
           style={{ flex: 1 }} />
       </View>
-      
+
     );
   }
 }
