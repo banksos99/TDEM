@@ -11,7 +11,7 @@ import SharedPreference from "./../SharedObject/SharedPreference"
 import RestAPI from "../constants/RestAPI"
 import SaveAutoSyncCalendar from "../constants/SaveAutoSyncCalendar";
 import SaveProfile from "../constants/SaveProfile"
-
+import StringText from '../SharedObject/StringText';
 import payslipDetail from "./MHF05012PaySlipDetailView";
 import { months } from "moment";
 import Month from "../constants/Month"
@@ -35,9 +35,9 @@ let initannouncementStatustext = 'All'
 let orgcode = '';//60162305;
 
 let managerstatus = false;
-let announcestatus = true;
-let rolemanagementEmpoyee = [1, 1, 1, 1, 1, 1, 1, 1];
-let rolemanagementManager = [1, 1, 1, 1];
+let announcestatus = false;
+let rolemanagementEmpoyee = [1, 1, 0, 1, 0, 0, 0, 0];
+let rolemanagementManager = [0, 0, 0, 0];
 let timerstatus;
 // SharedPreference.notipayAnnounceMentID = 1
 // SharedPreference.notipayslipID = 0
@@ -46,6 +46,7 @@ const _format = 'YYYY-MM-DD hh:mm:ss'
 import moment from 'moment'
 
 import Authorization from "../SharedObject/Authorization";
+//import { NODATA } from "dns";
 
 
 export default class HMF01011MainView extends Component {
@@ -78,11 +79,55 @@ export default class HMF01011MainView extends Component {
 
 
         for (let i = 0; i < SharedPreference.profileObject.role_authoried.length; i++) {
-            if (SharedPreference.profileObject.role_authoried[i].module_function === 'HF0501') {
 
-                managerstatus = 'Y'
 
-            }
+            // if (SharedPreference.profileObject.role_authoried[i].module_function === 'HF0501') {
+
+            //     managerstatus = 'Y'
+
+            // }
+            // switch (SharedPreference.profileObject.role_authoried[i].module_function) {
+            //     case 'HF0121': {
+
+            //     }
+            //     case 'HF0601': {
+
+            //     }
+            //     case 'HF0501': {
+
+            //     }
+            //     case 'HF0901': {
+
+            //     }
+            //     case 'HF0701': {
+
+            //     }
+            //     case 'HF0801': {
+
+            //     }
+            //     case 'HF0311': {
+
+            //     }
+            //     case 'HF0A01': {
+
+            //     }case 'HF0701': {
+
+            //     }
+            //     case 'HF0801': {
+
+            //     }
+            //     case 'HF0311': {
+
+            //     }
+            //     case 'HF0A01': {
+
+            //     }
+
+
+            // }
+
+
+
         }
 
         console.log("MainView ====> profileObject ==> managerstatus ==> ", managerstatus)
@@ -119,7 +164,7 @@ export default class HMF01011MainView extends Component {
     async componentDidMount() {
 
         if (!timerstatus) {
-            //  this.inappTimeInterval();
+             this.inappTimeInterval();
             timerstatus = true;
         }
 
@@ -169,14 +214,14 @@ export default class HMF01011MainView extends Component {
                     if (timerstatus) {
                         this.inappTimeInterval()
                     }
+                    
                     console.log('inapp responseJson :', responseJson)
+     
                     if (responseJson.status == 403) {
-                        timerstatus = false
-                        SharedPreference.profileObject = null
-                        this.saveProfile.setProfile(null)
-                        this.props.AppNavigatorPin.navigate('RegisterScreen')
-                        console.log('this.props.navigation :', this.props.navigation)
-                        console.log('this.state' + this.state.number)
+
+                        this.onAutenticateErrorAlertDialog()
+                       // this.select_sign_out()
+                        
                     }
 
                     this.setState({
@@ -310,7 +355,7 @@ export default class HMF01011MainView extends Component {
                         if (this.state.dataSource.status === 200) {
 
                             this.setState(this.renderloadingscreen());
-console.log('this.state.dataSource.data: ',this.state.dataSource.data)
+                            console.log('this.state.dataSource.data: ', this.state.dataSource.data)
                             tempannouncementData = []
                             announcementData = this.state.dataSource.data;
                             announcementData.map((item, i) => {
@@ -356,7 +401,7 @@ console.log('this.state.dataSource.data: ',this.state.dataSource.data)
                 }, function () {
                     this.setState(this.renderloadingscreen());
                     // TODO Error
-                    this.onLoadErrorAlertDialog(error)
+                    this.onLoadErrorAlertDialog(error,'Announcement')
                 });
             });
     }
@@ -442,7 +487,7 @@ console.log('this.state.dataSource.data: ',this.state.dataSource.data)
                 }, function () {
                     this.setState(this.renderloadingscreen());
                     // TODO Error
-                    this.onLoadErrorAlertDialog(error)
+                    this.onLoadErrorAlertDialog(error,'announcement')
                 });
             });
     }
@@ -469,18 +514,37 @@ console.log('this.state.dataSource.data: ',this.state.dataSource.data)
 
                         isscreenloading: false,
                         announceDetailDataSource: responseJson,
-                    }, function () {
-                        if (tempannouncementData.length) {
-
-                            tempannouncementData[index].attributes.read = true
-                        }
-
-
-                        this.props.navigation.navigate(path, {
-                            DataResponse: this.state.announceDetailDataSource,
-                        });
-
                     });
+
+                    if (this.state.dataSource.status === 200) {
+
+                        this.setState({
+
+                            isscreenloading: false,
+                            announceDetailDataSource: responseJson,
+                        }, function () {
+                            if (tempannouncementData.length) {
+
+                                tempannouncementData[index].attributes.read = true
+                            }
+
+                            this.props.navigation.navigate(path, {
+                                DataResponse: this.state.announceDetailDataSource,
+                            });
+
+                            });
+
+                    } else {
+
+                        Alert.alert(
+                            this.state.dataSource.errors[0].code,
+                            this.state.dataSource.errors[0].detail,
+                            [
+                                { text: 'OK', onPress: () => console.log('OK Pressed') },
+                            ],
+                            { cancelable: false }
+                        )
+                    }
 
                 } catch (error) {
 
@@ -532,8 +596,11 @@ console.log('this.state.dataSource.data: ',this.state.dataSource.data)
             this.props.navigation.navigate('NonPayrollList', {
                 dataResponse: data.data,
             });
+
+        }else if(code.INVALID_AUTH_TOKEN == data.code){  
+            this.onAutenticateErrorAlertDialog(data)
         } else {
-            this.onLoadErrorAlertDialog(data)
+            this.onLoadErrorAlertDialog(data,'NonPayroll')
         }
     }
     loadPayslipDetailfromAPI = async () => {
@@ -610,8 +677,11 @@ console.log('this.state.dataSource.data: ',this.state.dataSource.data)
             this.props.navigation.navigate(rount, {
                 DataResponse: data.data,
             });
+        }else if(code.INVALID_AUTH_TOKEN == data.code){  
+            this.onAutenticateErrorAlertDialog(data)
+        
         } else {
-            this.onLoadErrorAlertDialog(data)
+            this.onLoadErrorAlertDialog(data,rount)
         }
 
     }
@@ -634,8 +704,11 @@ console.log('this.state.dataSource.data: ',this.state.dataSource.data)
             this.props.navigation.navigate('OTSummarySelfView', {
                 DataResponse: data.data,
             });
+        }else if(code.INVALID_AUTH_TOKEN == data.code){  
+            this.onAutenticateErrorAlertDialog(data)
+        
         } else {
-            this.onLoadErrorAlertDialog(data)
+            this.onLoadErrorAlertDialog(data,'OTSummary')
         }
 
     }
@@ -693,8 +766,23 @@ console.log('this.state.dataSource.data: ',this.state.dataSource.data)
                 DataResponse: data.data,
                 Option: option
             });
+
+
+        } else if (code.NODATA == data.code) {
+
+            this.onNodataErrorAlertDialog()
+
+        } else if (code.DOES_NOT_EXISTS == data.code) {
+
+            this.onNodataExistErrorAlertDialog()
+
+        } else if (code.INVALID_AUTH_TOKEN == data.code) {
+
+            this.onAutenticateErrorAlertDialog(data)
+
         } else {
-            this.onLoadErrorAlertDialog(data)
+
+            this.onLoadErrorAlertDialog(data, rount)
         }
 
     }
@@ -712,11 +800,71 @@ console.log('this.state.dataSource.data: ',this.state.dataSource.data)
                 DataResponse: data,
             });
         } else {
-            this.onLoadErrorAlertDialog(data)
+
+            this.onLoadErrorAlertDialog(data,rount)
         }
     }
 
-    onLoadErrorAlertDialog(error) {
+    // Alert Error
+
+    onAutenticateErrorAlertDialog(error) {
+        this.setState({
+            isscreenloading: false,
+        })
+
+        Alert.alert(
+            StringText.ALERT_AUTHORLIZE_ERROR_TITLE,
+            StringText.ALERT_AUTHORLIZE_ERROR_MESSAGE,
+            [{
+                text: 'OK', onPress: () => {
+                    this.select_sign_out()
+                }
+            }],
+            { cancelable: false }
+        )
+
+        console.log("error : ", error)
+    }
+
+    onNodataErrorAlertDialog(error,rount) {
+        this.setState({
+            isscreenloading: false,
+        })
+
+        Alert.alert(
+            'NODATA'+'('+rount+')',
+            'NODATA ',
+            [{
+                text: 'OK', onPress: () => {
+                   
+                }
+            }],
+            { cancelable: false }
+        )
+
+        console.log("error : ", error)
+    }
+
+    onNodataExistErrorAlertDialog(error) {
+        this.setState({
+            isscreenloading: false,
+        })
+
+        Alert.alert(
+            'NODATA Exist',
+            'NODATA Exits',
+            [{
+                text: 'OK', onPress: () => {
+                    
+                }
+            }],
+            { cancelable: false }
+        )
+
+        console.log("error : ", error)
+    }
+
+    onLoadErrorAlertDialog(error, resource) {
         this.setState({
             isscreenloading: false,
         })
@@ -732,7 +880,7 @@ console.log('this.state.dataSource.data: ',this.state.dataSource.data)
             )
         } else {
             Alert.alert(
-                'MHF00002ACRI',
+                'MHF00002ACRI' + '(' + resource + ')',
                 'System Error (API). Please contact system administrator.',
                 [{
                     text: 'OK', onPress: () => {
@@ -756,8 +904,12 @@ console.log('this.state.dataSource.data: ',this.state.dataSource.data)
             this.props.navigation.navigate('LeavequotaList', {
                 dataResponse: data,
             });
+        } else if (code.NODATA == data.code) {
+
+            this.onNodataErrorAlertDialog('leaveQuota')
+
         } else {
-            this.onLoadErrorAlertDialog(data)
+            this.onLoadErrorAlertDialog(data,'LeaveQuota')
         }
     }
 

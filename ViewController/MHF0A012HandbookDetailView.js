@@ -113,10 +113,28 @@ export default class HandbookViewer extends Component {
   
     componentWillUnmount() {
 
-        SharedPreference.Handbook.push({
-            handbook_name: this.state.handbook_file,
-            handbook_file: HandbookHighlightList
-        })
+        let tempHB = [];
+
+        for (let i = 0; i < SharedPreference.Handbook.length; i++) {
+
+            if (SharedPreference.Handbook[i].handbook_name === this.state.handbook_file) {
+                tempHB.push({
+                    handbook_name: this.state.handbook_file,
+                    handbook_file: HandbookHighlightList
+
+                })
+            }else{
+                tempHB.push(
+                    SharedPreference.Handbook[i]
+                )
+
+            }
+        }
+
+        // SharedPreference.Handbook.push({
+        //     handbook_name: this.state.handbook_file,
+        //     handbook_file: HandbookHighlightList
+        // })
         console.log('[EPub] componentWillUnmount : ', SharedPreference.Handbook);
         if (this.streamer)
             this.streamer.kill();

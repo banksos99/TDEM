@@ -201,6 +201,25 @@ export default class NonpayrollActivity extends Component {
             )
         }
     }
+    onAutenticateErrorAlertDialog(error) {
+        this.setState({
+            isscreenloading: false,
+        })
+
+
+        Alert.alert(
+            StringText.ALERT_AUTHORLIZE_ERROR_TITLE,
+            StringText.ALERT_AUTHORLIZE_ERROR_MESSAGE,
+            [{
+                text: 'OK', onPress: () => {
+                    this.select_sign_out()
+                }
+            }],
+            { cancelable: false }
+        )
+
+        console.log("error : ", error)
+    }
 
     onLoadAlertDialog() {
         // //console.log("onLoadAlertDialog")
