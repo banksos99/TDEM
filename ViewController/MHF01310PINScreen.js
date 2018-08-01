@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Image, Text, TouchableOpacity, Alert,ActivityIndicator } from "react-native";
+import { View, Image, Text, TouchableOpacity, Alert, ActivityIndicator } from "react-native";
 import { styles } from "./../SharedObject/MainStyles";
 import Colors from "./../SharedObject/Colors"
 import StringText from './../SharedObject/StringText'
@@ -27,13 +27,9 @@ export default class PinActivity extends Component {
             savePin: '',
             isLoading: false
         }
-
-       
-
-        //console.log("PinActivity", listadder)
     }
 
- 
+
     onLoadLoginWithPin = async (PIN) => {
         //console.log("login with pin ==> ", PIN)
         let data = await LoginWithPinAPI(PIN, SharedPreference.FUNCTIONID_PIN)
@@ -43,14 +39,14 @@ export default class PinActivity extends Component {
 
         if (code.SUCCESS == data.code) {
             this.setState({
-                isLoading : false
+                isLoading: false
             })
             SharedPreference.calendarAutoSync = await this.saveAutoSyncCalendar.getAutoSyncCalendar()
             await this.onLoadInitialMaster()
         } else {
             if (this.state.failPin == 4) {
                 this.setState({
-                    isLoading : false
+                    isLoading: false
                 })
                 Alert.alert(
                     StringText.ALERT_PIN_TITLE_NOT_CORRECT,
@@ -66,7 +62,7 @@ export default class PinActivity extends Component {
                 )
             } else {
                 this.setState({
-                    isLoading : false
+                    isLoading: false
                 })
                 Alert.alert(
                     StringText.ALERT_PIN_TITLE_NOT_CORRECT,
@@ -88,7 +84,7 @@ export default class PinActivity extends Component {
     }
 
     onLoadAppInfo = async () => {
-        let data = await RestAPI(SharedPreference.APPLICATION_INFO_API,"1")
+        let data = await RestAPI(SharedPreference.APPLICATION_INFO_API, "1")
         code = data[0]
         data = data[1]
         if (code.SUCCESS == data.code) {
@@ -175,7 +171,7 @@ export default class PinActivity extends Component {
             // TODO Set Information
 
             this.setState({
-                isLoading : true
+                isLoading: true
             })
             SharedPreference.profileObject = await this.saveProfile.getProfile()
             // SharedPreference.TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, '1', SharedPreference.profileObject.client_token)
