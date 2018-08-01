@@ -13,14 +13,13 @@ import {
     Image, Picker, WebView,
     Platform,
     ActivityIndicator,
-    Alert
-
+    Alert,
+    BackHandler
 } from 'react-native';
 
 import Colors from "./../SharedObject/Colors"
 import Layout from "./../SharedObject/Layout"
 import { styles } from "./../SharedObject/MainStyles"
-// import AnnounceTable from "../../components/TableviewCell"
 import SharedPreference from "./../SharedObject/SharedPreference"
 import RestAPI from "../constants/RestAPI"
 
@@ -32,12 +31,10 @@ export default class OTSummaryDetail extends Component {
     constructor(props) {
 
         super(props);
-
+        this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
         let ds = new ListView.DataSource({
             rowHasChanged: (r1, r2) => r1 !== r2
           });
-       
-
 
         this.state = {
             isscreenloading: false,
@@ -69,14 +66,20 @@ export default class OTSummaryDetail extends Component {
         
         this.checkDataFormat(this.props.navigation.getParam("DataResponse", ""));
 
-        // this.state.dataSource.map((item, i) => {
-
-        //     this.state.arr.push(item)
-
-        // });
-        // //console.log(this.state.dataSource[0].data.header.total_ot_hr)
-
     }
+    componentWillMount() {
+        BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
+    }
+ 
+    componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
+    }
+ 
+    handleBackButtonClick() {
+        this.onBack()
+        return true;
+    }
+ 
 
     checkDataFormat(DataResponse) {
         
@@ -104,10 +107,6 @@ export default class OTSummaryDetail extends Component {
 
 
         
-    }
-
-    componentWillMount() {
-        // this._fetchMore(this.state.page);
     }
 
     _onRefresh() {
@@ -241,9 +240,9 @@ export default class OTSummaryDetail extends Component {
       }
 
     onBack() {
-
         this.props.navigation.navigate('HomeScreen');
     }
+    
     select_month(){
 
         this.setState({

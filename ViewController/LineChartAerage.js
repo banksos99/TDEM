@@ -35,33 +35,29 @@ export default class PinActivity extends Component {
         }
     }
 
-    onBack() {
-        console.log(">>>>>>> onBack");
-    }
-
     conv(date) {
-        let year = date.substring(2,4);
-        let month = parseInt(date.substring(4,6));
-        return  monthstr[month-1]+'-'+year
+        let year = date.substring(2, 4);
+        let month = parseInt(date.substring(4, 6));
+        return monthstr[month - 1] + '-' + year
 
     }
 
     render() {
         console.log('data list :', this.props.datalist)
         let tmax = 0
-        for(let i = 0 ; i <  this.props.datalist.length;i++){
-            console.log('datalist :',this.props.datalist[i].total_ot)
-            if(parseInt(this.props.datalist[i].total_ot) > tmax){
+        for (let i = 0; i < this.props.datalist.length; i++) {
+            console.log('datalist :', this.props.datalist[i].total_ot)
+            if (parseInt(this.props.datalist[i].total_ot) > tmax) {
                 tmax = this.props.datalist[i].total_ot
             }
 
         }
-        console.log('dmax value :',tmax)
-        let max = 200 ;
+        console.log('dmax value :', tmax)
+        let max = 200;
         let shiftdown = 50 * scale
         let shiftRight = 70 * scale
-        let ratio =  Math.floor(200 /Math.floor(tmax)) ;
-        console.log('ratio :',ratio)
+        let ratio = Math.floor(200 / Math.floor(tmax));
+        console.log('ratio :', ratio)
         let p1 = max - (this.props.datalist[0].total_ot * ratio) + shiftdown;
         let p2 = max - (this.props.datalist[1].total_ot * ratio) + shiftdown;
         let p3 = max - (this.props.datalist[2].total_ot * ratio) + shiftdown;
@@ -84,11 +80,11 @@ export default class PinActivity extends Component {
         let s1 = '#symbol2'
         let s2 = '#symbol'
         let vbox = '0 0' + lwidth + lheight;
-       
+
         let bottomlabel = 260;
         let rowhight = (max / 6);
 
-        
+
 
         return (
             <Svg height="300" width="350">
@@ -102,11 +98,11 @@ export default class PinActivity extends Component {
                 <Line x1={shiftRight} y1={(rowhight * 6) + shiftdown} x2='350' y2={(rowhight * 6) + shiftdown} stroke='lightgray' strokeWidth="1" />
 
                 <Text x="50" y={(rowhight * 0) + 50} fill='#555555' textAnchor="end" fontFamily='Prompt-Regular'>{Math.floor(rowhight * 6 / ratio)}</Text>
-                <Text x="50" y={(rowhight * 1) + 50} fill='#555555' textAnchor="end" fontFamily='Prompt-Regular'>{Math.floor(rowhight * 5/ ratio)}</Text>
-                <Text x="50" y={(rowhight * 2) + 50} fill='#555555' textAnchor="end" fontFamily='Prompt-Regular'>{Math.floor(rowhight * 4/ ratio)}</Text>
-                <Text x="50" y={(rowhight * 3) + 50} fill='#555555' textAnchor="end" fontFamily='Prompt-Regular'>{Math.floor(rowhight * 3/ ratio)}</Text>
-                <Text x="50" y={(rowhight * 4) + 50} fill='#555555' textAnchor="end" fontFamily='Prompt-Regular'>{Math.floor(rowhight * 2/ ratio)}</Text>
-                <Text x="50" y={(rowhight * 5) + 50} fill='#555555' textAnchor="end" fontFamily='Prompt-Regular'>{Math.floor(rowhight * 1/ ratio)}</Text>
+                <Text x="50" y={(rowhight * 1) + 50} fill='#555555' textAnchor="end" fontFamily='Prompt-Regular'>{Math.floor(rowhight * 5 / ratio)}</Text>
+                <Text x="50" y={(rowhight * 2) + 50} fill='#555555' textAnchor="end" fontFamily='Prompt-Regular'>{Math.floor(rowhight * 4 / ratio)}</Text>
+                <Text x="50" y={(rowhight * 3) + 50} fill='#555555' textAnchor="end" fontFamily='Prompt-Regular'>{Math.floor(rowhight * 3 / ratio)}</Text>
+                <Text x="50" y={(rowhight * 4) + 50} fill='#555555' textAnchor="end" fontFamily='Prompt-Regular'>{Math.floor(rowhight * 2 / ratio)}</Text>
+                <Text x="50" y={(rowhight * 5) + 50} fill='#555555' textAnchor="end" fontFamily='Prompt-Regular'>{Math.floor(rowhight * 1 / ratio)}</Text>
                 <Text x="50" y={(rowhight * 6) + 50} fill='#555555' textAnchor="end" fontFamily='Prompt-Regular'>{Math.floor(rowhight * 0)}</Text>
 
 
@@ -177,55 +173,55 @@ export default class PinActivity extends Component {
 
                 <G rotation="315" origin={(w * 1) + shiftRight + ',' + bottomlabel}>
                     <Text x={(w * 1) + shiftRight} y={bottomlabel} fill="#555555" fontSize="10" fontFamily='Prompt-Regular' textAnchor="end">
-                    {this.conv(this.props.datalist[0].year_month)}</Text>
+                        {this.conv(this.props.datalist[0].year_month)}</Text>
                 </G>
                 <G rotation="315" origin={(w * 2) + shiftRight + ',' + bottomlabel}>
                     <Text x={(w * 2) + shiftRight} y={bottomlabel} fill="#555555" fontSize="10" fontFamily='Prompt-Regular' textAnchor="end">
-                    {this.conv(this.props.datalist[1].year_month)}</Text>
+                        {this.conv(this.props.datalist[1].year_month)}</Text>
                 </G>
                 <G rotation="315" origin={(w * 3) + shiftRight + ',' + bottomlabel}>
                     <Text x={(w * 3) + shiftRight} y={bottomlabel} fill="#555555" fontSize="10" fontFamily='Prompt-Regular' textAnchor="end">
-                    {this.conv(this.props.datalist[2].year_month)}</Text>
+                        {this.conv(this.props.datalist[2].year_month)}</Text>
                 </G>
                 <G rotation="315" origin={(w * 4) + shiftRight + ',' + bottomlabel}>
                     <Text x={(w * 4) + shiftRight} y={bottomlabel} fill="#555555" fontSize="10" fontFamily='Prompt-Regular' textAnchor="end">
-                    {this.conv(this.props.datalist[3].year_month)}</Text>
+                        {this.conv(this.props.datalist[3].year_month)}</Text>
                 </G>
                 <G rotation="315" origin={(w * 5) + shiftRight + ',' + bottomlabel}>
                     <Text x={(w * 5) + shiftRight} y={bottomlabel} fill="#555555" fontSize="10" fontFamily='Prompt-Regular' textAnchor="end">
-                    {this.conv(this.props.datalist[4].year_month)}</Text>
+                        {this.conv(this.props.datalist[4].year_month)}</Text>
                 </G>
                 <G rotation="315" origin={(w * 6) + shiftRight + ',' + bottomlabel}>
                     <Text x={(w * 6) + shiftRight} y={bottomlabel} fill="#555555" fontSize="10" fontFamily='Prompt-Regular' textAnchor="end">
-                    {this.conv(this.props.datalist[5].year_month)}</Text>
+                        {this.conv(this.props.datalist[5].year_month)}</Text>
                 </G>
                 <G rotation="315" origin={(w * 7) + shiftRight + ',' + bottomlabel}>
                     <Text x={(w * 7) + shiftRight} y={bottomlabel} fill="#555555" fontSize="10" fontFamily='Prompt-Regular' textAnchor="end">
-                    {this.conv(this.props.datalist[6].year_month)}</Text>
+                        {this.conv(this.props.datalist[6].year_month)}</Text>
                 </G>
                 <G rotation="315" origin={(w * 8) + shiftRight + ',' + bottomlabel}>
                     <Text x={(w * 8) + shiftRight} y={bottomlabel} fill="#555555" fontSize="10" fontFamily='Prompt-Regular' textAnchor="end">
-                    {this.conv(this.props.datalist[7].year_month)}</Text>
+                        {this.conv(this.props.datalist[7].year_month)}</Text>
                 </G>
                 <G rotation="315" origin={(w * 9) + shiftRight + ',' + bottomlabel}>
                     <Text x={(w * 9) + shiftRight} y={bottomlabel} fill="#555555" fontSize="10" fontFamily='Prompt-Regular' textAnchor="end">
-                    {this.conv(this.props.datalist[8].year_month)}</Text>
+                        {this.conv(this.props.datalist[8].year_month)}</Text>
                 </G>
                 <G rotation="315" origin={(w * 10) + shiftRight + ',' + bottomlabel}>
                     <Text x={(w * 10) + shiftRight} y={bottomlabel} fill="#555555" fontSize="10" fontFamily='Prompt-Regular' textAnchor="end">
-                    {this.conv(this.props.datalist[9].year_month)}</Text>
+                        {this.conv(this.props.datalist[9].year_month)}</Text>
                 </G>
                 <G rotation="315" origin={(w * 11) + shiftRight + ',' + bottomlabel}>
                     <Text x={(w * 11) + shiftRight} y={bottomlabel} fill="#555555" fontSize="10" fontFamily='Prompt-Regular' textAnchor="end">
-                    {this.conv(this.props.datalist[10].year_month)}</Text>
+                        {this.conv(this.props.datalist[10].year_month)}</Text>
                 </G>
                 <G rotation="315" origin={(w * 12) + shiftRight + ',' + bottomlabel}>
                     <Text x={(w * 12) + shiftRight} y={bottomlabel} fill="#555555" fontSize="10" fontFamily='Prompt-Regular' textAnchor="end">
-                    {this.conv(this.props.datalist[11].year_month)}</Text>
+                        {this.conv(this.props.datalist[11].year_month)}</Text>
                 </G>
                 <G rotation="315" origin={(w * 13) + shiftRight + ',' + bottomlabel}>
                     <Text x={(w * 13) + shiftRight} y={bottomlabel} fill="#555555" fontSize="10" fontFamily='Prompt-Regular' textAnchor="end">
-                    {this.conv(this.props.datalist[12].year_month)}</Text>
+                        {this.conv(this.props.datalist[12].year_month)}</Text>
                 </G>
 
             </Svg>

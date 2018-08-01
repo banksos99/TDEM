@@ -2,26 +2,21 @@ import React, { Component } from 'react';
 
 
 import {
-     Text,
-    StyleSheet,
+    Text,
     ScrollView,
     View,
-    StatusBar,
-    Button,
     TouchableOpacity,
     ListView,
-    RefreshControl,
-    Image, Picker, WebView,
+    Image, Picker,
     Platform,
     ActivityIndicator,
-    Alert
-
+    Alert,
+    BackHandler
 } from 'react-native';
 
 
 
 import Colors from "./../SharedObject/Colors"
-import Layout from "./../SharedObject/Layout"
 import { styles } from "./../SharedObject/MainStyles"
 // import AnnounceTable from "../../components/TableviewCell"
 import BarChartCompare from "./BarChartCompare";
@@ -35,14 +30,11 @@ let monthstr = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
 export default class OTSummaryBarChart extends Component {
 
     constructor(props) {
-
         super(props);
-
+        this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
         let ds = new ListView.DataSource({
             rowHasChanged: (r1, r2) => r1 !== r2
-          });
-       
-
+        });
 
         this.state = {
             isscreenloading: false,
@@ -67,42 +59,52 @@ export default class OTSummaryBarChart extends Component {
             initialmonth: 0,
 
             dateselected: 0,
-            org_name:this.props.navigation.getParam("org_name", ""),
-            org_code:this.props.navigation.getParam("org_code", "")
+            org_name: this.props.navigation.getParam("org_name", ""),
+            org_code: this.props.navigation.getParam("org_code", "")
 
         }
-        
+
         this.checkDataFormat(this.props.navigation.getParam("DataResponse", ""));
     }
 
     checkDataFormat(DataResponse) {
-        
+
         if (DataResponse) {
-            
+
             let today = new Date();
             date = today.getDate() + "/" + parseInt(today.getMonth() + 1) + "/" + today.getFullYear();
             this.state.initialyear = today.getFullYear();
             this.state.initialmonth = parseInt(today.getMonth() - 1);
-            this.state.announcementTypetext = MONTH_LIST[this.state.initialmonth + 1]+' '+this.state.initialyear;
+            this.state.announcementTypetext = MONTH_LIST[this.state.initialmonth + 1] + ' ' + this.state.initialyear;
             for (let i = this.state.initialmonth + 13; i > this.state.initialmonth; i--) {
 
                 if (i === 11) {
 
                     this.state.initialyear--;
                 }
-                this.state.months.push(MONTH_LIST[i % 12] +' '+ this.state.initialyear)
+                this.state.months.push(MONTH_LIST[i % 12] + ' ' + this.state.initialyear)
             }
 
             this.state.tdataSource = DataResponse;
-          
+
 
         }
         initannouncementType = this.state.months[0]
     }
 
     componentWillMount() {
-        // this._fetchMore(this.state.page);
+        BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
     }
+ 
+    componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
+    }
+ 
+    handleBackButtonClick() {
+        this.onBack()
+        return true;
+    }
+ 
 
     _onRefresh() {
         if (this.state.refreshing) {
@@ -119,34 +121,34 @@ export default class OTSummaryBarChart extends Component {
 
         promise.then(() => this.setState({ refreshing: false }));
     }
-    
-      _fetchMore(page) {
+
+    _fetchMore(page) {
         if (this.state.fetching) {
-          return;
+            return;
         }
-    
-        this.setState({fetching: true});
-    
+
+        this.setState({ fetching: true });
+
         let promise = this._generateRows(page);
-    
+
         promise.then((rows) => {
-          var data;
-          if (this.state.refreshing) {
-            data = rows;
-          } else {
-            data = [...this.state.data, ...rows];
-          }
-    
-          this.setState({
-            page: page + 1,
-            dataSource: this.state.dataSource.cloneWithRows(data),
-            data: data,
-            fetching: false
-          });
+            var data;
+            if (this.state.refreshing) {
+                data = rows;
+            } else {
+                data = [...this.state.data, ...rows];
+            }
+
+            this.setState({
+                page: page + 1,
+                dataSource: this.state.dataSource.cloneWithRows(data),
+                data: data,
+                fetching: false
+            });
         });
-    
+
         return promise;
-      }
+    }
 
     onOrgStruct(item, index) {
 
@@ -172,11 +174,11 @@ export default class OTSummaryBarChart extends Component {
         }
         let url = SharedPreference.OTSUMMARY_BAR_CHART + this.state.org_code + '&month=' + tmonth + '&year=' + oyear
         console.log('OT summary url  :', url)
-        this.APIDetailCallback(await RestAPI(url,SharedPreference.FUNCTIONID_OT_SUMMARY), 'OTBarChartView')
+        this.APIDetailCallback(await RestAPI(url, SharedPreference.FUNCTIONID_OT_SUMMARY), 'OTBarChartView')
     }
 
 
-    APIDetailCallback(data,path) {
+    APIDetailCallback(data, path) {
 
         code = data[0]
         data = data[1]
@@ -186,18 +188,18 @@ export default class OTSummaryBarChart extends Component {
             console.log('data  :', data.data)
             this.setState({
                 isscreenloading: false,
-                tdataSource : data.data
+                tdataSource: data.data
 
             })
-            
+
             // this.props.navigation.navigate(path, {
             //     DataResponse: data.data,
             //     org_name:this.state.org_name
             // });
-            
+
 
         } else {
-            
+
             this.onLoadErrorAlertDialog(data)
         }
 
@@ -233,29 +235,29 @@ export default class OTSummaryBarChart extends Component {
         console.log("error : ", error)
     }
 
-      _generateRows(page) {
+    _generateRows(page) {
         //console.log(`loading rows for page ${page}`);
-    
+
         var rows = [];
         for (var i = 0; i < 100; i++) {
-          rows.push('Hello ' + (i + ((page - 1)*100)));
+            rows.push('Hello ' + (i + ((page - 1) * 100)));
         }
-    
+
         let promise = new Promise((resolve, reject) => {
-          setTimeout(() => {
-            resolve(rows);
-            //console.log(`resolved for page ${page}`);
-          }, 3);
+            setTimeout(() => {
+                resolve(rows);
+                //console.log(`resolved for page ${page}`);
+            }, 3);
         });
-    
+
         return promise;
-      }
+    }
 
     onBack() {
 
         this.props.navigation.navigate('OrganizationOTStruct');
     }
-    select_month(){
+    select_month() {
 
         this.setState({
 
@@ -267,49 +269,49 @@ export default class OTSummaryBarChart extends Component {
             this.setState(this.renderloadingscreen())
         });
     }
-    select_announce_all_type = () =>{
-        
+    select_announce_all_type = () => {
+
         this.setState({
-    
+
             // announcementType: month,
             loadingtype: 1,
             isscreenloading: true,
             // isscreenloading: false,
- 
+
         }, function () {
 
             let tdate = initannouncementType.split(' ')
             let mdate = 0;
-          
-            
+
+
             for (let i = 0; i < 12; i++) {
                 if (MONTH_LIST[i] === tdate[0]) {
-                   
+
                     mdate = i;
                 }
             }
             this.setState(this.renderloadingscreen())
 
-            this.loadOTSummarySelffromAPI(mdate+1,tdate[1])
+            this.loadOTSummarySelffromAPI(mdate + 1, tdate[1])
         });
-    
+
     }
-    selected_month(monthselected){
-        
-         //console.log('monthselected : ',monthselected)
+    selected_month(monthselected) {
+
+        //console.log('monthselected : ',monthselected)
 
         this.setState({
-    
+
             announcementTypetext: this.state.months[monthselected],
             loadingtype: 1,
             isscreenloading: true,
- 
+
         }, function () {
-    
+
             // this.setState(this.renderloadingscreen())
 
         });
-    
+
     }
     renderpickerview() {
 
@@ -377,7 +379,7 @@ export default class OTSummaryBarChart extends Component {
                         </Picker>
                         <View style={{ flexDirection: 'row', justifyContent: 'flex-end', height: 50, alignItems: 'center', }}>
                             <TouchableOpacity style={styles.button} onPress={(this.select_announce_all_type)}>
-                                <Text style={{  textAlign: 'center', color: Colors.redTextColor, fontSize: 18, width: 80, height: 30, alignItems: 'center' }}> OK</Text>
+                                <Text style={{ textAlign: 'center', color: Colors.redTextColor, fontSize: 18, width: 80, height: 30, alignItems: 'center' }}> OK</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -410,11 +412,11 @@ export default class OTSummaryBarChart extends Component {
     }
 
     renderdetail() {
-        let year = date.substring(2,4);
-        let month = parseInt(date.substring(4,6));
+        let year = date.substring(2, 4);
+        let month = parseInt(date.substring(4, 6));
 
-        let premonth = monthstr[parseInt(this.state.tdataSource.previous_month.month-1)]+' - '+this.state.tdataSource.previous_month.year.substring(2,4);
-        let curmonth = monthstr[parseInt(this.state.tdataSource.request_month.month-1)]+' - '+this.state.tdataSource.request_month.year.substring(2,4);
+        let premonth = monthstr[parseInt(this.state.tdataSource.previous_month.month - 1)] + ' - ' + this.state.tdataSource.previous_month.year.substring(2, 4);
+        let curmonth = monthstr[parseInt(this.state.tdataSource.request_month.month - 1)] + ' - ' + this.state.tdataSource.request_month.year.substring(2, 4);
 
         return (
             <View style={{ flex: 1, flexDirection: 'column' }}>
@@ -422,20 +424,20 @@ export default class OTSummaryBarChart extends Component {
                     <View style={{ flex: 1 }} />
 
                     <View style={{ flex: 3, justifyContent: 'center' }}>
-                        <Text style ={{color:'#555555',fontFamily:'Prompt-Regular'}}>Month</Text>
+                        <Text style={{ color: '#555555', fontFamily: 'Prompt-Regular' }}>Month</Text>
                     </View>
                     <View style={{ flex: 1 }}>
                         <View style={{ flex: 1, backgroundColor: '#d77c7c', margin: 10 }} />
 
                     </View>
                     <View style={{ flex: 2, justifyContent: 'center' }}>
-                        <Text style ={{color:'#555555',fontFamily:'Prompt-Regular'}}>{premonth}</Text>
+                        <Text style={{ color: '#555555', fontFamily: 'Prompt-Regular' }}>{premonth}</Text>
                     </View>
                     <View style={{ flex: 1 }}>
                         <View style={{ flex: 1, backgroundColor: '#f20909', margin: 10 }} />
                     </View>
                     <View style={{ flex: 2, justifyContent: 'center' }}>
-                        <Text style ={{color:'#555555',fontFamily:'Prompt-Regular'}}>{curmonth}</Text>
+                        <Text style={{ color: '#555555', fontFamily: 'Prompt-Regular' }}>{curmonth}</Text>
                     </View>
                     <View style={{ flex: 1 }}>
                     </View>
@@ -444,15 +446,15 @@ export default class OTSummaryBarChart extends Component {
                     <View style={{ flex: 1 }} />
 
                     <View style={{ flex: 3, justifyContent: 'center' }}>
-                        <Text style ={{color:'#555555',fontFamily:'Prompt-Regular'}}>Man Power</Text>
+                        <Text style={{ color: '#555555', fontFamily: 'Prompt-Regular' }}>Man Power</Text>
                     </View>
                     <View style={{ flex: 1, justifyContent: 'center' }}>
-                        <Text style ={{textAlign:'center',color:'#d77c7c',fontFamily:'Prompt-Regular'}}>{this.state.tdataSource.previous_month.manPower}</Text>
+                        <Text style={{ textAlign: 'center', color: '#d77c7c', fontFamily: 'Prompt-Regular' }}>{this.state.tdataSource.previous_month.manPower}</Text>
                     </View>
                     <View style={{ flex: 2 }}>
                     </View>
                     <View style={{ flex: 1, justifyContent: 'center' }}>
-                        <Text style ={{textAlign:'center' ,color:'#f20909',fontFamily:'Prompt-Regular'}}>{this.state.tdataSource.request_month.manPower}</Text>
+                        <Text style={{ textAlign: 'center', color: '#f20909', fontFamily: 'Prompt-Regular' }}>{this.state.tdataSource.request_month.manPower}</Text>
                     </View>
                     <View style={{ flex: 2 }}>
                     </View>
@@ -466,28 +468,28 @@ export default class OTSummaryBarChart extends Component {
 
 
     render() {
-        
+
         return (
             // this.state.dataSource.map((item, index) => (
             <View style={{ flex: 1, backgroundColor: Colors.backgroundColor }} >
-                <View style={[styles.navContainer,{flexDirection: 'column' }]}>
-                <View style={styles.statusbarcontainer} />
-                <View style={{ height: 50, flexDirection: 'row', }}>
-                    <View style={{ flex: 1, justifyContent: 'center', }}>
-                        <TouchableOpacity onPress={(this.onBack.bind(this))}>
-                            <Image
-                                style={{ width: 50, height: 50 }}
-                                source={require('./../resource/images/Back.png')}
-                                resizeMode='contain'
-                            />
-                        </TouchableOpacity>
+                <View style={[styles.navContainer, { flexDirection: 'column' }]}>
+                    <View style={styles.statusbarcontainer} />
+                    <View style={{ height: 50, flexDirection: 'row', }}>
+                        <View style={{ flex: 1, justifyContent: 'center', }}>
+                            <TouchableOpacity onPress={(this.onBack.bind(this))}>
+                                <Image
+                                    style={{ width: 50, height: 50 }}
+                                    source={require('./../resource/images/Back.png')}
+                                    resizeMode='contain'
+                                />
+                            </TouchableOpacity>
+                        </View>
+                        <View style={{ flex: 3, justifyContent: 'center', alignItems: 'center' }}>
+                            <Text style={styles.navTitleTextTop}>Overtime Average</Text>
+                        </View>
+                        <View style={{ flex: 1, }}>
+                        </View>
                     </View>
-                    <View style={{ flex: 3, justifyContent: 'center', alignItems: 'center' }}>
-                        <Text style={styles.navTitleTextTop}>Overtime Average</Text>
-                    </View>
-                    <View style={{ flex: 1, }}>
-                    </View>
-                </View>
                 </View>
                 <View style={{ flex: 1, flexDirection: 'column', }}>
 
@@ -505,7 +507,7 @@ export default class OTSummaryBarChart extends Component {
                     <View style={{ flex: 8, backgroundColor: Colors.calendarLocationBoxColor }}>
 
                         <BarChartCompare
-                            datalist={ this.state.tdataSource}
+                            datalist={this.state.tdataSource}
                         />
 
                     </View>
@@ -513,9 +515,9 @@ export default class OTSummaryBarChart extends Component {
                     <View style={{ flex: 11, backgroundColor: Colors.calendarLocationBoxColor }}>
 
                         <BarChartIndiv
-                        datalist={ this.state.tdataSource}
-                        org_name={this.state.org_name}
-                            />
+                            datalist={this.state.tdataSource}
+                            org_name={this.state.org_name}
+                        />
 
                     </View>
 

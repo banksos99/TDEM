@@ -151,9 +151,9 @@ export default class HMF01011MainView extends Component {
 
         let today = new Date()
         const newdate = moment(today).format(_format).valueOf();
-        //console.log("selectedDateMonth : ", newdate)
+        console.log("selectedDateMonth : ", newdate)
         FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, 1, SharedPreference.profileObject.client_token)
-        // //console.log("calendarPDFAPI ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
+        console.log("calendarPDFAPI ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
         latest_date = "2018-01-01 12:00:00"
 
         return fetch(SharedPreference.PULL_NOTIFICATION_API + newdate, {
@@ -170,7 +170,7 @@ export default class HMF01011MainView extends Component {
                     if (timerstatus) {
                         this.inappTimeInterval()
                     }
-                    //console.log('inapp responseJson :', responseJson)
+                    console.log('inapp responseJson :', responseJson)
                     if (responseJson.status == 403) {
                         timerstatus = false
                         SharedPreference.profileObject = null

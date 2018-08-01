@@ -6,7 +6,8 @@ import {
     View,
     TouchableOpacity,
     Image,
-    FlatList
+    FlatList,
+    BackHandler
 } from 'react-native';
 
 import { styles } from "./../SharedObject/MainStyles"
@@ -18,13 +19,26 @@ export default class LeaveQuotaActivity extends Component {
 
     constructor(props) {
         super(props);
+        this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
         this.state = {
             stories: [],
             isFetching: false,
             dataSource: this.props.navigation.getParam("dataResponse", ""),
             selectYear: this.props.navigation.getParam("selectYear", new Date().getFullYear()),
         };
-        console.log("LeaveQuotaActivity ==>> customData : ", this.state.dataSource)
+    }
+
+    componentWillMount() {
+        BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
+    }
+
+    componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
+    }
+
+    handleBackButtonClick() {
+        this.onBack()
+        return true;
     }
 
     onBack() {

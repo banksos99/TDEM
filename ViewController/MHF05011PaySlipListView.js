@@ -2,21 +2,15 @@ import React, { Component } from 'react';
 
 import {
     Text,
-    StyleSheet,
-    ScrollView,
     View,
-    StatusBar,
-    Button,
     TouchableOpacity,
-    Image, Picker, WebView,
-    FlatList,
+    Image,
     ActivityIndicator,
     Alert,
-    Platform
+    BackHandler
 } from 'react-native';
 
 import Colors from "./../SharedObject/Colors"
-import Layout from "./../SharedObject/Layout"
 import { styles } from "./../SharedObject/MainStyles"
 // import { MonoText } from '../../components/StyledText';
 // import  DataResponse  from "../../InAppData/Payslipdatalist"
@@ -46,6 +40,7 @@ export default class PaySlipActivity extends Component {
 
     constructor(props) {
         super(props);
+        this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
 
         this.state = {
             isscreenloading: false,
@@ -53,7 +48,7 @@ export default class PaySlipActivity extends Component {
             isFetching: false,
 
             expand: false,
-           
+
             updatedHeight: 50,
             dataSource: [],
             selectYearArray: [2000, 2000, 2000]
@@ -116,7 +111,19 @@ export default class PaySlipActivity extends Component {
 
     async componentWillMount() {
         await this.getArrayOfYear()
+        BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
+
     }
+
+    componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
+    }
+
+    handleBackButtonClick() {
+        this.onBack()
+        return true;
+    }
+
 
     getArrayOfYear() {
         var currentYear = new Date().getFullYear()
@@ -158,7 +165,7 @@ export default class PaySlipActivity extends Component {
 
                 } else if (havedata) {
 
-                        let netsalary = 0;
+                    let netsalary = 0;
                     let pay_date;
 
                     if (havedata.net_salary) {
@@ -213,7 +220,7 @@ export default class PaySlipActivity extends Component {
                             styles.payslipitemlast :
                             styles.payslipitemdisable}
                             key={i}>
-                            
+
 
                             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', }}>
                                 <Text style={i === currentmonth && indexselectyear === 0 ? styles.payslipitemmoneyred : styles.payslipitemdetail}>{Month.monthNamesShort[i]}</Text>
@@ -398,10 +405,10 @@ export default class PaySlipActivity extends Component {
 
     onCurrentYear() {
 
-        indexselectyear= 0
+        indexselectyear = 0
 
         this.setState({
-            
+
             expand: false,
             updatedHeight: 50,
 
@@ -413,9 +420,9 @@ export default class PaySlipActivity extends Component {
 
     }
     onLastYear() {
-        indexselectyear= 1
+        indexselectyear = 1
         this.setState({
-            
+
             expand: false,
             updatedHeight: 50,
 
@@ -427,9 +434,9 @@ export default class PaySlipActivity extends Component {
     }
 
     onLast2Year() {
-        indexselectyear= 2
+        indexselectyear = 2
         this.setState({
-            
+
             expand: false,
             updatedHeight: 50,
 
@@ -533,7 +540,7 @@ export default class PaySlipActivity extends Component {
 
     }
 
-    
+
 
     PayslipDetail() {
 
@@ -545,7 +552,7 @@ export default class PaySlipActivity extends Component {
         let com_pf_year = '0';
 
         if (dataSource.years) {
-            
+
             if (dataSource.years[indexselectyear].header) { exemption = Dcryptfun.decrypt(dataSource.years[indexselectyear].header.exemption); }
 
             if (dataSource.years[indexselectyear].header) { income_acc = Dcryptfun.decrypt(dataSource.years[indexselectyear].header.income_acc); }
@@ -559,7 +566,7 @@ export default class PaySlipActivity extends Component {
             if (dataSource.years[indexselectyear].header) { com_pf_year = Dcryptfun.decrypt(dataSource.years[indexselectyear].header.com_pf_year); }
 
         }
-        
+
 
 
         return (

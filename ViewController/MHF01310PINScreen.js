@@ -12,8 +12,6 @@ import LoginWithPinAPI from "../constants/LoginWithPinAPI"
 import LoginResetPinAPI from "../constants/LoginResetPinAPI"
 import SaveAutoSyncCalendar from "../constants/SaveAutoSyncCalendar";
 
-let listadder = {};
-
 export default class PinActivity extends Component {
 
     savePIN = new SavePIN()
@@ -32,15 +30,16 @@ export default class PinActivity extends Component {
 
        
 
-        console.log("PinActivity", listadder)
+        //console.log("PinActivity", listadder)
     }
 
+ 
     onLoadLoginWithPin = async (PIN) => {
-        console.log("login with pin ==> ", PIN)
+        //console.log("login with pin ==> ", PIN)
         let data = await LoginWithPinAPI(PIN, SharedPreference.FUNCTIONID_PIN)
         code = data[0]
         data = data[1]
-        console.log("onLoadLoginWithPin ==> ", data.code)
+        //console.log("onLoadLoginWithPin ==> ", data.code)
 
         if (code.SUCCESS == data.code) {
             this.setState({
@@ -93,8 +92,8 @@ export default class PinActivity extends Component {
         code = data[0]
         data = data[1]
         if (code.SUCCESS == data.code) {
-            console.log('app info data1 :', data)
-            console.log('token :', SharedPreference.TOKEN)
+            //console.log('app info data1 :', data)
+            //console.log('token :', SharedPreference.TOKEN)
             let appversion = '1.0.0'
             if (data.data.force_update === 'Y') {
                 Alert.alert(
@@ -117,7 +116,7 @@ export default class PinActivity extends Component {
         let data = await RestAPI(SharedPreference.INITIAL_MASTER_API, SharedPreference.FUNCTIONID_GENERAL_INFORMATION_SHARING)
         code = data[0]
         data = data[1]
-        console.log("onLoadInitialMaster : ", data.code)
+        //console.log("onLoadInitialMaster : ", data.code)
         if (code.SUCCESS == data.code) {
             array = data.data
             for (let index = 0; index < array.length; index++) {
@@ -132,7 +131,7 @@ export default class PinActivity extends Component {
                     SharedPreference.TB_M_LEAVETYPE = element.TB_M_LEAVETYPE
                 }
             }
-            console.log('onLoadAppInfo:')
+            //console.log('onLoadAppInfo:')
             // await this.onLoadAppInfo()
             this.props.navigation.navigate('HomeScreen')
 
@@ -206,7 +205,7 @@ export default class PinActivity extends Component {
     }
 
     onResetPIN = async () => {
-        console.log("onResetPIN")
+        //console.log("onResetPIN")
         Alert.alert(
             StringText.ALERT_RESET_PIN_TITLE,
             StringText.ALERT_RESET_PIN_DESC,
@@ -236,7 +235,7 @@ export default class PinActivity extends Component {
         code = data[0]
         data = data[1]
 
-        console.log("onLoginResetPinAPI : ", data.code)
+        //console.log("onLoginResetPinAPI : ", data.code)
 
         if (code.SUCCESS == data.code) {
             SharedPreference.profileObject = null

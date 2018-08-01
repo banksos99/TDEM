@@ -2,16 +2,13 @@ import React, { Component } from 'react';
 
 import {
     Text,
-    StyleSheet,
     ScrollView,
     View,
-    StatusBar,
-    Button,
     TouchableOpacity,
-    Image, Picker, WebView,
-    FlatList,
+    Image,
     Alert,
-    ActivityIndicator
+    ActivityIndicator,
+    BackHandler
 } from 'react-native';
 
 import Colors from "./../SharedObject/Colors"
@@ -30,34 +27,34 @@ export default class OrganizationStruct extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-
-
-        }
-
+        this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
         this.checkoption(this.props.navigation.getParam("Option", ""));
-
         this.checkDataFormat(this.props.navigation.getParam("DataResponse", ""));
-
     }
+
+    componentWillMount() {
+        BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
+    }
+
+    componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
+    }
+
+    handleBackButtonClick() {
+        this.onBack()
+        return true;
+    }
+
     checkoption(data) {
         if (data) {
             option = data
         }
-        console.log('option :', option)
     }
+
     checkDataFormat(DataResponse) {
-
         if (DataResponse) {
-
-            console.log('org DataResponse :', DataResponse.org_code)
             org_code = DataResponse.org_code
-            console.log('org_code :', org_code)
             dataSource = [];
-            //console.log(DataResponse[0].data)
-            // dataSource = DataResponse.org_lst;
-            // DataResponse.org_emp.map((item) => (
-
             dataSource.push({
 
                 org_code: DataResponse.org_code,
@@ -66,42 +63,12 @@ export default class OrganizationStruct extends Component {
                 next_level: 'true',
                 expand: 0,
             })
-            // dataSource.push({
-
-            //     org_code: DataResponse.org_code,
-            //     org_name: DataResponse.org_name,
-            //     org_level: parseInt(DataResponse.org_level) + 10,
-            //     next_level: 'false',
-            //     expand: 0,
-            // })
-            // //     ))
-            // DataResponse.org_lst.map((item) => (
-            //     dataSource.push({
-            //         org_code: item.org_code,
-            //         org_name: item.org_name,
-            //         org_level: item.org_level,
-            //         next_level: item.next_level,
-            //         expand: 0,
-            //     }
-
-            //     ))
-            // )
-
-
         } else {
-
             console.log('orgdata : ', orgdata)
-
         }
     }
 
-    componentDidMount() {
-        //console.log(Layout.window.width);
-        // this.fetchData()
-    }
-
     onBack() {
-
         this.props.navigation.navigate('HomeScreen');
     }
 

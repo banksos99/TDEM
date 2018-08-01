@@ -5,7 +5,6 @@ import {
     TouchableOpacity,
     Image,
     Alert,
-    Platform,
     BackHandler
 } from 'react-native';
 
@@ -21,6 +20,7 @@ import Months from "./../constants/Month"
 export default class NonpayrollActivity extends Component {
     constructor(props) {
         super(props);
+        this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
         this.state = {
             temparray: [],
             dataSource: this.props.navigation.getParam("dataResponse", ""),
@@ -30,13 +30,18 @@ export default class NonpayrollActivity extends Component {
         };
     }
 
-    // componentWillMount() {
-    //     if (Platform.OS !== 'android') return
-    //     BackHandler.addEventListener('hardwareBackPress', () => {
-    //         this.props.navigation.navigate('HomeScreen');
-    //         return true
-    //     })
-    // }
+    componentWillMount() {
+        BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
+    }
+
+    componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
+    }
+
+    handleBackButtonClick() {
+        this.onBack()
+        return true;
+    }
 
     onBack() {
         this.props.navigation.navigate('HomeScreen');
