@@ -105,7 +105,7 @@ export default class NonpayrollActivity extends Component {
         if ((currentMonth == monthNumber) && (currentYear == this.state.selectYear)) {//currentMonth
 
             if (amount) {
-                amount = '0.00'
+               
             
             return (<View style={styles.nonPayRollitemBg}>
                 <View style={[styles.nonPayRollitem, {
@@ -136,10 +136,8 @@ export default class NonpayrollActivity extends Component {
                         </Text>
                     </View>
                     : null}
-            </View>
-
-            )}
-
+            </View>)}
+             amount = '0.00'
             return (<View style={styles.nonPayRollitemBg}>
                 <View style={[styles.nonPayRollitem, {
                     backgroundColor: Colors.calendarRedDotColor
@@ -147,13 +145,9 @@ export default class NonpayrollActivity extends Component {
                     <TouchableOpacity
                         style={styles.button}
                         disable={amount}
-                        // onPress={() => {
-                        //     this.props.navigation.navigate('NonPayrollDetail', {
-                        //         month: monthNumber,
-                        //         selectYear: this.state.selectYear,
-                        //         dataObject: this.state.dataSource
-                        //     });
-                        // }}
+                        onPress={() => {
+                            this.onLoadAlertDialog()
+                        }}
                         >
                         <View style={styles.nonPayRollDetailContainer}>
                             <Text style={[styles.payslipitemdetail, { color: 'white' }]}>{Months.monthNamesShort[monthNumber - 1]}</Text>
@@ -170,9 +164,7 @@ export default class NonpayrollActivity extends Component {
                         </Text>
                     </View>
                     : null}
-            </View>
-            
-            )}
+            </View>)
 
 
         } else if ((monthNumber > currentMonth) && (currentYear == this.state.selectYear)) {//After currentMonth
