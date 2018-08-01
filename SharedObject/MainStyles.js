@@ -219,13 +219,13 @@ export const styles = StyleSheet.create({
         justifyContent: 'flex-end',
     },
     calendarLocationBox: {
-        width: 120, 
-        marginTop: 10, 
-        marginBottom: 10, 
+        width: 120,
+        marginTop: 10,
+        marginBottom: 10,
         backgroundColor: Colors.calendarLocationBoxColor,
-        borderRadius: 5, 
-        borderColor: Colors.calendarLocationBorderBoxColor, 
-        borderWidth: 2, 
+        borderRadius: 5,
+        borderColor: Colors.calendarLocationBorderBoxColor,
+        borderWidth: 2,
         justifyContent: 'flex-end'
     },
     calendarRowBox: {
@@ -379,6 +379,7 @@ export const styles = StyleSheet.create({
     calendarEventTimeDetialText: {
         fontSize: 13,
         color: Colors.lightGrayTextColor,
+        textAlign: 'left'
     },
     calendarEventTimeAlldayDetialText: {
         fontSize: 13,
@@ -1300,7 +1301,7 @@ export const styles = StyleSheet.create({
         flex: 3
     },
     epubbookname: {
-        textAlign:'center',
+        textAlign: 'center',
         fontSize: 12 * scale,
         color: Colors.thingrayTextColor,
         fontFamily: font_medium

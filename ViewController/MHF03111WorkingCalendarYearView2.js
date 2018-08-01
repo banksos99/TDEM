@@ -101,7 +101,6 @@ export default class calendarYearView extends Component {
         this.getYearSelect()
         this.getYearView(this.state.selectYear, this.state.dataResponse)
 
-
         console.log("SharedPreference.calendarAutoSync : ", SharedPreference.calendarAutoSync)
 
         if (SharedPreference.calendarAutoSync == true) {
@@ -321,7 +320,7 @@ export default class calendarYearView extends Component {
                             } else if ((this.state.today.getDate() == date.day) && ((this.state.today.getMonth() + 1) == date.month)
                                 && (this.state.today.getFullYear() == date.year)) {
                                 return <View style={styles.calendarCurrentDayCicleContainer}>
-                                    <View style={[styles.calendarCurrentDayCircle,{backgroundColor : state ==='disabled' ? 'white':'red'}]} />
+                                    <View style={[styles.calendarCurrentDayCircle, { backgroundColor: state === 'disabled' ? 'white' : 'red' }]} />
                                     <Text style={styles.calendarCurrentDayText}>
                                         {date.day}</Text>
                                 </View>
@@ -776,7 +775,7 @@ export default class calendarYearView extends Component {
         code = data[0]
         data = data[1]
 
-        // console.log("onLoadPDFFIle : ", data)
+        console.log("onLoadPDFFIle : ", data)
         if (code.SUCCESS == data.code) {
             if (data.data[0].filename == null || data.data[0].filename == 'undefined') {
                 this.onLoadAlertDialog()
@@ -869,8 +868,8 @@ export default class calendarYearView extends Component {
                     this.setState({ isLoadingPDF: false })
                     console.log("Android ==> LoadPDFFile ==> Load errorCode  : ", errorCode);
                     Alert.alert(
-                        errorCode,
-                        errorMessage,
+                        StringText.ALERT_PAYSLIP_CANNOT_DOWNLOAD_TITLE,
+                        StringText.ALERT_PAYSLIP_CANNOT_DOWNLOAD_DESC,
                         [{
                             text: 'OK', onPress: () => {
                                 // this.addEventOnCalendar()
@@ -882,8 +881,8 @@ export default class calendarYearView extends Component {
 
 
         } else {//iOS
-            // console.log("loadPdf pdfPath : ", pdfPath)
-            // console.log("loadPdf filename : ", filename)
+            console.log("loadPdf pdfPath : ", pdfPath)
+            console.log("loadPdf filename : ", filename)
             this.downloadTask = RNFetchBlob
                 .config({
                     fileCache: true,
@@ -892,13 +891,14 @@ export default class calendarYearView extends Component {
                     timeout: 15000,
                     overwrite: true
                 })
-                .fetch('GET', pdfPath, {
+                .fetch('GET', SharedPreference.HOST + pdfPath, {
                     'Content-Type': 'application/pdf;base64',
                     Authorization: FUNCTION_TOKEN
                 })
                 .then((resp) => {
-                    this.setState({ isLoadingPDF: false })
+                    console.log('loadPdf ==> resp : ', resp)
                     if (this.state.isLoadingPDF == true) {
+                        this.setState({ isLoadingPDF: false })
                         Alert.alert(
                             StringText.CALENDAR_ALERT_PDF_TITLE_SUCCESS,
                             StringText.CALENDAR_ALERT_PDF_DESC_SUCCESS_1 + filename + StringText.CALENDAR_ALERT_PDF_DESC_SUCCESS_2,
@@ -918,9 +918,12 @@ export default class calendarYearView extends Component {
                     }
                 })
                 .catch((errorMessage, statusCode) => {
+                    console.log('loadPdf ==> errorMessage : ', errorMessage)
+                    console.log('loadPdf ==> statusCode : ', statusCode)
+
                     Alert.alert(
-                        errorCode,
-                        statusCode,
+                        StringText.ALERT_PAYSLIP_CANNOT_DOWNLOAD_TITLE,
+                        StringText.ALERT_PAYSLIP_CANNOT_DOWNLOAD_DESC,
                         [{
                             text: 'OK', onPress: () => {
                             }
