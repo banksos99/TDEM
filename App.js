@@ -106,7 +106,7 @@ export default class mainview extends Component {
 
         // Alert.alert(
         //   'notificationListener',
-        //   notification._data.payslipID,
+        //   notification._data,
         //   [
         //     { text: 'OK', onPress: () => console.log('OK Pressed') },
         //   ],
@@ -145,7 +145,7 @@ export default class mainview extends Component {
       SharedPreference.notipayAnnounceMentID = notification._data.AnnouncementID
       // Alert.alert(
       //   'notificationOpen',
-      //   notification._data.payslipID,
+      //   notification._data,
       //   [
       //     { text: 'OK', onPress: () => console.log('OK Pressed') },
       //   ],

@@ -82,6 +82,10 @@ export default class NonpayrollDetailView extends Component {
                 isLoading: false
             })
             this.getNonPayrollDetail()
+
+        }else if(code.INVALID_AUTH_TOKEN == data.code){  
+            this.onAutenticateErrorAlertDialog(data)
+
         } else {
             Alert.alert(
                 StringText.ALERT_CANNOT_CONNECT_TITLE,
@@ -99,6 +103,27 @@ export default class NonpayrollDetailView extends Component {
         }
     }
 
+    onAutenticateErrorAlertDialog(error) {
+        this.setState({
+            isscreenloading: false,
+        })
+
+        Alert.alert(
+            StringText.ALERT_AUTHORLIZE_ERROR_TITLE,
+            StringText.ALERT_AUTHORLIZE_ERROR_MESSAGE,
+            [{
+                text: 'OK', onPress: () => {
+                    timerstatus = false
+                    SharedPreference.profileObject = null
+                    this.saveProfile.setProfile(null)
+                    this.props.navigation.navigate('RegisterScreen')
+                }
+            }],
+            { cancelable: false }
+        )
+
+        console.log("error : ", error)
+    }
 
     getNonPayrollDetail() {
         try {

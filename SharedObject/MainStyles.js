@@ -1051,7 +1051,7 @@ export const styles = StyleSheet.create({
         marginBottom: 10
     },
     registText: {
-        fontSize: 12,
+        fontSize: 17 * scale,
         color: Colors.lightGrayTextColor,
         flex: 1,
         height: 45
