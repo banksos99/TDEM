@@ -31,12 +31,12 @@ let initannouncementType = 'All';
 let initannouncementTypetext = 'All';
 let initannouncementStatus = 'All';
 let initannouncementStatustext = 'All'
-// let page = 0;
-let orgcode = '';//60162305;
+let page = 0;
+let orgcode ='' ;//60162305;
 
-let managerstatus = 'N';
-let announcestatus = false;
-let rolemanagementEmpoyee = [1, 1, 0, 1, 0, 0, 0, 0];
+let managerstatus = 'Y';
+let announcestatus = 'Y';
+let rolemanagementEmpoyee = [1, 1, 1, 1, 1, 1, 1, 1];
 let rolemanagementManager = [0, 0, 0, 0];
 let timerstatus;
 // SharedPreference.notipayAnnounceMentID = 1
@@ -47,7 +47,6 @@ import moment from 'moment'
 
 import Authorization from "../SharedObject/Authorization";
 //import { NODATA } from "dns";
-
 
 export default class HMF01011MainView extends Component {
 
@@ -72,7 +71,7 @@ export default class HMF01011MainView extends Component {
             enddragannounce: false,
             annrefresh: false,
             username: SharedPreference.profileObject.employee_name,
-            page: 0
+          //  page: 0
         }
 
         //Check Manager status
@@ -159,7 +158,7 @@ export default class HMF01011MainView extends Component {
             this.inappTimeInterval();
             timerstatus = true;
         }
-        this.setState({ page: 0, })
+        //this.setState({ page: 0, })
         this.redertabview()
 
         NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectivityChange);
@@ -253,13 +252,13 @@ export default class HMF01011MainView extends Component {
         if (this.state.refreshing) {
             return;
         }
-
+        page= 1
         this.setState({
             loadingtype: 3,
             isscreenloading: true,
             refreshing: true,
             annrefresh: true,
-            page: 1
+            
         }, function () {
 
             let promise = this.loadAnnouncementfromAPI();
@@ -710,23 +709,29 @@ export default class HMF01011MainView extends Component {
     }
 
     loadOrgStructerfromAPI = async () => {
+
+        
         let url = SharedPreference.ORGANIZ_STRUCTURE_API + orgcode
+console.log('org url : ',url);
         this.APICallback(await RestAPI(url, SharedPreference.FUNCTIONID_ORGANIZ_STRUCTURE), 'OrgStructure', 1)
     }
 
     loadOrgStructerClockInOutfromAPI = async () => {
         let url = SharedPreference.ORGANIZ_STRUCTURE_API + orgcode
-        this.APICallback(await RestAPI(url, SharedPreference.FUNCTIONID_ORGANIZ_STRUCTURE), 'OrgStructure', 2)
+        console.log('org url : ',url);
+       this.APICallback(await RestAPI(url, SharedPreference.FUNCTIONID_ORGANIZ_STRUCTURE), 'OrgStructure', 2)
     }
 
     loadOrgStructerOTAveragefromAPI = async () => {
         let url = SharedPreference.ORGANIZ_STRUCTURE_OT_API + orgcode
+        console.log('org url : ',url);
         this.APICallback(await RestAPI(url, SharedPreference.FUNCTIONID_ORGANIZ_STRUCTURE), 'OrganizationOTStruct', 1)
     }
 
     loadOrgStructerOTHistoryfromAPI = async () => {
         let url = SharedPreference.ORGANIZ_STRUCTURE_OT_API + orgcode
-        this.APICallback(await RestAPI(url, SharedPreference.FUNCTIONID_ORGANIZ_STRUCTURE), 'OrganizationOTStruct', 2)
+        console.log('org url : ',url);
+       this.APICallback(await RestAPI(url, SharedPreference.FUNCTIONID_ORGANIZ_STRUCTURE), 'OrganizationOTStruct', 2)
     }
 
     APICallback(data, rount, option) {
@@ -734,9 +739,10 @@ export default class HMF01011MainView extends Component {
         code = data[0]
         data = data[1]
         //check org_code
-        if (option == 9) {
-            orgcode = 60162370
-        }
+        // if (option == 9) {
+        //     orgcode = 60162370
+        // }
+
         if (code.SUCCESS == data.code) {
             this.props.navigation.navigate(rount, {
                 DataResponse: data.data,
@@ -823,7 +829,7 @@ export default class HMF01011MainView extends Component {
         console.log("error : ", error)
     }
 
-    onNodataExistErrorAlertDialog(error) {
+    onNodataExistErrorAlertDialog() {
         this.setState({
             isscreenloading: false,
         })
@@ -839,7 +845,7 @@ export default class HMF01011MainView extends Component {
             { cancelable: false }
         )
 
-        console.log("error : ", error)
+       // console.log("error : ", error)
     }
 
     onLoadErrorAlertDialog(error, resource) {
@@ -1099,26 +1105,26 @@ export default class HMF01011MainView extends Component {
     /******************************************************************** */
 
     redertabview() {
-        if (this.state.page === 0) {
+        if (page === 0) {
             return (
                 <View style={{ flex: 1 }}>
                     {this.renderhomeview()}
                 </View>
             )
-        } else if (this.state.page === 1) {
+        } else if (page === 1) {
             return (
                 <View style={{ flex: 1 }}>
                     {this.renderannouncementview()}
                 </View>
             )
-        } else if (this.state.page === 2) {
+        } else if (page === 2) {
             return (
                 <View style={{ flex: 1 }}>
                     {this.rendermanagerview()}
                 </View>
 
             )
-        } else if (this.state.page === 3) {
+        } else if (page === 3) {
             return (
                 <View style={{ flex: 1 }}>
                     {this.rendersettingview()}
@@ -1135,12 +1141,14 @@ export default class HMF01011MainView extends Component {
             }
             //load data befor open announcement screen in first time
             if (announcementData.length) {
+                page= tabnumber
                 this.setState({
-                    page: tabnumber
+                    
                 });
             } else {
+                page= tabnumber
                 this.setState({
-                    page: tabnumber,
+                    
                     isscreenloading: true,
                     loadingtype: 3
                 }, function () {
@@ -1148,8 +1156,9 @@ export default class HMF01011MainView extends Component {
                 });
             }
         } else {
+            page= tabnumber
             this.setState({
-                page: tabnumber
+                
             })
         }
     }
@@ -2219,7 +2228,7 @@ export default class HMF01011MainView extends Component {
                 <TouchableOpacity style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }} onPress={() => { this.settabscreen(2) }}>
 
                     <Image
-                        style={this.state.page === 2 ?
+                        style={page === 2 ?
                             { width: ICON_SIZE, height: ICON_SIZE, tintColor: Colors.redTextColor } :
                             { width: ICON_SIZE, height: ICON_SIZE, tintColor: Colors.lightGrayTextColor }
                         }
@@ -2252,7 +2261,7 @@ export default class HMF01011MainView extends Component {
 
                         <TouchableOpacity style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }} onPress={() => { this.settabscreen(0) }}>
                             <Image
-                                style={this.state.page === 0 ?
+                                style={page === 0 ?
                                     { width: ICON_SIZE, height: ICON_SIZE, tintColor: Colors.redTextColor } :
                                     { width: ICON_SIZE, height: ICON_SIZE, tintColor: Colors.lightGrayTextColor }
                                 }
@@ -2265,7 +2274,7 @@ export default class HMF01011MainView extends Component {
 
                         <TouchableOpacity style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }} onPress={() => { this.settabscreen(1) }}>
                             <Image
-                                style={this.state.page === 1 ?
+                                style={page === 1 ?
                                     { width: ICON_SIZE, height: ICON_SIZE, tintColor: Colors.redTextColor } :
                                     { width: ICON_SIZE, height: ICON_SIZE, tintColor: Colors.lightGrayTextColor }
                                 }
@@ -2292,7 +2301,7 @@ export default class HMF01011MainView extends Component {
 
                             <Image
 
-                                style={this.state.page === 3 ?
+                                style={page === 3 ?
                                     { width: ICON_SIZE, height: ICON_SIZE, tintColor: Colors.redTextColor } :
                                     { width: ICON_SIZE, height: ICON_SIZE, tintColor: Colors.lightGrayTextColor }
                                 }

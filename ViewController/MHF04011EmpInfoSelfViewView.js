@@ -651,10 +651,10 @@ export default class EmpInfoDetail extends Component {
                                 <View style={{ flex: 1, marginLeft: 10, marginRight: 10, flexDirection: 'column', }} key={index}>
                                     <View>
                                         <View style={{ flex: 1, flexDirection: 'row', backgroundColor: Colors.calendarGrayBackgroundColor }} key={index}>
-                                            <View style={{ flex: 1.5, justifyContent: 'center', }}>
+                                            <View style={{ flex: 1.2, justifyContent: 'center', }}>
                                                 <Text style={styles.empinfocareerLeftText}> {empinfodetail.career_paths[index].position}</Text>
                                             </View>
-                                            <View style={{ flex: 2, justifyContent: 'center', }}>
+                                            <View style={{ flex: 1, justifyContent: 'center', }}>
                                                 <Text style={styles.empinfocareerRightText}>{empinfodetail.career_paths[index].action_type}</Text>
                                             </View>
                                         </View>
@@ -674,7 +674,7 @@ export default class EmpInfoDetail extends Component {
                                             <View style={{ flex: 1.5, justifyContent: 'center', }}>
                                                 <Text style={styles.empinfocareerLeftText}> {empinfodetail.career_paths[index].org_section}</Text>
                                             </View>
-                                            <View style={{ flex: 2, justifyContent: 'center', }}>
+                                            <View style={{ flex: 1, justifyContent: 'center', }}>
                                                 <Text style={styles.empinfocareerRightRedText}>{this.convertdate(empinfodetail.career_paths[index].hiring_date)}</Text>
                                             </View>
                                         </View>

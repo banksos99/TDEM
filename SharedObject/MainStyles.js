@@ -1331,7 +1331,7 @@ export const styles = StyleSheet.create({
 
     },
     empinfocareerRightText: {
-        fontSize: 11 * scale,
+        fontSize: 9 * scale,
         marginRight: 10,
         color: Colors.grayText,
         textAlign: 'right',

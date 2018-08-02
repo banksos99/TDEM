@@ -27,6 +27,12 @@ export default class OrganizationStruct extends Component {
 
     constructor(props) {
         super(props);
+
+        this.state = {
+
+            isscreenloading:false,
+        }
+
         this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
         this.checkoption(this.props.navigation.getParam("Option", ""));
         this.checkDataFormat(this.props.navigation.getParam("DataResponse", ""));
@@ -256,24 +262,24 @@ export default class OrganizationStruct extends Component {
 
         if (code.SUCCESS == data.code) {
             console.log('data.data.org_lst2 :', data.data.org_lst)
-            if (data.data.org_lst) {
-
+            console.log('dataSource :', dataSource)
+           // if (data.data.org_lst) {
 
 
                 let temparr = []
-                for (let i = 0; i < dataSource.length; i++) {
+            for (let i = 0; i < dataSource.length; i++) {
 
-                    if (i === this.state.index_org_code) {
+                if (i === this.state.index_org_code) {
 
-                        temparr.push({
-                            org_code: dataSource[i].org_code,
-                            org_name: dataSource[i].org_name,
-                            org_level: dataSource[i].org_level,
-                            next_level: dataSource[i].next_level,
-                            expand: data.data.org_lst.length,
+                    temparr.push({
+                        org_code: dataSource[i].org_code,
+                        org_name: dataSource[i].org_name,
+                        org_level: dataSource[i].org_level,
+                        next_level: dataSource[i].next_level,
+                        expand: data.data.org_lst.length,
 
-                        })
-
+                    })
+                    if (data.data.org_emp) {
                         data.data.org_emp.map((item) => (
                             temparr.push(
                                 {
@@ -289,7 +295,8 @@ export default class OrganizationStruct extends Component {
                             )
 
                         ))
-
+                    }
+                    if (data.data.org_lst) {
                         data.data.org_lst.map((item) => (
                             temparr.push(
                                 {
@@ -303,31 +310,32 @@ export default class OrganizationStruct extends Component {
                             )
 
                         ))
-                    } else {
-                        temparr.push(
-                            dataSource[i]
-                        )
-
                     }
+                } else {
+                    temparr.push(
+                        dataSource[i]
+                    )
 
                 }
-                dataSource = temparr;
-                console.log('dataSource :', dataSource)
-
-            } else {
-                Alert.alert(
-                    'No Data',
-                    'No data found',
-                    [{
-                        text: 'OK', onPress: () => {
-                            console.log("onLoadErrorAlertDialog")
-                        }
-                    }],
-                    { cancelable: false }
-                )
-
 
             }
+            dataSource = temparr;
+            console.log('dataSource :', dataSource)
+
+            // } else {
+            //     Alert.alert(
+            //         'No Data',
+            //         'No data found',
+            //         [{
+            //             text: 'OK', onPress: () => {
+            //                 console.log("onLoadErrorAlertDialog")
+            //             }
+            //         }],
+            //         { cancelable: false }
+            //     )
+
+
+            // }
 
         } else {
             this.onLoadErrorAlertDialog(data)
