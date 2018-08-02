@@ -11,6 +11,7 @@ import SaveProfile from "../constants/SaveProfile"
 import LoginWithPinAPI from "../constants/LoginWithPinAPI"
 import LoginResetPinAPI from "../constants/LoginResetPinAPI"
 import SaveAutoSyncCalendar from "../constants/SaveAutoSyncCalendar";
+import firebase from 'react-native-firebase';
 
 export default class PinActivity extends Component {
 
@@ -27,6 +28,8 @@ export default class PinActivity extends Component {
             savePin: '',
             isLoading: false
         }
+        firebase.analytics().setCurrentScreen(SharedPreference.FUNCTIONID_PIN)
+
     }
 
 

@@ -111,7 +111,19 @@ export default class NonpayrollActivity extends Component {
                 StringText.CHANGE_PIN_FAIL_TITLE,
                 StringText.CHANGE_PIN_FAIL_DESC,
                 [
-                    { text: 'OK', onPress: () => console.log('OK Pressed') },
+                    {
+                        text: 'OK',
+                        onPress: () => {
+                            this.setState({
+                                pin: [],
+                                oldpin: [],
+                                newpin1: [],
+                                newpin2: [],
+                                pintitle: StringText.CHANGE_PIN_ENTER_CURRENT_PIN_TITLE,
+                                showCreatePinSuccess: false
+                            })
+                        }
+                    },
                 ],
                 { cancelable: false }
             )

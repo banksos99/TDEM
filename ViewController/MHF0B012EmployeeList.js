@@ -20,6 +20,7 @@ import { styles } from "./../SharedObject/MainStyles"
 import orgdata from './../InAppData/OrgstructerData.json';
 import SharedPreference from "./../SharedObject/SharedPreference"
 import RestAPI from "../constants/RestAPI"
+import firebase from 'react-native-firebase';
 
 let dataSource = [];
 
@@ -33,6 +34,8 @@ export default class OrganizationStruct extends Component {
         };
 
         this.checkDataFormat(this.props.navigation.getParam("DataResponse", ""));
+        firebase.analytics().setCurrentScreen(SharedPreference.FUNCTIONID_EMPLOYEE_INFORMATION)
+
     }
     checkDataFormat(DataResponse) {
 

@@ -27,6 +27,7 @@ let currentmonth = new Date().getMonth();
 
 import Authorization from '../SharedObject/Authorization'
 import StringText from '../SharedObject/StringText';
+import firebase from 'react-native-firebase';
 
 export default class PayslipDetail extends Component {
 
@@ -56,6 +57,8 @@ export default class PayslipDetail extends Component {
             havePermission: false,
             yearArray: ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"]
         }
+        firebase.analytics().setCurrentScreen(SharedPreference.FUNCTIONID_PAYSLIP)
+
     }
 
     componentWillMount() {

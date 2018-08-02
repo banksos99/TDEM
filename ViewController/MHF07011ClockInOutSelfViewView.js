@@ -26,6 +26,7 @@ import SharedPreference from "./../SharedObject/SharedPreference"
 import { styles } from "./../SharedObject/MainStyles"
 import Months from "./../constants/Month"
 import RestAPI from "../constants/RestAPI"
+import firebase from 'react-native-firebase';
 
 //let scale = Layout.window.height / 320;
 
@@ -83,8 +84,6 @@ export default class ClockInOutSelfView extends Component {
         this.checkDataFormat(this.props.navigation.getParam("DataResponse", ""));
         let birthday = new Date(Months.monthNames[this.state.initialmonth + 1] + '1,' + this.state.initialyear);
         firstday = birthday.getDay() + 1;
-        console.log('employee_name :', this.state.employee_name);
-        console.log('employee_position :', this.state.employee_position);
 
         if (this.state.manager) {
             title = 'Clock In - Out Manager View'
@@ -92,6 +91,7 @@ export default class ClockInOutSelfView extends Component {
             title = 'Clock In - Out'
 
         }
+        firebase.analytics().setCurrentScreen(SharedPreference.FUNCTIONID_CLOCK_IN_OUT)
     }
 
 

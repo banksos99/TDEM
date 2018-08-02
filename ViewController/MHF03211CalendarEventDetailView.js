@@ -3,7 +3,11 @@ import { View, Text, TouchableOpacity, Image, BackHandler } from "react-native";
 
 import { styles } from "./../SharedObject/MainStyles"
 import Colors from "./../SharedObject/Colors"
+import SharedPreference from "./../SharedObject/SharedPreference"
+
 import moment from 'moment'
+import firebase from 'react-native-firebase';
+
 const _format = 'ddd, D MMM hh:mm A'
 const _formatAllday = 'ddd, D MMM'
 
@@ -23,6 +27,8 @@ export default class calendarMonthView extends Component {
             dataResponse: this.props.navigation.getParam("dataResponse", ""),
             location: this.props.navigation.getParam("location", ""),
         }
+        firebase.analytics().setCurrentScreen(SharedPreference.FUNCTIONID_CALENDAR_EVENT)
+
     }
 
     onBackPrevious() {

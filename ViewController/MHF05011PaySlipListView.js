@@ -21,6 +21,7 @@ import Dcryptfun from "./../SharedObject/Decryptfun"
 import Authorization from '../SharedObject/Authorization'
 import StringText from '../SharedObject/StringText';
 import Month from "../constants/Month"
+import firebase from 'react-native-firebase';
 
 let monthlistdata = [];
 let yearlistdata = [];
@@ -54,7 +55,7 @@ export default class PaySlipActivity extends Component {
             selectYearArray: [2000, 2000, 2000]
         };
         this.checkDataFormat(this.props.navigation.getParam("DataResponse", ""));
-
+        firebase.analytics().setCurrentScreen(SharedPreference.FUNCTIONID_PAYSLIP)
     }
 
     checkDataFormat(DataResponse) {

@@ -17,6 +17,7 @@ import StringText from './../SharedObject/StringText'
 import SharedPreference from './../SharedObject/SharedPreference'
 
 import RestAPI from "../constants/RestAPI"
+import firebase from 'react-native-firebase';
 
 
 export default class calendarEventDetailView extends Component {
@@ -41,6 +42,7 @@ export default class calendarEventDetailView extends Component {
             isLoading: false
         }
         //console.log("calendarEventDetailView ==> ", this.state.monthObject)
+        firebase.analytics().setCurrentScreen(SharedPreference.FUNCTIONID_CALENDAR_EVENT)
 
     }
 

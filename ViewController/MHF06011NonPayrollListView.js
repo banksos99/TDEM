@@ -16,7 +16,9 @@ import Colors from "./../SharedObject/Colors"
 import { styles } from "./../SharedObject/MainStyles"
 
 import Months from "./../constants/Month"
+import firebase from 'react-native-firebase';
 
+import SharedPreference from "./../SharedObject/SharedPreference"
 
 export default class NonpayrollActivity extends Component {
     constructor(props) {
@@ -28,6 +30,8 @@ export default class NonpayrollActivity extends Component {
             currentYearData: [],
             lastYearData: []
         };
+        firebase.analytics().setCurrentScreen(SharedPreference.FUNCTIONID_NON_PAYROLL)
+
     }
 
     // componentWillMount() {
