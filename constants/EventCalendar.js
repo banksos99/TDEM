@@ -89,7 +89,7 @@ export default class EventCalendar {
                 RNCalendarEvents.authorizeEventStore().then(fulfilled => {
                     if (fulfilled === 'authorized') {
                         RNCalendarEvents.saveEvent(title, event).then(id => {
-                             this.addDataToEventID(id)
+                            this.addDataToEventID(id)
                             // console.log("addEventsToCalendar ==> success ==> ID  : ", id);
                         }, error => {
                             // console.log("addEventsToCalendar ==> error ==> error  : ", error);
@@ -104,7 +104,7 @@ export default class EventCalendar {
 
                 RNCalendarEvents.saveEvent(title, event)
                     .then(id => {
-                         this.addDataToEventID(id)
+                        this.addDataToEventID(id)
                         // console.log("addEventsToCalendar ==> ID : ", id);
                     },
                         error => {

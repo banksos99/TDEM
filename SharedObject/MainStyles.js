@@ -1038,6 +1038,8 @@ export const styles = StyleSheet.create({
     },
     registetImageContainer: {
         marginRight: 10,
+        width:22,
+        height:22,
         alignItems: 'center'
     },
     registTextContainer: {
