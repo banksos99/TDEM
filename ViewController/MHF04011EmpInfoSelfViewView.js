@@ -21,13 +21,14 @@ import Decryptfun from "./../SharedObject/Decryptfun"
 import Months from "./../constants/Month"
 import firebase from 'react-native-firebase';
 
+
 let month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 let martial = ['Single ', 'Married ', 'Widow ', 'Divorced ', 'No married ', 'Separated ', 'July ', 'Unknown'];
 let currentmonth = new Date().getMonth();
 let currentyear = new Date().getFullYear();
 let careerpathlist = [];
 let empinfodetail = [];
-
+let scale = Layout.window.width / 320;
 
 const tabbuttonColorEna = Colors.redTextColor;
 
@@ -639,7 +640,7 @@ export default class EmpInfoDetail extends Component {
                     <ScrollView style={{ flex: 1 }}>
                         <View style={{ height: 10 }} />
                         <View style={{ height: 50, alignItems: 'center', justifyContent: 'center' }}>
-                            <View style={{ height: 50, width: 120, alignItems: 'center', justifyContent: 'center', backgroundColor: Colors.DisableGray }}>
+                            <View style={{ height: 40 * scale, width: 120 * scale, alignItems: 'center', justifyContent: 'center', backgroundColor: Colors.DisableGray }}>
                                 <Text style={{ color: Colors.redTextColor, fontFamily: 'Prompt-Medium' }}> PRESENT</Text>
                             </View>
                         </View>
@@ -691,7 +692,7 @@ export default class EmpInfoDetail extends Component {
 
                             ))}
                         <View style={{ height: 50, alignItems: 'center', justifyContent: 'center' }}>
-                            <View style={{ height: 50, width: 120, alignItems: 'center', justifyContent: 'center', backgroundColor: Colors.DisableGray }}>
+                            <View style={{ height: 40 * scale, width: 120 * scale, alignItems: 'center', justifyContent: 'center', backgroundColor: Colors.DisableGray }}>
                                 <Text style={{ color: Colors.redTextColor, fontFamily: 'Prompt-Medium' }}> HIRRING</Text>
                             </View>
                         </View>

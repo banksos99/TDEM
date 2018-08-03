@@ -17,10 +17,12 @@ import { months } from "moment";
 import Month from "../constants/Month"
 const ROLL_ANNOUNCE = 10;
 
+//SharedPreference.NOTIFICATION_CATEGORY
 let annountype = { 'All': 'All', 'Company Announcement': 'Company Announcement', 'Emergency Announcement': 'Emergency Announcement', 'Event Announcement': 'Event Announcement', 'General Announcement': 'General Announcement' };
 
-//SharedPreference.NOTIFICATION_CATEGORY
+//SharedPreference.READ_TYPE
 let announstatus = { 'All': 'All', 'true': 'Read', 'false': 'Unread' };
+
 let ICON_SIZE = '60%';
 let expandheight = 0;
 let announcementData = [];
@@ -34,7 +36,7 @@ let initannouncementTypetext = 'All';
 let initannouncementStatus = 'All';
 let initannouncementStatustext = 'All'
 let page = 0;
-let orgcode ='' ;//60162305;
+let orgcode = '';//60162305;
 
 let managerstatus = 'Y';
 let announcestatus = 'Y';
@@ -73,7 +75,7 @@ export default class HMF01011MainView extends Component {
             enddragannounce: false,
             annrefresh: false,
             username: SharedPreference.profileObject.employee_name,
-          //  page: 0
+            //  page: 0
         }
 
         //Check Manager status
@@ -147,11 +149,11 @@ export default class HMF01011MainView extends Component {
         if (SharedPreference.notipayslipID) {
 
             this.onOpenPayslipDetail()
-            
+
         } else if (SharedPreference.notipayAnnounceMentID) {
 
-           this.onOpenAnnouncementDetailnoti()
-            
+            this.onOpenAnnouncementDetailnoti()
+
         }
 
         await this.loadData()
@@ -225,13 +227,13 @@ export default class HMF01011MainView extends Component {
         if (this.state.refreshing) {
             return;
         }
-        page= 1
+        page = 1
         this.setState({
             loadingtype: 3,
             isscreenloading: true,
             refreshing: true,
             annrefresh: true,
-            
+
         }, function () {
 
             let promise = this.loadAnnouncementfromAPI();
@@ -446,9 +448,9 @@ export default class HMF01011MainView extends Component {
     loadAnnouncementDetailfromAPINoti = async () => {
 
         this.APIAnnouncementDetailCallback(await RestAPI(SharedPreference.ANNOUNCEMENT_DETAIL_API + SharedPreference.notipayAnnounceMentID, SharedPreference.FUNCTIONID_ANNOUCEMENT),
-        'AnnouncementDetail', 0)
+            'AnnouncementDetail', 0)
 
-        SharedPreference.notipayAnnounceMentID = 0
+     //   SharedPreference.notipayAnnounceMentID = 0
     }
 
     loadAnnouncementDetailfromAPI = async (item, index) => {
@@ -458,7 +460,7 @@ export default class HMF01011MainView extends Component {
 
     }
 
-    APIAnnouncementDetailCallback(data, rount,index) {
+    APIAnnouncementDetailCallback(data, rount, index) {
 
         code = data[0]
         data = data[1]
@@ -469,7 +471,7 @@ export default class HMF01011MainView extends Component {
         this.setState({
 
             isscreenloading: false,
-         
+
         })
         if (code.SUCCESS == data.code) {
 
@@ -480,25 +482,25 @@ export default class HMF01011MainView extends Component {
 
             this.props.navigation.navigate(rount, {
                 DataResponse: data.data,
-              
+
             });
 
 
-        // } else if (code.NODATA == data.code) {
+            // } else if (code.NODATA == data.code) {
 
-        //     Alert.alert(
-        //         StringText.ALERT_NONPAYROLL_NODATA_TITLE,
-        //         StringText.ALERT_NONPAYROLL_NODATA_TITLE,
-        //         [{
-        //             text: 'OK', onPress: () => {
-    
-        //             }
-        //         }],
-        //         { cancelable: false }
-        //     )
-        // } else if (code.DOES_NOT_EXISTS == data.code) {
+            //     Alert.alert(
+            //         StringText.ALERT_NONPAYROLL_NODATA_TITLE,
+            //         StringText.ALERT_NONPAYROLL_NODATA_TITLE,
+            //         [{
+            //             text: 'OK', onPress: () => {
 
-        //     this.onNodataExistErrorAlertDialog()
+            //             }
+            //         }],
+            //         { cancelable: false }
+            //     )
+            // } else if (code.DOES_NOT_EXISTS == data.code) {
+
+            //     this.onNodataExistErrorAlertDialog()
 
         } else if (code.INVALID_AUTH_TOKEN == data.code) {
 
@@ -583,7 +585,7 @@ export default class HMF01011MainView extends Component {
                             yearselected: 0,
                             Datadetail: this.state.dataSource,
                             rollid: SharedPreference.notipayslipID
-                            
+
                         });
 
                     } else {
@@ -609,7 +611,7 @@ export default class HMF01011MainView extends Component {
             });
     }
 
-   
+
 
     loadPayslipfromAPI = async () => {
 
@@ -697,28 +699,28 @@ export default class HMF01011MainView extends Component {
 
     loadOrgStructerfromAPI = async () => {
 
-        
+
         let url = SharedPreference.ORGANIZ_STRUCTURE_API + orgcode
-console.log('org url : ',url);
+        console.log('org url : ', url);
         this.APICallback(await RestAPI(url, SharedPreference.FUNCTIONID_ORGANIZ_STRUCTURE), 'OrgStructure', 1)
     }
 
     loadOrgStructerClockInOutfromAPI = async () => {
         let url = SharedPreference.ORGANIZ_STRUCTURE_API + orgcode
-        console.log('org url : ',url);
-       this.APICallback(await RestAPI(url, SharedPreference.FUNCTIONID_ORGANIZ_STRUCTURE), 'OrgStructure', 2)
+        console.log('org url : ', url);
+        this.APICallback(await RestAPI(url, SharedPreference.FUNCTIONID_ORGANIZ_STRUCTURE), 'OrgStructure', 2)
     }
 
     loadOrgStructerOTAveragefromAPI = async () => {
         let url = SharedPreference.ORGANIZ_STRUCTURE_OT_API + orgcode
-        console.log('org url : ',url);
+        console.log('org url : ', url);
         this.APICallback(await RestAPI(url, SharedPreference.FUNCTIONID_ORGANIZ_STRUCTURE), 'OrganizationOTStruct', 1)
     }
 
     loadOrgStructerOTHistoryfromAPI = async () => {
         let url = SharedPreference.ORGANIZ_STRUCTURE_OT_API + orgcode
-        console.log('org url : ',url);
-       this.APICallback(await RestAPI(url, SharedPreference.FUNCTIONID_ORGANIZ_STRUCTURE), 'OrganizationOTStruct', 2)
+        console.log('org url : ', url);
+        this.APICallback(await RestAPI(url, SharedPreference.FUNCTIONID_ORGANIZ_STRUCTURE), 'OrganizationOTStruct', 2)
     }
 
     APICallback(data, rount, option) {
@@ -739,22 +741,22 @@ console.log('org url : ',url);
             });
 
 
-        // } else if (code.NODATA == data.code) {
+            // } else if (code.NODATA == data.code) {
 
-        //     Alert.alert(
-        //         StringText.ALERT_NONPAYROLL_NODATA_TITLE,
-        //         StringText.ALERT_NONPAYROLL_NODATA_TITLE,
-        //         [{
-        //             text: 'OK', onPress: () => {
-    
-        //             }
-        //         }],
-        //         { cancelable: false }
-        //     )
+            //     Alert.alert(
+            //         StringText.ALERT_NONPAYROLL_NODATA_TITLE,
+            //         StringText.ALERT_NONPAYROLL_NODATA_TITLE,
+            //         [{
+            //             text: 'OK', onPress: () => {
 
-        // } else if (code.DOES_NOT_EXISTS == data.code) {
+            //             }
+            //         }],
+            //         { cancelable: false }
+            //     )
 
-        //     this.onNodataExistErrorAlertDialog()
+            // } else if (code.DOES_NOT_EXISTS == data.code) {
+
+            //     this.onNodataExistErrorAlertDialog()
 
         } else if (code.INVALID_AUTH_TOKEN == data.code) {
 
@@ -780,11 +782,11 @@ console.log('org url : ',url);
                 DataResponse: data,
             });
 
-        }else  if (code.NODATA == data.code) {
-                this.props.navigation.navigate(rount, {
-                   // DataResponse: data,
-                });
-    
+        } else if (code.NODATA == data.code) {
+            this.props.navigation.navigate(rount, {
+                // DataResponse: data,
+            });
+
         } else if (code.INVALID_AUTH_TOKEN == data.code) {
 
             this.onAutenticateErrorAlertDialog(data)
@@ -854,7 +856,7 @@ console.log('org url : ',url);
             { cancelable: false }
         )
 
-       // console.log("error : ", error)
+        // console.log("error : ", error)
     }
 
     onLoadErrorAlertDialog(error, resource) {
@@ -862,7 +864,7 @@ console.log('org url : ',url);
         this.setState({
             isscreenloading: false,
         })
-// console.log('error message : ',error.data[0])
+        // console.log('error message : ',error.data[0])
         if (this.state.isConnected) {
             Alert.alert(
                 // 'MHF00001ACRI',
@@ -910,18 +912,18 @@ console.log('org url : ',url);
 
             this.onAutenticateErrorAlertDialog(data)
 
-        // } else if (code.NODATA == data.code) {
+            // } else if (code.NODATA == data.code) {
 
-        //     Alert.alert(
-        //         StringText.ALERT_NONPAYROLL_NODATA_TITLE,
-        //         StringText.ALERT_NONPAYROLL_NODATA_TITLE,
-        //         [{
-        //             text: 'OK', onPress: () => {
-    
-        //             }
-        //         }],
-        //         { cancelable: false }
-        //     )
+            //     Alert.alert(
+            //         StringText.ALERT_NONPAYROLL_NODATA_TITLE,
+            //         StringText.ALERT_NONPAYROLL_NODATA_TITLE,
+            //         [{
+            //             text: 'OK', onPress: () => {
+
+            //             }
+            //         }],
+            //         { cancelable: false }
+            //     )
 
         } else {
 
@@ -1177,14 +1179,14 @@ console.log('org url : ',url);
             }
             //load data befor open announcement screen in first time
             if (announcementData.length) {
-                page= tabnumber
+                page = tabnumber
                 this.setState({
-                    
+
                 });
             } else {
-                page= tabnumber
+                page = tabnumber
                 this.setState({
-                    
+
                     isscreenloading: true,
                     loadingtype: 3
                 }, function () {
@@ -1192,9 +1194,9 @@ console.log('org url : ',url);
                 });
             }
         } else {
-            page= tabnumber
+            page = tabnumber
             this.setState({
-                
+
             })
         }
     }
@@ -1864,6 +1866,7 @@ console.log('org url : ',url);
 
 
     }
+
     rendermanagerview() {
         return (
             <View style={{ flex: 1, justifyContent: 'center' }}>
@@ -1973,6 +1976,7 @@ console.log('org url : ',url);
             </View>
         )
     }
+
     rendersettingview() {
         //console.log("rendersettingview ==> this.state.syncCalendar : 1 ", this.state.syncCalendar)
         //console.log("rendersettingview ==> SharedPreference.calendarAutoSync : 2 ", SharedPreference.calendarAutoSync)
@@ -2034,7 +2038,7 @@ console.log('org url : ',url);
                         <Text style={styles.settinglefttext}>Application Version</Text>
                     </View>
                     <View style={{ flex: 1, justifyContent: 'center' }}>
-                        <Text style={styles.settingrighttext}>1.0.0</Text>
+                        <Text style={styles.settingrighttext}>{SharedPreference.deviceInfo.appVersion}</Text>
 
                     </View>
                 </View>
@@ -2055,10 +2059,10 @@ console.log('org url : ',url);
     }
 
     select_sign_out() {
-        
+
         page = 0
         timerstatus = false
-        SharedPreference.Handbook=[]
+        SharedPreference.Handbook = []
         SharedPreference.profileObject = null
         this.saveProfile.setProfile(null)
         this.props.navigation.navigate('RegisterScreen')

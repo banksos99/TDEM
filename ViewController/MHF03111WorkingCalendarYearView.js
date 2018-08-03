@@ -416,7 +416,7 @@ export default class calendarYearView extends Component {
             monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
             monthNamesShort: ['JAN.', 'FEB.', 'MAR', 'APR', 'MAY', 'JUN', 'JULY.', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'],
             dayNames: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-            dayNamesShort: ['S', 'M', 'T', 'W', 'R', 'F', 'S']
+            dayNamesShort: ['S', 'M', 'T', 'W', 'T', 'F', 'S']
         };
         LocaleConfig.defaultLocale = 'en';
     }

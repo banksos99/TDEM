@@ -105,9 +105,14 @@ export default class mainview extends Component {
     if (notificationOpen) {
 
       const notification = notificationOpen.notification;
-      SharedPreference.notipayslipID = notification._data.payslipID
-      SharedPreference.notipayAnnounceMentID = notification._data.AnnouncementID
-     
+      if (notification._data.type === 'payslip') {
+        SharedPreference.notipayslipID = notification._data.id
+      } else if (notification._data.type === 'announcement') {
+
+        SharedPreference.notipayAnnounceMentID = notification._data.id
+
+      }
+
     }
   }
 

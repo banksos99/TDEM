@@ -300,17 +300,29 @@ export default class OTSummaryBarChart extends Component {
     selected_month(monthselected) {
 
         //console.log('monthselected : ',monthselected)
-
+        initannouncementType = monthselected
+        
         this.setState({
-
-            announcementTypetext: this.state.months[monthselected],
+            announcementTypetext : monthselected,
             loadingtype: 1,
             isscreenloading: true,
 
         }, function () {
 
-            // this.setState(this.renderloadingscreen())
+            let tdate = initannouncementType.split(' ')
+            let mdate = 0;
 
+            for (let i = 0; i < 12; i++) {
+                if (MONTH_LIST[i] === tdate[0]) {
+                    console.log('month : ', i)
+                    mdate = i;
+                }
+            }
+
+            this.setState(this.renderloadingscreen())
+
+            this.loadOTSummarySelffromAPI(mdate+1,tdate[1])
+    
         });
 
     }
@@ -338,7 +350,7 @@ export default class OTSummaryBarChart extends Component {
                                 {
                                     this.state.months.map((item, index) => (
                                         <TouchableOpacity style={styles.button}
-                                            onPress={() => { this.selected_month(index) }}
+                                            onPress={() => { this.selected_month(item) }}
                                             key={index + 100}>
                                             <View style={{ justifyContent: 'center', height: 40, alignItems: 'center', }} key={index + 200}>
                                                 <Text style={{ textAlign: 'center', fontSize: 18, width: '100%', height: 30, alignItems: 'center' }}> {item}</Text>

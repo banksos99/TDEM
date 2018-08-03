@@ -5,6 +5,6 @@ export default {
     monthNameStr : ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
     dayNames: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
     dayNamesShortMonthView: ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'],
-    dayNamesShort: ['S', 'M', 'T', 'W', 'R', 'F', 'S']
+    dayNamesShort: ['S', 'M', 'T', 'W', 'T', 'F', 'S']
 
 };

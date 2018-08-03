@@ -49,7 +49,7 @@ export default class RegisterActivity extends Component {
             SharedPreference.profileObject = await this.saveProfile.getProfile()
             //console.log("onRegister ==> onLoadLoginWithPin")
             await this.onLoadLoginWithPin("001000200")
-            a
+            
         } else if (code.FORM_VALIDATE_FAILED == data.code) {
             Alert.alert(
                 StringText.REGISTER_INVALID_TITLE,
@@ -442,14 +442,31 @@ export default class RegisterActivity extends Component {
     }
 
     renderImagePin() {
+
+        let but1 = require('../resource/circle.png')
+        let but2 = require('../resource/circle.png')
+        let but3 = require('../resource/circle.png')
+        let but4 = require('../resource/circle.png')
+        let but5 = require('../resource/circle.png')
+        let but6 = require('../resource/circle.png')
+
+        if (this.state.pin.length >= 1) {but1 = require('../resource/circleEnable.png')}
+        if (this.state.pin.length >= 2) {but2 = require('../resource/circleEnable.png')}
+        if (this.state.pin.length >= 3) {but3 = require('../resource/circleEnable.png')}
+        if (this.state.pin.length >= 4) {but4 = require('../resource/circleEnable.png')}
+        if (this.state.pin.length >= 5) {but5 = require('../resource/circleEnable.png')}
+        if (this.state.pin.length >= 6) {but6 = require('../resource/circleEnable.png')}
+
+
         return (<View style={styles.registPinImageContainer}>
-            <Image style={styles.registPinImageSubContainer} source={this.state.pin.length >= 1 ? require('../resource/circleEnable.png') : require('../resource/circle.png')} resizeMode="center" />
-            <Image style={styles.registPinImageSubContainer} source={this.state.pin.length >= 2 ? require('../resource/circleEnable.png') : require('../resource/circle.png')} resizeMode="center" />
-            <Image style={styles.registPinImageSubContainer} source={this.state.pin.length >= 3 ? require('../resource/circleEnable.png') : require('../resource/circle.png')} resizeMode="center" />
-            <Image style={styles.registPinImageSubContainer} source={this.state.pin.length >= 4 ? require('../resource/circleEnable.png') : require('../resource/circle.png')} resizeMode="center" />
-            <Image style={styles.registPinImageSubContainer} source={this.state.pin.length >= 5 ? require('../resource/circleEnable.png') : require('../resource/circle.png')} resizeMode="center" />
-            <Image style={styles.registPinImageSubContainer} source={this.state.pin.length >= 6 ? require('../resource/circleEnable.png') : require('../resource/circle.png')} resizeMode="center" />
+            <Image style={styles.createPinImageSubContainer} source={but1} />
+            <Image style={styles.createPinImageSubContainer} source={but2} />
+            <Image style={styles.createPinImageSubContainer} source={but3} />
+            <Image style={styles.createPinImageSubContainer} source={but4} />
+            <Image style={styles.createPinImageSubContainer} source={but5} />
+            <Image style={styles.createPinImageSubContainer} source={but6} />
         </View>)
+        
     }
 
     render() {

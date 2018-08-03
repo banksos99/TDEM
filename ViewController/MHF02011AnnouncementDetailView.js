@@ -12,20 +12,27 @@ import { styles } from "./../SharedObject/MainStyles"
 import SharedPreference from "./../SharedObject/SharedPreference"
 import firebase from 'react-native-firebase';
 
-
+let content;
+let title;
 export default class PaySlipActivity extends Component {
 
     constructor(props) {
         super(props);
+
+
         this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
         this.checkDataFormat(this.props.navigation.getParam("DataResponse", ""));
         firebase.analytics().setCurrentScreen(SharedPreference.FUNCTIONID_PAYSLIP)
     }
 
     checkDataFormat(DataResponse) {
-        console.log('DataResponse : ', DataResponse)
+        
         if (DataResponse) {
+            title = DataResponse.title
+            content = DataResponse.content
+
         }
+        console.log('content : ', content)
     }
 
     componentWillMount() {
@@ -49,6 +56,7 @@ export default class PaySlipActivity extends Component {
 
     render() {
         const HTMLTemplate = `<span class="price bold some-class-name">$459.00</span>`;
+        content
         return (
             <View style={{ flex: 1 }} >
                 <View style={[styles.navContainer, { flexDirection: 'column' }]}>
@@ -64,7 +72,7 @@ export default class PaySlipActivity extends Component {
                             </TouchableOpacity>
                         </View>
                         <View style={{ flex: 3, justifyContent: 'center', alignItems: 'center' }}>
-                            <Text style={styles.navTitleTextTop}>Announcement detail</Text>
+                            <Text style={styles.navTitleTextTop}>{title}</Text>
                         </View>
                         <View style={{ flex: 1, }}>
                         </View>
@@ -75,7 +83,7 @@ export default class PaySlipActivity extends Component {
             </View> */}
                 <WebView
                     //source={{ uri: 'https://github.com/facebook/react-native' }}
-                    source={{ html: HTMLTemplate }}
+                    source={{ html: content }}
                     style={{ marginTop: 0 }}
                 />
             </View >
