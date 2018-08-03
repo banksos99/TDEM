@@ -36,7 +36,6 @@ export default class RegisterActivity extends Component {
             versionCode: "Version : " + SharedPreference.deviceInfo.buildNumber
         }
         firebase.analytics().setCurrentScreen(SharedPreference.FUNCTIONID_REGISTER)
-
     }
 
     onRegister = async () => {
@@ -50,10 +49,20 @@ export default class RegisterActivity extends Component {
             SharedPreference.profileObject = await this.saveProfile.getProfile()
             console.log("onRegister ==> onLoadLoginWithPin")
             await this.onLoadLoginWithPin("001000200")
-        } else {
+            a
+        } else if (code.FORM_VALIDATE_FAILED == data.code) {
             Alert.alert(
                 StringText.REGISTER_INVALID_TITLE,
                 StringText.REGISTER_INVALID_DESC,
+                [
+                    { text: 'OK', onPress: () => console.log('OK Pressed') },
+                ],
+                { cancelable: false }
+            )
+        } else {
+            Alert.alert(
+                StringText.SERVER_ERROR_TITLE,
+                StringText.SERVER_ERROR_DESC,
                 [
                     { text: 'OK', onPress: () => console.log('OK Pressed') },
                 ],
@@ -76,7 +85,7 @@ export default class RegisterActivity extends Component {
             this.setState({
                 showCreatePin: true
             })
-        } else {//200 
+        } else {//500 
             Alert.alert(
                 StringText.SERVER_ERROR_TITLE,
                 StringText.SERVER_ERROR_DESC,
@@ -134,6 +143,7 @@ export default class RegisterActivity extends Component {
                     SharedPreference.TB_M_LEAVETYPE = element.TB_M_LEAVETYPE
                 }
             }
+
             console.log('onLoadAppInfo:')
             await this.onLoadAppInfo()
 

@@ -13,6 +13,7 @@ export default async function resetPIN(functionID) {
         NODATA: "404",
         DUPLICATE_DATA: "409",
         TIME_OUT: "500",
+        INTERNAL_SERVER_ERROR: "500",
         ERROR: "501",
         UPDATE_APPLICATION: "600",
         CUT_JSON: "700",

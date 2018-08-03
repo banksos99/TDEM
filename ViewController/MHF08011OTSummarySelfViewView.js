@@ -18,7 +18,6 @@ import {
 } from 'react-native';
 
 import Colors from "./../SharedObject/Colors"
-import Layout from "./../SharedObject/Layout"
 import { styles } from "./../SharedObject/MainStyles"
 import SharedPreference from "./../SharedObject/SharedPreference"
 import RestAPI from "../constants/RestAPI"
