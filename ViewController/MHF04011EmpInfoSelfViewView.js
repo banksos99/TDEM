@@ -263,7 +263,7 @@ export default class EmpInfoDetail extends Component {
                         </View>
                     </View>
                     <View style={{ height: 1, justifyContent: 'center', backgroundColor: Colors.calendarLocationBoxColor }} />
-                    <View style={{ height: 30, justifyContent: 'center', backgroundColor: Colors.calendarGrayBackgroundColor, flexDirection: 'row' }}>
+                    <View style={{  justifyContent: 'center', backgroundColor: Colors.calendarGrayBackgroundColor, flexDirection: 'row' }}>
                         <View style={{ flex: 2, justifyContent: 'center' }}>
                             <Text style={styles.empinfoDetailRedText}>Name (Thai)</Text>
                         </View>
@@ -654,7 +654,7 @@ export default class EmpInfoDetail extends Component {
                                 <View style={{ flex: 1, marginLeft: 10, marginRight: 10, flexDirection: 'column', }} key={index}>
                                     <View>
                                         <View style={{ flex: 1, flexDirection: 'row', backgroundColor: Colors.calendarGrayBackgroundColor }} key={index}>
-                                            <View style={{ flex: 1.2, justifyContent: 'center', }}>
+                                            <View style={{ flex: 1.3, justifyContent: 'center', }}>
                                                 <Text style={styles.empinfocareerLeftText}> {empinfodetail.career_paths[index].position}</Text>
                                             </View>
                                             <View style={{ flex: 1, justifyContent: 'center', }}>

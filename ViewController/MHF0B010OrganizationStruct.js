@@ -18,12 +18,12 @@ import { styles } from "./../SharedObject/MainStyles"
 import orgdata from './../InAppData/OrgstructerData.json';
 import SharedPreference from "./../SharedObject/SharedPreference"
 import RestAPI from "../constants/RestAPI"
-import firebase from 'react-native-firebase';
+import StringText from '../SharedObject/StringText';
+import SaveProfile from "../constants/SaveProfile"
 
 let dataSource = [];
 let option = 0;
 let org_code = '';
-
 
 export default class OrganizationStruct extends Component {
 
@@ -36,8 +36,6 @@ export default class OrganizationStruct extends Component {
         this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
         this.checkoption(this.props.navigation.getParam("Option", ""));
         this.checkDataFormat(this.props.navigation.getParam("DataResponse", ""));
-        firebase.analytics().setCurrentScreen(SharedPreference.FUNCTIONID_ORGANIZ_STRUCTURE)
-
     }
 
     componentWillMount() {
@@ -239,18 +237,23 @@ export default class OrganizationStruct extends Component {
         if (code.SUCCESS == data.code) {
 
             console.log('data.data :', data.data)
-            if (data.data.org_lst) {
+           // if (data.data.org_lst) {
                 let temparr = []
                 for (let i = 0; i < dataSource.length; i++) {
 
                     if (i === this.state.index_org_code) {
-
+                        let exp = 1
+                        if (data.data.org_lst) {
+                            if (data.data.org_lst.length) {
+                                exp = data.data.org_lst.length
+                            }
+                        }
                         temparr.push({
                             org_code: dataSource[i].org_code,
                             org_name: dataSource[i].org_name,
                             org_level: dataSource[i].org_level,
                             next_level: dataSource[i].next_level,
-                            expand: data.data.org_lst.length,
+                            expand: exp,
 
                         })
 
@@ -268,7 +271,7 @@ export default class OrganizationStruct extends Component {
                         )
 
                         // ))
-
+                        if (data.data.org_lst) {
                         data.data.org_lst.map((item) => (
                             temparr.push(
                                 {
@@ -282,6 +285,7 @@ export default class OrganizationStruct extends Component {
                             )
 
                         ))
+                    }
                     } else {
                         temparr.push(
                             dataSource[i]
@@ -293,20 +297,24 @@ export default class OrganizationStruct extends Component {
                 dataSource = temparr;
                 console.log('dataSource :', dataSource)
 
-            } else {
+            // } else {
 
-                Alert.alert(
-                    'No Data',
-                    'No data found',
-                    [{
-                        text: 'OK', onPress: () => {
-                            console.log("onLoadErrorAlertDialog")
-                        }
-                    }],
-                    { cancelable: false }
-                )
-            }
+            //     Alert.alert(
+            //         'No Data',
+            //         'No data found',
+            //         [{
+            //             text: 'OK', onPress: () => {
+            //                 console.log("onLoadErrorAlertDialog")
+            //             }
+            //         }],
+            //         { cancelable: false }
+            //     )
+            // }
+        } else if (code.INVALID_AUTH_TOKEN == data.code) {
 
+            this.onAutenticateErrorAlertDialog(data)
+
+        
         } else {
             this.onLoadErrorAlertDialog(data)
         }
@@ -342,6 +350,11 @@ export default class OrganizationStruct extends Component {
                 org_name: this.state.org_name,
                 org_code: this.state.org_code
             });
+        } else if (code.INVALID_AUTH_TOKEN == data.code) {
+
+            this.onAutenticateErrorAlertDialog(data)
+
+        
         } else {
             this.onLoadErrorAlertDialog(data)
         }
@@ -351,34 +364,94 @@ export default class OrganizationStruct extends Component {
         })
     }
 
+    onAutenticateErrorAlertDialog(error) {
 
-    onLoadErrorAlertDialog(error) {
+        timerstatus = false;
         this.setState({
             isscreenloading: false,
         })
+
+        Alert.alert(
+            StringText.ALERT_AUTHORLIZE_ERROR_TITLE,
+            StringText.ALERT_AUTHORLIZE_ERROR_MESSAGE,
+            [{
+                text: 'OK', onPress: () => {
+                    page = 0
+                    timerstatus = false
+                    SharedPreference.Handbook = []
+                    SharedPreference.profileObject = null
+                    this.saveProfile.setProfile(null)
+                    this.props.navigation.navigate('RegisterScreen')
+                }
+            }],
+            { cancelable: false }
+        )
+
+        console.log("error : ", error)
+    }
+
+    onLoadErrorAlertDialog(error, resource) {
+
+        this.setState({
+            isscreenloading: false,
+        })
+
         if (this.state.isConnected) {
             Alert.alert(
-                'MHF00001ACRI',
-                'Cannot connect to server. Please contact system administrator.',
+                // 'MHF00001ACRI',
+                // 'Cannot connect to server. Please contact system administrator.',
+                this.state.dataSource.errors[0].code,
+                this.state.dataSource.errors[0].detail,
+
                 [{
                     text: 'OK', onPress: () => console.log('OK Pressed')
                 }],
                 { cancelable: false }
             )
         } else {
+            //inter net not connect
             Alert.alert(
-                'MHF00002ACRI',
-                'System Error (API). Please contact system administrator.',
+                // 'MHF00002ACRI',
+                // 'System Error (API). Please contact system administrator.',
+                'MHF00500AERR',
+                'Cannot connect to the internet.',
                 [{
                     text: 'OK', onPress: () => {
-                        console.log("onLoadErrorAlertDialog")
+                        //console.log("onLoadErrorAlertDialog")
                     }
                 }],
                 { cancelable: false }
             )
         }
-        console.log("error : ", error)
+        //console.log("error : ", error)
     }
+    // onLoadErrorAlertDialog(error) {
+    //     this.setState({
+    //         isscreenloading: false,
+    //     })
+    //     if (this.state.isConnected) {
+    //         Alert.alert(
+    //             'MHF00001ACRI',
+    //             'Cannot connect to server. Please contact system administrator.',
+    //             [{
+    //                 text: 'OK', onPress: () => console.log('OK Pressed')
+    //             }],
+    //             { cancelable: false }
+    //         )
+    //     } else {
+    //         Alert.alert(
+    //             'MHF00002ACRI',
+    //             'System Error (API). Please contact system administrator.',
+    //             [{
+    //                 text: 'OK', onPress: () => {
+    //                     console.log("onLoadErrorAlertDialog")
+    //                 }
+    //             }],
+    //             { cancelable: false }
+    //         )
+    //     }
+    //     console.log("error : ", error)
+    // }
 
     renderloadingscreen() {
         if (this.state.isscreenloading) {

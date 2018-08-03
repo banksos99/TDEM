@@ -61,6 +61,7 @@ export default {
     // MANAGER_STATUS:true,
     notipayslipID: 0,
     notipayAnnounceMentID: 0,
+    
     HandbookHighlightList: [],
     Handbook: [],
 

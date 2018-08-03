@@ -39,6 +39,9 @@ import OTLineChartView from "./MHF08013OTSummaryLineGraphView";
 import OTBarChartView from "./MHF08014OTSummaryBarGraphView";
 import OrganizationOTStruct from "./MHF0B010OrganizationStruct";
 import announcementdetail from "./MHF02011AnnouncementDetailView"
+
+import EmployeeList from "./MHF0B012EmployeeList"
+
 import SharedPreference from './../SharedObject/SharedPreference';
 
 //import TestView from "./TestView";
@@ -74,7 +77,8 @@ const AppNavigatorPin = createSwitchNavigator({
     OTBarChartView: { screen: OTBarChartView },
     OrganizationOTStruct: { screen: OrganizationOTStruct },
     AnnouncementDetail: { screen: announcementdetail },
-    ChangePINScreen: { screen: ChangePINScreen }
+    ChangePINScreen: { screen: ChangePINScreen },
+    EmployeeList: { screen: EmployeeList },
 }, {
     //    initialRouteName: 'HandbookDetail',
         initialRouteName: 'PinScreen',
@@ -117,7 +121,8 @@ const AppNavigatorRegister = createSwitchNavigator({
     OTBarChartView: { screen: OTBarChartView },
     OrganizationOTStruct: { screen: OrganizationOTStruct },
     AnnouncementDetail: { screen: announcementdetail },
-    ChangePINScreen: { screen: ChangePINScreen }
+    ChangePINScreen: { screen: ChangePINScreen },
+    EmployeeList: { screen: EmployeeList },
 }, {
     // initialRouteName: 'HandbookDetail',
         initialRouteName: 'RegisterScreen',

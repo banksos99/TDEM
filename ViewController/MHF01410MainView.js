@@ -162,12 +162,19 @@ export default class HMF01011MainView extends Component {
         this.redertabview()
 
         NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectivityChange);
+
         if (SharedPreference.notipayslipID) {
+
             this.onOpenPayslipDetail()
+            
         } else if (SharedPreference.notipayAnnounceMentID) {
-            this.loadAnnouncementDetailfromAPI(SharedPreference.notipayAnnounceMentID, 0)
+
+           this.onOpenAnnouncementDetailnoti()
+            
         }
+
         await this.loadData()
+
     }
 
     onLoadInAppNoti = async () => {
@@ -458,89 +465,72 @@ export default class HMF01011MainView extends Component {
                 });
             });
     }
+    loadAnnouncementDetailfromAPINoti = async () => {
+
+        this.APIAnnouncementDetailCallback(await RestAPI(SharedPreference.ANNOUNCEMENT_DETAIL_API + SharedPreference.notipayAnnounceMentID, SharedPreference.FUNCTIONID_ANNOUCEMENT),
+        'AnnouncementDetail', 0)
+
+        SharedPreference.notipayAnnounceMentID = 0
+    }
 
     loadAnnouncementDetailfromAPI = async (item, index) => {
 
-        FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, SharedPreference.FUNCTIONID_ANNOUCEMENT, SharedPreference.profileObject.client_token)
-        let path = 'AnnouncementDetail'
-        return fetch(SharedPreference.ANNOUNCEMENT_DETAIL_API + item.id, {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                Authorization: FUNCTION_TOKEN,
-            },
+        this.APIAnnouncementDetailCallback(await RestAPI(SharedPreference.ANNOUNCEMENT_DETAIL_API + item.id, SharedPreference.FUNCTIONID_ANNOUCEMENT),
+            'AnnouncementDetail', index)
+
+    }
+
+    APIAnnouncementDetailCallback(data, rount,index) {
+
+        code = data[0]
+        data = data[1]
+        //check org_code
+        // if (option == 9) {
+        //     orgcode = 60162370
+        // }
+        this.setState({
+
+            isscreenloading: false,
+         
         })
-            .then((response) => response.json())
-            .then((responseJson) => {
+        if (code.SUCCESS == data.code) {
 
-                try {
-                    this.setState({
+            if (tempannouncementData.length) {
 
-                        isscreenloading: false,
-                        announceDetailDataSource: responseJson,
-                    });
+                tempannouncementData[index].attributes.read = true
+            }
 
-                    if (this.state.dataSource.status === 200) {
-
-                        this.setState({
-
-                            isscreenloading: false,
-                            announceDetailDataSource: responseJson,
-                        }, function () {
-                            if (tempannouncementData.length) {
-
-                                tempannouncementData[index].attributes.read = true
-                            }
-
-                            this.props.navigation.navigate(path, {
-                                DataResponse: this.state.announceDetailDataSource,
-                            });
-
-                        });
-
-                    } else {
-
-                        Alert.alert(
-                            this.state.dataSource.errors[0].code,
-                            this.state.dataSource.errors[0].detail,
-                            [
-                                { text: 'OK', onPress: () => console.log('OK Pressed') },
-                            ],
-                            { cancelable: false }
-                        )
-                    }
-
-                } catch (error) {
-
-                    ////console.log('erreo1 :', error);
-
-                }
-            })
-            .catch((error) => {
-
-                this.setState({
-
-                    isscreenloading: false,
-
-                }, function () {
-
-                    this.setState(this.renderloadingscreen());
-
-                    Alert.alert(
-
-                        'MHF00002ACRI',
-                        'System Error (API). Please contact system administrator.',
-                        [
-                            { text: 'OK', onPress: () => console.log('OK Pressed') },
-                        ],
-                        { cancelable: false }
-                    )
-
-                    //console.log(error);
-                });
-
+            this.props.navigation.navigate(rount, {
+                DataResponse: data.data,
+              
             });
+
+
+        // } else if (code.NODATA == data.code) {
+
+        //     Alert.alert(
+        //         StringText.ALERT_NONPAYROLL_NODATA_TITLE,
+        //         StringText.ALERT_NONPAYROLL_NODATA_TITLE,
+        //         [{
+        //             text: 'OK', onPress: () => {
+    
+        //             }
+        //         }],
+        //         { cancelable: false }
+        //     )
+        // } else if (code.DOES_NOT_EXISTS == data.code) {
+
+        //     this.onNodataExistErrorAlertDialog()
+
+        } else if (code.INVALID_AUTH_TOKEN == data.code) {
+
+            this.onAutenticateErrorAlertDialog(data)
+
+        } else {
+
+            this.onLoadErrorAlertDialog(data, rount)
+        }
+
     }
 
     loadEmployeeInfoformAPI = async () => {
@@ -557,20 +547,32 @@ export default class HMF01011MainView extends Component {
         data = data[1]
         //console.log("loadNonpayrollfromAPI  ==> data : ", data.data)
 
-        if ((code.SUCCESS == data.code) | (code.NODATA == data.code)) {
+        if (code.SUCCESS == data.code) {
             this.props.navigation.navigate('NonPayrollList', {
                 dataResponse: data.data,
             });
 
+        } else if (code.NODATA == data.code) {
+
+            this.props.navigation.navigate('NonPayrollList', {
+                //dataResponse: data.data,
+            });
+
         } else if (code.INVALID_AUTH_TOKEN == data.code) {
+
             this.onAutenticateErrorAlertDialog(data)
+
         } else {
+
             this.onLoadErrorAlertDialog(data, 'NonPayroll')
         }
     }
+
     loadPayslipDetailfromAPI = async () => {
-        let host = SharedPreference.PAYSLIP_DETAIL_API + SharedPreference.notipayslipID
-        let FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, SharedPreference.FUNCTIONID_PAYSLIP, SharedPreference.profileObject.client_token)
+
+        let host = SharedPreference.PAYSLIP_DETAIL_API + SharedPreference.notipayslipID.toString()
+
+        FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, SharedPreference.FUNCTIONID_PAYSLIP, SharedPreference.profileObject.client_token)
 
         return fetch(host, {
             method: 'GET',
@@ -603,13 +605,14 @@ export default class HMF01011MainView extends Component {
                             yearselected: 0,
                             Datadetail: this.state.dataSource,
                             rollid: SharedPreference.notipayslipID
+                            
                         });
 
                     } else {
 
                         Alert.alert(
                             this.state.dataSource.errors[0].code,
-                            this.state.dataSource.errors[0].detail,
+                            SharedPreference.notipayslipID,
                             [
                                 { text: 'OK', onPress: () => console.log('OK Pressed') },
                             ],
@@ -618,6 +621,8 @@ export default class HMF01011MainView extends Component {
 
                     }
 
+                    SharedPreference.notipayslipID = 0
+
                 });
 
             })
@@ -625,7 +630,11 @@ export default class HMF01011MainView extends Component {
                 console.error(error);
             });
     }
+
+   
+
     loadPayslipfromAPI = async () => {
+
         this.APIPayslipCallback(await RestAPI(SharedPreference.PAYSLIP_LIST_API, SharedPreference.FUNCTIONID_PAYSLIP), 'PayslipList')
     }
 
@@ -636,9 +645,13 @@ export default class HMF01011MainView extends Component {
             isscreenloading: false,
         })
 
-        if ((code.SUCCESS == data.code) | (code.NODATA == data.code)) {
+        if (code.SUCCESS == data.code) {
             this.props.navigation.navigate(rount, {
                 DataResponse: data.data,
+            });
+        } else if (code.NODATA == data.code) {
+            this.props.navigation.navigate(rount, {
+                //  DataResponse: data.data,
             });
         } else if (code.INVALID_AUTH_TOKEN == data.code) {
             this.onAutenticateErrorAlertDialog(data)
@@ -651,6 +664,8 @@ export default class HMF01011MainView extends Component {
 
 
     loadClockInOutDetailfromAPI = async () => {
+
+
         let today = new Date();
         let url = SharedPreference.CLOCK_IN_OUT_API + SharedPreference.profileObject.employee_id + '&month=0' + parseInt(today.getMonth() + 1) + '&year=' + today.getFullYear()
         this.APIClockInOutCallback(await RestAPI(url, SharedPreference.FUNCTIONID_CLOCK_IN_OUT), 'ClockInOutSelfView')
@@ -663,14 +678,20 @@ export default class HMF01011MainView extends Component {
         code = data[0]
         data = data[1]
 
-        if ((code.SUCCESS == data.code) | (code.NODATA == data.code)) {
+        if (code.SUCCESS == data.code) {
             this.props.navigation.navigate('OTSummarySelfView', {
                 DataResponse: data.data,
+            });
+
+        } else if (code.NODATA == data.code) {
+            this.props.navigation.navigate('OTSummarySelfView', {
+                // DataResponse: data.data,
             });
         } else if (code.INVALID_AUTH_TOKEN == data.code) {
             this.onAutenticateErrorAlertDialog(data)
 
         } else {
+
             this.onLoadErrorAlertDialog(data, 'OTSummary')
         }
 
@@ -730,7 +751,9 @@ console.log('org url : ',url);
         // if (option == 9) {
         //     orgcode = 60162370
         // }
-
+        this.setState({
+            isscreenloading: false,
+        })
         if (code.SUCCESS == data.code) {
             this.props.navigation.navigate(rount, {
                 DataResponse: data.data,
@@ -738,13 +761,22 @@ console.log('org url : ',url);
             });
 
 
-        } else if (code.NODATA == data.code) {
+        // } else if (code.NODATA == data.code) {
 
-            this.onNodataErrorAlertDialog(rount)
+        //     Alert.alert(
+        //         StringText.ALERT_NONPAYROLL_NODATA_TITLE,
+        //         StringText.ALERT_NONPAYROLL_NODATA_TITLE,
+        //         [{
+        //             text: 'OK', onPress: () => {
+    
+        //             }
+        //         }],
+        //         { cancelable: false }
+        //     )
 
-        } else if (code.DOES_NOT_EXISTS == data.code) {
+        // } else if (code.DOES_NOT_EXISTS == data.code) {
 
-            this.onNodataExistErrorAlertDialog()
+        //     this.onNodataExistErrorAlertDialog()
 
         } else if (code.INVALID_AUTH_TOKEN == data.code) {
 
@@ -765,10 +797,21 @@ console.log('org url : ',url);
             isscreenloading: false,
         })
 
-        if ((code.SUCCESS == data.code) | (code.NODATA == data.code)) {
+        if (code.SUCCESS == data.code) {
             this.props.navigation.navigate(rount, {
                 DataResponse: data,
             });
+
+        }else  if (code.NODATA == data.code) {
+                this.props.navigation.navigate(rount, {
+                   // DataResponse: data,
+                });
+    
+        } else if (code.INVALID_AUTH_TOKEN == data.code) {
+
+            this.onAutenticateErrorAlertDialog(data)
+
+
         } else {
 
             this.onLoadErrorAlertDialog(data, rount)
@@ -798,24 +841,24 @@ console.log('org url : ',url);
         console.log("error : ", error)
     }
 
-    onNodataErrorAlertDialog(rount) {
-        this.setState({
-            isscreenloading: false,
-        })
+    // onNodataErrorAlertDialog(rount) {
+    //     this.setState({
+    //         isscreenloading: false,
+    //     })
 
-        Alert.alert(
-            'NODATA',
-            rount + ' NoData',
-            [{
-                text: 'OK', onPress: () => {
+    //     Alert.alert(
+    //         StringText.ALERT_NONPAYROLL_NODATA_TITLE,
+    //         StringText.ALERT_NONPAYROLL_NODATA_TITLE,
+    //         [{
+    //             text: 'OK', onPress: () => {
 
-                }
-            }],
-            { cancelable: false }
-        )
+    //             }
+    //         }],
+    //         { cancelable: false }
+    //     )
 
-        console.log("error : ", error)
-    }
+    //     console.log("error : ", error)
+    // }
 
     onNodataExistErrorAlertDialog() {
         this.setState({
@@ -837,23 +880,30 @@ console.log('org url : ',url);
     }
 
     onLoadErrorAlertDialog(error, resource) {
+
         this.setState({
             isscreenloading: false,
         })
-
+// console.log('error message : ',error.data[0])
         if (this.state.isConnected) {
             Alert.alert(
-                'MHF00001ACRI',
-                'Cannot connect to server. Please contact system administrator.',
+                // 'MHF00001ACRI',
+                // 'Cannot connect to server. Please contact system administrator.',
+                error.data[0].code,
+                error.data[0].detail,
+
                 [{
                     text: 'OK', onPress: () => console.log('OK Pressed')
                 }],
                 { cancelable: false }
             )
         } else {
+            //inter net not connect
             Alert.alert(
-                'MHF00002ACRI' + '(' + resource + ')',
-                'System Error (API). Please contact system administrator.',
+                // 'MHF00002ACRI',
+                // 'System Error (API). Please contact system administrator.',
+                'MHF00500AERR',
+                'Cannot connect to the internet.',
                 [{
                     text: 'OK', onPress: () => {
                         //console.log("onLoadErrorAlertDialog")
@@ -871,7 +921,9 @@ console.log('org url : ',url);
         code = data[0]
         data = data[1]
         //console.log("nonPayRollCallback data : ", data)
-
+        this.setState({
+            isscreenloading: false,
+        })
         if (code.SUCCESS == data.code) {
             this.props.navigation.navigate('LeavequotaList', {
                 dataResponse: data,
@@ -880,9 +932,18 @@ console.log('org url : ',url);
 
             this.onAutenticateErrorAlertDialog(data)
 
-        } else if (code.NODATA == data.code) {
+        // } else if (code.NODATA == data.code) {
 
-            this.onNodataErrorAlertDialog('LeaveQuota')
+        //     Alert.alert(
+        //         StringText.ALERT_NONPAYROLL_NODATA_TITLE,
+        //         StringText.ALERT_NONPAYROLL_NODATA_TITLE,
+        //         [{
+        //             text: 'OK', onPress: () => {
+    
+        //             }
+        //         }],
+        //         { cancelable: false }
+        //     )
 
         } else {
 
@@ -1025,6 +1086,15 @@ console.log('org url : ',url);
         }, function () {
             this.setState(this.renderloadingscreen())
             this.loadPayslipDetailfromAPI()
+        });
+    }
+    onOpenAnnouncementDetailnoti() {
+        this.setState({
+            isscreenloading: true,
+            loadingtype: 3
+        }, function () {
+            this.setState(this.renderloadingscreen())
+            this.loadAnnouncementDetailfromAPINoti()
         });
     }
 
@@ -1868,7 +1938,7 @@ console.log('org url : ',url);
                                     />
                                 </View>
                                 <View style={styles.managermenuTextButton}>
-                                    <Text style={styles.managermenuTextname}>Clock In / Out</Text>
+                                    <Text style={styles.managermenuTextname}>Clock In/Out</Text>
                                 </View>
                             </View>
                         </TouchableOpacity>
@@ -2007,7 +2077,10 @@ console.log('org url : ',url);
     }
 
     select_sign_out() {
+        
+        page = 0
         timerstatus = false
+        SharedPreference.Handbook=[]
         SharedPreference.profileObject = null
         this.saveProfile.setProfile(null)
         this.props.navigation.navigate('RegisterScreen')
