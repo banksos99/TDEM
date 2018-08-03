@@ -8,7 +8,7 @@ import {
     Image,
     Alert,
     ActivityIndicator,
-    BackHandler
+    BackHandler,NetInfo
 } from 'react-native';
 
 import Colors from "./../SharedObject/Colors"
@@ -40,10 +40,12 @@ export default class OrganizationStruct extends Component {
 
     componentWillMount() {
         BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
+        NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectivityChange);
     }
 
     componentWillUnmount() {
         BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
+        NetInfo.isConnected.removeEventListener('connectionChange', this.handleConnectivityChange);
     }
 
     handleBackButtonClick() {

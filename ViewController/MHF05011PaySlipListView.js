@@ -7,7 +7,7 @@ import {
     Image,
     ActivityIndicator,
     Alert,
-    BackHandler
+    BackHandler,NetInfo
 } from 'react-native';
 
 import Colors from "./../SharedObject/Colors"
@@ -113,7 +113,7 @@ export default class PaySlipActivity extends Component {
     async componentWillMount() {
         await this.getArrayOfYear()
         BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
-
+        NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectivityChange);
     }
 
     componentWillUnmount() {

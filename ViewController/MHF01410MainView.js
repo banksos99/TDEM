@@ -18,6 +18,8 @@ import Month from "../constants/Month"
 const ROLL_ANNOUNCE = 10;
 
 let annountype = { 'All': 'All', 'Company Announcement': 'Company Announcement', 'Emergency Announcement': 'Emergency Announcement', 'Event Announcement': 'Event Announcement', 'General Announcement': 'General Announcement' };
+
+//SharedPreference.NOTIFICATION_CATEGORY
 let announstatus = { 'All': 'All', 'true': 'Read', 'false': 'Unread' };
 let ICON_SIZE = '60%';
 let expandheight = 0;

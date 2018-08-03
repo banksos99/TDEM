@@ -322,8 +322,9 @@ console.log('ot data response : ',data)
         
         //console.log('monthselected : ',monthselected)
         initannouncementType = monthselected
+        
         this.setState({
-
+            announcementTypetext : monthselected,
             loadingtype: 1,
             isscreenloading: true,
 
