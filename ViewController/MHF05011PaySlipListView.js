@@ -7,7 +7,7 @@ import {
     Image,
     ActivityIndicator,
     Alert,
-    BackHandler
+    BackHandler,NetInfo
 } from 'react-native';
 
 import Colors from "./../SharedObject/Colors"
@@ -113,7 +113,7 @@ export default class PaySlipActivity extends Component {
     async componentWillMount() {
         await this.getArrayOfYear()
         BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
-
+        NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectivityChange);
     }
 
     componentWillUnmount() {
@@ -471,73 +471,63 @@ export default class PaySlipActivity extends Component {
         }
         let host = SharedPreference.PAYSLIP_DETAIL_API + rollid
         // console
+
+        console.log('host : ', host);
         FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, SharedPreference.FUNCTIONID_PAYSLIP, SharedPreference.profileObject.client_token)
 
-        if (offine) {
 
-            // dataSource: PayslipDataDetail.detail[dataSource.years[year].detail[index].payroll_id]
-            this.props.navigation.navigate('PaySlipDetail', {
-                yearlist: yearlistdata,
-                initialyear: initialyear,
-                initialmonth: 0,
-                monthselected: index,
-                yearselected: year,
-                Datadetail: this.state.dataSource
+        // console.log('rollid', rollid)
+        return fetch(host, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                Authorization: FUNCTION_TOKEN,
+            },
+        })
+            .then((response) => response.json())
+            .then((responseJson) => {
+                this.setState({
+                    isscreenloading: false,
+                    dataSource: responseJson
+                    // datadetail: PayslipDataDetail.detail[dataSource.years[year].detail[index].payroll_id]
+
+                }, function () {
+                    console.log('status : ', this.state.dataSource.status);
+                    if (this.state.dataSource.status === 200) {
+                        console.log('payslip detail DataResponse : ', this.state.dataSource, rollid);
+                        // console.log('DataResponse year : ',dataSource.data.years[year].year);
+                        // this.setState(this.renderloadingscreen())
+                        this.props.navigation.navigate('PayslipDetail', {
+                            // DataResponse:dataSource,
+                            yearlist: yearlistdata,
+                            initialyear: initialyear,
+                            initialmonth: 0,
+                            monthselected: index,
+                            yearselected: year,
+                            Datadetail: this.state.dataSource,
+                            rollid: rollid
+                        });
+                    } else {
+
+                        Alert.alert(
+                            this.state.dataSource.errors[0].code,
+                            this.state.dataSource.errors[0].detail,
+                            [
+                                { text: 'OK', onPress: () => console.log('OK Pressed') },
+                            ],
+                            { cancelable: false }
+                        )
+
+                    }
+
+                });
+
+            })
+            .catch((error) => {
+                console.error(error);
             });
 
-        } else {
-            // console.log('rollid', rollid)
-            return fetch(host, {
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    Authorization: FUNCTION_TOKEN,
-                },
-            })
-                .then((response) => response.json())
-                .then((responseJson) => {
-                    this.setState({
-                        isscreenloading: false,
-                        dataSource: responseJson
-                        // datadetail: PayslipDataDetail.detail[dataSource.years[year].detail[index].payroll_id]
-
-                    }, function () {
-                        console.log('status : ', this.state.dataSource.status);
-                        if (this.state.dataSource.status === 200) {
-                            console.log('payslip detail DataResponse : ', this.state.dataSource, rollid);
-                            // console.log('DataResponse year : ',dataSource.data.years[year].year);
-                            // this.setState(this.renderloadingscreen())
-                            this.props.navigation.navigate('PayslipDetail', {
-                                // DataResponse:dataSource,
-                                yearlist: yearlistdata,
-                                initialyear: initialyear,
-                                initialmonth: 0,
-                                monthselected: index,
-                                yearselected: year,
-                                Datadetail: this.state.dataSource,
-                                rollid: rollid
-                            });
-                        } else {
-
-                            Alert.alert(
-                                this.state.dataSource.errors[0].code,
-                                this.state.dataSource.errors[0].detail,
-                                [
-                                    { text: 'OK', onPress: () => console.log('OK Pressed') },
-                                ],
-                                { cancelable: false }
-                            )
-
-                        }
-
-                    });
-
-                })
-                .catch((error) => {
-                    console.error(error);
-                });
-        }
 
     }
 

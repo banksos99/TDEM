@@ -30,18 +30,29 @@ export default class mainview extends Component {
 
     const enabled = await firebase.messaging().hasPermission();
     if (enabled) {
-      // console.log("firebase ==> user has permissions")
+      console.log("firebase ==> user has permissions")
     } else {
       try {
         await firebase.messaging().requestPermission();
-        // console.log("firebase ==> User has authorised")
+        console.log("firebase ==> User has authorised")
       } catch (error) {
-        // console.log("firebase ==> error")
+        console.log("firebase ==> error")
       }
     }
 
     this.messageListener = firebase.messaging().onMessage((message) => {
+      console.log('message : ',message)
       // Process your message as required
+      // Alert.alert(
+      //   'payslip',
+      //   message,
+      //   [
+      //     { text: 'OK', onPress: () => console.log('OK Pressed') },
+      //   ],
+      //   { cancelable: false }
+      // )
+
+
     });
     //////////Device Info/////////////
 
@@ -66,7 +77,7 @@ export default class mainview extends Component {
 
     await firebase.messaging().getToken()
       .then((token) => {
-        // console.log('firebase ==> message Device FCM Token: ', token);
+        console.log('firebase ==> message Device FCM Token: ', token);
         SharedPreference.deviceInfo = {
           "deviceModel": deviceModel,
           "deviceBrand": deviceBrand,
@@ -84,19 +95,32 @@ export default class mainview extends Component {
     notificationListener = firebase
       .notifications()
       .onNotification(notification => {
-        SharedPreference.notipayslipID = notification._data.payslipID
-
+        // SharedPreference.notipayslipID = notification._data.payslipID
+        console.log('notification : ', notification)
       });
-
+    
     notificationOpen = await firebase.notifications().getInitialNotification();
-
+    console.log('notificationOpen : ', notificationOpen)
 
     if (notificationOpen) {
+
+
       const notification = notificationOpen.notification;
       SharedPreference.notipayslipID = notification._data.payslipID
       SharedPreference.notipayAnnounceMentID = notification._data.AnnouncementID
+     // console.log('notificationOpen : ', notification)
+
+      // Alert.alert(
+      //   'payslip',
+      //   notification._data.AnnouncementID,
+      //   [
+      //     { text: 'OK', onPress: () => console.log('OK Pressed') },
+      //   ],
+      //   { cancelable: false }
+      // )
     }
   }
+
   componentWillUnmount() {
     this.notificationListener();
   }

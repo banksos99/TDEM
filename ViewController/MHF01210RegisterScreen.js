@@ -466,14 +466,15 @@ export default class RegisterActivity extends Component {
 
                         <View style={[styles.registerContainerWidth, { marginBottom: this.state.keyboardHeight }]}>
                             <View style={styles.registTextContainer}>
-                                <Image style={styles.registetImageContainer}
+                                <Image style={[styles.registetImageContainer,{ height: 20, width: 20,}]}
                                     source={require('../resource/regist/regist_location.png')} />
                                 <Text style={[styles.registLocationText, { color: Colors.grayTextColor }]}>TMAP-EM</Text>
                             </View>
                             <View style={styles.registLine} />
 
                             <View style={styles.registTextContainer}>
-                                <Image style={styles.registetImageContainer}
+                                <Image style={[styles.registetImageContainer,{ height: 20, width: 20,}]}
+                                
                                     source={require('../resource/regist/regist_user.png')} />
                                 <TextInput
                                     onSubmitEditing={Keyboard.dismiss}
@@ -487,7 +488,7 @@ export default class RegisterActivity extends Component {
                             <View style={styles.registLine} />
 
                             <View style={styles.registTextContainer}>
-                                <Image style={styles.registetImageContainer}
+                                <Image style={[styles.registetImageContainer,{ height: 20, width: 20,}]}
                                     source={require('../resource/regist/regist_locked.png')} />
                                 <TextInput
                                     onSubmitEditing={Keyboard.dismiss}

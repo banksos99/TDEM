@@ -68,13 +68,15 @@ export default class HandbookViewer extends Component {
             tocviewheight: '100%',
             hilightviewheight: '0%',
             selectfontnametext: fontname[0],
-            hilightList: [],
             typeTOC: 1,
             showTOC: 1,
             titleTOC: 'Table Of Content',
 
-            handbook_file: this.props.navigation.getParam("handbook_file", ""),
-            FUNCTION_TOKEN: this.props.navigation.getParam("FUNCTION_TOKEN", ""),
+           handbook_file: this.props.navigation.getParam("handbook_file", ""),
+           FUNCTION_TOKEN: this.props.navigation.getParam("FUNCTION_TOKEN", ""),
+        // handbook_file:'/api/v1/handbooks/download?file=00045' ,
+        // FUNCTION_TOKEN: 'Bearer NjUuSEYwQzAxLjIzYjFjNmVhMjE2OGU5ZGI3ZmRjNjc0Yzc0MTgwYzNiYjRlMzVlMDQwM2Q5YmM1MDY2ZGFhODE4ODcyZjk3YTM1MjU1Yjg3MWM1OGNhNWFiMmMzODk1YmM4M2MwOTY0YTU4ZTE5ZDFiYzRhZTM5MDcyZDM4OWMyNDgxYTY3Mjk5'
+          
         };
 
         this.streamer = new Streamer();
@@ -86,7 +88,10 @@ export default class HandbookViewer extends Component {
     componentDidMount() {
 
         this.downloadEpubFile(SharedPreference.HOST + this.state.handbook_file);
-
+        console.log("this.state.handbook_file :", this.state.handbook_file)
+        console.log("SharedPreference.Handbook:", SharedPreference.Handbook)
+        HandbookHighlightList = [];
+        HandbookMarkList = [];
         for (let i = 0; i < SharedPreference.Handbook.length; i++) {
             if (SharedPreference.Handbook[i].handbook_name === this.state.handbook_file) {
                 HandbookHighlightList = SharedPreference.Handbook[i].handbook_hilight
@@ -119,23 +124,30 @@ export default class HandbookViewer extends Component {
         //     handbook_file: HandbookHighlightList
         // })
 
-        // let tempHB = [];
+        let tempHB = [];
 
-        // for (let i = 0; i < SharedPreference.Handbook.length; i++) {
+        for (let i = 0; i < SharedPreference.Handbook.length; i++) {
 
-        //     if (SharedPreference.Handbook[i].handbook_name === this.state.handbook_file) {
-        //         tempHB.push({
-        //             handbook_name: this.state.handbook_file,
-        //             handbook_file: HandbookHighlightList
+            if (SharedPreference.Handbook[i].handbook_name === this.state.handbook_file) {
 
-        //         })
-        //     } else {
-        //         tempHB.push(
-        //             SharedPreference.Handbook[i]
-        //         )
+            } else {
+                tempHB.push(
+                    SharedPreference.Handbook[i]
+                )
 
-        //     }
-        // }
+            }
+        }
+        //push new data
+        tempHB.push({
+            handbook_name: this.state.handbook_file,
+            handbook_hilight: HandbookHighlightList,
+            handbook_mark: HandbookMarkList
+
+        })
+
+        SharedPreference.Handbook = tempHB
+
+        console.log("componentWillUnmount Handbook : ", SharedPreference.Handbook)
 
         if (this.streamer)
             this.streamer.kill();

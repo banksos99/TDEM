@@ -48,7 +48,7 @@ export default async function getRestAPI(url, functionID) {
             } else {
                 object = [code, {
                     code: responseJson.status,
-                    data: responseJson.error
+                    data: responseJson.errors
                 }]
             }
             return object

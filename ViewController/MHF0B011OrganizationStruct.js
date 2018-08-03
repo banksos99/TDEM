@@ -8,7 +8,7 @@ import {
     Image,
     Alert,
     ActivityIndicator,
-    BackHandler
+    BackHandler,NetInfo
 
 } from 'react-native';
 
@@ -18,8 +18,8 @@ import { styles } from "./../SharedObject/MainStyles"
 import orgdata from './../InAppData/OrgstructerData.json';
 import SharedPreference from "./../SharedObject/SharedPreference"
 import RestAPI from "../constants/RestAPI"
-import firebase from 'react-native-firebase';
-
+import StringText from '../SharedObject/StringText';
+import SaveProfile from "../constants/SaveProfile"
 let dataSource = [];
 let option = 0;
 let org_code = '';
@@ -37,8 +37,8 @@ export default class OrganizationStruct extends Component {
         this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
         this.checkoption(this.props.navigation.getParam("Option", ""));
         this.checkDataFormat(this.props.navigation.getParam("DataResponse", ""));
-        firebase.analytics().setCurrentScreen(SharedPreference.FUNCTIONID_ORGANIZ_STRUCTURE)
 
+        
     }
 
     checkoption(data) {
@@ -50,10 +50,12 @@ export default class OrganizationStruct extends Component {
 
     componentWillMount() {
         BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
+        NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectivityChange);
     }
 
     componentWillUnmount() {
         BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
+        NetInfo.isConnected.removeEventListener('connectionChange', this.handleConnectivityChange);
     }
 
     handleBackButtonClick() {
@@ -266,64 +268,81 @@ export default class OrganizationStruct extends Component {
         if (code.SUCCESS == data.code) {
             console.log('data.data.org_lst2 :', data.data.org_lst)
             console.log('dataSource :', dataSource)
-           // if (data.data.org_lst) {
+            // if (data.data.org_lst) {
 
+            if (data.data.org_lst) {
 
                 let temparr = []
-            for (let i = 0; i < dataSource.length; i++) {
 
-                if (i === this.state.index_org_code) {
+                for (let i = 0; i < dataSource.length; i++) {
 
-                    temparr.push({
-                        org_code: dataSource[i].org_code,
-                        org_name: dataSource[i].org_name,
-                        org_level: dataSource[i].org_level,
-                        next_level: dataSource[i].next_level,
-                        expand: data.data.org_lst.length,
+                    if (i === this.state.index_org_code) {
+                        // let exp = 1
+                        // if (data.data.org_lst) {
+                        //     if (data.data.org_lst.length) {
+                        //         exp = data.data.org_lst.length
+                        //     }
+                        // }
+                        temparr.push({
+                            org_code: dataSource[i].org_code,
+                            org_name: dataSource[i].org_name,
+                            org_level: dataSource[i].org_level,
+                            next_level: dataSource[i].next_level,
+                            expand: data.data.org_lst.length,
 
-                    })
-                    if (data.data.org_emp) {
-                        data.data.org_emp.map((item) => (
-                            temparr.push(
-                                {
-                                    org_code: 0,
-                                    org_name: item.employee_name,
-                                    org_level: parseInt(dataSource[i].org_level) + 10,
-                                    next_level: 'false',
-                                    emp_id: item.employee_id,
-                                    position: item.employee_position,
-                                    expand: 0,
+                        })
+                        if (data.data.org_emp) {
+                            data.data.org_emp.map((item) => (
+                                temparr.push(
+                                    {
+                                        org_code: 0,
+                                        org_name: item.employee_name,
+                                        org_level: parseInt(dataSource[i].org_level) + 10,
+                                        next_level: 'false',
+                                        emp_id: item.employee_id,
+                                        position: item.employee_position,
+                                        expand: 0,
 
-                                }
-                            )
+                                    }
+                                )
 
-                        ))
+                            ))
+                        }
+                        if (data.data.org_lst) {
+                            data.data.org_lst.map((item) => (
+                                temparr.push(
+                                    {
+                                        org_code: item.org_code,
+                                        org_name: item.org_name,
+                                        org_level: item.org_level,
+                                        next_level: item.next_level,
+                                        expand: 0
+
+                                    }
+                                )
+
+                            ))
+                        }
+                    } else {
+                        temparr.push(
+                            dataSource[i]
+                        )
+
                     }
-                    if (data.data.org_lst) {
-                        data.data.org_lst.map((item) => (
-                            temparr.push(
-                                {
-                                    org_code: item.org_code,
-                                    org_name: item.org_name,
-                                    org_level: item.org_level,
-                                    next_level: item.next_level,
-                                    expand: 0
-
-                                }
-                            )
-
-                        ))
-                    }
-                } else {
-                    temparr.push(
-                        dataSource[i]
-                    )
 
                 }
+                dataSource = temparr;
+                console.log('dataSource :', dataSource)
 
+            } else {
+
+                this.props.navigation.navigate('EmployeeList', {
+                    DataResponse: data,
+                    Option: option
+                });
+
+                this.setState({ isscreenloading: false })
             }
-            dataSource = temparr;
-            console.log('dataSource :', dataSource)
 
             // } else {
             //     Alert.alert(
@@ -339,7 +358,11 @@ export default class OrganizationStruct extends Component {
 
 
             // }
+        } else if (code.INVALID_AUTH_TOKEN == data.code) {
 
+            this.onAutenticateErrorAlertDialog(data)
+
+        
         } else {
             this.onLoadErrorAlertDialog(data)
         }
@@ -374,6 +397,11 @@ export default class OrganizationStruct extends Component {
                 DataResponse: data,
                 Option: option
             });
+        } else if (code.INVALID_AUTH_TOKEN == data.code) {
+
+            this.onAutenticateErrorAlertDialog(data)
+
+        
         } else {
             this.onLoadErrorAlertDialog(data)
         }
@@ -409,6 +437,11 @@ export default class OrganizationStruct extends Component {
                     Option: option
                 });
             }
+        } else if (code.INVALID_AUTH_TOKEN == data.code) {
+
+            this.onAutenticateErrorAlertDialog(data)
+
+        
         } else {
             this.onLoadErrorAlertDialog(data)
         }
@@ -421,47 +454,110 @@ export default class OrganizationStruct extends Component {
 
     }
 
+    onAutenticateErrorAlertDialog(error) {
 
-    onLoadErrorAlertDialog(error) {
+        timerstatus = false;
         this.setState({
             isscreenloading: false,
         })
+
+        Alert.alert(
+            StringText.ALERT_AUTHORLIZE_ERROR_TITLE,
+            StringText.ALERT_AUTHORLIZE_ERROR_MESSAGE,
+            [{
+                text: 'OK', onPress: () => {
+                    page = 0
+                    timerstatus = false
+                    SharedPreference.Handbook = []
+                    SharedPreference.profileObject = null
+                    this.saveProfile.setProfile(null)
+                    this.props.navigation.navigate('RegisterScreen')
+                }
+            }],
+            { cancelable: false }
+        )
+
+        console.log("error : ", error)
+    }
+
+    onLoadErrorAlertDialog(error, resource) {
+
+        this.setState({
+            isscreenloading: false,
+        })
+
         if (this.state.isConnected) {
             Alert.alert(
-                'MHF00001ACRI',
-                'Cannot connect to server. Please contact system administrator.',
+                // 'MHF00001ACRI',
+                // 'Cannot connect to server. Please contact system administrator.',
+                this.state.dataSource.errors[0].code,
+                this.state.dataSource.errors[0].detail,
+
                 [{
                     text: 'OK', onPress: () => console.log('OK Pressed')
                 }],
                 { cancelable: false }
             )
-        } else if (error.code == 404) {
-
-            Alert.alert(
-                'MSTD0059AERR',
-                'No data found',
-                [{
-                    text: 'OK', onPress: () => {
-                        console.log("onLoadErrorAlertDialog")
-                    }
-                }],
-                { cancelable: false }
-            )
-
         } else {
+            //inter net not connect
             Alert.alert(
-                'MHF00002ACRI',
-                'System Error (API). Please contact system administrator.',
+                // 'MHF00002ACRI',
+                // 'System Error (API). Please contact system administrator.',
+                'MHF00500AERR',
+                'Cannot connect to the internet.',
                 [{
                     text: 'OK', onPress: () => {
-                        console.log("onLoadErrorAlertDialog")
+                        //console.log("onLoadErrorAlertDialog")
                     }
                 }],
                 { cancelable: false }
             )
         }
-        console.log("error : ", error)
+        //console.log("error : ", error)
     }
+
+    // onLoadErrorAlertDialog(error) {
+    //     this.setState({
+    //         isscreenloading: false,
+    //     })
+    //     if (this.state.isConnected) {
+    //         Alert.alert(
+    //             'MHF00001ACRI',
+    //             'Cannot connect to server. Please contact system administrator.',
+    //             [{
+    //                 text: 'OK', onPress: () => console.log('OK Pressed')
+    //             }],
+    //             { cancelable: false }
+    //         )
+    //     } else if (error.code == 404) {
+
+    //         Alert.alert(
+    //             'MSTD0059AERR',
+    //             'No data found',
+    //             [{
+    //                 text: 'OK', onPress: () => {
+    //                     console.log("onLoadErrorAlertDialog")
+    //                 }
+    //             }],
+    //             { cancelable: false }
+    //         )
+
+    //     } else {
+    //         Alert.alert(
+    //             'MHF00002ACRI',
+    //             'System Error (API). Please contact system administrator.',
+    //             [{
+    //                 text: 'OK', onPress: () => {
+    //                     console.log("onLoadErrorAlertDialog")
+    //                 }
+    //             }],
+    //             { cancelable: false }
+    //         )
+    //     }
+    //     console.log("error : ", error)
+    // }
+
+
     renderloadingscreen() {
 
         if (this.state.isscreenloading) {

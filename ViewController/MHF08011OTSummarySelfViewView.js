@@ -14,14 +14,14 @@ import {
     Platform,
     ActivityIndicator,
     Alert,
-    BackHandler
+    BackHandler,NetInfo
 } from 'react-native';
 
 import Colors from "./../SharedObject/Colors"
 import { styles } from "./../SharedObject/MainStyles"
 import SharedPreference from "./../SharedObject/SharedPreference"
 import RestAPI from "../constants/RestAPI"
-
+import firebase from 'react-native-firebase';
 //monthNames
 let MONTH_LIST = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
@@ -51,7 +51,7 @@ export default class OTSummaryDetail extends Component {
             deductBG: Colors.pink,
             deductText: Colors.lightred,
             bordercolor: Colors.greenTextColor,
-
+            isConnected: true,
             months: [],
             tdataSource: {},
             headerdataSource: {},
@@ -68,12 +68,16 @@ export default class OTSummaryDetail extends Component {
     }
     componentWillMount() {
         BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
+        NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectivityChange);
     }
  
     componentWillUnmount() {
         BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
+        NetInfo.isConnected.removeEventListener('connectionChange', this.handleConnectivityChange);
     }
- 
+    handleConnectivityChange = isConnected => {
+        this.setState({ isConnected });
+    };
     handleBackButtonClick() {
         this.onBack()
         return true;
@@ -167,18 +171,42 @@ export default class OTSummaryDetail extends Component {
         }
 
         let today = new Date();
+       
 
-        let url = SharedPreference.OTSUMMARY_DETAIL + 'month=0' + tmonth + '&year=' + oyear
+        let url = SharedPreference.OTSUMMARY_DETAIL + 'month=' + tmonth + '&year=' + oyear
 
         // this.APICallback(await RestAPI(url), 'OTSummarySelfView')
         let data = await RestAPI(url,SharedPreference.FUNCTIONID_OT_SUMMARY)
         code = data[0]
         data = data[1]
+console.log('ot data response : ',data)
+        if (code.SUCCESS == data.code) {
 
-        if ((code.SUCCESS == data.code) | (code.NODATA == data.code)) {
-            this.props.navigation.navigate('OTSummarySelfView', {
-                dataResponse: data.data,
-            });
+            this.setState({
+
+            tdataSource : data.data.detail.items,
+            headerdataSource : data.data.header
+        })
+           // this.props.navigation.navigate('OTSummarySelfView', {
+           //     dataResponse: data.data,
+           // });
+        } else if (code.NODATA == data.code) {
+
+            Alert.alert(
+
+                data.data[0].code,
+                data.data[0].detail,
+                [{
+                    text: 'OK', onPress: () => console.log('OK Pressed')
+                }],
+                { cancelable: false }
+            )
+
+            this.setState({
+
+                tdataSource: [],
+                headerdataSource: []
+            })
         } else {
             this.onLoadErrorAlertDialog(data)
         }
@@ -188,11 +216,13 @@ export default class OTSummaryDetail extends Component {
         this.setState({
             isscreenloading: false,
         })
-
+        console.log("isConnected : ", this.state.isConnected)
         if (this.state.isConnected) {
             Alert.alert(
-                'MHF00001ACRI',
-                'Cannot connect to server. Please contact system administrator.',
+                // 'MHF00001ACRI',
+                // 'Cannot connect to server. Please contact system administrator.',
+                error.data[0].code,
+                error.data[0].detail,
                 [{
                     text: 'OK', onPress: () => console.log('OK Pressed')
                 }],
@@ -200,8 +230,10 @@ export default class OTSummaryDetail extends Component {
             )
         } else {
             Alert.alert(
-                'MHF00002ACRI',
-                'System Error (API). Please contact system administrator.',
+                // 'MHF00002ACRI',
+                // 'System Error (API). Please contact system administrator.',
+                'MHF00500AERR',
+                'Cannot connect to the internet.',
                 [{
                     text: 'OK', onPress: () => {
                         console.log("onLoadErrorAlertDialog")
@@ -287,18 +319,30 @@ export default class OTSummaryDetail extends Component {
     }
     selected_month(monthselected){
         
-         //console.log('monthselected : ',monthselected)
-
+        //console.log('monthselected : ',monthselected)
+        initannouncementType = monthselected
+        
         this.setState({
-    
-            announcementTypetext: this.state.months[monthselected],
+            announcementTypetext : monthselected,
             loadingtype: 1,
             isscreenloading: true,
- 
-        }, function () {
-    
-            // this.setState(this.renderloadingscreen())
 
+        }, function () {
+
+            let tdate = initannouncementType.split(' ')
+            let mdate = 0;
+
+            for (let i = 0; i < 12; i++) {
+                if (MONTH_LIST[i] === tdate[0]) {
+                    console.log('month : ', i)
+                    mdate = i;
+                }
+            }
+
+            this.setState(this.renderloadingscreen())
+
+            this.loadOTSummarySelffromAPI(mdate+1,tdate[1])
+    
         });
     
     }
@@ -326,7 +370,7 @@ export default class OTSummaryDetail extends Component {
                                 {
                                     this.state.months.map((item, index) => (
                                         <TouchableOpacity style={styles.button}
-                                            onPress={() => { this.selected_month(index) }}
+                                            onPress={() => { this.selected_month(item) }}
                                             key={index + 100}>
                                             <View style={{ justifyContent: 'center', height: 40, alignItems: 'center', }} key={index + 200}>
                                                 <Text style={{ textAlign: 'center', fontSize: 18, width: '100%', height: 30, alignItems: 'center' }}> {item}</Text>

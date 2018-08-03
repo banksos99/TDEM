@@ -11,7 +11,7 @@ import {
     Image,
     Alert,
     ActivityIndicator,
-    BackHandler
+    BackHandler,NetInfo
 } from 'react-native';
 
 import Colors from "./../SharedObject/Colors"
@@ -21,8 +21,11 @@ import orgdata from './../InAppData/OrgstructerData.json';
 import SharedPreference from "./../SharedObject/SharedPreference"
 import RestAPI from "../constants/RestAPI"
 import firebase from 'react-native-firebase';
+import StringText from '../SharedObject/StringText';
+import SaveProfile from "../constants/SaveProfile"
 
 let dataSource = [];
+let option = 0;
 
 export default class OrganizationStruct extends Component {
 
@@ -30,20 +33,30 @@ export default class OrganizationStruct extends Component {
         super(props);
         this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
         this.state = {
-            option: this.props.navigation.getParam("Option", "")
+            //employee_name,
+            //employee_position,
+            
         };
-
+        
+        this.checkOption(this.props.navigation.getParam("Option", ""))
         this.checkDataFormat(this.props.navigation.getParam("DataResponse", ""));
         firebase.analytics().setCurrentScreen(SharedPreference.FUNCTIONID_EMPLOYEE_INFORMATION)
 
     }
-    checkDataFormat(DataResponse) {
 
+    checkOption(opt) {
+        if (opt) {
+            option = opt;
+        }
+    }
+
+    checkDataFormat(DataResponse) {
+        
         if (DataResponse) {
 
             dataSource = DataResponse;
 
-            console.log('dataSource :', dataSource)
+            
         } else {
 
             console.log('orgdata : ', orgdata)
@@ -52,11 +65,13 @@ export default class OrganizationStruct extends Component {
     }
 
     componentWillMount() {
-        BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
+       BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
+       NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectivityChange);
     }
 
     componentWillUnmount() {
-        BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
+       BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
+       NetInfo.isConnected.removeEventListener('connectionChange', this.handleConnectivityChange);
     }
 
     handleBackButtonClick() {
@@ -96,7 +111,9 @@ export default class OrganizationStruct extends Component {
         code = data[0]
         data = data[1]
         if (code.SUCCESS == data.code) {
-            if (this.state.option) {
+
+            console.log('option : ', option)
+            if (option == 2) {
                 this.props.navigation.navigate('ClockInOutSelfView', {
                     DataResponse: data.data,
                     employee_name: this.state.employee_name,
@@ -105,7 +122,7 @@ export default class OrganizationStruct extends Component {
                     previous: 2,
                 });
 
-            } else {
+            } else if (option == 1){
                 this.props.navigation.navigate('EmployeeInfoDetail', {
                     DataResponse: data.data,
                     manager: 1,
@@ -113,6 +130,9 @@ export default class OrganizationStruct extends Component {
                 });
 
             }
+        } else if (code.INVALID_AUTH_TOKEN == data.code) {
+
+            this.onAutenticateErrorAlertDialog(data)
 
         } else {
             this.onLoadErrorAlertDialog(data)
@@ -120,6 +140,31 @@ export default class OrganizationStruct extends Component {
 
     }
 
+    onAutenticateErrorAlertDialog(error) {
+
+        timerstatus = false;
+        this.setState({
+            isscreenloading: false,
+        })
+
+        Alert.alert(
+            StringText.ALERT_AUTHORLIZE_ERROR_TITLE,
+            StringText.ALERT_AUTHORLIZE_ERROR_MESSAGE,
+            [{
+                text: 'OK', onPress: () => {
+                    page = 0
+                    timerstatus = false
+                    SharedPreference.Handbook = []
+                    SharedPreference.profileObject = null
+                    this.saveProfile.setProfile(null)
+                    this.props.navigation.navigate('RegisterScreen')
+                }
+            }],
+            { cancelable: false }
+        )
+
+        console.log("error : ", error)
+    }
     onLoadErrorAlertDialog(error) {
         this.setState({
 
