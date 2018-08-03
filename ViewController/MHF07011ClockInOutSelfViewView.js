@@ -28,6 +28,7 @@ import Months from "./../constants/Month"
 import RestAPI from "../constants/RestAPI"
 import firebase from 'react-native-firebase';
 
+//let scale = Layout.window.height / 320;
 
 let firstday;
 let daymonth;
@@ -605,9 +606,29 @@ export default class ClockInOutSelfView extends Component {
         let offsety = 0;
         if (this.state.initialmonth + 2 === this.state.monthselected) {
 
-            offsety = ((currentday * 90) - 220)
+            console.log('scroll hight : ', Layout.window.height - 100)
+            console.log('content height : ', this.state.tdataSource.length * 90)
+            console.log('currentday : ', (currentday + 1) * 90)
+
+            console.log('offsety : ', offsety)
+
+
+          //  offsety = ((currentday * 90) - 220)
+
+            let half = (Layout.window.height - 100) / 2
+            offsety = ((currentday + 1) * 90) - half
+            if (offsety > (this.state.tdataSource.length * 90) - (Layout.window.height - 100)) {
+                offsety = (this.state.tdataSource.length * 90) - (Layout.window.height - 100)
+
+            } else if (((currentday + 1) * 90)  < (Layout.window.height - 100)) {
+
+                offsety = ((currentday ) * 90) 
+            }
+            
         }
-        console.log('offsety : ', offsety)
+
+       // Layout.window.height - 100 
+
         return (
             <View style={{ flex: 16, backgroundColor: Colors.calendarLocationBoxColor, }}>
                 <ScrollView ref="scrollView"

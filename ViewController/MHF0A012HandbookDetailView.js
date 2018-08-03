@@ -33,6 +33,7 @@ import SharedPreference from '../SharedObject/SharedPreference';
 let fontsizearr = ['50%', '80%', '100%', '120%', '150%', '180%'];
 let fontname = ['times', 'courier', 'arial', 'serif', 'cursive', 'fantasy', 'monospace'];
 let HandbookHighlightList = [];
+let HandbookMarkList = [];
 
 const Uri = require("epubjs/lib/utils/url");
 
@@ -83,17 +84,24 @@ export default class HandbookViewer extends Component {
     }
 
     componentDidMount() {
+
         this.downloadEpubFile(SharedPreference.HOST + this.state.handbook_file);
+
         for (let i = 0; i < SharedPreference.Handbook.length; i++) {
             if (SharedPreference.Handbook[i].handbook_name === this.state.handbook_file) {
-                HandbookHighlightList = SharedPreference.Handbook[i].handbook_file
+                HandbookHighlightList = SharedPreference.Handbook[i].handbook_hilight
+                HandbookMarkList = SharedPreference.Handbook[i].handbook_mark
             }
         }
+
+        console.log("HandbookHighlightList :", HandbookHighlightList)
+
     }
 
     componentWillMount() {
         console.log("componentWillMount")
         BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
+
     }
 
     handleBackButtonClick() {
@@ -103,29 +111,31 @@ export default class HandbookViewer extends Component {
     }
 
     componentWillUnmount() {
+
         BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
-        SharedPreference.Handbook.push({
-            handbook_name: this.state.handbook_file,
-            handbook_file: HandbookHighlightList
-        })
 
-        let tempHB = [];
+        // SharedPreference.Handbook.push({
+        //     handbook_name: this.state.handbook_file,
+        //     handbook_file: HandbookHighlightList
+        // })
 
-        for (let i = 0; i < SharedPreference.Handbook.length; i++) {
+        // let tempHB = [];
 
-            if (SharedPreference.Handbook[i].handbook_name === this.state.handbook_file) {
-                tempHB.push({
-                    handbook_name: this.state.handbook_file,
-                    handbook_file: HandbookHighlightList
+        // for (let i = 0; i < SharedPreference.Handbook.length; i++) {
 
-                })
-            } else {
-                tempHB.push(
-                    SharedPreference.Handbook[i]
-                )
+        //     if (SharedPreference.Handbook[i].handbook_name === this.state.handbook_file) {
+        //         tempHB.push({
+        //             handbook_name: this.state.handbook_file,
+        //             handbook_file: HandbookHighlightList
 
-            }
-        }
+        //         })
+        //     } else {
+        //         tempHB.push(
+        //             SharedPreference.Handbook[i]
+        //         )
+
+        //     }
+        // }
 
         if (this.streamer)
             this.streamer.kill();
@@ -589,13 +599,13 @@ export default class HandbookViewer extends Component {
             );
 
         }
-        console.log('this.state.hilightList :', this.state.hilightList)
+        console.log('this.state.hilightList :', this.state.HandbookMarkList)
 
         return (
 
             <ScrollView style={{ height: '40%' }}>
                 {
-                    HandbookHighlightList.map((item, index) => (
+                    HandbookMarkList.map((item, index) => (
                         <TouchableOpacity style={styles.button}
                             onPress={() => this._onhilight(item)}
                             key={index + 100}>
@@ -685,7 +695,7 @@ export default class HandbookViewer extends Component {
                         // add old highlight
                         for (let i = 0; i < HandbookHighlightList.length; i++) {
 
-                            this.epub.rendition.highlight(HandbookHighlightList[i].link, {});
+                            this.epub.rendition.highlight(HandbookHighlightList[i], {});
 
                         }
 
@@ -719,35 +729,75 @@ export default class HandbookViewer extends Component {
                     onSelected={(cfiRange, rendition, selected) => {
 
                         let datatext = ''
-                        this.state.book.getRange(cfiRange).then((range) => {
-                            if (range) {
-                                datatext = range.startContainer.data.slice(range.startOffset, range.endOffset)
+                        // this.state.book.getRange(cfiRange).then((range) => {
+                        //     if (range) {
+                        //         datatext = range.startContainer.data.slice(range.startOffset, range.endOffset)
 
-                                let newdate = new Date().toString()
-                                let timearr = newdate.split('')
+                        //         let newdate = new Date().toString()
+                        //         let timearr = newdate.split('')
 
-                                HandbookHighlightList.push(
-                                    {
-                                        link: cfiRange,
-                                        title: datatext,
-                                        date: newdate
-                                    }
-                                )
+                        //         HandbookHighlightList.push(
+                        //             {
+                        //                 link: cfiRange,
+                        //                 title: datatext,
+                        //                 date: newdate
+                        //             }
+                        //         )
 
-                            }
+                        //     }
 
-                        });
+                        // });
 
                         console.log("cfiRange", cfiRange)
+
+                        HandbookHighlightList.push(
+                            cfiRange
+                        )
+
+
                         // Add marker
 
-                        //   rendition.highlight(cfiRange, {});
-                        this.epub.rendition.highlight(cfiRange, {});
+                          rendition.highlight(cfiRange, {});
+                      //  this.epub.rendition.highlight(cfiRange, {});
 
                     }}
+                    
                     onMarkClicked={(cfiRange) => {
                         console.log("mark clicked", cfiRange)
+
+                        Alert.alert(
+                            'SAVE',
+                            'Do you want a save Marker',
+                            [
+                                {
+                                    text: 'OK', onPress: () => {
+
+                                        let datatext = ''
+                                        this.state.book.getRange(cfiRange).then((range) => {
+
+                                            if (range) {
+                                                datatext = range.startContainer.data.slice(range.startOffset, range.endOffset)
+                                                let newdate = new Date().toString()
+                                                let timearr = newdate.split('')
+
+                                                HandbookMarkList.push({
+                                                    link: cfiRange,
+                                                    title: datatext,
+                                                    date: newdate
+                                                })
+
+                                            }
+
+                                        })
+                                    }
+                                },{ text: 'Cancle', onPress: () => { } }
+
+                            ],
+                            { cancelable: false }
+                        )
+
                     }}
+
                     themes={{
                         tan: {
                             body: {

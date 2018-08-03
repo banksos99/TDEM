@@ -38,7 +38,7 @@ export default async function getRestAPI(url, functionID) {
     })
         .then((response) => response.json())
         .then((responseJson) => {
-            console.log("RestAPI success : ", responseJson.status)
+            console.log("RestAPI success : ", responseJson)
             let object
             if (responseJson.status == code.SUCCESS) {
                 object = [code, {

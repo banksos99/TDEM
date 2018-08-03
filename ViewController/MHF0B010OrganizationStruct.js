@@ -29,6 +29,10 @@ export default class OrganizationStruct extends Component {
 
     constructor(props) {
         super(props);
+        this.state = {
+
+            isscreenloading:false,
+        }
         this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
         this.checkoption(this.props.navigation.getParam("Option", ""));
         this.checkDataFormat(this.props.navigation.getParam("DataResponse", ""));
