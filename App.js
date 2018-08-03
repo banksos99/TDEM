@@ -12,7 +12,7 @@ import SavePIN from "./constants/SavePIN";
 import DeviceInfo from 'react-native-device-info';
 
 import firebase from 'react-native-firebase';
-
+import Layout from "./SharedObject/Layout";
 export default class mainview extends Component {
 
   savePIN = new SavePIN()
@@ -95,7 +95,7 @@ export default class mainview extends Component {
     notificationListener = firebase
       .notifications()
       .onNotification(notification => {
-        // SharedPreference.notipayslipID = notification._data.payslipID
+       
         console.log('notification : ', notification)
       });
     
@@ -104,20 +104,10 @@ export default class mainview extends Component {
 
     if (notificationOpen) {
 
-
       const notification = notificationOpen.notification;
       SharedPreference.notipayslipID = notification._data.payslipID
       SharedPreference.notipayAnnounceMentID = notification._data.AnnouncementID
-     // console.log('notificationOpen : ', notification)
-
-      // Alert.alert(
-      //   'payslip',
-      //   notification._data.AnnouncementID,
-      //   [
-      //     { text: 'OK', onPress: () => console.log('OK Pressed') },
-      //   ],
-      //   { cancelable: false }
-      // )
+     
     }
   }
 
@@ -170,7 +160,9 @@ export default class mainview extends Component {
     return (
       <View style={{ flex: 1, }} >
         <Image
+        style={{ height: Layout.window.height, width: Layout.window.width, }}
           source={require('./resource/SplashBg.png')}
+          resizeMode='contain'
           style={{ flex: 1 }} />
       </View>
 
