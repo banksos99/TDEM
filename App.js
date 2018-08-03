@@ -6,14 +6,12 @@ import {
   createSwitchNavigator,
 } from 'react-navigation';
 import SharedPreference from './SharedObject/SharedPreference';
-
 import RootViewController from './ViewController/NavigationController';
 import PINScreen from './ViewController/MHF01310PINScreen';
 import SavePIN from "./constants/SavePIN";
 import DeviceInfo from 'react-native-device-info';
 
 import firebase from 'react-native-firebase';
-import type, { Notification, NotificationOpen } from 'react-native-firebase';
 
 export default class mainview extends Component {
 

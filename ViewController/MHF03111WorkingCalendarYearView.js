@@ -948,6 +948,7 @@ export default class calendarYearView extends Component {
             [
                 {
                     text: 'Cancel', onPress: () => {
+                        // this.deleteEventOnCalendar()
                     }, style: 'cancel'
                 },
                 {
@@ -961,6 +962,36 @@ export default class calendarYearView extends Component {
         )
     }
 
+
+    deleteEventOnCalendar = async () => {
+        await this.eventCalendar._deleteEventCalendar()
+    }
+
+    checkDuplicateEventCalendar = async (duplicateEventArray, newEventID) => {
+
+        console.log("checkDuplicateEventCalendar ==> checkDuplication ==> ", duplicateEventArray)
+        console.log("checkDuplicateEventCalendar ==> newEventID ==> ", newEventID)
+
+        let checkFlag = false
+        for (let index = 0; index < duplicateEventArray.length; index++) {
+            const eventID = duplicateEventArray[index];
+            if (eventID == newEventID) {
+                checkFlag = true
+            }
+        }
+
+        console.log("checkDuplicateEventCalendar ==> checkFlag ==> ", checkFlag)
+
+        if (checkFlag == false) {
+            duplicateEventArray.push(newEventID)
+            return [checkFlag, duplicateEventArray]
+        }
+
+        return [checkFlag, duplicateEventArray]
+
+    }
+
+
     addEventOnCalendar = async () => {
 
         this.setState({
@@ -968,17 +999,16 @@ export default class calendarYearView extends Component {
         })
 
         this.state.isLoading = true
-
-
         await this.eventCalendar._deleteEventCalendar()
 
+        let duplicateEventArray = []
 
-        // //console.log("this.state.calendarEventData 1 : ", this.state.calendarEventData)
+        // console.log("this.state.calendarEventData 1 : ", this.state.calendarEventData)
         if (this.state.calendarEventData.code == 200) {
             let holidayArray = this.state.calendarEventData.data.holidays;
 
-            //console.log("this.state.calendarEventData ==> ", this.state.calendarEventData.data.holidays)
             for (let index = 0; index < holidayArray.length; index++) {
+
                 const daysArray = holidayArray[index].days
                 for (let f = 0; f < daysArray.length; f++) {
                     const eventDetailArray = daysArray[f].events;
@@ -1013,16 +1043,35 @@ export default class calendarYearView extends Component {
                             };
                             eventObject = copy
                         }
-                        //console.log("addEventOnCalendar ==> eventObject : ", eventObject);
-                        //console.log("addEventOnCalendar ==> showlocation : ", this.state.showLocation);
 
-                        await this.eventCalendar.synchronizeCalendar(eventObject, this.state.showLocation);
-                        ////console.log("==============Success==============")
+
+                        if (eventObject.event_id != null) {
+                            console.log("eventObject event_id ==> ", eventObject.event_id)
+                            console.log("eventObject duplicateEventArray ==> ", duplicateEventArray)
+
+                            if (duplicateEventArray.length == 0) {
+                                duplicateEventArray.push(eventObject.event_id)
+                                await this.eventCalendar.synchronizeCalendar(eventObject, this.state.showLocation);
+                            } else {
+
+                                let data = await this.checkDuplicateEventCalendar(duplicateEventArray, eventObject.event_id)
+                                let checkFlag = data[0]
+                                duplicateEventArray = data[1]
+
+                                if (checkFlag == false) {
+                                    await this.eventCalendar.synchronizeCalendar(eventObject, this.state.showLocation);
+                                }
+                            }
+                        } else {
+                            await this.eventCalendar.synchronizeCalendar(eventObject, this.state.showLocation);
+                        }
+
+
+                        console.log("==============Success==============")
                     }
                 }
             }
 
-            //console.log("==============Success==============")
             this.setState({
                 isLoading: false
             })
@@ -1060,8 +1109,9 @@ export default class calendarYearView extends Component {
             )
 
         }
-
     }
+
+
 
     renderProgressView() {
         if (this.state.isLoading) {

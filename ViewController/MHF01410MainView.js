@@ -76,52 +76,35 @@ export default class HMF01011MainView extends Component {
         }
 
         //Check Manager status
-
-
         for (let i = 0; i < SharedPreference.profileObject.role_authoried.length; i++) {
             // if (SharedPreference.profileObject.role_authoried[i].module_function === 'HF0501') {
-
             //     managerstatus = 'Y'
-
             // }
             // switch (SharedPreference.profileObject.role_authoried[i].module_function) {
             //     case 'HF0121': {
-
             //     }
             //     case 'HF0601': {
-
             //     }
             //     case 'HF0501': {
-
             //     }
             //     case 'HF0901': {
-
             //     }
             //     case 'HF0701': {
-
             //     }
             //     case 'HF0801': {
-
             //     }
             //     case 'HF0311': {
-
             //     }
             //     case 'HF0A01': {
-
             //     }case 'HF0701': {
-
             //     }
             //     case 'HF0801': {
-
             //     }
             //     case 'HF0311': {
-
             //     }
             //     case 'HF0A01': {
-
             //     }
             // }
-
         }
 
         //console.log("MainView ====> profileObject ==> managerstatus ==> ", managerstatus)
@@ -136,15 +119,10 @@ export default class HMF01011MainView extends Component {
     }
 
     loadData = async () => {
-        //console.log("loadData")
         let autoSyncCalendarBool = await this.saveAutoSyncCalendar.getAutoSyncCalendar()
-        //console.log("loadData ==> autoSyncCalendarBool 1 ==> : ", autoSyncCalendarBool)
-
         if (autoSyncCalendarBool == null) {
             autoSyncCalendarBool = true
         }
-
-
         this.setState({
             syncCalendar: autoSyncCalendarBool
         })
@@ -154,8 +132,9 @@ export default class HMF01011MainView extends Component {
     }
 
     async componentDidMount() {
-        //console.log("componentDidMount")
+        // console.log("componentDidMount timerstatus : ", timerstatus)
         if (!timerstatus) {
+            // console.log("componentDidMount timerstatus ==> start")
             this.inappTimeInterval();
             timerstatus = true;
         }
@@ -174,12 +153,9 @@ export default class HMF01011MainView extends Component {
     onLoadInAppNoti = async () => {
         let today = new Date()
         const newdate = moment(today).format(_format).valueOf();
-        // console.log("selectedDateMonth : ", newdate)
         FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, 1, SharedPreference.profileObject.client_token)
-        // console.log("calendarPDFAPI ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
-        latest_date = "2018-01-01 12:00:00"
-
-        return fetch(SharedPreference.PULL_NOTIFICATION_API + newdate, {
+        latest_date = "2017-01-01 12:00:00"
+        return fetch(SharedPreference.PULL_NOTIFICATION_API + latest_date, {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',

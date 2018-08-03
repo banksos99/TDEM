@@ -6,17 +6,17 @@ export default async function getRestAPI(username, password) {
     let code = {
         SUCCESS: "200",
         INVALID_API_KEY: "100",
-        INVALID_AUTH_TOKEN: "101",
         INVALID_API_SIGNATURE: "102",
         FAILED: "400",
-        FORM_VALIDATE_FAILED: "401",
+        DOES_NOT_EXISTS: "401",
+        INVALID_AUTH_TOKEN: "403",
         NODATA: "404",
+        DUPLICATE_DATA: "409",
         TIME_OUT: "500",
+        INTERNAL_SERVER_ERROR: "500",
         ERROR: "501",
         UPDATE_APPLICATION: "600",
         CUT_JSON: "700",
-        NETWORK_ERROR: "808"
-
     }
 
     // console.log("getRestAPI ===> username : ", username, " ,  password :", password)

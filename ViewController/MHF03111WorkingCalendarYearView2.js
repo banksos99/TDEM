@@ -27,9 +27,7 @@ import StringText from '../SharedObject/StringText'
 
 import RestAPI from "../constants/RestAPI"
 import EventCalendar from "../constants/EventCalendar"
-
 import SaveProfile from "../constants/SaveProfile"
-
 import CalendarPDFAPI from "../constants/CalendarPDFAPI"
 import firebase from 'react-native-firebase';
 
@@ -40,7 +38,6 @@ export default class calendarYearView extends Component {
 
     constructor(props) {
         super(props);
-        
         this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
         this.state = {
             connectWithServer: true,
@@ -75,6 +72,8 @@ export default class calendarYearView extends Component {
             changeData: false,
             newPage: false,
             isLoadingPDF: false,
+
+            page: this.props.navigation.getParam("page", 2),
         }
 
         this.LocaleConfig()
@@ -98,10 +97,8 @@ export default class calendarYearView extends Component {
         return true;
     }
 
-
     setNewPicker() {
         array = SharedPreference.COMPANY_LOCATION
-        // loactionArray = locationPicker
         locationArray = []
 
         for (let index = 0; index < array.length; index++) {
@@ -110,9 +107,7 @@ export default class calendarYearView extends Component {
                 label: element.value,
                 value: element.key
             })
-            //console.log("setNewPicker index ==>  : ", locationArray[index])
         }
-        //console.log("setNewPicker locationArray : ", locationArray)
         this.state.locationPicker = locationArray
     }
 
@@ -120,9 +115,8 @@ export default class calendarYearView extends Component {
         this.getYearSelect()
         this.getYearView(this.state.selectYear, this.state.dataResponse)
 
-        //console.log("SharedPreference.calendarAutoSync : ", SharedPreference.calendarAutoSync)
-
-        if (SharedPreference.calendarAutoSync == true) {
+        console.log("page : ", this.state.page)
+        if ((SharedPreference.calendarAutoSync == true) && (this.state.page == 1)) {
             await this.onSynWithCalendar()
         }
     }
@@ -140,9 +134,6 @@ export default class calendarYearView extends Component {
     }
 
     loadDataFromAPI = async (year, location) => {
-        //console.log("loadDataFromAPI year ==>: ", year)
-        //console.log("loadDataFromAPI location ==>: ", location)
-
         // reset api
         this.setState({
             countDay: [],
@@ -159,9 +150,6 @@ export default class calendarYearView extends Component {
         //console.log("onLoadCalendarAPI ====> year : ", year, " , location : ", location)
         //console.log("location : ", this.state.selectLocation)
 
-        if (Platform.OS === "ios") {
-
-        }
         let data = await RestAPI(SharedPreference.CALENDER_YEAR_API + year + '&company=' + location, SharedPreference.FUNCTIONID_WORKING_CALENDAR)
         code = data[0]
         data = data[1]
@@ -838,7 +826,6 @@ export default class calendarYearView extends Component {
         )
     }
 
-    //BELL
     onDownloadPDFFile = async (pdfPath, filename) => {
         filename = "calendar_" + this.state.selectYear + '.pdf'
         FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, SharedPreference.FUNCTIONID_WORKING_CALENDAR, SharedPreference.profileObject.client_token)
@@ -961,6 +948,7 @@ export default class calendarYearView extends Component {
             [
                 {
                     text: 'Cancel', onPress: () => {
+                        // this.deleteEventOnCalendar()
                     }, style: 'cancel'
                 },
                 {
@@ -974,6 +962,36 @@ export default class calendarYearView extends Component {
         )
     }
 
+
+    deleteEventOnCalendar = async () => {
+        await this.eventCalendar._deleteEventCalendar()
+    }
+
+    checkDuplicateEventCalendar = async (duplicateEventArray, newEventID) => {
+
+        console.log("checkDuplicateEventCalendar ==> checkDuplication ==> ", duplicateEventArray)
+        console.log("checkDuplicateEventCalendar ==> newEventID ==> ", newEventID)
+
+        let checkFlag = false
+        for (let index = 0; index < duplicateEventArray.length; index++) {
+            const eventID = duplicateEventArray[index];
+            if (eventID == newEventID) {
+                checkFlag = true
+            }
+        }
+
+        console.log("checkDuplicateEventCalendar ==> checkFlag ==> ", checkFlag)
+
+        if (checkFlag == false) {
+            duplicateEventArray.push(newEventID)
+            return [checkFlag, duplicateEventArray]
+        }
+
+        return [checkFlag, duplicateEventArray]
+
+    }
+
+
     addEventOnCalendar = async () => {
 
         this.setState({
@@ -981,17 +999,16 @@ export default class calendarYearView extends Component {
         })
 
         this.state.isLoading = true
-
-
         await this.eventCalendar._deleteEventCalendar()
 
+        let duplicateEventArray = []
 
-        // //console.log("this.state.calendarEventData 1 : ", this.state.calendarEventData)
+        // console.log("this.state.calendarEventData 1 : ", this.state.calendarEventData)
         if (this.state.calendarEventData.code == 200) {
             let holidayArray = this.state.calendarEventData.data.holidays;
 
-            //console.log("this.state.calendarEventData ==> ", this.state.calendarEventData.data.holidays)
             for (let index = 0; index < holidayArray.length; index++) {
+
                 const daysArray = holidayArray[index].days
                 for (let f = 0; f < daysArray.length; f++) {
                     const eventDetailArray = daysArray[f].events;
@@ -1026,16 +1043,35 @@ export default class calendarYearView extends Component {
                             };
                             eventObject = copy
                         }
-                        //console.log("addEventOnCalendar ==> eventObject : ", eventObject);
-                        //console.log("addEventOnCalendar ==> showlocation : ", this.state.showLocation);
 
-                        await this.eventCalendar.synchronizeCalendar(eventObject, this.state.showLocation);
-                        ////console.log("==============Success==============")
+
+                        if (eventObject.event_id != null) {
+                            console.log("eventObject event_id ==> ", eventObject.event_id)
+                            console.log("eventObject duplicateEventArray ==> ", duplicateEventArray)
+
+                            if (duplicateEventArray.length == 0) {
+                                duplicateEventArray.push(eventObject.event_id)
+                                await this.eventCalendar.synchronizeCalendar(eventObject, this.state.showLocation);
+                            } else {
+
+                                let data = await this.checkDuplicateEventCalendar(duplicateEventArray, eventObject.event_id)
+                                let checkFlag = data[0]
+                                duplicateEventArray = data[1]
+
+                                if (checkFlag == false) {
+                                    await this.eventCalendar.synchronizeCalendar(eventObject, this.state.showLocation);
+                                }
+                            }
+                        } else {
+                            await this.eventCalendar.synchronizeCalendar(eventObject, this.state.showLocation);
+                        }
+
+
+                        console.log("==============Success==============")
                     }
                 }
             }
 
-            //console.log("==============Success==============")
             this.setState({
                 isLoading: false
             })
@@ -1073,8 +1109,9 @@ export default class calendarYearView extends Component {
             )
 
         }
-
     }
+
+
 
     renderProgressView() {
         if (this.state.isLoading) {
