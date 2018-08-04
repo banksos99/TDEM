@@ -6,6 +6,7 @@ import {
     Platform, Dimensions, BackHandler
 } from "react-native";
 import { styles } from "./../SharedObject/MainStyles";
+import Layout from "./../SharedObject/Layout"
 import Colors from "./../SharedObject/Colors"
 import SharedPreference from "./../SharedObject/SharedPreference"
 import RestAPI from "../constants/RestAPI"
@@ -52,6 +53,14 @@ import moment from 'moment'
 import Authorization from "../SharedObject/Authorization";
 //import { NODATA } from "dns";
 
+
+let tdata = {'_data':
+    { 'gcm.notification.type': 'Payroll',
+        'google.c.a.e': '1',
+        'gcm.notification.id': '160' }}
+
+
+
 export default class HMF01011MainView extends Component {
 
     saveAutoSyncCalendar = new SaveAutoSyncCalendar()
@@ -77,7 +86,7 @@ export default class HMF01011MainView extends Component {
             username: SharedPreference.profileObject.employee_name,
             //  page: 0
         }
-
+        
         //Check Manager status
         for (let i = 0; i < SharedPreference.profileObject.role_authoried.length; i++) {
             // if (SharedPreference.profileObject.role_authoried[i].module_function === 'HF0501') {
@@ -109,7 +118,7 @@ export default class HMF01011MainView extends Component {
             //     }
             // }
         }
-
+console.log('tdata : ',tdata._data['gcm.notification.type'])
         //console.log("MainView ====> profileObject ==> managerstatus ==> ", managerstatus)
     }
 
@@ -150,7 +159,7 @@ export default class HMF01011MainView extends Component {
 
             this.onOpenPayslipDetail()
 
-        } else if (SharedPreference.notipayAnnounceMentID) {
+        } else if (SharedPreference.notiAnnounceMentID) {
 
             this.onOpenAnnouncementDetailnoti()
 
@@ -447,7 +456,7 @@ export default class HMF01011MainView extends Component {
     }
     loadAnnouncementDetailfromAPINoti = async () => {
 
-        this.APIAnnouncementDetailCallback(await RestAPI(SharedPreference.ANNOUNCEMENT_DETAIL_API + SharedPreference.notipayAnnounceMentID, SharedPreference.FUNCTIONID_ANNOUCEMENT),
+        this.APIAnnouncementDetailCallback(await RestAPI(SharedPreference.ANNOUNCEMENT_DETAIL_API + SharedPreference.notiAnnounceMentID, SharedPreference.FUNCTIONID_ANNOUCEMENT),
             'AnnouncementDetail', 0)
 
      //   SharedPreference.notipayAnnounceMentID = 0
@@ -485,7 +494,7 @@ export default class HMF01011MainView extends Component {
 
             });
 
-
+            SharedPreference.notipayAnnounceMentID = 0;
             // } else if (code.NODATA == data.code) {
 
             //     Alert.alert(
@@ -601,7 +610,7 @@ export default class HMF01011MainView extends Component {
 
                     }
 
-                    SharedPreference.notipayslipID = 0
+                    
 
                 });
 
@@ -2291,6 +2300,12 @@ export default class HMF01011MainView extends Component {
 
     }
     render() {
+        let badgeBG = 'transparent'
+        let badgeText = 'transparent'
+        if (SharedPreference.notiAnnounceMentBadge) {
+            badgeBG = 'red'
+            badgeText = 'white'
+        }
         return (
             <View style={{ flex: 1 }}>
                 <View style={{ flex: 1, flexDirection: 'column' }}>
@@ -2316,6 +2331,7 @@ export default class HMF01011MainView extends Component {
 
 
                         <TouchableOpacity style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }} onPress={() => { this.settabscreen(1) }}>
+
                             <Image
                                 style={page === 1 ?
                                     { width: ICON_SIZE, height: ICON_SIZE, tintColor: Colors.redTextColor } :
@@ -2324,7 +2340,11 @@ export default class HMF01011MainView extends Component {
                                 source={require('./../resource/images/announcement_icon.png')}
                                 resizeMode='contain'
                             />
-
+                            <View style={{ position: 'absolute',height:'100%' }}  >
+                            <View style={{  height: 20,borderRadius:20,  backgroundColor : badgeBG,marginLeft:20,marginTop:10 }}>
+                                <Text style={{fontSize: 15,color:badgeText,textAlign: 'center',marginLeft:5,marginRight:5,height: 20,borderRadius: 10  }}>{SharedPreference.notiAnnounceMentBadge}</Text>
+                            </View>
+                            </View>
 
                         </TouchableOpacity>
                         {this.rendermanagertab()}

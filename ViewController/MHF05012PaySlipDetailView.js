@@ -66,6 +66,7 @@ export default class PayslipDetail extends Component {
     }
  
     componentWillUnmount() {
+       
         BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
     }
  

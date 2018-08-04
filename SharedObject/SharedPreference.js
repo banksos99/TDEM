@@ -60,8 +60,9 @@ export default {
     calendarAutoSync: true,
     // MANAGER_STATUS:true,
     notipayslipID: 0,
-    notipayAnnounceMentID: 0,
-    
+    notiAnnounceMentID: 0,
+    notiAnnounceMentBadge: 0,
+
     HandbookHighlightList: [],
     Handbook: [],
 

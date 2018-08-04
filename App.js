@@ -23,6 +23,7 @@ export default class mainview extends Component {
       inactive: false,
       showpin: false,
     }
+    // SharedPreference.notiAnnounceMentBadge = 150;
   }
 
   async componentDidMount() {
@@ -96,7 +97,9 @@ export default class mainview extends Component {
       .notifications()
       .onNotification(notification => {
        
-        console.log('notification : ', notification)
+        console.log('notification : ', notification._data['gcm.notification.type'])
+        SharedPreference.notiAnnounceMentBadge = notification._ios._badge;
+
       });
     
     notificationOpen = await firebase.notifications().getInitialNotification();
@@ -105,14 +108,17 @@ export default class mainview extends Component {
     if (notificationOpen) {
 
       const notification = notificationOpen.notification;
-      if (notification._data.type === 'payslip') {
-        SharedPreference.notipayslipID = notification._data.id
-      } else if (notification._data.type === 'announcement') {
+      
+      if (notification._data['gcm.notification.type'] === 'Payroll') {
 
-        SharedPreference.notipayAnnounceMentID = notification._data.id
+        SharedPreference.notipayslipID = notification._data['gcm.notification.id']
+
+      } else if (notification._data['gcm.notification.type'] === 'Emergency Announcement') {
+
+        SharedPreference.notiAnnounceMentID = notification._data['gcm.notification.id']
 
       }
-
+      console.log('notipayslipID : ', SharedPreference.notipayslipID);
     }
   }
 
