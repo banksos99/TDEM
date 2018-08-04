@@ -34,7 +34,7 @@ let initannouncementTypetext = 'All';
 let initannouncementStatus = 'All';
 let initannouncementStatustext = 'All'
 let page = 0;
-let orgcode ='' ;//60162305;
+let orgcode = '';//60162305;
 
 let managerstatus = 'Y';
 let announcestatus = 'Y';
@@ -73,7 +73,7 @@ export default class HMF01011MainView extends Component {
             enddragannounce: false,
             annrefresh: false,
             username: SharedPreference.profileObject.employee_name,
-          //  page: 0
+            //  page: 0
         }
 
         //Check Manager status
@@ -147,11 +147,11 @@ export default class HMF01011MainView extends Component {
         if (SharedPreference.notipayslipID) {
 
             this.onOpenPayslipDetail()
-            
+
         } else if (SharedPreference.notipayAnnounceMentID) {
 
-           this.onOpenAnnouncementDetailnoti()
-            
+            this.onOpenAnnouncementDetailnoti()
+
         }
 
         await this.loadData()
@@ -159,8 +159,10 @@ export default class HMF01011MainView extends Component {
     }
 
     onLoadInAppNoti = async () => {
+
         let today = new Date()
         const newdate = moment(today).format(_format).valueOf();
+
         FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, 1, SharedPreference.profileObject.client_token)
         latest_date = "2017-01-01 12:00:00"
         return fetch(SharedPreference.PULL_NOTIFICATION_API + latest_date, {
@@ -174,10 +176,66 @@ export default class HMF01011MainView extends Component {
             .then((response) => response.json())
             .then((responseJson) => {
                 try {
-                    console.log('inapp responseJson :', responseJson)
                     if (responseJson.status == 403) {
                         this.onAutenticateErrorAlertDialog()
-                        // this.select_sign_out()
+                    } else if (responseJson.status == 200) {
+                        console.log("onLoadInAppNoti ==> responseJson ", responseJson)
+
+                        let dataArray = responseJson.data
+
+                        let currentyear = new Date().getFullYear();
+
+
+                        let dataCustomArray = [
+                            {
+                                "year": [currentyear - 1],
+                                "detail": []
+                            },
+                            {
+                                "year": [currentyear],
+                                "detail": []
+                            },
+                        ]
+                        console.log("dataCustomArray ==> ", dataCustomArray)
+
+                        for (let index = 0; index < dataArray.length; index++) {
+                            const element = dataArray[index];
+
+                            console.log("element ==> ", element.function_id)
+                            if (element.function_id == "PHF06010") {
+                                dataListArray = element.data_list
+                                console.log("dataListArray ==> ", dataListArray)
+                                for (let index = 0; index < dataListArray.length; index++) {
+                                    const str = dataListArray[index];
+                                    // console.log("str ==> ", str)
+                                    var res = str.split("|");
+                                    console.log("res ==> ", res[1])
+                                    var data = res[1]
+
+                                    var monthYear = data.split("-");
+                                    console.log("dataListArray ==> monthYear ==> ", monthYear)
+
+                                    var year = monthYear[0]
+                                    var month = monthYear[1]
+
+                                    console.log("dataListArray ==> year ==> ", year)
+                                    console.log("dataListArray ==> month ==> ", month)
+
+                                    // 2016-12
+                                    for (let index = 0; index < dataCustomArray.length; index++) {
+                                        const data = dataCustomArray[index];
+
+                                        console.log("data.year 1 ==> ", data.year[0])
+                                        console.log("data.year 2 ==> ", year)
+
+                                        if (data.year == year) {
+                                            detailArray = data.detail
+                                            console.log("detailArray ==> ", detailArray)
+=                                        }
+                                    }
+                                }
+                            }
+                        }
                     } else {
                         if (timerstatus) {
                             this.inappTimeInterval()
@@ -201,7 +259,7 @@ export default class HMF01011MainView extends Component {
     inappTimeInterval() {
         this.timer = setTimeout(() => {
             this.onLoadInAppNoti()
-            // }, 2000);
+        // }, 2000);
         }, 60000);
     };
 
@@ -225,13 +283,13 @@ export default class HMF01011MainView extends Component {
         if (this.state.refreshing) {
             return;
         }
-        page= 1
+        page = 1
         this.setState({
             loadingtype: 3,
             isscreenloading: true,
             refreshing: true,
             annrefresh: true,
-            
+
         }, function () {
 
             let promise = this.loadAnnouncementfromAPI();
@@ -446,7 +504,7 @@ export default class HMF01011MainView extends Component {
     loadAnnouncementDetailfromAPINoti = async () => {
 
         this.APIAnnouncementDetailCallback(await RestAPI(SharedPreference.ANNOUNCEMENT_DETAIL_API + SharedPreference.notipayAnnounceMentID, SharedPreference.FUNCTIONID_ANNOUCEMENT),
-        'AnnouncementDetail', 0)
+            'AnnouncementDetail', 0)
 
         SharedPreference.notipayAnnounceMentID = 0
     }
@@ -458,7 +516,7 @@ export default class HMF01011MainView extends Component {
 
     }
 
-    APIAnnouncementDetailCallback(data, rount,index) {
+    APIAnnouncementDetailCallback(data, rount, index) {
 
         code = data[0]
         data = data[1]
@@ -469,7 +527,7 @@ export default class HMF01011MainView extends Component {
         this.setState({
 
             isscreenloading: false,
-         
+
         })
         if (code.SUCCESS == data.code) {
 
@@ -480,25 +538,25 @@ export default class HMF01011MainView extends Component {
 
             this.props.navigation.navigate(rount, {
                 DataResponse: data.data,
-              
+
             });
 
 
-        // } else if (code.NODATA == data.code) {
+            // } else if (code.NODATA == data.code) {
 
-        //     Alert.alert(
-        //         StringText.ALERT_NONPAYROLL_NODATA_TITLE,
-        //         StringText.ALERT_NONPAYROLL_NODATA_TITLE,
-        //         [{
-        //             text: 'OK', onPress: () => {
-    
-        //             }
-        //         }],
-        //         { cancelable: false }
-        //     )
-        // } else if (code.DOES_NOT_EXISTS == data.code) {
+            //     Alert.alert(
+            //         StringText.ALERT_NONPAYROLL_NODATA_TITLE,
+            //         StringText.ALERT_NONPAYROLL_NODATA_TITLE,
+            //         [{
+            //             text: 'OK', onPress: () => {
 
-        //     this.onNodataExistErrorAlertDialog()
+            //             }
+            //         }],
+            //         { cancelable: false }
+            //     )
+            // } else if (code.DOES_NOT_EXISTS == data.code) {
+
+            //     this.onNodataExistErrorAlertDialog()
 
         } else if (code.INVALID_AUTH_TOKEN == data.code) {
 
@@ -583,7 +641,7 @@ export default class HMF01011MainView extends Component {
                             yearselected: 0,
                             Datadetail: this.state.dataSource,
                             rollid: SharedPreference.notipayslipID
-                            
+
                         });
 
                     } else {
@@ -609,7 +667,7 @@ export default class HMF01011MainView extends Component {
             });
     }
 
-   
+
 
     loadPayslipfromAPI = async () => {
 
@@ -697,28 +755,28 @@ export default class HMF01011MainView extends Component {
 
     loadOrgStructerfromAPI = async () => {
 
-        
+
         let url = SharedPreference.ORGANIZ_STRUCTURE_API + orgcode
-console.log('org url : ',url);
+        console.log('org url : ', url);
         this.APICallback(await RestAPI(url, SharedPreference.FUNCTIONID_ORGANIZ_STRUCTURE), 'OrgStructure', 1)
     }
 
     loadOrgStructerClockInOutfromAPI = async () => {
         let url = SharedPreference.ORGANIZ_STRUCTURE_API + orgcode
-        console.log('org url : ',url);
-       this.APICallback(await RestAPI(url, SharedPreference.FUNCTIONID_ORGANIZ_STRUCTURE), 'OrgStructure', 2)
+        console.log('org url : ', url);
+        this.APICallback(await RestAPI(url, SharedPreference.FUNCTIONID_ORGANIZ_STRUCTURE), 'OrgStructure', 2)
     }
 
     loadOrgStructerOTAveragefromAPI = async () => {
         let url = SharedPreference.ORGANIZ_STRUCTURE_OT_API + orgcode
-        console.log('org url : ',url);
+        console.log('org url : ', url);
         this.APICallback(await RestAPI(url, SharedPreference.FUNCTIONID_ORGANIZ_STRUCTURE), 'OrganizationOTStruct', 1)
     }
 
     loadOrgStructerOTHistoryfromAPI = async () => {
         let url = SharedPreference.ORGANIZ_STRUCTURE_OT_API + orgcode
-        console.log('org url : ',url);
-       this.APICallback(await RestAPI(url, SharedPreference.FUNCTIONID_ORGANIZ_STRUCTURE), 'OrganizationOTStruct', 2)
+        console.log('org url : ', url);
+        this.APICallback(await RestAPI(url, SharedPreference.FUNCTIONID_ORGANIZ_STRUCTURE), 'OrganizationOTStruct', 2)
     }
 
     APICallback(data, rount, option) {
@@ -739,22 +797,22 @@ console.log('org url : ',url);
             });
 
 
-        // } else if (code.NODATA == data.code) {
+            // } else if (code.NODATA == data.code) {
 
-        //     Alert.alert(
-        //         StringText.ALERT_NONPAYROLL_NODATA_TITLE,
-        //         StringText.ALERT_NONPAYROLL_NODATA_TITLE,
-        //         [{
-        //             text: 'OK', onPress: () => {
-    
-        //             }
-        //         }],
-        //         { cancelable: false }
-        //     )
+            //     Alert.alert(
+            //         StringText.ALERT_NONPAYROLL_NODATA_TITLE,
+            //         StringText.ALERT_NONPAYROLL_NODATA_TITLE,
+            //         [{
+            //             text: 'OK', onPress: () => {
 
-        // } else if (code.DOES_NOT_EXISTS == data.code) {
+            //             }
+            //         }],
+            //         { cancelable: false }
+            //     )
 
-        //     this.onNodataExistErrorAlertDialog()
+            // } else if (code.DOES_NOT_EXISTS == data.code) {
+
+            //     this.onNodataExistErrorAlertDialog()
 
         } else if (code.INVALID_AUTH_TOKEN == data.code) {
 
@@ -780,11 +838,11 @@ console.log('org url : ',url);
                 DataResponse: data,
             });
 
-        }else  if (code.NODATA == data.code) {
-                this.props.navigation.navigate(rount, {
-                   // DataResponse: data,
-                });
-    
+        } else if (code.NODATA == data.code) {
+            this.props.navigation.navigate(rount, {
+                // DataResponse: data,
+            });
+
         } else if (code.INVALID_AUTH_TOKEN == data.code) {
 
             this.onAutenticateErrorAlertDialog(data)
@@ -854,7 +912,7 @@ console.log('org url : ',url);
             { cancelable: false }
         )
 
-       // console.log("error : ", error)
+        // console.log("error : ", error)
     }
 
     onLoadErrorAlertDialog(error, resource) {
@@ -862,7 +920,7 @@ console.log('org url : ',url);
         this.setState({
             isscreenloading: false,
         })
-// console.log('error message : ',error.data[0])
+        // console.log('error message : ',error.data[0])
         if (this.state.isConnected) {
             Alert.alert(
                 // 'MHF00001ACRI',
@@ -910,18 +968,18 @@ console.log('org url : ',url);
 
             this.onAutenticateErrorAlertDialog(data)
 
-        // } else if (code.NODATA == data.code) {
+            // } else if (code.NODATA == data.code) {
 
-        //     Alert.alert(
-        //         StringText.ALERT_NONPAYROLL_NODATA_TITLE,
-        //         StringText.ALERT_NONPAYROLL_NODATA_TITLE,
-        //         [{
-        //             text: 'OK', onPress: () => {
-    
-        //             }
-        //         }],
-        //         { cancelable: false }
-        //     )
+            //     Alert.alert(
+            //         StringText.ALERT_NONPAYROLL_NODATA_TITLE,
+            //         StringText.ALERT_NONPAYROLL_NODATA_TITLE,
+            //         [{
+            //             text: 'OK', onPress: () => {
+
+            //             }
+            //         }],
+            //         { cancelable: false }
+            //     )
 
         } else {
 
@@ -1177,14 +1235,14 @@ console.log('org url : ',url);
             }
             //load data befor open announcement screen in first time
             if (announcementData.length) {
-                page= tabnumber
+                page = tabnumber
                 this.setState({
-                    
+
                 });
             } else {
-                page= tabnumber
+                page = tabnumber
                 this.setState({
-                    
+
                     isscreenloading: true,
                     loadingtype: 3
                 }, function () {
@@ -1192,9 +1250,9 @@ console.log('org url : ',url);
                 });
             }
         } else {
-            page= tabnumber
+            page = tabnumber
             this.setState({
-                
+
             })
         }
     }
@@ -2055,10 +2113,10 @@ console.log('org url : ',url);
     }
 
     select_sign_out() {
-        
+
         page = 0
         timerstatus = false
-        SharedPreference.Handbook=[]
+        SharedPreference.Handbook = []
         SharedPreference.profileObject = null
         this.saveProfile.setProfile(null)
         this.props.navigation.navigate('RegisterScreen')

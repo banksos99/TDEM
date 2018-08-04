@@ -39,17 +39,21 @@ export default class RegisterActivity extends Component {
     }
 
     onRegister = async () => {
+        console.log("onRegister")
         Keyboard.dismiss()
         let data = await RegisterAPI(this.state.username, this.state.password)
         code = data[0]
         data = data[1]
-        //console.log("onRegister ==> data : ", data)
+        
+        console.log("onRegister ==> data : ", data)
+        console.log("onRegister ==> data code : ", data.code)
+
         if (code.SUCCESS == data.code) {
             this.saveProfile.setProfile(data.data)
             SharedPreference.profileObject = await this.saveProfile.getProfile()
-            //console.log("onRegister ==> onLoadLoginWithPin")
+            console.log("onRegister ==> onLoadLoginWithPin")
             await this.onLoadLoginWithPin("001000200")
-            a
+
         } else if (code.FORM_VALIDATE_FAILED == data.code) {
             Alert.alert(
                 StringText.REGISTER_INVALID_TITLE,
@@ -466,15 +470,15 @@ export default class RegisterActivity extends Component {
 
                         <View style={[styles.registerContainerWidth, { marginBottom: this.state.keyboardHeight }]}>
                             <View style={styles.registTextContainer}>
-                                <Image style={[styles.registetImageContainer,{ height: 20, width: 20,}]}
+                                <Image style={[styles.registetImageContainer, { height: 20, width: 20, }]}
                                     source={require('../resource/regist/regist_location.png')} />
                                 <Text style={[styles.registLocationText, { color: Colors.grayTextColor }]}>TMAP-EM</Text>
                             </View>
                             <View style={styles.registLine} />
 
                             <View style={styles.registTextContainer}>
-                                <Image style={[styles.registetImageContainer,{ height: 20, width: 20,}]}
-                                
+                                <Image style={[styles.registetImageContainer, { height: 20, width: 20, }]}
+
                                     source={require('../resource/regist/regist_user.png')} />
                                 <TextInput
                                     onSubmitEditing={Keyboard.dismiss}
@@ -488,7 +492,7 @@ export default class RegisterActivity extends Component {
                             <View style={styles.registLine} />
 
                             <View style={styles.registTextContainer}>
-                                <Image style={[styles.registetImageContainer,{ height: 20, width: 20,}]}
+                                <Image style={[styles.registetImageContainer, { height: 20, width: 20, }]}
                                     source={require('../resource/regist/regist_locked.png')} />
                                 <TextInput
                                     onSubmitEditing={Keyboard.dismiss}
