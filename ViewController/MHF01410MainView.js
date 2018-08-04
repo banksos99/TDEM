@@ -17,10 +17,12 @@ import { months } from "moment";
 import Month from "../constants/Month"
 const ROLL_ANNOUNCE = 10;
 
+//SharedPreference.NOTIFICATION_CATEGORY
 let annountype = { 'All': 'All', 'Company Announcement': 'Company Announcement', 'Emergency Announcement': 'Emergency Announcement', 'Event Announcement': 'Event Announcement', 'General Announcement': 'General Announcement' };
 
-//SharedPreference.NOTIFICATION_CATEGORY
+//SharedPreference.READ_TYPE
 let announstatus = { 'All': 'All', 'true': 'Read', 'false': 'Unread' };
+
 let ICON_SIZE = '60%';
 let expandheight = 0;
 let announcementData = [];
@@ -77,7 +79,7 @@ export default class HMF01011MainView extends Component {
         }
 
         //Check Manager status
-        for (let i = 0; i < SharedPreference.profileObject.role_authoried.length; i++) {
+        // for (let i = 0; i < SharedPreference.profileObject.role_authoried.length; i++) {
             // if (SharedPreference.profileObject.role_authoried[i].module_function === 'HF0501') {
             //     managerstatus = 'Y'
             // }
@@ -106,7 +108,7 @@ export default class HMF01011MainView extends Component {
             //     case 'HF0A01': {
             //     }
             // }
-        }
+        // }
 
         //console.log("MainView ====> profileObject ==> managerstatus ==> ", managerstatus)
     }
@@ -231,7 +233,7 @@ export default class HMF01011MainView extends Component {
                                         if (data.year == year) {
                                             detailArray = data.detail
                                             console.log("detailArray ==> ", detailArray)
-=                                        }
+                                                =                                        }
                                     }
                                 }
                             }
@@ -259,7 +261,7 @@ export default class HMF01011MainView extends Component {
     inappTimeInterval() {
         this.timer = setTimeout(() => {
             this.onLoadInAppNoti()
-        // }, 2000);
+            // }, 2000);
         }, 60000);
     };
 
@@ -506,7 +508,7 @@ export default class HMF01011MainView extends Component {
         this.APIAnnouncementDetailCallback(await RestAPI(SharedPreference.ANNOUNCEMENT_DETAIL_API + SharedPreference.notipayAnnounceMentID, SharedPreference.FUNCTIONID_ANNOUCEMENT),
             'AnnouncementDetail', 0)
 
-        SharedPreference.notipayAnnounceMentID = 0
+        //   SharedPreference.notipayAnnounceMentID = 0
     }
 
     loadAnnouncementDetailfromAPI = async (item, index) => {
@@ -783,10 +785,6 @@ export default class HMF01011MainView extends Component {
 
         code = data[0]
         data = data[1]
-        //check org_code
-        // if (option == 9) {
-        //     orgcode = 60162370
-        // }
         this.setState({
             isscreenloading: false,
         })
@@ -795,24 +793,6 @@ export default class HMF01011MainView extends Component {
                 DataResponse: data.data,
                 Option: option
             });
-
-
-            // } else if (code.NODATA == data.code) {
-
-            //     Alert.alert(
-            //         StringText.ALERT_NONPAYROLL_NODATA_TITLE,
-            //         StringText.ALERT_NONPAYROLL_NODATA_TITLE,
-            //         [{
-            //             text: 'OK', onPress: () => {
-
-            //             }
-            //         }],
-            //         { cancelable: false }
-            //     )
-
-            // } else if (code.DOES_NOT_EXISTS == data.code) {
-
-            //     this.onNodataExistErrorAlertDialog()
 
         } else if (code.INVALID_AUTH_TOKEN == data.code) {
 
@@ -1922,6 +1902,7 @@ export default class HMF01011MainView extends Component {
 
 
     }
+
     rendermanagerview() {
         return (
             <View style={{ flex: 1, justifyContent: 'center' }}>
@@ -2031,6 +2012,7 @@ export default class HMF01011MainView extends Component {
             </View>
         )
     }
+
     rendersettingview() {
         //console.log("rendersettingview ==> this.state.syncCalendar : 1 ", this.state.syncCalendar)
         //console.log("rendersettingview ==> SharedPreference.calendarAutoSync : 2 ", SharedPreference.calendarAutoSync)
@@ -2092,7 +2074,7 @@ export default class HMF01011MainView extends Component {
                         <Text style={styles.settinglefttext}>Application Version</Text>
                     </View>
                     <View style={{ flex: 1, justifyContent: 'center' }}>
-                        <Text style={styles.settingrighttext}>1.0.0</Text>
+                        <Text style={styles.settingrighttext}>{SharedPreference.deviceInfo.appVersion}</Text>
 
                     </View>
                 </View>

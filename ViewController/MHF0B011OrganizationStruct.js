@@ -30,7 +30,7 @@ export default class OrganizationStruct extends Component {
         super(props);
 
         this.state = {
-
+            isConnected: true,
             isscreenloading:false,
         }
 
@@ -57,7 +57,9 @@ export default class OrganizationStruct extends Component {
         BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
         NetInfo.isConnected.removeEventListener('connectionChange', this.handleConnectivityChange);
     }
-
+    handleConnectivityChange = isConnected => {
+        this.setState({ isConnected });
+    };
     handleBackButtonClick() {
         this.onBack()
         return true;
@@ -364,6 +366,7 @@ export default class OrganizationStruct extends Component {
 
         
         } else {
+
             this.onLoadErrorAlertDialog(data)
         }
 
@@ -490,8 +493,8 @@ export default class OrganizationStruct extends Component {
             Alert.alert(
                 // 'MHF00001ACRI',
                 // 'Cannot connect to server. Please contact system administrator.',
-                this.state.dataSource.errors[0].code,
-                this.state.dataSource.errors[0].detail,
+                error.data[0].code,
+                error.data[0].detail,
 
                 [{
                     text: 'OK', onPress: () => console.log('OK Pressed')

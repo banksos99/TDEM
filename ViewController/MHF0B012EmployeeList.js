@@ -35,7 +35,7 @@ export default class OrganizationStruct extends Component {
         this.state = {
             //employee_name,
             //employee_position,
-            
+            isConnected: true,
         };
         
         this.checkOption(this.props.navigation.getParam("Option", ""))
@@ -73,7 +73,9 @@ export default class OrganizationStruct extends Component {
        BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
        NetInfo.isConnected.removeEventListener('connectionChange', this.handleConnectivityChange);
     }
-
+    handleConnectivityChange = isConnected => {
+        this.setState({ isConnected });
+    };
     handleBackButtonClick() {
         this.onBack()
         return true;
@@ -172,8 +174,8 @@ export default class OrganizationStruct extends Component {
         })
         if (this.state.isConnected) {
             Alert.alert(
-                'MHF00001ACRI',
-                'Cannot connect to server. Please contact system administrator.',
+                error.data[0].code,
+                error.data[0].detail,
                 [{
                     text: 'OK', onPress: () => console.log('OK Pressed')
                 }],
@@ -181,8 +183,8 @@ export default class OrganizationStruct extends Component {
             )
         } else {
             Alert.alert(
-                'MHF00002ACRI',
-                'System Error (API). Please contact system administrator.',
+                'MHF00500AERR',
+                'Cannot connect to the internet.',
                 [{
                     text: 'OK', onPress: () => {
                         console.log("onLoadErrorAlertDialog")

@@ -46,7 +46,18 @@ export default {
   grayColor:'#bdbdbd',
   redColor:'#f20909',
   //
-  leaveCircleRed:'#D32F2F',
-  leaveCircleGreen:'#60BE98',
-  leaveCircleBlue:'#189AA8'
+  leaveCircleRed: '#D32F2F',
+  leaveCircleGreen: '#60BE98',
+  leaveCircleBlue: '#189AA8',
+
+  EnableRed: '#E60C0C',
+  DisableGray: '#F5F5F5',
+  HeaderRed: '#F209090',
+
+  TextNormal: '#555555',
+  TextNormalRed: '#F20909',
+  lineNormal:'#E0E0E0',
+
+  BackgroundGray:'#FAFAFA'
+
 };

@@ -1080,8 +1080,17 @@ export const styles = StyleSheet.create({
         color: 'white'
     },
     registPinImageSubContainer: {
-        width: 40,
-        height: 40,
+        width: 30,
+        height: 30,
+        marginLeft:5,
+        marginRight:5,
+        tintColor: 'white'
+    },
+    createPinImageSubContainer: {
+        width: 30,
+        height: 30,
+        marginLeft:5,
+        marginRight:5,
         tintColor: Colors.grayColor
     },
     registPinImageContainer: {

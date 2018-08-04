@@ -634,10 +634,12 @@ export default class PayslipDetail extends Component {
             }
 
         }
-
-        let date_text = Months.monthNames[this.state.monthselected] + (this.state.initialyear - this.state.yearselected)
+        let tdatearr = this.state.datadetail.data.header.pay_date.split('-');
+        let date_text = Months.monthNames[this.state.monthselected] +' ' +tdatearr[0]
 
         if (!this.state.yearlist) {
+
+            console.log('pay_date_str : ',pay_date_str)
 
             let temp = pay_date_str.split(' ')
 
@@ -674,10 +676,6 @@ export default class PayslipDetail extends Component {
                         </View>
                     </View>
                 </View>
-
-
-
-
 
 
                 <View style={{ flex: 1, backgroundColor: Colors.backgroundColor, flexDirection: 'column', marginLeft: 15, marginRight: 15 }}>
