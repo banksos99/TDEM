@@ -40,20 +40,23 @@ export default class mainview extends Component {
       }
     }
 
-    this.messageListener = firebase.messaging().onMessage((message) => {
-      console.log('message : ',message)
-      // Process your message as required
-      // Alert.alert(
-      //   'payslip',
-      //   message,
-      //   [
-      //     { text: 'OK', onPress: () => console.log('OK Pressed') },
-      //   ],
-      //   { cancelable: false }
-      // )
+    // this.messageListener = firebase.messaging().onMessage((message) => {
+    //   console.log('message messageListener1 : ', message)
+    //   console.log('title : ', message.data.title)
+
+    //   // if(message.data.title)
+    //   // Process your message as required
+    //   // Alert.alert(
+    //   //   'payslip',
+    //   //   message,
+    //   //   [
+    //   //     { text: 'OK', onPress: () => console.log('OK Pressed') },
+    //   //   ],
+    //   //   { cancelable: false }
+    //   // )
 
 
-    });
+    // });
     //////////Device Info/////////////
 
     const deviceModel = DeviceInfo.getModel();
@@ -95,10 +98,9 @@ export default class mainview extends Component {
     notificationListener = firebase
       .notifications()
       .onNotification(notification => {
-       
-        console.log('notification : ', notification)
+        console.log('notification ==> notificationListener : ', notification)
       });
-    
+
     notificationOpen = await firebase.notifications().getInitialNotification();
     console.log('notificationOpen : ', notificationOpen)
 
@@ -108,12 +110,23 @@ export default class mainview extends Component {
       if (notification._data.type === 'payslip') {
         SharedPreference.notipayslipID = notification._data.id
       } else if (notification._data.type === 'announcement') {
-
         SharedPreference.notipayAnnounceMentID = notification._data.id
-
+        console.log("notipayAnnounceMentID ==> ", notipayAnnounceMentID)
       }
 
     }
+  }
+
+  notificationListener() {
+    notificationListener = firebase
+      .notifications()
+      .onNotification(notification => {
+        console.log('notification ==> notificationListener : ', notification)
+      });
+
+    notificationOpen =  firebase.notifications().getInitialNotification();
+    console.log('notificationOpen : ', notificationOpen)
+
   }
 
   componentWillUnmount() {
@@ -165,7 +178,7 @@ export default class mainview extends Component {
     return (
       <View style={{ flex: 1, }} >
         <Image
-        style={{ height: Layout.window.height, width: Layout.window.width, }}
+          style={{ height: Layout.window.height, width: Layout.window.width, }}
           source={require('./resource/SplashBg.png')}
           resizeMode='contain'
           style={{ flex: 1 }} />

@@ -80,34 +80,34 @@ export default class HMF01011MainView extends Component {
 
         //Check Manager status
         // for (let i = 0; i < SharedPreference.profileObject.role_authoried.length; i++) {
-            // if (SharedPreference.profileObject.role_authoried[i].module_function === 'HF0501') {
-            //     managerstatus = 'Y'
-            // }
-            // switch (SharedPreference.profileObject.role_authoried[i].module_function) {
-            //     case 'HF0121': {
-            //     }
-            //     case 'HF0601': {
-            //     }
-            //     case 'HF0501': {
-            //     }
-            //     case 'HF0901': {
-            //     }
-            //     case 'HF0701': {
-            //     }
-            //     case 'HF0801': {
-            //     }
-            //     case 'HF0311': {
-            //     }
-            //     case 'HF0A01': {
-            //     }case 'HF0701': {
-            //     }
-            //     case 'HF0801': {
-            //     }
-            //     case 'HF0311': {
-            //     }
-            //     case 'HF0A01': {
-            //     }
-            // }
+        // if (SharedPreference.profileObject.role_authoried[i].module_function === 'HF0501') {
+        //     managerstatus = 'Y'
+        // }
+        // switch (SharedPreference.profileObject.role_authoried[i].module_function) {
+        //     case 'HF0121': {
+        //     }
+        //     case 'HF0601': {
+        //     }
+        //     case 'HF0501': {
+        //     }
+        //     case 'HF0901': {
+        //     }
+        //     case 'HF0701': {
+        //     }
+        //     case 'HF0801': {
+        //     }
+        //     case 'HF0311': {
+        //     }
+        //     case 'HF0A01': {
+        //     }case 'HF0701': {
+        //     }
+        //     case 'HF0801': {
+        //     }
+        //     case 'HF0311': {
+        //     }
+        //     case 'HF0A01': {
+        //     }
+        // }
         // }
 
         //console.log("MainView ====> profileObject ==> managerstatus ==> ", managerstatus)
@@ -187,25 +187,36 @@ export default class HMF01011MainView extends Component {
 
                         let currentyear = new Date().getFullYear();
 
+                        let monthArray = []
+                        for (let index = 0; index < 12; index++) {
+                            monthData = {
+                                "month": index + 1,
+                                "badge": 0
+                            }
+                            monthArray.push(monthData)
+                        }
+                        console.log("monthArray ==> ", monthArray)
 
                         let dataCustomArray = [
                             {
                                 "year": [currentyear - 1],
-                                "detail": []
+                                "detail": monthArray
                             },
                             {
                                 "year": [currentyear],
-                                "detail": []
+                                "detail": monthArray
                             },
                         ]
+
                         console.log("dataCustomArray ==> ", dataCustomArray)
 
                         for (let index = 0; index < dataArray.length; index++) {
-                            const element = dataArray[index];
+                            const dataReceive = dataArray[index];
+                            // console.log("element ==> ", dataReceive.function_id)
 
-                            console.log("element ==> ", element.function_id)
-                            if (element.function_id == "PHF06010") {
-                                dataListArray = element.data_list
+                            if (dataReceive.function_id == "PHF06010") {//if nonPayroll
+                                dataListArray = dataReceive.data_list //TODO Bell
+
                                 console.log("dataListArray ==> ", dataListArray)
                                 for (let index = 0; index < dataListArray.length; index++) {
                                     const str = dataListArray[index];
@@ -223,17 +234,23 @@ export default class HMF01011MainView extends Component {
                                     console.log("dataListArray ==> year ==> ", year)
                                     console.log("dataListArray ==> month ==> ", month)
 
-                                    // 2016-12
                                     for (let index = 0; index < dataCustomArray.length; index++) {
                                         const data = dataCustomArray[index];
+                                        const yearData = data.year[i]
 
-                                        console.log("data.year 1 ==> ", data.year[0])
+                                        console.log("data.year 1 ==> ", yearData)
                                         console.log("data.year 2 ==> ", year)
+                                        if (yearData == year) {
+                                            let badge = data.detail + 1
+                                            console.log("selectYearData badge ==> ", badge)
 
-                                        if (data.year == year) {
-                                            detailArray = data.detail
-                                            console.log("detailArray ==> ", detailArray)
-                                                =                                        }
+                                            // if (eventObject.description == null) {
+                                            const copy = {
+                                                ...eventObject, badge: "description"
+                                            };
+                                            //     eventObject = copy
+                                            // }
+                                        }
                                     }
                                 }
                             }
@@ -261,8 +278,8 @@ export default class HMF01011MainView extends Component {
     inappTimeInterval() {
         this.timer = setTimeout(() => {
             this.onLoadInAppNoti()
-            // }, 2000);
-        }, 60000);
+        }, 2000);
+        // }, 60000);
     };
 
     componentWillUnmount() {
