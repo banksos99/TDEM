@@ -50,7 +50,7 @@ export default class PaySlipActivity extends Component {
 
 
     onBack() {
-        SharedPreference.notipayAnnounceMentID = 0
+        SharedPreference.notiAnnounceMentID = 0
         this.props.navigation.navigate('HomeScreen');
     }
 
