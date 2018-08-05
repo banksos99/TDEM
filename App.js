@@ -99,9 +99,19 @@ export default class mainview extends Component {
     notificationListener = firebase
       .notifications()
       .onNotification(notification => {
-       
-        console.log('notification : ', notification._data['gcm.notification.type'])
-        SharedPreference.notiAnnounceMentBadge = notification._ios._badge;
+
+        // console.log('notification : ', notification._data['gcm.notification.type'])
+        // SharedPreference.notiAnnounceMentBadge = notification._ios._badge;
+
+        // const notification = notificationOpen.notification;
+        console.log("notification when open App ==> ",notification)
+
+        // if (notification._data.type === 'Payroll') {
+        //   SharedPreference.notipayslipID = notification._data['gcm.notification.id']
+        // } else if (notification._data.type === 'Emergency Announcement') {
+        //   SharedPreference.notiAnnounceMentID = notification._data.id
+        // }
+
 
       });
 
@@ -111,14 +121,14 @@ export default class mainview extends Component {
     if (notificationOpen) {
 
       const notification = notificationOpen.notification;
-      
+
       if (notification._data['gcm.notification.type'] === 'Payroll') {
 
         SharedPreference.notipayslipID = notification._data['gcm.notification.id']
 
-      } else if (notification._data['gcm.notification.type'] === 'Emergency Announcement') {
+      } else if (notification._data.type === 'Emergency Announcement') {
 
-        SharedPreference.notiAnnounceMentID = notification._data['gcm.notification.id']
+        SharedPreference.notiAnnounceMentID = notification._data.id
 
       }
       console.log('notipayslipID : ', SharedPreference.notipayslipID);
@@ -132,7 +142,7 @@ export default class mainview extends Component {
         console.log('notification ==> notificationListener : ', notification)
       });
 
-    notificationOpen =  firebase.notifications().getInitialNotification();
+    notificationOpen = firebase.notifications().getInitialNotification();
     console.log('notificationOpen : ', notificationOpen)
 
   }
