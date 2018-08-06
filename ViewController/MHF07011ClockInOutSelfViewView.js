@@ -91,7 +91,7 @@ export default class ClockInOutSelfView extends Component {
             title = 'Clock In - Out'
 
         }
-        firebase.analytics().setCurrentScreen(SharedPreference.FUNCTIONID_CLOCK_IN_OUT)
+        firebase.analytics().setCurrentScreen(SharedPreference.SCREEN_CLOCK_IN_OUT_SELF)
     }
 
 

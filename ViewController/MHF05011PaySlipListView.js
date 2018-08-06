@@ -55,7 +55,7 @@ export default class PaySlipActivity extends Component {
             selectYearArray: [2000, 2000, 2000]
         };
         this.checkDataFormat(this.props.navigation.getParam("DataResponse", ""));
-        firebase.analytics().setCurrentScreen(SharedPreference.FUNCTIONID_PAYSLIP)
+        firebase.analytics().setCurrentScreen(SharedPreference.SCREEN_PAYSLIP_LIST)
     }
 
     checkDataFormat(DataResponse) {

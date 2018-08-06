@@ -62,7 +62,7 @@ export default class OTSummaryDetail extends Component {
         }
         
         this.checkDataFormat(this.props.navigation.getParam("DataResponse", ""));
-        firebase.analytics().setCurrentScreen(SharedPreference.FUNCTIONID_OT_SUMMARY)
+        firebase.analytics().setCurrentScreen(SharedPreference.SCREEN_CLOCK_IN_OUT_MANAGER)
 
 
     }

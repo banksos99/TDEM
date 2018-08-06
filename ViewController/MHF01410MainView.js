@@ -45,7 +45,8 @@ let settingstatus  = 'Y';
 
 let rolemanagementEmpoyee = [0, 0, 0, 0, 1, 0, 0, 0];
 let rolemanagementManager = [0, 0, 0, 0];
-let timerstatus;
+let timerstatus = false;
+
 // SharedPreference.notipayAnnounceMentID = 1
 // SharedPreference.notipayslipID = 0
 
@@ -59,7 +60,6 @@ export default class HMF01011MainView extends Component {
 
     saveAutoSyncCalendar = new SaveAutoSyncCalendar()
     saveProfile = new SaveProfile()
-
     constructor(props) {
         super(props);
         this.state = {
@@ -76,6 +76,7 @@ export default class HMF01011MainView extends Component {
             enddragannounce: false,
             annrefresh: false,
             username: SharedPreference.profileObject.employee_name,
+            nonPayrollBadge: []
             //  page: 0
         }
     
@@ -163,19 +164,23 @@ export default class HMF01011MainView extends Component {
             syncCalendar: autoSyncCalendarBool
         })
 
-        //console.log("loadData ==> autoSyncCalendarBool 2 ==> : ", autoSyncCalendarBool)
+        await this.onLoadInAppNoti()
+        console.log("dataCustomArray ==> new ==> ", this.state.nonPayrollBadge)
         SharedPreference.calendarAutoSync = autoSyncCalendarBool
-    }
 
-    async componentDidMount() {
-
-        // console.log("componentDidMount timerstatus : ", timerstatus)
+        console.log("componentDidMount timerstatus : ", timerstatus)
         if (!timerstatus) {
             // console.log("componentDidMount timerstatus ==> start")
             this.inappTimeInterval();
             timerstatus = true;
         }
-        //this.setState({ page: 0, })
+
+
+    }
+
+    async componentDidMount() {
+
+
         this.redertabview()
 
         NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectivityChange);
@@ -185,7 +190,7 @@ export default class HMF01011MainView extends Component {
             this.onOpenPayslipDetail()
 
         } else if (SharedPreference.notiAnnounceMentID) {
-            console.log("if SharedPreference.notiAnnounceMentID")
+            // console.log("if SharedPreference.notiAnnounceMentID")
 
             this.onOpenAnnouncementDetailnoti()
 
@@ -197,6 +202,7 @@ export default class HMF01011MainView extends Component {
 
     onLoadInAppNoti = async () => {
 
+        console.log("MainView ==> onLoadInAppNoti")
         let today = new Date()
         const newdate = moment(today).format(_format).valueOf();
 
@@ -216,8 +222,7 @@ export default class HMF01011MainView extends Component {
                     if (responseJson.status == 403) {
                         this.onAutenticateErrorAlertDialog()
                     } else if (responseJson.status == 200) {
-                        // console.log("onLoadInAppNoti ==> responseJson ", responseJson)
-
+                        console.log("onLoadInAppNoti ==> responseJson ", responseJson)
                         let dataArray = responseJson.data
                         let currentyear = new Date().getFullYear();
 
@@ -263,10 +268,6 @@ export default class HMF01011MainView extends Component {
                                     var year = monthYear[0]
                                     var month = monthYear[1]
 
-                                    // console.log("dataListArray ==> year ==>  ", year)
-                                    // console.log("dataListArray ==> month ==> ", month)
-                                    // console.log("dataCustomArray2 ==> ", dataCustomArray.length)
-
                                     for (let index = 0; index < dataCustomArray.length; index++) {
                                         const data = dataCustomArray[index];
                                         // console.log("dataCustomArray data ==> ", data)
@@ -283,19 +284,18 @@ export default class HMF01011MainView extends Component {
                                             // console.log("element ==> ", element)
 
                                             element.badge = element.badge + 1
-                                            // console.log("detail badge ==> ", element.badge)
-
+                                            console.log("detail badge ==> ", element.badge)
                                         }
-
-
-
                                     }
 
                                 }
                             }
                         }
 
-                        // console.log("dataCustomArray ==> new ==> ", dataCustomArray)
+                        console.log("MainView ==> time ==> ", dataCustomArray)
+                        this.setState({
+                            nonPayrollBadge: dataCustomArray
+                        })
 
                     } else {
                         if (timerstatus) {
@@ -320,8 +320,8 @@ export default class HMF01011MainView extends Component {
     inappTimeInterval() {
         this.timer = setTimeout(() => {
             this.onLoadInAppNoti()
-        }, 2000);
-        // }, 60000);
+            // }, 2000);
+        }, 60000);
     };
 
     getnotidata(msg) {
@@ -575,7 +575,7 @@ export default class HMF01011MainView extends Component {
 
         code = data[0]
         data = data[1]
-       
+
         this.setState({
 
             isscreenloading: false,
@@ -583,11 +583,11 @@ export default class HMF01011MainView extends Component {
         })
 
         if (code.SUCCESS == data.code) {
-            console.log('APIAnnouncementDetailCallback ==> code ==> ',code.SUCCESS)
+            console.log('APIAnnouncementDetailCallback ==> code ==> ', code.SUCCESS)
             if (tempannouncementData.length) {
                 tempannouncementData[index].attributes.read = true
             }
-            console.log('APIAnnouncementDetailCallback ==> data ==> ',data.data)
+            console.log('APIAnnouncementDetailCallback ==> data ==> ', data.data)
 
             this.props.navigation.navigate(rount, {
                 DataResponse: data.data,
@@ -633,25 +633,20 @@ export default class HMF01011MainView extends Component {
         let data = await RestAPI(SharedPreference.NONPAYROLL_SUMMARY_API, SharedPreference.FUNCTIONID_NON_PAYROLL)
         code = data[0]
         data = data[1]
-        //console.log("loadNonpayrollfromAPI  ==> data : ", data.data)
+        console.log("loadNonpayrollfromAPI  ==> data : ", data.data)
 
         if (code.SUCCESS == data.code) {
             this.props.navigation.navigate('NonPayrollList', {
                 dataResponse: data.data,
+                badgeArray: this.state.nonPayrollBadge
             });
-
         } else if (code.NODATA == data.code) {
-
             this.props.navigation.navigate('NonPayrollList', {
-                //dataResponse: data.data,
+                badgeArray: this.state.nonPayrollBadge
             });
-
         } else if (code.INVALID_AUTH_TOKEN == data.code) {
-
             this.onAutenticateErrorAlertDialog(data)
-
         } else {
-
             this.onLoadErrorAlertDialog(data, 'NonPayroll')
         }
     }

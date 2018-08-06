@@ -49,12 +49,12 @@ export default class calendarEventDetailView extends Component {
     componentWillUnmount() {
         BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
     }
- 
+
     handleBackButtonClick() {
         this.onBack()
         return true;
     }
-    
+
     componentWillMount() {
         this.getDataOnView()
         BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
@@ -67,9 +67,12 @@ export default class calendarEventDetailView extends Component {
         const vacation2 = { key: 'number2', color: Colors.calendarDotColor };
 
         if (this.state.monthObject) {
+
+            console.log("this.state.monthObject : ", this.state.monthObject)
+
             if (selectedMonth == this.state.monthObject.month) {
-                ////console.log("componentWillMonth : ", selectedMonth)
-                ////console.log("this.state.monthObject.month : ", this.state.monthObject.month)
+                console.log("componentWillMonth : ", selectedMonth)
+                console.log("this.state.monthObject.month : ", this.state.monthObject.month)
 
                 this.state.dayObject = this.state.monthObject.days;
                 const original = {}
@@ -77,20 +80,20 @@ export default class calendarEventDetailView extends Component {
 
                     const datemonth = this.state.dayObject[index].date;
                     if (this.state.dayObject[index].special_holiday == "Y") {
-                        ////console.log("selectedMonth ==> Y")
+                        console.log("selectedMonth ==> Y")
                         const copy = {
-                            ...original, [datemonth]: { marked: true, selectedColor: Colors.calendarBlueText }
+                            ...original, [datemonth]: { dots: [vacation1, vacation2], marked: true, selectedColor: Colors.calendarBlueText }
                         };
                         original = copy
                     } else if (this.state.dayObject[index].special_holiday == "N") {
-                        ////console.log("selectedMonth ==> N")
+                        console.log("selectedMonth ==> N")
                         const copy = {
                             ...original, [datemonth]: { marked: true, selectedColor: Colors.calendarRedText }
                         };
                         original = copy
 
                     } else {//W
-                        ////console.log("selectedMonth ==> W")
+                        console.log("selectedMonth ==> W")
                         let count = this.state.dayObject[index].events.length;
                         if (count > 1) {
                             const copy = {

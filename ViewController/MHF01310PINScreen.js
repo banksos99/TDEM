@@ -28,7 +28,7 @@ export default class PinActivity extends Component {
             savePin: '',
             isLoading: false
         }
-        firebase.analytics().setCurrentScreen(SharedPreference.FUNCTIONID_PIN)
+        firebase.analytics().setCurrentScreen(SharedPreference.SCREEN_PIN)
     }
 
     onLoadLoginWithPin = async (PIN) => {
@@ -46,8 +46,8 @@ export default class PinActivity extends Component {
             await this.onLoadInitialMaster()
         } else if (code.INVALID_AUTH_TOKEN == data.code) {
             Alert.alert(
-                StringText.SERVER_ERROR_TITLE,
-                StringText.SERVER_ERROR_DESC,
+                StringText.INVALID_AUTH_TOKEN_TITLE,
+                StringText.INVALID_AUTH_TOKEN_DESC,
                 [{
                     text: 'OK', onPress: () => {
                         SharedPreference.profileObject = null
@@ -211,13 +211,12 @@ export default class PinActivity extends Component {
         let but5 = require('../resource/circle.png')
         let but6 = require('../resource/circle.png')
 
-        if (this.state.pin.length >= 1) {but1 = require('../resource/circleEnable.png')}
-        if (this.state.pin.length >= 2) {but2 = require('../resource/circleEnable.png')}
-        if (this.state.pin.length >= 3) {but3 = require('../resource/circleEnable.png')}
-        if (this.state.pin.length >= 4) {but4 = require('../resource/circleEnable.png')}
-        if (this.state.pin.length >= 5) {but5 = require('../resource/circleEnable.png')}
-        if (this.state.pin.length >= 6) {but6 = require('../resource/circleEnable.png')}
-
+        if (this.state.pin.length >= 1) { but1 = require('../resource/circleEnable.png') }
+        if (this.state.pin.length >= 2) { but2 = require('../resource/circleEnable.png') }
+        if (this.state.pin.length >= 3) { but3 = require('../resource/circleEnable.png') }
+        if (this.state.pin.length >= 4) { but4 = require('../resource/circleEnable.png') }
+        if (this.state.pin.length >= 5) { but5 = require('../resource/circleEnable.png') }
+        if (this.state.pin.length >= 6) { but6 = require('../resource/circleEnable.png') }
 
         return (<View style={styles.registPinImageContainer}>
             <Image style={styles.registPinImageSubContainer} source={but1} />
@@ -269,7 +268,9 @@ export default class PinActivity extends Component {
         let data = await LoginResetPinAPI(SharedPreference.FUNCTIONID_PIN)
         code = data[0]
         data = data[1]
+
         console.log("onLoginResetPinAPI : ", data.code)
+
         if (code.SUCCESS == data.code) {
             SharedPreference.profileObject = null
             this.saveProfile.setProfile(null)
@@ -295,6 +296,9 @@ export default class PinActivity extends Component {
                 StringText.ALERT_CANNOT_DELETE_PIN_DESC,
                 [{
                     text: 'OK', onPress: () => {
+                        SharedPreference.profileObject = null
+                        this.saveProfile.setProfile(null)
+                        this.props.navigation.navigate('RegisterScreen')
                     }
                 }
                 ],
@@ -302,7 +306,6 @@ export default class PinActivity extends Component {
             )
         }
     }
-
 
     renderProgressView() {
         if (this.state.isLoading) {
@@ -317,8 +320,6 @@ export default class PinActivity extends Component {
             )
         }
     }
-
-
 
     render() {
         return (

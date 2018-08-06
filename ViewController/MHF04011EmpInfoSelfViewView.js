@@ -64,7 +64,7 @@ export default class EmpInfoDetail extends Component {
         }
 
         this.checkDataFormat(this.props.navigation.getParam("DataResponse", ""));
-        firebase.analytics().setCurrentScreen(SharedPreference.FUNCTIONID_CALENDAR_EVENT)
+        firebase.analytics().setCurrentScreen(SharedPreference.SCREEN_EMPLOYEE_INFORMATION_SELF)
 
 
     }

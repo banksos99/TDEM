@@ -6,9 +6,8 @@ export default {
   ALERT_NONPAYROLL_NODATA_TITLE: 'No Data.',
   ALERT_NONPAYROLL_NODATA_BUTTON: 'OK',
 
-  ALERT_AUTHORLIZE_ERROR_TITLE: 'Error',
+  ALERT_AUTHORLIZE_ERROR_TITLE: 'Sorry',
   ALERT_AUTHORLIZE_ERROR_MESSAGE: 'Have login from another device',
-
 
   CALENDAR_DOWNLOAD_PDF_SUCCESS_TITLE: 'Success',
   CALENDAR_DOWNLOAD_PDF_SUCCESS_DESC: ' has been download',
@@ -55,6 +54,10 @@ export default {
   SERVER_ERROR_TITLE: 'MHF00002ACRI',
   SERVER_ERROR_DESC: 'System Error (API). Please contact system administrator.',
 
+  INVALID_AUTH_TOKEN_TITLE:'Sorry',
+  INVALID_AUTH_TOKEN_DESC:'User Expire.Please login with USER and PASS.',
+
+
   REGISTER_PIN_ERROR_TITLE: 'Sorry',
   REGISTER_PIN_ERROR_DESC: 'Confirm PIN incorrect.Please try again.',
 
@@ -75,10 +78,10 @@ export default {
   CHANGE_PIN_SUCCESS_TITLE: 'Change PIN Success',
 
   CHANGE_PIN_FAIL_TITLE: 'Sorry',
-  CHANGE_PIN_FAIL_DESC: 'Current PIN incorrect.Please try again',
+  CHANGE_PIN_FAIL_DESC: 'Current PIN incorrect.Please try again.',
 
   CHANGE_PIN_NOT_MATCH_TITLE: 'Sorry',
-  CHANGE_PIN_NOT_MATCH_DESC: ' PIN incorrect.Please try again',
+  CHANGE_PIN_NOT_MATCH_DESC: 'Confirm PIN not match.Please try again.',
 
   ALERT_PAYSLIP_CANNOT_DOWNLOAD_TITLE: 'Sorry',
   ALERT_PAYSLIP_CANNOT_DOWNLOAD_DESC: 'Cannot download file.',

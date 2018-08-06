@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
-import { View, Image, Alert } from 'react-native';
+import { View, Image, Alert, Platform } from 'react-native';
 
 import {
   StackNavigator,
   createSwitchNavigator,
-  Platform
+  
 } from 'react-navigation';
+
 import SharedPreference from './SharedObject/SharedPreference';
+
 import RootViewController from './ViewController/NavigationController';
 import PINScreen from './ViewController/MHF01310PINScreen';
 import SavePIN from "./constants/SavePIN";
@@ -46,23 +48,6 @@ export default class mainview extends Component {
       }
     }
 
-    // this.messageListener = firebase.messaging().onMessage((message) => {
-    //   console.log('message messageListener1 : ', message)
-    //   console.log('title : ', message.data.title)
-
-    //   // if(message.data.title)
-    //   // Process your message as required
-    //   // Alert.alert(
-    //   //   'payslip',
-    //   //   message,
-    //   //   [
-    //   //     { text: 'OK', onPress: () => console.log('OK Pressed') },
-    //   //   ],
-    //   //   { cancelable: false }
-    //   // )
-
-
-    // });
     //////////Device Info/////////////
 
     const deviceModel = DeviceInfo.getModel();
@@ -98,79 +83,7 @@ export default class mainview extends Component {
         }
       });
 
-    firebase.analytics().setCurrentScreen("TDEMCONNECT MAIN")
-    
-    ///when open Application
-    notificationListener = firebase
-      .notifications()
-      .onNotification(notification => {
-        
-        
-        //notiMessage = notification;
-        SharedPreference.notiAnnounceMentBadge = notification._data._badge;
-       
-        this.setState({
-          notiMessage: notification,
-         
-        });
-        
-        console.log('notiMessage : ', this.state.notiMessage)
-
-        // the listener returns a function you can use to unsubscribe
-    // this.unsubscribeFromNotificationListener = firebase.notifications().onNotification((notification) => {
-    
-    //   console.log("unsubscribeFromNotificationListener ==> ",notification)
-    
-    //   if (Platform.OS === 'android') {
-
-    //     const localNotification = new firebase.notifications.Notification({
-    //         sound: 'default',
-    //         show_in_foreground: true,
-    //       })
-    //       .setNotificationId(notification.notificationId)
-    //       .setTitle(notification.title)
-    //       .setSubtitle(notification.subtitle)
-    //       .setBody(notification.body)
-    //       .setData(notification.data)
-    //       .android.setChannelId('channelId') // e.g. the id you chose above
-    //       .android.setSmallIcon('ic_stat_notification') // create this icon in Android Studio
-    //       .android.setColor('#000000') // you can set a color here
-    //       .android.setPriority(firebase.notifications.Android.Priority.High);
-
-    //     firebase.notifications()
-    //       .displayNotification(localNotification)
-    //       .catch(err => console.error(err));
-
-    //   } else if (Platform.OS === 'ios') {
-
-    //     PushNotificationIOS.setApplicationIconBadgeNumber(0);
-    //     const localNotification = new firebase.notifications.Notification()
-    //       .setNotificationId(notification.notificationId)
-    //       .setTitle(notification.title)
-    //       .setSubtitle(notification.subtitle)
-    //       .setBody(notification.body)
-    //       .setData(notification.data)
-    //       .ios.setBadge(notification.ios.badge);
-
-    //     firebase.notifications()
-    //       .displayNotification(localNotification)
-    //       .catch(err => console.error(err));
-
-    //   }
-    // });
-        // if (notification._data['gcm.notification.type'] === 'Payroll') {
-
-        //   SharedPreference.notipayslipID = notification._data['gcm.notification.id']
-  
-        // } else if (notification._data['gcm.notification.type'] === 'Emergency Announcement') {
-  
-        //   SharedPreference.notiAnnounceMentID = notification._data['gcm.notification.id']
-  
-        // }
-
-        
-
-      });
+    firebase.analytics().setCurrentScreen(SharedPreference.SCREEN_SPLASH)
 
     notificationOpen = await firebase.notifications().getInitialNotification();
     console.log('notificationOpen : ', notificationOpen)
@@ -197,15 +110,17 @@ export default class mainview extends Component {
       .notifications()
       .onNotification(notification => {
         console.log('notification ==> notificationListener : ', notification)
+        Alert
       });
 
     notificationOpen = firebase.notifications().getInitialNotification();
     console.log('notificationOpen : ', notificationOpen)
 
   }
-
   componentWillUnmount() {
-    this.notificationListener();
+    // this.notificationListener();
+    this.unsubscribeFromNotificationListener();
+
   }
 
   inactivecounting() {

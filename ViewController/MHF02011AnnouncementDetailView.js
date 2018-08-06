@@ -20,7 +20,7 @@ export default class PaySlipActivity extends Component {
         super(props);
         this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
         this.checkDataFormat(this.props.navigation.getParam("DataResponse", ""));
-        firebase.analytics().setCurrentScreen(SharedPreference.FUNCTIONID_PAYSLIP)
+        firebase.analytics().setCurrentScreen(SharedPreference.SCREEN_ANNOUCEMENT_DETAIL)
 
 
     }

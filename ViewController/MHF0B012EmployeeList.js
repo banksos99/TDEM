@@ -40,8 +40,7 @@ export default class OrganizationStruct extends Component {
         
         this.checkOption(this.props.navigation.getParam("Option", ""))
         this.checkDataFormat(this.props.navigation.getParam("DataResponse", ""));
-        firebase.analytics().setCurrentScreen(SharedPreference.FUNCTIONID_EMPLOYEE_INFORMATION)
-
+        firebase.analytics().setCurrentScreen(SharedPreference.SCREEN_EMPLOYEE_INFORMATION_SELF)
     }
 
     checkOption(opt) {

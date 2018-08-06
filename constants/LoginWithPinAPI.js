@@ -19,9 +19,9 @@ export default async function loginWithPinAPI(pin, functionID) {
         CUT_JSON: "700",
     }
 
-    console.log("LoginWithPin ==> pin  : ", pin, " , functionID : ", functionID)
+    // console.log("LoginWithPin ==> pin  : ", pin, " , functionID : ", functionID)
     let FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, functionID, SharedPreference.profileObject.client_token)
-    console.log("LoginWithPin ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
+    // console.log("LoginWithPin ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
 
     return fetch(SharedPreference.REGISTER_API, {
         method: 'POST',
@@ -39,7 +39,7 @@ export default async function loginWithPinAPI(pin, functionID) {
     })
         .then((response) => response.json())
         .then((responseJson) => {
-            console.log("LoginWithPinAPI ==> callback success : ", responseJson)
+            // console.log("LoginWithPinAPI ==> callback success : ", responseJson)
             let object
             if (responseJson.status == code.SUCCESS) {
                 SharedPreference.profileObject = responseJson.data

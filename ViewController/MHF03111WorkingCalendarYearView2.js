@@ -80,7 +80,7 @@ export default class calendarYearView extends Component {
         this.onPressCalendar = this.onPressCalendar.bind(this)
         this.getYearSelect()
         this.setNewPicker()
-        firebase.analytics().setCurrentScreen(SharedPreference.FUNCTIONID_CALENDAR_EVENT)
+        firebase.analytics().setCurrentScreen(SharedPreference.SCREEN_WORKING_CALENDAR)
 
     }
 
