@@ -609,9 +609,7 @@ export default class ClockInOutSelfView extends Component {
             console.log('scroll hight : ', Layout.window.height - 100)
             console.log('content height : ', this.state.tdataSource.length * 90)
             console.log('currentday : ', (currentday + 1) * 90)
-
             console.log('offsety : ', offsety)
-
 
           //  offsety = ((currentday * 90) - 220)
 
@@ -620,9 +618,10 @@ export default class ClockInOutSelfView extends Component {
             if (offsety > (this.state.tdataSource.length * 90) - (Layout.window.height - 100)) {
                 offsety = (this.state.tdataSource.length * 90) - (Layout.window.height - 100)
 
-            } else if (((currentday + 1) * 90)  < (Layout.window.height - 100)) {
+            } else if (((currentday + 1) * 90)  < ((Layout.window.height - 100 )/ 2)) {
 
-                offsety = ((currentday ) * 90) 
+                //offsety = ((currentday ) * 90) 
+                offsety = 0
             }
             
         }

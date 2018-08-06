@@ -10,8 +10,8 @@ export default {
     INITIAL_MASTER_API: HOST + '/api/' + VERSION + '/initmaster/',
     APPLICATION_INFO_API: HOST + '/api/' + VERSION + '/appinfo',
     PULL_NOTIFICATION_API: HOST + '/api/' + VERSION + '/pullnotification?latest_date=',
-    ANNOUNCEMENT_ASC_API: HOST + '/api/' + VERSION + '/announcement?sort=%2Bcreate_date',
-    ANNOUNCEMENT_DSC_API: HOST + '/api/' + VERSION + '/announcement?sort=-create_date',
+    ANNOUNCEMENT_ASC_API: HOST + '/api/' + VERSION + '/announcement?sort=-create_date',
+    ANNOUNCEMENT_DSC_API: HOST + '/api/' + VERSION + '/announcement?sort=%2Bcreate_date',
     ANNOUNCEMENT_DETAIL_API: HOST + '/api/' + VERSION + '/announcement/',
 
     PAYSLIP_LIST_API: HOST + '/api/' + VERSION + '/payslip/summary',
@@ -62,7 +62,9 @@ export default {
     notipayslipID: 0,
     notiAnnounceMentID: 0,
     notiAnnounceMentBadge: 0,
-setHomeViewStatus:0,
+    setHomeViewStatus: 0,
+
+
 
     HandbookHighlightList: [],
     Handbook: [],

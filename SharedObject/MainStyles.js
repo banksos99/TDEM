@@ -1284,11 +1284,11 @@ export const styles = StyleSheet.create({
     },
     clockinoutweakdayalphatext: {
         color: Colors.grayTextColor,
-        fontSize: 14 * scale,
+        fontSize: 12 * scale,
         fontFamily: font_medium,
     },
     epubTocText: {
-        fontSize: 14,
+        fontSize: 14* scale,
         color: Colors.redTextColor,
         width: '100%',
         fontFamily: font_medium,
@@ -1330,12 +1330,12 @@ export const styles = StyleSheet.create({
     },
     empinfoDetailRedText: {
         color: Colors.redTextColor,
-        marginLeft: 20,
+        marginLeft: 20* scale,
         fontFamily: font_medium
     },
     empinfocareerLeftText: {
         fontSize: 9 * scale,
-        marginRight: 10,
+        marginRight: 10* scale,
         color: Colors.grayText,
         textAlign: 'left',
         fontFamily: font_medium
@@ -1343,7 +1343,7 @@ export const styles = StyleSheet.create({
     },
     empinfocareerRightText: {
         fontSize: 9 * scale,
-        marginRight: 10,
+        marginRight: 10* scale,
         color: Colors.grayText,
         textAlign: 'right',
         fontFamily: font_medium
@@ -1351,7 +1351,7 @@ export const styles = StyleSheet.create({
     },
     empinfocareerRightRedText: {
         fontSize: 11 * scale,
-        marginRight: 10,
+        marginRight: 10* scale,
         color: Colors.redTextColor,
         textAlign: 'right',
         fontFamily: font_medium

@@ -139,14 +139,17 @@ const AppNavigatorRegister = createSwitchNavigator({
     }
 );
 export default class rootNavigation extends Component {
+
     saveProfile = new SaveProfile()
     constructor(props) {
         super(props);
         this.state = {
             hasPin: false,
-            number: "111111"
+            number: "111111",
+            notiMessage:this.props.pushstatus,
         };
     }
+   
     async componentDidMount() {
         // this.inappTimeInterval();
 
@@ -171,9 +174,14 @@ export default class rootNavigation extends Component {
 
     }
     render() {
+       // console.log('data pushstatus :', this.props.pushstatus)
+       // console.log('data pushstatus :', AppNavigatorRegister.props.navigation)
+        //AppNavigatorRegister.homeScreen.getnotidata(this.props.pushstatus)
+       
         if (this.state.hasPin == false) {
             return (
-                <AppNavigatorRegister />
+                <AppNavigatorRegister 
+                tempdata={this.state.notiMessage}/>
             );
         } else {
             return (

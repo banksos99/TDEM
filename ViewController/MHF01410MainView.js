@@ -39,9 +39,11 @@ let initannouncementStatustext = 'All'
 let page = 0;
 let orgcode = '';//60162305;
 
-let managerstatus = 'Y';
+let managerstatus = 'N';
 let announcestatus = 'Y';
-let rolemanagementEmpoyee = [1, 1, 1, 1, 1, 1, 1, 1];
+let settingstatus  = 'Y';
+
+let rolemanagementEmpoyee = [0, 0, 0, 0, 1, 0, 0, 0];
 let rolemanagementManager = [0, 0, 0, 0];
 let timerstatus;
 // SharedPreference.notipayAnnounceMentID = 1
@@ -53,24 +55,10 @@ import moment from 'moment'
 import Authorization from "../SharedObject/Authorization";
 //import { NODATA } from "dns";
 
-
-let tdata = {
-    '_data':
-    {
-        'gcm.notification.type': 'Payroll',
-        'google.c.a.e': '1',
-        'gcm.notification.id': '160'
-    }
-}
-
-
-
 export default class HMF01011MainView extends Component {
 
     saveAutoSyncCalendar = new SaveAutoSyncCalendar()
     saveProfile = new SaveProfile()
-
-
 
     constructor(props) {
         super(props);
@@ -90,40 +78,72 @@ export default class HMF01011MainView extends Component {
             username: SharedPreference.profileObject.employee_name,
             //  page: 0
         }
-
-        //Check Manager status
+    
+        //Check role_authoried status
         for (let i = 0; i < SharedPreference.profileObject.role_authoried.length; i++) {
-            // if (SharedPreference.profileObject.role_authoried[i].module_function === 'HF0501') {
-            //     managerstatus = 'Y'
-            // }
-            // switch (SharedPreference.profileObject.role_authoried[i].module_function) {
-            //     case 'HF0121': {
-            //     }
-            //     case 'HF0601': {
-            //     }
-            //     case 'HF0501': {
-            //     }
-            //     case 'HF0901': {
-            //     }
-            //     case 'HF0701': {
-            //     }
-            //     case 'HF0801': {
-            //     }
-            //     case 'HF0311': {
-            //     }
-            //     case 'HF0A01': {
-            //     }case 'HF0701': {
-            //     }
-            //     case 'HF0801': {
-            //     }
-            //     case 'HF0311': {
-            //     }
-            //     case 'HF0A01': {
-            //     }
-            // }
+
+            if (SharedPreference.profileObject.role_authoried[i].module_function === 'HF0401') {
+
+                rolemanagementEmpoyee[0] = 1
+            } else if (SharedPreference.profileObject.role_authoried[i].module_function === 'HF0601') {
+
+                rolemanagementEmpoyee[1] = 1
+
+            } else if (SharedPreference.profileObject.role_authoried[i].module_function === 'HF0501') {
+
+                rolemanagementEmpoyee[2] = 1
+
+            } else if (SharedPreference.profileObject.role_authoried[i].module_function === 'HF0901') {
+
+                rolemanagementEmpoyee[3] = 1
+
+            } else if (SharedPreference.profileObject.role_authoried[i].module_function === 'HF0701') {
+
+                rolemanagementEmpoyee[4] = 1
+
+            } else if (SharedPreference.profileObject.role_authoried[i].module_function === 'HF0801') {
+
+                rolemanagementEmpoyee[5] = 1
+
+            } else if (SharedPreference.profileObject.role_authoried[i].module_function === 'HF0311') {
+
+                rolemanagementEmpoyee[6] = 1
+
+            } else if (SharedPreference.profileObject.role_authoried[i].module_function === 'HF0A01') {
+
+                rolemanagementEmpoyee[7] = 1
+
+            } else if (SharedPreference.profileObject.role_authoried[i].module_function === 'HF0201') {
+
+                announcestatus = 'Y'
+
+            } else if (SharedPreference.profileObject.role_authoried[i].module_function === 'HF0C11') {
+
+                managerstatus = 'Y'
+
+            } else if (SharedPreference.profileObject.role_authoried[i].module_function === 'HF0121') {
+
+                rolemanagementManager[0] = 1
+
+            } else if (SharedPreference.profileObject.role_authoried[i].module_function === 'HF0C31') {
+
+                rolemanagementManager[1] = 1
+
+            } else if (SharedPreference.profileObject.role_authoried[i].module_function === 'HF0C41') {
+
+                rolemanagementManager[2] = 1
+
+            } else if (SharedPreference.profileObject.role_authoried[i].module_function === 'HF0C51') {
+
+                rolemanagementManager[3] = 1
+
+            } else if (SharedPreference.profileObject.role_authoried[i].module_function === 'HF0151') {
+
+                settingstatus = 'Y'
+            }
+
         }
-        console.log('tdata : ', tdata._data['gcm.notification.type'])
-        //console.log("MainView ====> profileObject ==> managerstatus ==> ", managerstatus)
+
     }
 
     componentWillMount() {
@@ -282,17 +302,17 @@ export default class HMF01011MainView extends Component {
                             this.inappTimeInterval()
                         }
                     }
-                    this.setState({
-                    }, function () {
-                    });
+                    // this.setState({
+                    // }, function () {
+                    // });
 
                 } catch (error) {
-                    ////console.log('erreo1 :', error);
+                    console.log('erreo1 :', error);
                 }
             })
             .catch((error) => {
 
-                //console.log('error :', error)
+                console.log('error :', error)
 
             });
     }
@@ -303,6 +323,11 @@ export default class HMF01011MainView extends Component {
         }, 2000);
         // }, 60000);
     };
+
+    getnotidata(msg) {
+        console.log('getnotidata : ', msg)
+
+    }
 
     componentWillUnmount() {
         NetInfo.isConnected.removeEventListener('connectionChange', this.handleConnectivityChange);
@@ -363,7 +388,6 @@ export default class HMF01011MainView extends Component {
         });
 
     }
-
 
     loadAnnouncementfromAPI = async () => {
 
@@ -1235,9 +1259,10 @@ export default class HMF01011MainView extends Component {
     }
 
     settabscreen(tabnumber) {
+        console.log('tabnumber : ',tabnumber)
         if (tabnumber === 1) {
             // check permission announcement
-            if (announcestatus == false) {
+            if (announcestatus == 'N') {
                 return
             }
             //load data befor open announcement screen in first time
@@ -1256,6 +1281,14 @@ export default class HMF01011MainView extends Component {
                     this.loadAnnouncementfromAPI()
                 });
             }
+        } if (tabnumber === 3) {
+            if (settingstatus == 'N') {
+                return
+            }
+            page = tabnumber
+            this.setState({
+
+            })
         } else {
             page = tabnumber
             this.setState({
@@ -1669,7 +1702,7 @@ export default class HMF01011MainView extends Component {
 
                         <TouchableOpacity
                             ref='MHF01411WorkingCalendar'
-                            // disabled={!rolemanagementEmpoyee[6]}
+                            disabled={!rolemanagementEmpoyee[6]}
                             style={{ flex: 1 }}
                             onPress={this.onOpenCalendar.bind(this)}
                         >
@@ -1949,12 +1982,16 @@ export default class HMF01011MainView extends Component {
                         <TouchableOpacity
                             ref=''
                             style={{ flex: 1 }}
+                            // rolemanagementManager
+                            disabled={!rolemanagementManager[0]}
                             onPress={this.onOpenOrgaStructer.bind(this)}
                         >
                             <View style={[styles.boxShadow, shadow]} >
                                 <View style={styles.managermenuImageButton}>
                                     <Image
-                                        style={{ flex: 0.5 }}
+                                        style={rolemanagementManager[0] === 1 ?
+                                            { flex: 0.5, tintColor: Colors.redTextColor } :
+                                            { flex: 0.5, tintColor: Colors.lightGrayTextColor }}
                                         source={require('./../resource/images/MainMenu/MenuEmployee.png')}
                                         resizeMode='contain'
                                     />
@@ -1970,13 +2007,16 @@ export default class HMF01011MainView extends Component {
 
                         <TouchableOpacity
                             ref=''
+                            disabled={!rolemanagementManager[1]}
                             style={{ flex: 1 }}
                             onPress={this.onOpenOrgaStructerClockInOut.bind(this)}
                         >
                             <View style={[styles.boxShadow, shadow]} >
                                 <View style={styles.managermenuImageButton}>
                                     <Image
-                                        style={{ flex: 0.5 }}
+                                        style={rolemanagementManager[1] === 1?
+                                            { flex: 0.5, tintColor: Colors.redTextColor } :
+                                            { flex: 0.5, tintColor: Colors.lightGrayTextColor }}
                                         source={require('./../resource/images/MainMenu/MenuClock.png')}
                                         resizeMode='contain'
                                     />
@@ -1992,6 +2032,7 @@ export default class HMF01011MainView extends Component {
 
                         <TouchableOpacity
                             ref=''
+                            disabled={!rolemanagementManager[2]}
                             style={{ flex: 1 }}
                             onPress={this.onOpenOrgaStructerOTAverage.bind(this)}
 
@@ -1999,7 +2040,9 @@ export default class HMF01011MainView extends Component {
                             <View style={[styles.boxShadow, shadow]} >
                                 <View style={styles.managermenuImageButton}>
                                     <Image
-                                        style={{ flex: 0.5 }}
+                                         style={rolemanagementManager[2] === 1 ?
+                                            { flex: 0.5, tintColor: Colors.redTextColor } :
+                                            { flex: 0.5, tintColor: Colors.lightGrayTextColor }}
                                         source={require('./../resource/images/MainMenu/MenuAverage.png')}
                                         resizeMode='contain'
                                     />
@@ -2012,12 +2055,15 @@ export default class HMF01011MainView extends Component {
 
                         <TouchableOpacity
                             ref=''
+                            disabled={!rolemanagementManager[3]}
                             style={{ flex: 1 }}
                             onPress={this.onOpenOrgaStructerOTHistory.bind(this)}>
                             <View style={[styles.boxShadow, shadow]} >
                                 <View style={styles.managermenuImageButton}>
                                     <Image
-                                        style={{ flex: 0.5 }}
+                                         style={rolemanagementManager[3] === 1 ?
+                                            { flex: 0.5, tintColor: Colors.redTextColor } :
+                                            { flex: 0.5, tintColor: Colors.lightGrayTextColor }}
                                         source={require('./../resource/images/MainMenu/MenuHistory.png')}
                                         resizeMode='contain'
                                     />
@@ -2354,8 +2400,10 @@ export default class HMF01011MainView extends Component {
 
     }
     render() {
+        console.log('data pushstatus :', this.props.tempdata)
         let badgeBG = 'transparent'
         let badgeText = 'transparent'
+        console.log('notiAnnounceMentBadge : ',SharedPreference.notiAnnounceMentBadge);
         if (SharedPreference.notiAnnounceMentBadge) {
             badgeBG = 'red'
             badgeText = 'white'

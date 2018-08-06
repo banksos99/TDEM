@@ -4,6 +4,7 @@ import { View, Image, Alert } from 'react-native';
 import {
   StackNavigator,
   createSwitchNavigator,
+  Platform
 } from 'react-navigation';
 import SharedPreference from './SharedObject/SharedPreference';
 import RootViewController from './ViewController/NavigationController';
@@ -13,6 +14,8 @@ import DeviceInfo from 'react-native-device-info';
 
 import firebase from 'react-native-firebase';
 import Layout from "./SharedObject/Layout";
+
+
 export default class mainview extends Component {
 
   savePIN = new SavePIN()
@@ -22,11 +25,13 @@ export default class mainview extends Component {
     this.state = {
       inactive: false,
       showpin: false,
+      notiMessage:0
     }
     // SharedPreference.notiAnnounceMentBadge = 150;
   }
 
   async componentDidMount() {
+    
     this.inactivecounting();
 
     const enabled = await firebase.messaging().hasPermission();
@@ -94,17 +99,65 @@ export default class mainview extends Component {
       });
 
     firebase.analytics().setCurrentScreen("TDEMCONNECT MAIN")
-
+    
     ///when open Application
     notificationListener = firebase
       .notifications()
       .onNotification(notification => {
-
+        
+        
+        //notiMessage = notification;
+        SharedPreference.notiAnnounceMentBadge = notification._data._badge;
        
-        console.log('notification : ', notification)
-        SharedPreference.notiAnnounceMentBadge = notification._ios._badge;
+        this.setState({
+          notiMessage: notification,
+         
+        });
+        
+        console.log('notiMessage : ', this.state.notiMessage)
 
+        // the listener returns a function you can use to unsubscribe
+    // this.unsubscribeFromNotificationListener = firebase.notifications().onNotification((notification) => {
+    
+    //   console.log("unsubscribeFromNotificationListener ==> ",notification)
+    
+    //   if (Platform.OS === 'android') {
 
+    //     const localNotification = new firebase.notifications.Notification({
+    //         sound: 'default',
+    //         show_in_foreground: true,
+    //       })
+    //       .setNotificationId(notification.notificationId)
+    //       .setTitle(notification.title)
+    //       .setSubtitle(notification.subtitle)
+    //       .setBody(notification.body)
+    //       .setData(notification.data)
+    //       .android.setChannelId('channelId') // e.g. the id you chose above
+    //       .android.setSmallIcon('ic_stat_notification') // create this icon in Android Studio
+    //       .android.setColor('#000000') // you can set a color here
+    //       .android.setPriority(firebase.notifications.Android.Priority.High);
+
+    //     firebase.notifications()
+    //       .displayNotification(localNotification)
+    //       .catch(err => console.error(err));
+
+    //   } else if (Platform.OS === 'ios') {
+
+    //     PushNotificationIOS.setApplicationIconBadgeNumber(0);
+    //     const localNotification = new firebase.notifications.Notification()
+    //       .setNotificationId(notification.notificationId)
+    //       .setTitle(notification.title)
+    //       .setSubtitle(notification.subtitle)
+    //       .setBody(notification.body)
+    //       .setData(notification.data)
+    //       .ios.setBadge(notification.ios.badge);
+
+    //     firebase.notifications()
+    //       .displayNotification(localNotification)
+    //       .catch(err => console.error(err));
+
+    //   }
+    // });
         // if (notification._data['gcm.notification.type'] === 'Payroll') {
 
         //   SharedPreference.notipayslipID = notification._data['gcm.notification.id']
@@ -193,7 +246,8 @@ export default class mainview extends Component {
     if (this.state.inactive) {
       return (
         <View style={{ flex: 1, }}>
-          <RootViewController />
+          <RootViewController
+            pushstatus={this.state.notiMessage} />
         </View>
       );
     }

@@ -83,7 +83,7 @@ export default class PaySlipActivity extends Component {
             </View> */}
                 <WebView
                     //source={{ uri: 'https://github.com/facebook/react-native' }}
-                    source={{ html: content }}
+                    source={{ html: '<!DOCTYPE html><html><body><style>p{font-size:60px;}</style>' + content + '</body></html>' }}
                     style={{ marginTop: 0 }}
                 />
             </View >
