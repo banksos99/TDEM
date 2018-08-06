@@ -18,15 +18,15 @@ export default class PaySlipActivity extends Component {
 
     constructor(props) {
         super(props);
-
-
         this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
         this.checkDataFormat(this.props.navigation.getParam("DataResponse", ""));
         firebase.analytics().setCurrentScreen(SharedPreference.FUNCTIONID_PAYSLIP)
+
+
     }
 
     checkDataFormat(DataResponse) {
-        
+        console.log("PaySlipActivity ==> ", DataResponse)
         if (DataResponse) {
             title = DataResponse.title
             content = DataResponse.content

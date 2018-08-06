@@ -54,10 +54,14 @@ import Authorization from "../SharedObject/Authorization";
 //import { NODATA } from "dns";
 
 
-let tdata = {'_data':
-    { 'gcm.notification.type': 'Payroll',
+let tdata = {
+    '_data':
+    {
+        'gcm.notification.type': 'Payroll',
         'google.c.a.e': '1',
-        'gcm.notification.id': '160' }}
+        'gcm.notification.id': '160'
+    }
+}
 
 
 
@@ -86,7 +90,7 @@ export default class HMF01011MainView extends Component {
             username: SharedPreference.profileObject.employee_name,
             //  page: 0
         }
-        
+
         //Check Manager status
         for (let i = 0; i < SharedPreference.profileObject.role_authoried.length; i++) {
             // if (SharedPreference.profileObject.role_authoried[i].module_function === 'HF0501') {
@@ -118,7 +122,7 @@ export default class HMF01011MainView extends Component {
             //     }
             // }
         }
-console.log('tdata : ',tdata._data['gcm.notification.type'])
+        console.log('tdata : ', tdata._data['gcm.notification.type'])
         //console.log("MainView ====> profileObject ==> managerstatus ==> ", managerstatus)
     }
 
@@ -144,6 +148,7 @@ console.log('tdata : ',tdata._data['gcm.notification.type'])
     }
 
     async componentDidMount() {
+
         // console.log("componentDidMount timerstatus : ", timerstatus)
         if (!timerstatus) {
             // console.log("componentDidMount timerstatus ==> start")
@@ -160,18 +165,21 @@ console.log('tdata : ',tdata._data['gcm.notification.type'])
             this.onOpenPayslipDetail()
 
         } else if (SharedPreference.notiAnnounceMentID) {
+            console.log("if SharedPreference.notiAnnounceMentID")
 
             this.onOpenAnnouncementDetailnoti()
 
         }
-
         await this.loadData()
+
 
     }
 
     onLoadInAppNoti = async () => {
+
         let today = new Date()
         const newdate = moment(today).format(_format).valueOf();
+
         FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, 1, SharedPreference.profileObject.client_token)
         latest_date = "2017-01-01 12:00:00"
         return fetch(SharedPreference.PULL_NOTIFICATION_API + latest_date, {
@@ -185,10 +193,90 @@ console.log('tdata : ',tdata._data['gcm.notification.type'])
             .then((response) => response.json())
             .then((responseJson) => {
                 try {
-                    console.log('inapp responseJson :', responseJson)
                     if (responseJson.status == 403) {
                         this.onAutenticateErrorAlertDialog()
-                        // this.select_sign_out()
+                    } else if (responseJson.status == 200) {
+                        // console.log("onLoadInAppNoti ==> responseJson ", responseJson)
+
+                        let dataArray = responseJson.data
+                        let currentyear = new Date().getFullYear();
+
+                        let monthArray = []
+                        for (let index = 0; index < 12; index++) {
+                            monthData = {
+                                "month": index + 1,
+                                "badge": 0
+                            }
+                            monthArray.push(monthData)
+                        }
+                        // console.log("monthArray ==> ", monthArray)
+
+                        let dataCustomArray = [
+                            {
+                                "year": currentyear - 1,
+                                "detail": monthArray
+                            },
+                            {
+                                "year": currentyear,
+                                "detail": monthArray
+                            },
+                        ]
+
+                        for (let index = 0; index < dataArray.length; index++) {
+                            const dataReceive = dataArray[index];
+                            // console.log("element ==> ", dataReceive.function_id)
+
+                            if (dataReceive.function_id == "PHF06010") {//if nonPayroll
+                                dataListArray = dataReceive.data_list //TODO Bell
+
+                                // console.log("dataListArray ==> ", dataListArray)
+                                for (let index = 0; index < dataListArray.length; index++) {
+                                    const str = dataListArray[index];
+                                    // console.log("str ==> ", str)
+                                    var res = str.split("|");
+                                    // console.log("res ==> ", res[1])
+                                    var data = res[1]
+
+                                    var monthYear = data.split("-");
+                                    // console.log("dataListArray ==> monthYear ==> ", monthYear)
+
+                                    var year = monthYear[0]
+                                    var month = monthYear[1]
+
+                                    // console.log("dataListArray ==> year ==>  ", year)
+                                    // console.log("dataListArray ==> month ==> ", month)
+                                    // console.log("dataCustomArray2 ==> ", dataCustomArray.length)
+
+                                    for (let index = 0; index < dataCustomArray.length; index++) {
+                                        const data = dataCustomArray[index];
+                                        // console.log("dataCustomArray data ==> ", data)
+                                        // console.log("dataCustomArray year ==> ", data.year)
+
+                                        if (year == data.year) {
+                                            const detail = data.detail
+                                            // console.log("detail ==> ", detail)
+                                            // console.log("month select  ==> ", month)
+
+                                            let element = detail.find((p) => {
+                                                return p.month === JSON.parse(month)
+                                            });
+                                            // console.log("element ==> ", element)
+
+                                            element.badge = element.badge + 1
+                                            // console.log("detail badge ==> ", element.badge)
+
+                                        }
+
+
+
+                                    }
+
+                                }
+                            }
+                        }
+
+                        // console.log("dataCustomArray ==> new ==> ", dataCustomArray)
+
                     } else {
                         if (timerstatus) {
                             this.inappTimeInterval()
@@ -212,8 +300,8 @@ console.log('tdata : ',tdata._data['gcm.notification.type'])
     inappTimeInterval() {
         this.timer = setTimeout(() => {
             this.onLoadInAppNoti()
-            // }, 2000);
-        }, 60000);
+        }, 2000);
+        // }, 60000);
     };
 
     componentWillUnmount() {
@@ -427,17 +515,7 @@ console.log('tdata : ',tdata._data['gcm.notification.type'])
                                     }
                                 }
                             });
-                            //console.log('announcementData :', announcementData.length)
                             this.setState(this.renderannouncementbody());
-                            // } else {
-                            //     Alert.alert(
-                            //         this.state.dataSource.errors[0].code,
-                            //         this.state.dataSource.errors[0].detail,
-                            //         [
-                            //             { text: 'OK', onPress: () => //console.log('OK Pressed') },
-                            //         ],
-                            //         { cancelable: false }
-                            //     )
                         }
                     });
                 } catch (error) {
@@ -455,11 +533,11 @@ console.log('tdata : ',tdata._data['gcm.notification.type'])
             });
     }
     loadAnnouncementDetailfromAPINoti = async () => {
-
+        console.log("loadAnnouncementDetailfromAPINoti")
         this.APIAnnouncementDetailCallback(await RestAPI(SharedPreference.ANNOUNCEMENT_DETAIL_API + SharedPreference.notiAnnounceMentID, SharedPreference.FUNCTIONID_ANNOUCEMENT),
             'AnnouncementDetail', 0)
 
-     //   SharedPreference.notipayAnnounceMentID = 0
+        //   SharedPreference.notipayAnnounceMentID = 0
     }
 
     loadAnnouncementDetailfromAPI = async (item, index) => {
@@ -473,25 +551,22 @@ console.log('tdata : ',tdata._data['gcm.notification.type'])
 
         code = data[0]
         data = data[1]
-        //check org_code
-        // if (option == 9) {
-        //     orgcode = 60162370
-        // }
+       
         this.setState({
 
             isscreenloading: false,
 
         })
+
         if (code.SUCCESS == data.code) {
-
+            console.log('APIAnnouncementDetailCallback ==> code ==> ',code.SUCCESS)
             if (tempannouncementData.length) {
-
                 tempannouncementData[index].attributes.read = true
             }
+            console.log('APIAnnouncementDetailCallback ==> data ==> ',data.data)
 
             this.props.navigation.navigate(rount, {
                 DataResponse: data.data,
-
             });
 
             SharedPreference.notipayAnnounceMentID = 0;
@@ -610,7 +685,7 @@ console.log('tdata : ',tdata._data['gcm.notification.type'])
 
                     }
 
-                    
+
 
                 });
 
@@ -736,10 +811,6 @@ console.log('tdata : ',tdata._data['gcm.notification.type'])
 
         code = data[0]
         data = data[1]
-        //check org_code
-        // if (option == 9) {
-        //     orgcode = 60162370
-        // }
         this.setState({
             isscreenloading: false,
         })
@@ -748,24 +819,6 @@ console.log('tdata : ',tdata._data['gcm.notification.type'])
                 DataResponse: data.data,
                 Option: option
             });
-
-
-            // } else if (code.NODATA == data.code) {
-
-            //     Alert.alert(
-            //         StringText.ALERT_NONPAYROLL_NODATA_TITLE,
-            //         StringText.ALERT_NONPAYROLL_NODATA_TITLE,
-            //         [{
-            //             text: 'OK', onPress: () => {
-
-            //             }
-            //         }],
-            //         { cancelable: false }
-            //     )
-
-            // } else if (code.DOES_NOT_EXISTS == data.code) {
-
-            //     this.onNodataExistErrorAlertDialog()
 
         } else if (code.INVALID_AUTH_TOKEN == data.code) {
 
@@ -1078,6 +1131,7 @@ console.log('tdata : ',tdata._data['gcm.notification.type'])
         });
     }
     onOpenAnnouncementDetailnoti() {
+        console.log("onOpenAnnouncementDetailnoti")
         this.setState({
             isscreenloading: true,
             loadingtype: 3
@@ -2340,10 +2394,10 @@ console.log('tdata : ',tdata._data['gcm.notification.type'])
                                 source={require('./../resource/images/announcement_icon.png')}
                                 resizeMode='contain'
                             />
-                            <View style={{ position: 'absolute',height:'100%' }}  >
-                            <View style={{  height: 20,borderRadius:20,  backgroundColor : badgeBG,marginLeft:20,marginTop:10 }}>
-                                <Text style={{fontSize: 15,color:badgeText,textAlign: 'center',marginLeft:5,marginRight:5,height: 20,borderRadius: 10  }}>{SharedPreference.notiAnnounceMentBadge}</Text>
-                            </View>
+                            <View style={{ position: 'absolute', height: '100%' }}  >
+                                <View style={{ height: 20, borderRadius: 20, backgroundColor: badgeBG, marginLeft: 20, marginTop: 10 }}>
+                                    <Text style={{ fontSize: 15, color: badgeText, textAlign: 'center', marginLeft: 5, marginRight: 5, height: 20, borderRadius: 10 }}>{SharedPreference.notiAnnounceMentBadge}</Text>
+                                </View>
                             </View>
 
                         </TouchableOpacity>

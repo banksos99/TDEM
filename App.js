@@ -41,20 +41,23 @@ export default class mainview extends Component {
       }
     }
 
-    this.messageListener = firebase.messaging().onMessage((message) => {
-      console.log('message : ',message)
-      // Process your message as required
-      // Alert.alert(
-      //   'payslip',
-      //   message,
-      //   [
-      //     { text: 'OK', onPress: () => console.log('OK Pressed') },
-      //   ],
-      //   { cancelable: false }
-      // )
+    // this.messageListener = firebase.messaging().onMessage((message) => {
+    //   console.log('message messageListener1 : ', message)
+    //   console.log('title : ', message.data.title)
+
+    //   // if(message.data.title)
+    //   // Process your message as required
+    //   // Alert.alert(
+    //   //   'payslip',
+    //   //   message,
+    //   //   [
+    //   //     { text: 'OK', onPress: () => console.log('OK Pressed') },
+    //   //   ],
+    //   //   { cancelable: false }
+    //   // )
 
 
-    });
+    // });
     //////////Device Info/////////////
 
     const deviceModel = DeviceInfo.getModel();
@@ -96,9 +99,11 @@ export default class mainview extends Component {
     notificationListener = firebase
       .notifications()
       .onNotification(notification => {
+
        
         console.log('notification : ', notification)
         SharedPreference.notiAnnounceMentBadge = notification._ios._badge;
+
 
         // if (notification._data['gcm.notification.type'] === 'Payroll') {
 
@@ -113,25 +118,37 @@ export default class mainview extends Component {
         
 
       });
-    
+
     notificationOpen = await firebase.notifications().getInitialNotification();
     console.log('notificationOpen : ', notificationOpen)
 
     if (notificationOpen) {
 
       const notification = notificationOpen.notification;
-      
-      if (notification._data['gcm.notification.type'] === 'Payroll') {
 
-        SharedPreference.notipayslipID = notification._data['gcm.notification.id']
+      if (notification._data.type === 'Payroll') {
 
-      } else if (notification._data['gcm.notification.type'] === 'Emergency Announcement') {
+        SharedPreference.notipayslipID = notification._data.id
 
-        SharedPreference.notiAnnounceMentID = notification._data['gcm.notification.id']
+      } else if (notification._data.type === 'Emergency Announcement') {
+
+        SharedPreference.notiAnnounceMentID = notification._data.id
 
       }
       console.log('notipayslipID : ', SharedPreference.notipayslipID);
     }
+  }
+
+  notificationListener() {
+    notificationListener = firebase
+      .notifications()
+      .onNotification(notification => {
+        console.log('notification ==> notificationListener : ', notification)
+      });
+
+    notificationOpen = firebase.notifications().getInitialNotification();
+    console.log('notificationOpen : ', notificationOpen)
+
   }
 
   componentWillUnmount() {
@@ -183,7 +200,7 @@ export default class mainview extends Component {
     return (
       <View style={{ flex: 1, }} >
         <Image
-        style={{ height: Layout.window.height, width: Layout.window.width, }}
+          style={{ height: Layout.window.height, width: Layout.window.width, }}
           source={require('./resource/SplashBg.png')}
           resizeMode='contain'
           style={{ flex: 1 }} />

@@ -29,26 +29,37 @@ export default class PinActivity extends Component {
             isLoading: false
         }
         firebase.analytics().setCurrentScreen(SharedPreference.FUNCTIONID_PIN)
-
     }
-
 
     onLoadLoginWithPin = async (PIN) => {
         //console.log("login with pin ==> ", PIN)
         let data = await LoginWithPinAPI(PIN, SharedPreference.FUNCTIONID_PIN)
         code = data[0]
         data = data[1]
-        //console.log("onLoadLoginWithPin ==> ", data.code)
 
+        console.log("onLoadLoginWithPin ==> ", data.code)
         if (code.SUCCESS == data.code) {
             this.setState({
                 isLoading: false
             })
             SharedPreference.calendarAutoSync = await this.saveAutoSyncCalendar.getAutoSyncCalendar()
             await this.onLoadInitialMaster()
-        } else if ((code.INVALID_AUTH_TOKEN == data.code) || (code.INTERNAL_SERVER_ERROR == data.code)) {
-            //TODO Bell Alert.alert(
-            StringText.ALERT_AUTHORLIZE_ERROR_TITLE,
+        } else if (code.INVALID_AUTH_TOKEN == data.code) {
+            Alert.alert(
+                StringText.SERVER_ERROR_TITLE,
+                StringText.SERVER_ERROR_DESC,
+                [{
+                    text: 'OK', onPress: () => {
+                        SharedPreference.profileObject = null
+                        this.saveProfile.setProfile(null)
+                        this.props.navigation.navigate('RegisterScreen')
+                    }
+                }
+                ],
+                { cancelable: false })
+        } else if ((code.INTERNAL_SERVER_ERROR == data.code) || (code.ERROR == data.code)) {
+            Alert.alert(
+                StringText.ALERT_AUTHORLIZE_ERROR_TITLE,
                 StringText.ALERT_AUTHORLIZE_ERROR_MESSAGE,
                 [{
                     text: 'OK', onPress: () => {
@@ -58,7 +69,9 @@ export default class PinActivity extends Component {
                     }
                 }
                 ],
-                { cancelable: false }
+                { cancelable: false })
+
+
         } else {
             if (this.state.failPin == 4) {
                 this.setState({
@@ -128,6 +141,7 @@ export default class PinActivity extends Component {
         let data = await RestAPI(SharedPreference.INITIAL_MASTER_API, SharedPreference.FUNCTIONID_GENERAL_INFORMATION_SHARING)
         code = data[0]
         data = data[1]
+
         //console.log("onLoadInitialMaster : ", data.code)
         if (code.SUCCESS == data.code) {
             array = data.data
@@ -143,10 +157,7 @@ export default class PinActivity extends Component {
                     SharedPreference.TB_M_LEAVETYPE = element.TB_M_LEAVETYPE
                 }
             }
-            //console.log('onLoadAppInfo:')
-            // await this.onLoadAppInfo()
             this.props.navigation.navigate('HomeScreen')
-
 
         } else {
             Alert.alert(
@@ -184,13 +195,10 @@ export default class PinActivity extends Component {
         this.state.pin = origin
 
         if (this.state.pin.length == 6) {
-            // TODO Set Information
-
             this.setState({
                 isLoading: true
             })
             SharedPreference.profileObject = await this.saveProfile.getProfile()
-            // SharedPreference.TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, '1', SharedPreference.profileObject.client_token)
             await this.onLoadLoginWithPin(this.state.pin)
         }
     }
