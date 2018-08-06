@@ -62,6 +62,7 @@ export default {
     notipayslipID: 0,
     notiAnnounceMentID: 0,
     notiAnnounceMentBadge: 0,
+setHomeViewStatus:0,
 
     HandbookHighlightList: [],
     Handbook: [],

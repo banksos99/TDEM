@@ -88,9 +88,9 @@ export default class mainview extends Component {
 
       const notification = notificationOpen.notification;
 
-      if (notification._data['gcm.notification.type'] === 'Payroll') {
+      if (notification._data.type === 'Payroll') {
 
-        SharedPreference.notipayslipID = notification._data['gcm.notification.id']
+        SharedPreference.notipayslipID = notification._data.id
 
       } else if (notification._data.type === 'Emergency Announcement') {
 
