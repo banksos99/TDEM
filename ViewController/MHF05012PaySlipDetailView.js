@@ -57,7 +57,7 @@ export default class PayslipDetail extends Component {
             havePermission: false,
             yearArray: ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"]
         }
-        firebase.analytics().setCurrentScreen(SharedPreference.FUNCTIONID_PAYSLIP)
+        firebase.analytics().setCurrentScreen(SharedPreference.SCREEN_PAYSLIP_DETAIL)
 
     }
 

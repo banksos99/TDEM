@@ -35,23 +35,23 @@ export default class RegisterActivity extends Component {
             password: '',
             versionCode: "Version : " + SharedPreference.deviceInfo.buildNumber
         }
-        firebase.analytics().setCurrentScreen(SharedPreference.FUNCTIONID_REGISTER)
+        firebase.analytics().setCurrentScreen(SharedPreference.SCREEN_REGISTER)
     }
 
     onRegister = async () => {
-        console.log("onRegister")
+        //console.log("onRegister")
         Keyboard.dismiss()
         let data = await RegisterAPI(this.state.username, this.state.password)
         code = data[0]
         data = data[1]
         
-        console.log("onRegister ==> data : ", data)
-        console.log("onRegister ==> data code : ", data.code)
+        //console.log("onRegister ==> data : ", data)
+        //console.log("onRegister ==> data code : ", data.code)
 
         if (code.SUCCESS == data.code) {
             this.saveProfile.setProfile(data.data)
             SharedPreference.profileObject = await this.saveProfile.getProfile()
-            console.log("onRegister ==> onLoadLoginWithPin")
+            //console.log("onRegister ==> onLoadLoginWithPin")
             await this.onLoadLoginWithPin("001000200")
         } else if (code.FORM_VALIDATE_FAILED == data.code) {
             Alert.alert(
@@ -77,10 +77,10 @@ export default class RegisterActivity extends Component {
     onLoadLoginWithPin = async (PIN) => {
 
         let data = await LoginWithPinAPI(PIN, SharedPreference.FUNCTIONID_PIN)
-        //console.log("onLoadLoginWithPin ==> ", data)
+        ////console.log("onLoadLoginWithPin ==> ", data)
         code = data[0]
         data = data[1]
-        //console.log("onLoadLoginWithPin ==> ", data.code)
+        ////console.log("onLoadLoginWithPin ==> ", data.code)
 
         if (code.DUPLICATE_DATA == data.code) {//409
             this.onOpenPinActivity()
@@ -128,7 +128,7 @@ export default class RegisterActivity extends Component {
     }
 
     onLoadInitialMaster = async () => {
-        //console.log("InitialMaster ")
+        ////console.log("InitialMaster ")
         let data = await RestAPI(SharedPreference.INITIAL_MASTER_API, SharedPreference.FUNCTIONID_GENERAL_INFORMATION_SHARING)
         code = data[0]
         data = data[1]
@@ -147,7 +147,7 @@ export default class RegisterActivity extends Component {
                 }
             }
 
-            //console.log('onLoadAppInfo:')
+            ////console.log('onLoadAppInfo:')
             await this.onLoadAppInfo()
 
         } else {
@@ -168,7 +168,7 @@ export default class RegisterActivity extends Component {
         code = data[0]
         data = data[1]
         if (code.SUCCESS == data.code) {
-            //console.log('app info data2 :', data)
+            ////console.log('app info data2 :', data)
             // let appversion = '1.0.0'
             if (data.data.force_update === 'Y') {
                 Alert.alert(
@@ -188,7 +188,6 @@ export default class RegisterActivity extends Component {
     }
 
     onClosePIN = () => {
-        //console.log("onClosePIN")
         this.setState({
             showCreatePin: false,
             pin: [],
@@ -228,14 +227,14 @@ export default class RegisterActivity extends Component {
             origin = origin + num
         }
 
-        // //console.log("origin origin origin : ", origin)
+        // ////console.log("origin origin origin : ", origin)
 
         this.setState({
             pin: origin
         })
         this.state.pin = origin
-        //console.log("pin ====> ", this.state.pin)
-        //console.log("pin length ====> ", this.state.pin.length)
+        ////console.log("pin ====> ", this.state.pin)
+        ////console.log("pin length ====> ", this.state.pin.length)
 
         if (this.state.pin.length == 6) {
             if (this.state.pin1.length == 0) {
@@ -254,14 +253,14 @@ export default class RegisterActivity extends Component {
                 })
                 this.state.pin = []
                 this.state.pin2 = origin
-                //console.log("========> pin1 : ", this.state.pin1)
-                //console.log("========> pin2 : ", this.state.pin1)
+                ////console.log("========> pin1 : ", this.state.pin1)
+                ////console.log("========> pin2 : ", this.state.pin1)
 
                 if (this.state.pin1 == this.state.pin2) {
-                    //console.log("========> pin ===> same ")
+                    ////console.log("========> pin ===> same ")
                     this.onSetPin()
                 } else {
-                    //console.log("========> pin ===> not same ")
+                    ////console.log("========> pin ===> not same ")
                     //TODO Alert
                     Alert.alert(
                         StringText.REGISTER_PIN_ERROR_TITLE,
@@ -286,12 +285,12 @@ export default class RegisterActivity extends Component {
     }
 
     onOpenPinActivity() {
-        //console.log("PinScreen")
+        ////console.log("PinScreen")
         this.props.navigation.navigate('PinScreen')
     }
 
     onResetPin() {
-        //console.log("Reset Pin")
+        ////console.log("Reset Pin")
     }
 
     renderCreatePin() {

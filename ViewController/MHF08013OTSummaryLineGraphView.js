@@ -57,7 +57,7 @@ export default class OTSummaryLineChart extends Component {
         }
 
         this.checkDataFormat(this.props.navigation.getParam("DataResponse", ""));
-        firebase.analytics().setCurrentScreen(SharedPreference.FUNCTIONID_OT_SUMMARY)
+        firebase.analytics().setCurrentScreen(SharedPreference.SCREEN_OT_SUMMARY_MANAGER)
         console.log('org_name : ', this.state.org_name)
 
     }

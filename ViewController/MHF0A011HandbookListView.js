@@ -138,7 +138,7 @@ export default class Handbookctivity extends Component {
 
         this.updateToken()
         this.checkDataFormat(this.props.navigation.getParam("DataResponse", ""));
-        firebase.analytics().setCurrentScreen(SharedPreference.FUNCTIONID_HANDBOOK)
+        firebase.analytics().setCurrentScreen(SharedPreference.SCREEN_HANDBOOK_LIST)
     }
 
     componentWillMount() {

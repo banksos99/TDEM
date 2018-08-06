@@ -42,7 +42,9 @@ export default class NonpayrollActivity extends Component {
         })
         this.state.pin = origin
         console.log("1 ==> pin ====> ", this.state.pin)
-        console.log("1 ==> pin length ====> ", this.state.pin.length)
+        console.log("1 ==> oldpin ====> ", this.state.oldpin)
+        console.log("1 ==> newpin1 ====> ", this.state.newpin1)
+        console.log("1 ==> newpin2 ====> ", this.state.newpin2)
 
         if (this.state.pin.length == 6) {
             if (this.state.oldpin == 0) {
@@ -50,7 +52,6 @@ export default class NonpayrollActivity extends Component {
                     oldpin: this.state.pin,
                     pin: [],
                     pintitle: StringText.CHANGE_PIN_ENTER_NEW_PIN_1_TITLE,
-
                 })
                 this.state.oldpin = this.state.pin
                 this.state.pin = []
@@ -80,7 +81,20 @@ export default class NonpayrollActivity extends Component {
                         StringText.CHANGE_PIN_NOT_MATCH_TITLE,
                         StringText.CHANGE_PIN_NOT_MATCH_DESC,
                         [
-                            { text: 'OK', onPress: () => console.log('OK Pressed') },
+                            {
+                                text: 'OK', onPress: () => {
+
+                                    this.setState({
+                                        pin: [],
+                                        oldpin: [],
+                                        newpin1: [],
+                                        newpin2: [],
+                                        pintitle: StringText.CHANGE_PIN_ENTER_CURRENT_PIN_TITLE,
+                                        showCreatePinSuccess: false
+                                    })
+
+                                }
+                            },
                         ],
                         { cancelable: false }
                     )
@@ -182,12 +196,12 @@ export default class NonpayrollActivity extends Component {
         let but5 = require('../resource/circle.png')
         let but6 = require('../resource/circle.png')
 
-        if (this.state.pin.length >= 1) {but1 = require('../resource/circleEnable.png')}
-        if (this.state.pin.length >= 2) {but2 = require('../resource/circleEnable.png')}
-        if (this.state.pin.length >= 3) {but3 = require('../resource/circleEnable.png')}
-        if (this.state.pin.length >= 4) {but4 = require('../resource/circleEnable.png')}
-        if (this.state.pin.length >= 5) {but5 = require('../resource/circleEnable.png')}
-        if (this.state.pin.length >= 6) {but6 = require('../resource/circleEnable.png')}
+        if (this.state.pin.length >= 1) { but1 = require('../resource/circleEnable.png') }
+        if (this.state.pin.length >= 2) { but2 = require('../resource/circleEnable.png') }
+        if (this.state.pin.length >= 3) { but3 = require('../resource/circleEnable.png') }
+        if (this.state.pin.length >= 4) { but4 = require('../resource/circleEnable.png') }
+        if (this.state.pin.length >= 5) { but5 = require('../resource/circleEnable.png') }
+        if (this.state.pin.length >= 6) { but6 = require('../resource/circleEnable.png') }
 
 
         return (<View style={styles.registPinImageContainer}>
@@ -198,9 +212,9 @@ export default class NonpayrollActivity extends Component {
             <Image style={styles.createPinImageSubContainer} source={but5} />
             <Image style={styles.createPinImageSubContainer} source={but6} />
         </View>)
-       
 
-       
+
+
     }
 
     renderCreatePin() {

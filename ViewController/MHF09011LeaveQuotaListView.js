@@ -27,7 +27,7 @@ export default class LeaveQuotaActivity extends Component {
             dataSource: this.props.navigation.getParam("dataResponse", ""),
             selectYear: this.props.navigation.getParam("selectYear", new Date().getFullYear()),
         };
-        firebase.analytics().setCurrentScreen(SharedPreference.FUNCTIONID_LEAVE_QUOTA)
+        firebase.analytics().setCurrentScreen(SharedPreference.SCREEN_LEAVE_QUOTA_LIST)
     }
 
     componentWillMount() {

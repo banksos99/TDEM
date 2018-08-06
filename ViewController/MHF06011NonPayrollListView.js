@@ -28,19 +28,15 @@ export default class NonpayrollActivity extends Component {
             dataSource: this.props.navigation.getParam("dataResponse", ""),
             selectYear: this.props.navigation.getParam("selectYear", new Date().getFullYear()),
             currentYearData: [],
+            dataSource: this.props.navigation.getParam("dataResponse", ""),
+            badgeArray: this.props.navigation.getParam("badgeArray", []),
             lastYearData: []
         };
-        firebase.analytics().setCurrentScreen(SharedPreference.FUNCTIONID_NON_PAYROLL)
+        firebase.analytics().setCurrentScreen(SharedPreference.SCREEN_NON_PAYROLL_LIST)
+
+        console.log("badgeArray ==> ", this.state.badgeArray)
 
     }
-
-    // componentWillMount() {
-    //     if (Platform.OS !== 'android') return
-    //     BackHandler.addEventListener('hardwareBackPress', () => {
-    //         this.props.navigation.navigate('HomeScreen');
-    //         return true
-    //     })
-    // }
 
     onBack() {
         this.props.navigation.navigate('HomeScreen');
@@ -53,8 +49,24 @@ export default class NonpayrollActivity extends Component {
 
         for (let index = 0; index < year; index++) {
             let month = index + 1
+            let badge = 0
+            for (let index = 0; index < this.state.badgeArray.length; index++) {
+                const element = this.state.badgeArray[index];
+                // console.log("getBadgeCount ==> element ", element)
+                // console.log("getBadgeCount ==> year ", element.year, " , year ==> ", this.state.selectYear)
+                if (element.year == this.state.selectYear) {
+                    let data = element.detail.find((p) => {
+                        return p.month === month
+                    });
+                    // console.log("getBadgeCount ==>  data : ", data)
+                    badge = data.badge
+                }
+            }
+
+            // console.log("element badge ==> ",badge)
+
             monthRow.push(
-                this.customMonthContainer(month, this.checkAmount(this.state.selectYear, month))
+                this.customMonthContainer(month, this.checkAmount(this.state.selectYear, month), badge)
             )
             if (index % 3 === 2) {
                 monthContainer.push(
@@ -76,7 +88,7 @@ export default class NonpayrollActivity extends Component {
                     for (let k = 0; k < object.detail.length; k++) {
                         const element = object.detail
                         if (object.detail[k].month_no == selectMonth) {
-                            console.log("month ==> ", object.detail.month, " , selectMonth : ", selectMonth)
+                            // console.log("month ==> ", object.detail.month, " , selectMonth : ", selectMonth)
                             return this.convertAmount(object.detail[k].sum_nonpay_amt)
                         }
                     }
@@ -93,11 +105,6 @@ export default class NonpayrollActivity extends Component {
     }
 
     customMonthContainer(monthNumber, amount, badge) {
-        console.log("Nonpayroll ==> customMonthContainer ==> monthNumber : ", monthNumber)
-        console.log("Nonpayroll ==> customMonthContainer ==> amount : ", amount)
-
-        // TODO Bell
-        // amount = 10
 
         if (badge == null) {
             badge = 0
@@ -109,39 +116,40 @@ export default class NonpayrollActivity extends Component {
         if ((currentMonth == monthNumber) && (currentYear == this.state.selectYear)) {//currentMonth
 
             if (amount) {
-               
-            
-            return (<View style={styles.nonPayRollitemBg}>
-                <View style={[styles.nonPayRollitem, {
-                    backgroundColor: Colors.calendarRedDotColor
-                }]}>
-                    <TouchableOpacity
-                        style={styles.button}
-                        disable={amount}
-                        onPress={() => {
-                            this.props.navigation.navigate('NonPayrollDetail', {
-                                month: monthNumber,
-                                selectYear: this.state.selectYear,
-                                dataObject: this.state.dataSource
-                            });
-                        }}>
-                        <View style={styles.nonPayRollDetailContainer}>
-                            <Text style={[styles.payslipitemdetail, { color: 'white' }]}>{Months.monthNamesShort[monthNumber - 1]}</Text>
-                        </View>
-                        <View style={styles.nonPayRollDetailContainer}>
-                            <Text style={[styles.payslipitemmoney, { color: 'white' }]}>{amount}</Text>
-                        </View>
-                    </TouchableOpacity>
-                </View>
-                {badge != 0 ?
-                    <View style={styles.nonPayrollBadgeContrainer}>
-                        <Text style={styles.nonPayrollBadgeText}>
-                            {badge}
-                        </Text>
+
+                return (<View style={styles.nonPayRollitemBg}>
+                    <View style={[styles.nonPayRollitem, {
+                        backgroundColor: Colors.calendarRedDotColor
+                    }]}>
+                        <TouchableOpacity
+                            style={styles.button}
+                            disable={amount}
+                            onPress={() => {
+
+                                this.props.navigation.navigate('NonPayrollDetail', {
+                                    month: monthNumber,
+                                    selectYear: this.state.selectYear,
+                                    dataObject: this.state.dataSource
+                                });
+                            }}>
+                            <View style={styles.nonPayRollDetailContainer}>
+                                <Text style={[styles.payslipitemdetail, { color: 'white' }]}>{Months.monthNamesShort[monthNumber - 1]}</Text>
+                            </View>
+                            <View style={styles.nonPayRollDetailContainer}>
+                                <Text style={[styles.payslipitemmoney, { color: 'white' }]}>{amount}</Text>
+                            </View>
+                        </TouchableOpacity>
                     </View>
-                    : null}
-            </View>)}
-             amount = '0.00'
+                    {badge != 0 ?
+                        <View style={styles.nonPayrollBadgeContrainer}>
+                            <Text style={styles.nonPayrollBadgeText}>
+                                {badge}
+                            </Text>
+                        </View>
+                        : null}
+                </View>)
+            }
+            amount = '0.00'
             return (<View style={styles.nonPayRollitemBg}>
                 <View style={[styles.nonPayRollitem, {
                     backgroundColor: Colors.calendarRedDotColor
@@ -151,8 +159,7 @@ export default class NonpayrollActivity extends Component {
                         disable={amount}
                         onPress={() => {
                             this.onLoadAlertDialog()
-                        }}
-                        >
+                        }}>
                         <View style={styles.nonPayRollDetailContainer}>
                             <Text style={[styles.payslipitemdetail, { color: 'white' }]}>{Months.monthNamesShort[monthNumber - 1]}</Text>
                         </View>
@@ -187,8 +194,23 @@ export default class NonpayrollActivity extends Component {
                     }]}>
                         <TouchableOpacity style={styles.button}
                             onPress={() => {
+                                console.log("onPress ==> monthNumber ==> ", monthNumber, " , year ==> ", this.state.selectYear)
+                                let badgeData = this.state.badgeArray
+                                console.log("onPress ==> badgeData1 ==> ", badgeData)
+                                for (let index = 0; index < badgeData.length; index++) {
+                                    const element = badgeData[index];
+                                    if (element.year = this.state.selectYear) {
+                                        let data = element.detail.find((p) => {
+                                            return p.month === monthNumber
+                                        });
+                                        data.badge = 0
+                                    }
+                                }
+                                console.log("onPress ==> badgeData2 ==> ", badgeData)
+
                                 this.props.navigation.navigate('NonPayrollDetail', {
                                     month: monthNumber,
+                                    badgeData: badgeData,
                                     selectYear: this.state.selectYear,
                                     dataObject: this.state.dataSource
                                 });

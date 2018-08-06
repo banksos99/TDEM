@@ -33,8 +33,11 @@ export default class NonpayrollDetailView extends Component {
             dataObject: this.props.navigation.getParam("dataObject", ""),
             selectYear: this.props.navigation.getParam("selectYear", ""),
             selectMonth: this.props.navigation.getParam("month", ""),
+            badgeData: this.props.navigation.getParam("badgeData", {}),
+
+
         }
-        firebase.analytics().setCurrentScreen(SharedPreference.FUNCTIONID_NON_PAYROLL)
+        firebase.analytics().setCurrentScreen(SharedPreference.SCREEN_NON_PAYROLL_DETAIL)
 
     }
 
@@ -84,7 +87,7 @@ export default class NonpayrollDetailView extends Component {
             })
             this.getNonPayrollDetail()
 
-        }else if(code.INVALID_AUTH_TOKEN == data.code){  
+        } else if (code.INVALID_AUTH_TOKEN == data.code) {
             this.onAutenticateErrorAlertDialog(data)
 
         } else {
@@ -189,7 +192,8 @@ export default class NonpayrollDetailView extends Component {
 
         this.props.navigation.navigate('NonPayrollList', {
             dataResponse: this.state.dataObject,
-            selectYear: this.state.selectYear
+            selectYear: this.state.selectYear,
+            badgeData: this.state.badgeData
         }
         );
     }

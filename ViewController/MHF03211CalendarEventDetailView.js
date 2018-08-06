@@ -27,7 +27,7 @@ export default class calendarMonthView extends Component {
             dataResponse: this.props.navigation.getParam("dataResponse", ""),
             location: this.props.navigation.getParam("location", ""),
         }
-        firebase.analytics().setCurrentScreen(SharedPreference.FUNCTIONID_CALENDAR_EVENT)
+        firebase.analytics().setCurrentScreen(SharedPreference.SCREEN_WORKING_CALENDAR_DETAIL)
 
     }
 
