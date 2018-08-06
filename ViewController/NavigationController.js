@@ -166,7 +166,10 @@ export default class rootNavigation extends Component {
             })
         }
     }
+    gotoHomemenu() {
 
+
+    }
     render() {
         if (this.state.hasPin == false) {
             return (

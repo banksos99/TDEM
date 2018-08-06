@@ -97,8 +97,20 @@ export default class mainview extends Component {
       .notifications()
       .onNotification(notification => {
        
-        console.log('notification : ', notification._data['gcm.notification.type'])
+        console.log('notification : ', notification)
         SharedPreference.notiAnnounceMentBadge = notification._ios._badge;
+
+        // if (notification._data['gcm.notification.type'] === 'Payroll') {
+
+        //   SharedPreference.notipayslipID = notification._data['gcm.notification.id']
+  
+        // } else if (notification._data['gcm.notification.type'] === 'Emergency Announcement') {
+  
+        //   SharedPreference.notiAnnounceMentID = notification._data['gcm.notification.id']
+  
+        // }
+
+        
 
       });
     
