@@ -66,7 +66,7 @@ const AppNavigatorPin = createSwitchNavigator({
     OTSummarySelfView: { screen: OTSummarySelfView },
     Handbooklist: { screen: handbookList },
     HandbookDetail: { screen: handbookDetail },
-  //  OrganizationStruct: { screen: OrganizationStruct },
+    //  OrganizationStruct: { screen: OrganizationStruct },
     OrgStructure: { screen: OrganizationStruct },
     calendarYearView: { screen: calendarYearView },
     calendarYearView2: { screen: calendarYearView2 },
@@ -80,9 +80,7 @@ const AppNavigatorPin = createSwitchNavigator({
     ChangePINScreen: { screen: ChangePINScreen },
     EmployeeList: { screen: EmployeeList },
 }, {
-    //    initialRouteName: 'HandbookDetail',
         initialRouteName: 'PinScreen',
-        // initialRouteName: 'NonPayrollList',
         headerMode: 'none',
         transitionConfig: () => ({
             transitionSpec: {
@@ -96,7 +94,6 @@ const AppNavigatorPin = createSwitchNavigator({
 
 
 const AppNavigatorRegister = createSwitchNavigator({
-    //TestView: { screen: TestView },
     RegisterScreen: { screen: registerScreen },
     PinScreen: { screen: pinScreen },
     HomeScreen: { screen: homeScreen },
@@ -110,7 +107,6 @@ const AppNavigatorRegister = createSwitchNavigator({
     OTSummarySelfView: { screen: OTSummarySelfView },
     Handbooklist: { screen: handbookList },
     HandbookDetail: { screen: handbookDetail },
-   // OrganizationStruct: { screen: OrganizationStruct },
     OrgStructure: { screen: OrganizationStruct },
     calendarYearView: { screen: calendarYearView },
     calendarYearView2: { screen: calendarYearView2 },
@@ -124,10 +120,7 @@ const AppNavigatorRegister = createSwitchNavigator({
     ChangePINScreen: { screen: ChangePINScreen },
     EmployeeList: { screen: EmployeeList },
 }, {
-    // initialRouteName: 'HandbookDetail',
         initialRouteName: 'RegisterScreen',
-        // initialRouteName: 'NonPayrollList',
-
         headerMode: 'none',
         transitionConfig: () => ({
             transitionSpec: {
@@ -146,15 +139,15 @@ export default class rootNavigation extends Component {
         this.state = {
             hasPin: false,
             number: "111111",
-            notiMessage:this.props.pushstatus,
+            notiMessage: this.props.pushstatus,
         };
     }
-   
+
     async componentDidMount() {
         // this.inappTimeInterval();
 
     }
-   
+
     async componentWillMount() {
         // number = await this.getPINFromDevice()
         profile = await this.getProfileObject()
@@ -174,14 +167,14 @@ export default class rootNavigation extends Component {
 
     }
     render() {
-       // console.log('data pushstatus :', this.props.pushstatus)
-       // console.log('data pushstatus :', AppNavigatorRegister.props.navigation)
+        // console.log('data pushstatus :', this.props.pushstatus)
+        // console.log('data pushstatus :', AppNavigatorRegister.props.navigation)
         //AppNavigatorRegister.homeScreen.getnotidata(this.props.pushstatus)
-       
+
         if (this.state.hasPin == false) {
             return (
-                <AppNavigatorRegister 
-                tempdata={this.state.notiMessage}/>
+                <AppNavigatorRegister
+                    tempdata={this.state.notiMessage} />
             );
         } else {
             return (

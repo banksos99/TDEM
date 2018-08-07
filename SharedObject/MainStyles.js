@@ -797,6 +797,15 @@ export const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
     },
+    alertDialogBoxSelectText: {
+        textAlign: 'center', fontSize: 18, width: '100%', height: 30, alignItems: 'center'
+    },
+    pickerViewAndroidContrianer: {
+        justifyContent: 'center', height: 40, alignItems: 'center',
+    },
+    pickerViewAndroidText: {
+        textAlign: 'center', fontSize: 18, width: '100%', height: 30, alignItems: 'center'
+    },
     announcementitemRead: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -1038,8 +1047,8 @@ export const styles = StyleSheet.create({
     },
     registetImageContainer: {
         marginRight: 10,
-        width:22,
-        height:22,
+        width: 22,
+        height: 22,
         alignItems: 'center'
     },
     registTextContainer: {
@@ -1082,15 +1091,15 @@ export const styles = StyleSheet.create({
     registPinImageSubContainer: {
         width: 30,
         height: 30,
-        marginLeft:5,
-        marginRight:5,
+        marginLeft: 5,
+        marginRight: 5,
         tintColor: 'white'
     },
     createPinImageSubContainer: {
         width: 30,
         height: 30,
-        marginLeft:5,
-        marginRight:5,
+        marginLeft: 5,
+        marginRight: 5,
         tintColor: Colors.grayColor
     },
     registPinImageContainer: {
@@ -1288,7 +1297,7 @@ export const styles = StyleSheet.create({
         fontFamily: font_medium,
     },
     epubTocText: {
-        fontSize: 14* scale,
+        fontSize: 14 * scale,
         color: Colors.redTextColor,
         width: '100%',
         fontFamily: font_medium,
@@ -1330,12 +1339,12 @@ export const styles = StyleSheet.create({
     },
     empinfoDetailRedText: {
         color: Colors.redTextColor,
-        marginLeft: 20* scale,
+        marginLeft: 20 * scale,
         fontFamily: font_medium
     },
     empinfocareerLeftText: {
         fontSize: 9 * scale,
-        marginRight: 10* scale,
+        marginRight: 10 * scale,
         color: Colors.grayText,
         textAlign: 'left',
         fontFamily: font_medium
@@ -1343,7 +1352,7 @@ export const styles = StyleSheet.create({
     },
     empinfocareerRightText: {
         fontSize: 9 * scale,
-        marginRight: 10* scale,
+        marginRight: 10 * scale,
         color: Colors.grayText,
         textAlign: 'right',
         fontFamily: font_medium
@@ -1351,7 +1360,7 @@ export const styles = StyleSheet.create({
     },
     empinfocareerRightRedText: {
         fontSize: 11 * scale,
-        marginRight: 10* scale,
+        marginRight: 10 * scale,
         color: Colors.redTextColor,
         textAlign: 'right',
         fontFamily: font_medium
