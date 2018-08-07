@@ -72,7 +72,7 @@ export default class PaySlipActivity extends Component {
                             </TouchableOpacity>
                         </View>
                         <View style={{ flex: 3, justifyContent: 'center', alignItems: 'center' }}>
-                            <Text style={styles.navTitleTextTop}>{title}</Text>
+                            <Text style={styles.navTitleTextTop} numberOfLines={1}>{title}</Text>
                         </View>
                         <View style={{ flex: 1, }}>
                         </View>

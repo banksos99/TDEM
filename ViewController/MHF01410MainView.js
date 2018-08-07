@@ -16,6 +16,8 @@ import StringText from '../SharedObject/StringText';
 import payslipDetail from "./MHF05012PaySlipDetailView";
 import { months } from "moment";
 import Month from "../constants/Month"
+import firebase from 'react-native-firebase';
+
 const ROLL_ANNOUNCE = 10;
 
 //SharedPreference.NOTIFICATION_CATEGORY
@@ -43,7 +45,7 @@ let managerstatus = 'N';
 let announcestatus = 'Y';
 let settingstatus  = 'Y';
 
-let rolemanagementEmpoyee = [0, 0, 0, 0, 1, 0, 0, 0];
+let rolemanagementEmpoyee = [0, 0, 0, 0, 0, 0, 0, 0];
 let rolemanagementManager = [0, 0, 0, 0];
 let timerstatus = false;
 
@@ -76,10 +78,17 @@ export default class HMF01011MainView extends Component {
             enddragannounce: false,
             annrefresh: false,
             username: SharedPreference.profileObject.employee_name,
-            nonPayrollBadge: []
+            nonPayrollBadge: [],
+            announcetypelist:['All','Company Announcement','Emergency Announcement','Event Announcement','General Announcement'],
+            announcestatuslist:['All','Read','Unread'],
+            notiAnnounceMentBadge:0
             //  page: 0
         }
-    
+        rolemanagementEmpoyee = [0, 0, 0, 0, 0, 0, 0, 0];
+        rolemanagementManager = [0, 0, 0, 0];
+        managerstatus = 'N';
+        announcestatus = 'N';
+        settingstatus = 'Y';
         //Check role_authoried status
         for (let i = 0; i < SharedPreference.profileObject.role_authoried.length; i++) {
 
@@ -122,7 +131,7 @@ export default class HMF01011MainView extends Component {
 
                 managerstatus = 'Y'
 
-            } else if (SharedPreference.profileObject.role_authoried[i].module_function === 'HF0121') {
+            } else if (SharedPreference.profileObject.role_authoried[i].module_function === 'HF0C21') {
 
                 rolemanagementManager[0] = 1
 
@@ -145,6 +154,8 @@ export default class HMF01011MainView extends Component {
 
         }
 
+        this.notificationListener();
+// this.getCurrentTime();
     }
 
     componentWillMount() {
@@ -153,6 +164,12 @@ export default class HMF01011MainView extends Component {
             this.props.navigation.navigate('HomeScreen');
             return true
         })
+    }
+    componentWillReceiveProps(){
+
+console.log('notiAnnounceMentBadge : ',SharedPreference.notiAnnounceMentBadge)
+
+
     }
 
     loadData = async () => {
@@ -200,6 +217,45 @@ export default class HMF01011MainView extends Component {
 
     }
 
+    // getCurrentTime(onSuccess, onFail) {
+    //     // Get the current 'global' time from an API using Promise
+    //     return new Promise((resolve, reject) => {
+    //         setTimeout(function () {
+    //             var didSucceed = Math.random() >= 0.5;
+    //             didSucceed ? resolve(new Date()) : reject('Error');
+    //         }, 2000);
+    //     })
+    // }
+    // getCurrentTime() {
+    //     notificationListener = SharedPreference.notiAnnounceMentBadge
+    //         .then()
+    //         .then(currentTime => {
+    //             console.log('The current time is: ' + currentTime);
+    //             return true;
+    //         })
+    //         .catch(err => console.log('There was an error:' + err))
+
+    // }
+        
+
+    notificationListener() {
+        notificationListener = firebase
+            .notifications()
+            .onNotification(notification => {
+
+                this.setState({
+                    notiAnnounceMentBadge: 13
+                })
+
+                console.log('notification ==> notificationListener : ', notification)
+                
+            });
+
+        notificationOpen = firebase.notifications().getInitialNotification();
+        console.log('notificationOpen : ', notificationOpen)
+
+    }
+
     onLoadInAppNoti = async () => {
 
         console.log("MainView ==> onLoadInAppNoti")
@@ -207,6 +263,7 @@ export default class HMF01011MainView extends Component {
         const newdate = moment(today).format(_format).valueOf();
 
         FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, 1, SharedPreference.profileObject.client_token)
+        console.log('FUNCTION_TOKEN : ',FUNCTION_TOKEN)
         latest_date = "2017-01-01 12:00:00"
         return fetch(SharedPreference.PULL_NOTIFICATION_API + latest_date, {
             method: 'GET',
@@ -572,7 +629,7 @@ export default class HMF01011MainView extends Component {
     }
 
     APIAnnouncementDetailCallback(data, rount, index) {
-
+        console.log('APIAnnouncementDetailCallback ==> data ==> ', data)
         code = data[0]
         data = data[1]
 
@@ -1344,86 +1401,104 @@ export default class HMF01011MainView extends Component {
         });
     }
 
-    select_announce_all_type = () => {
+    // select_announce_all_type = () => {
+    //     this.setState({
+    //         announcementType: 'All',
+    //         announcementTypetext: 'All'
+    //     }, function () {
+    //         this.setState(this.select_announce_type())
+    //     });
+    // }
+
+    // select_announce_company_type = () => {
+    //     this.setState({
+    //         announcementType: 'All',
+    //         announcementTypetext: 'All'
+    //     }, function () {
+    //         this.setState(this.select_announce_type())
+    //     });
+    // }
+
+    on_select_Announcement_type(item) {
+        // select_announce_company_type = () => {
         this.setState({
-            announcementType: 'All',
-            announcementTypetext: 'All'
+            announcementType: item,
+            announcementTypetext: item
         }, function () {
             this.setState(this.select_announce_type())
         });
     }
 
-    select_announce_company_type = () => {
-        this.setState({
-            announcementType: 'All',
-            announcementTypetext: 'All'
-        }, function () {
-            this.setState(this.select_announce_type())
-        });
-    }
+    on_select_Announcement_status(item) {
+        let temp = item;
+        if (item == 'Read') {
+            temp = true
+        } else if (item == 'Unread') {
+            temp = false
+        }
 
-    select_announce_company_type = () => {
+        // select_announce_company_type = () => {
         this.setState({
-            announcementType: 'Company Announcement',
-            announcementTypetext: 'Company Announcement'
-        }, function () {
-            this.setState(this.select_announce_type())
-        });
-    }
-
-    select_announce_emergency_type = () => {
-        this.setState({
-            announcementType: 'Emergency Announcement',
-            announcementTypetext: 'Emergency Announcement'
-        }, function () {
-            this.setState(this.select_announce_type())
-        });
-    }
-
-    select_announce_event_type = () => {
-        this.setState({
-            announcementType: 'Event Announcement',
-            announcementTypetext: 'Event Announcement'
-        }, function () {
-            this.setState(this.select_announce_type())
-        });
-    }
-
-    select_announce_general_type = () => {
-        this.setState({
-            announcementType: 'General Announcement',
-            announcementTypetext: 'General Announcement'
-        }, function () {
-            this.setState(this.select_announce_type())
-        });
-    }
-
-    select_announce_all_status = () => {
-        this.setState({
-            announcementStatus: 'All',
-            announcementStatustext: 'All'
+            announcementStatus: temp,
+            announcementStatustext: item
         }, function () {
             this.setState(this.select_announce_status())
         });
     }
 
-    select_announce_read_status = () => {
-        this.setState({
-            announcementStatus: true,
-            announcementStatustext: 'Read'
-        }, function () {
-            this.setState(this.select_announce_status())
-        });
-    }
+    // select_announce_emergency_type = () => {
+    //     this.setState({
+    //         announcementType: 'Emergency Announcement',
+    //         announcementTypetext: 'Emergency Announcement'
+    //     }, function () {
+    //         this.setState(this.select_announce_type())
+    //     });
+    // }
 
-    select_announce_unread_status = () => {
-        this.setState({
-            announcementStatus: false,
-            announcementStatustext: 'Unread'
-        }, function () {
-            this.setState(this.select_announce_status())
-        });
-    }
+    // select_announce_event_type = () => {
+    //     this.setState({
+    //         announcementType: 'Event Announcement',
+    //         announcementTypetext: 'Event Announcement'
+    //     }, function () {
+    //         this.setState(this.select_announce_type())
+    //     });
+    // }
+
+    // select_announce_general_type = () => {
+    //     this.setState({
+    //         announcementType: 'General Announcement',
+    //         announcementTypetext: 'General Announcement'
+    //     }, function () {
+    //         this.setState(this.select_announce_type())
+    //     });
+    // }
+
+    // select_announce_all_status = () => {
+    //     this.setState({
+    //         announcementStatus: 'All',
+    //         announcementStatustext: 'All'
+    //     }, function () {
+    //         this.setState(this.select_announce_status())
+    //     });
+    // }
+
+    // select_announce_read_status = () => {
+    //     this.setState({
+    //         announcementStatus: true,
+    //         announcementStatustext: 'Read'
+    //     }, function () {
+    //         this.setState(this.select_announce_status())
+    //     });
+    // }
+
+    // select_announce_unread_status = () => {
+    //     this.setState({
+    //         announcementStatus: false,
+    //         announcementStatustext: 'Unread'
+    //     }, function () {
+    //         this.setState(this.select_announce_status())
+    //     });
+    // }
 
     select_search_announce = () => {
 
@@ -1480,8 +1555,6 @@ export default class HMF01011MainView extends Component {
                 }
 
             });
-
-
 
             this.setState({
 
@@ -2186,7 +2259,21 @@ export default class HMF01011MainView extends Component {
                             <View style={{ height: 50, width: '100%', justifyContent: 'center', }}>
                                 <Text style={{ marginLeft: 20, marginTop: 10, textAlign: 'left', color: 'black', fontSize: 18, fontWeight: 'bold' }}>Select Status</Text>
                             </View>
-                            <TouchableOpacity style={styles.button}
+
+                            <ScrollView style={{ height: '40%' }}>
+                                {
+                                    this.state.announcestatuslist.map((item, index) => (
+                                        <TouchableOpacity style={styles.button}
+                                        
+                                            onPress={() => { this.on_select_Announcement_status(item) }}
+                                            key={index + 100}>
+                                            <View style={{ justifyContent: 'center', height: 40, alignItems: 'center', }} key={index + 200}>
+                                                <Text style={{ textAlign: 'center', fontSize: 18, width: '100%', height: 30, alignItems: 'center' }}> {item}</Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                    ))}
+                            </ScrollView>
+                            {/* <TouchableOpacity style={styles.button}
                                 onPress={(this.select_announce_all_type)}
 
                             >
@@ -2211,7 +2298,7 @@ export default class HMF01011MainView extends Component {
                                 <View style={{ justifyContent: 'center', height: 50, alignItems: 'center', }}>
                                     <Text style={{ textAlign: 'center', fontSize: 18, width: '100%', height: 30, alignItems: 'center' }}>Unread</Text>
                                 </View>
-                            </TouchableOpacity>
+                            </TouchableOpacity> */}
 
                         </View>
                     </View>
@@ -2239,6 +2326,7 @@ export default class HMF01011MainView extends Component {
                             <Picker.Item label="Read" value={true} />
                             <Picker.Item label="Unread" value={false} />
                         </Picker>
+
                         <View style={{ flexDirection: 'row', justifyContent: 'flex-end', height: 50, alignItems: 'center', }}>
                             <TouchableOpacity style={styles.button} onPress={(this.select_announce_status)}>
                                 <Text style={{ textAlign: 'center', color: Colors.redTextColor, fontSize: 18, width: 80, height: 30, alignItems: 'center' }}> OK</Text>
@@ -2258,8 +2346,21 @@ export default class HMF01011MainView extends Component {
                             <View style={{ height: 50, width: '100%', justifyContent: 'center', }}>
                                 <Text style={{ marginLeft: 20, marginTop: 10, textAlign: 'left', color: 'black', fontSize: 18, fontWeight: 'bold' }}>Select Type</Text>
                             </View>
+                            <ScrollView style={{ height: '40%' }}>
+                                {
+                                    this.state.announcetypelist.map((item, index) => (
+                                        <TouchableOpacity style={styles.button}
+                                        
+                                            onPress={() => { this.on_select_Announcement_type(item) }}
+                                            key={index + 100}>
+                                            <View style={{ justifyContent: 'center', height: 40, alignItems: 'center', }} key={index + 200}>
+                                                <Text style={{ textAlign: 'center', fontSize: 18, width: '100%', height: 30, alignItems: 'center' }}> {item}</Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                    ))}
+                            </ScrollView>
 
-                            <TouchableOpacity style={styles.button}
+                            {/* <TouchableOpacity style={styles.button}
                                 onPress={(this.select_announce_all_type)}
                             >
                                 <View style={{ justifyContent: 'center', height: 50, alignItems: 'center', }}>
@@ -2293,7 +2394,7 @@ export default class HMF01011MainView extends Component {
                                 <View style={{ justifyContent: 'center', height: 50, alignItems: 'center', }}>
                                     <Text style={{ textAlign: 'center', fontSize: 16, width: '100%', height: 30, alignItems: 'center' }}> General Announcement</Text>
                                 </View>
-                            </TouchableOpacity>
+                            </TouchableOpacity> */}
                         </View>
                     </View>
                 )
@@ -2338,6 +2439,18 @@ export default class HMF01011MainView extends Component {
             </View>
         )
 
+    }
+
+    rendertagNotification() {
+        if (this.state.notiAnnounceMentBadge) {
+            return (
+                <View style={{ height: 100, width: '100%', position: 'absolute', }}>
+                    <View style={{ backgroundColor: 'black', height: '100%', width: '100%', position: 'absolute', opacity: 0.7 }}>
+                    </View>
+                   
+                </View>
+            )
+        }
     }
 
     renderloadingscreen() {
@@ -2398,8 +2511,8 @@ export default class HMF01011MainView extends Component {
         console.log('data pushstatus :', this.props.tempdata)
         let badgeBG = 'transparent'
         let badgeText = 'transparent'
-        console.log('notiAnnounceMentBadge : ',SharedPreference.notiAnnounceMentBadge);
-        if (SharedPreference.notiAnnounceMentBadge) {
+       // console.log('notiAnnounceMentBadge : ',this.state.notiAnnounceMentBadge);
+        if (this.state.notiAnnounceMentBadge) {
             badgeBG = 'red'
             badgeText = 'white'
         }
@@ -2439,7 +2552,7 @@ export default class HMF01011MainView extends Component {
                             />
                             <View style={{ position: 'absolute', height: '100%' }}  >
                                 <View style={{ height: 20, borderRadius: 20, backgroundColor: badgeBG, marginLeft: 20, marginTop: 10 }}>
-                                    <Text style={{ fontSize: 15, color: badgeText, textAlign: 'center', marginLeft: 5, marginRight: 5, height: 20, borderRadius: 10 }}>{SharedPreference.notiAnnounceMentBadge}</Text>
+                                    <Text style={{ fontSize: 15, color: badgeText, textAlign: 'center', marginLeft: 5, marginRight: 5, height: 20, borderRadius: 10 }}>{this.state.notiAnnounceMentBadge}</Text>
                                 </View>
                             </View>
 
@@ -2472,6 +2585,7 @@ export default class HMF01011MainView extends Component {
                         </TouchableOpacity>
                     </View>
                 </View>
+                {/* {this.rendertagNotification()} */}
                 {this.renderloadingscreen()}
 
             </View>

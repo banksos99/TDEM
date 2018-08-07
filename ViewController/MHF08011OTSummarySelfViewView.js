@@ -364,7 +364,7 @@ console.log('ot data response : ',data)
                     <View style={{ height: '100%', width: '100%', justifyContent: 'center', alignItems: 'center', position: 'absolute', }} >
                         <View style={{ width: '80%', backgroundColor: 'white' }}>
                             <View style={{ height: 50, width: '100%', justifyContent: 'center', }}>
-                                <Text style={{ marginLeft: 20, marginTop: 10, textAlign: 'left', color: 'black', fontSize: 18, fontWeight: 'bold' }}>Select Month</Text>
+                                <Text style={styles.alertDialogBoxText}>Select Month</Text>
                             </View>
                             <ScrollView style={{ height: '40%' }}>
                                 {
