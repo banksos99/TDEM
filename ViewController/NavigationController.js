@@ -169,23 +169,53 @@ export default class rootNavigation extends Component {
             })
         }
     }
+    rendertagNotification() {
+        if (this.state.notiAnnounceMentBadge) {
+            return (
+                <View style={{ height: 100, width: '100%', position: 'absolute', }}>
+                    <View style={{ backgroundColor: 'black', height: '100%', width: '100%', position: 'absolute', opacity: 0.7 }}>
+                    </View>
+                   
+                </View>
+            )
+        }
+    }
+    // getCurrentRouteName(navigationState) {
+    //     if (!navigationState) {
+    //       return null;
+    //     }
+    //     const route = navigationState.routes[navigationState.index];
+    //     // dive into nested navigators
+    //     if (route.routes) {
+    //       return this.getCurrentRouteName(route);
+    //     }
+    //     return route.routeName;
+    //   }
+
     gotoHomemenu() {
 
 
     }
     render() {
-       // console.log('data pushstatus :', this.props.pushstatus)
-       // console.log('data pushstatus :', AppNavigatorRegister.props.navigation)
+        // console.log('data pushstatus :', this.props.pushstatus)
+        // console.log('data pushstatus :', AppNavigatorRegister.props.navigation)
         //AppNavigatorRegister.homeScreen.getnotidata(this.props.pushstatus)
-       
+        // const newState = this.AppNavigatorRegister.navigate('HomeScreen')
         if (this.state.hasPin == false) {
             return (
-                <AppNavigatorRegister 
-                tempdata={this.state.notiMessage}/>
+                <AppNavigatorRegister
+                    onNavigationStateChange={(prevState, currentState) => {
+                      //  const currentScreen = currentState.routes[navigationState.index];
+                        console.log('statec change',currentState)
+                    }} />
             );
         } else {
             return (
-                <AppNavigatorPin />
+                <AppNavigatorPin  
+                onNavigationStateChange={(prevState, currentState) => {
+                   // const currentScreen = currentState.routes[navigationState.index];
+                    console.log('statec change',currentState)
+                }} />
             );
         }
 

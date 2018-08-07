@@ -797,6 +797,7 @@ export const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
     },
+    
     announcementitemRead: {
         flexDirection: 'row',
         justifyContent: 'space-between',

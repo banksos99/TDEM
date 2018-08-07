@@ -33,7 +33,7 @@ export default class mainview extends Component {
   }
 
   async componentDidMount() {
-    
+    // this.notificationListener();
     this.inactivecounting();
 
     const enabled = await firebase.messaging().hasPermission();
@@ -86,12 +86,13 @@ export default class mainview extends Component {
     firebase.analytics().setCurrentScreen(SharedPreference.SCREEN_SPLASH)
 
     notificationOpen = await firebase.notifications().getInitialNotification();
+
     console.log('notificationOpen : ', notificationOpen)
 
     if (notificationOpen) {
 
       const notification = notificationOpen.notification;
-
+      
       if (notification._data.type === 'Payroll') {
 
         SharedPreference.notipayslipID = notification._data.id
@@ -110,13 +111,23 @@ export default class mainview extends Component {
       .notifications()
       .onNotification(notification => {
         console.log('notification ==> notificationListener : ', notification)
-        Alert
+        SharedPreference.notipayslipID = 10
+        if (notification._data.type === 'Payroll') {
+
+          SharedPreference.notipayslipID = notification._data.id
+  
+        } else if (notification._data.type === 'Emergency Announcement') {
+  
+          SharedPreference.notiAnnounceMentID = notification._data.id
+  
+        }
       });
 
     notificationOpen = firebase.notifications().getInitialNotification();
     console.log('notificationOpen : ', notificationOpen)
 
   }
+
   componentWillUnmount() {
     // this.notificationListener();
     this.unsubscribeFromNotificationListener();
@@ -147,6 +158,24 @@ export default class mainview extends Component {
     });
   }
 
+  renderDetailScreen() {
+    if (SharedPreference.notipayslipID) {
+      return (
+        <View style={{ width: '100%', height: '100%', position: 'absolute', backgroundColor: 'red' }}>
+         
+        </View>
+      );
+    }
+    else if (SharedPreference.notiAnnounceMentID) {
+      return (
+        <View style={{ width: '100%', height: '100%', position: 'absolute', backgroundColor: 'red' }}>
+         
+        </View>
+      );
+
+    }
+  }
+
   renderPINScreen() {
     if (this.state.showpin) {
       return (
@@ -163,6 +192,12 @@ export default class mainview extends Component {
         <View style={{ flex: 1, }}>
           <RootViewController
             pushstatus={this.state.notiMessage} />
+          {/* <View style={{ height: 100, width: '100%', position: 'absolute', }}>
+            <View style={{ backgroundColor: 'black', height: '100%', width: '100%', position: 'absolute', opacity: 0.7 }}>
+            </View>
+
+          </View> */}
+          {this.renderDetailScreen()}
         </View>
       );
     }
@@ -173,6 +208,7 @@ export default class mainview extends Component {
           source={require('./resource/SplashBg.png')}
           resizeMode='contain'
           style={{ flex: 1 }} />
+          
       </View>
 
     );
