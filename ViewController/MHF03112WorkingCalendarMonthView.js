@@ -63,16 +63,17 @@ export default class calendarEventDetailView extends Component {
 
     getDataOnView() {
         const selectedMonth = moment(this.state.monthText).format(_formatMonth);
-        const vacation1 = { key: 'number1', color: Colors.calendarDotColor };
-        const vacation2 = { key: 'number2', color: Colors.calendarDotColor };
+        const vacation1 = { key: 'number1', color: Colors.calendarRedDotColor };
+        const vacation2 = { key: 'number2', color: Colors.calendarRedDotColor };
+
 
         if (this.state.monthObject) {
 
-            console.log("this.state.monthObject : ", this.state.monthObject)
+            // console.log("this.state.monthObject : ", this.state.monthObject)
 
             if (selectedMonth == this.state.monthObject.month) {
-                console.log("componentWillMonth : ", selectedMonth)
-                console.log("this.state.monthObject.month : ", this.state.monthObject.month)
+                // console.log("componentWillMonth : ", selectedMonth)
+                // console.log("this.state.monthObject.month : ", this.state.monthObject.month)
 
                 this.state.dayObject = this.state.monthObject.days;
                 const original = {}
@@ -80,20 +81,20 @@ export default class calendarEventDetailView extends Component {
 
                     const datemonth = this.state.dayObject[index].date;
                     if (this.state.dayObject[index].special_holiday == "Y") {
-                        console.log("selectedMonth ==> Y")
+                        // console.log("selectedMonth ==> Y")
                         const copy = {
                             ...original, [datemonth]: { dots: [vacation1, vacation2], marked: true, selectedColor: Colors.calendarBlueText }
                         };
                         original = copy
                     } else if (this.state.dayObject[index].special_holiday == "N") {
-                        console.log("selectedMonth ==> N")
+                        // console.log("selectedMonth ==> N")
                         const copy = {
                             ...original, [datemonth]: { marked: true, selectedColor: Colors.calendarRedText }
                         };
                         original = copy
 
                     } else {//W
-                        console.log("selectedMonth ==> W")
+                        // console.log("selectedMonth ==> W")
                         let count = this.state.dayObject[index].events.length;
                         if (count > 1) {
                             const copy = {
@@ -454,9 +455,9 @@ export default class calendarEventDetailView extends Component {
     }
 
     renderCalendarTable() {
+        console.log("renderCalendarTable ==> markedDates : ",this.state._markedDates)
         return (<Calendar
             current={this.state.monthText}
-            markingType={'multi-dot'}
             monthFormat={''}
             hideArrows={true}
             hideExtraDays={false}
@@ -465,12 +466,14 @@ export default class calendarEventDetailView extends Component {
             showWeekNumbers={false}
             onDayPress={this.onDaySelect}
             markedDates={this.state._markedDates}
+            markingType={'multi-dot'}
             theme={{
                 todayTextColor: Colors.redTextColor,
                 dayTextColor: 'black'
             }}
         />)
     }
+
 
     renderDayName() {
         return (<View style={styles.calendarWeekTitleView}>

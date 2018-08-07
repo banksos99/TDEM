@@ -117,7 +117,9 @@ export default class calendarYearView extends Component {
 
         console.log("page : ", this.state.page)
         if ((SharedPreference.calendarAutoSync == true) && (this.state.page == 1)) {
-            await this.onSynWithCalendar()
+            // await this.onSynWithCalendar()
+            //TODO sync auto
+            this.addEventOnCalendar()
         }
     }
 
@@ -1075,7 +1077,6 @@ export default class calendarYearView extends Component {
             this.setState({
                 isLoading: false
             })
-
             //TODO Alert
             Alert.alert(
                 StringText.CALENDAR_ALERT_SYNC_CALENDAR_TITLE_SUCCESS,
