@@ -154,7 +154,7 @@ export default class HMF01011MainView extends Component {
 
         }
 
-        this.notificationListener();
+       // this.notificationListener();
 // this.getCurrentTime();
     }
 
@@ -197,12 +197,21 @@ console.log('notiAnnounceMentBadge : ',SharedPreference.notiAnnounceMentBadge)
 
     async componentDidMount() {
 
-
+        
         this.redertabview()
 
         NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectivityChange);
 
         if (SharedPreference.notipayslipID) {
+
+            Alert.alert(
+                'alert',
+                'componentDidMount',
+                [
+                    { text: 'OK', onPress: () => console.log('OK Pressed') },
+                ],
+                { cancelable: false }
+            )
 
             this.onOpenPayslipDetail()
 
@@ -238,23 +247,23 @@ console.log('notiAnnounceMentBadge : ',SharedPreference.notiAnnounceMentBadge)
     // }
         
 
-    notificationListener() {
-        notificationListener = firebase
-            .notifications()
-            .onNotification(notification => {
+    // notificationListener() {
+    //     notificationListener = firebase
+    //         .notifications()
+    //         .onNotification(notification => {
 
-                this.setState({
-                    notiAnnounceMentBadge: 13
-                })
+    //             this.setState({
+    //                 notiAnnounceMentBadge: 13
+    //             })
 
-                console.log('notification ==> notificationListener : ', notification)
+    //             console.log('notification ==> notificationListener : ', notification)
                 
-            });
+    //         });
 
-        notificationOpen = firebase.notifications().getInitialNotification();
-        console.log('notificationOpen : ', notificationOpen)
+    //     notificationOpen = firebase.notifications().getInitialNotification();
+    //     console.log('notificationOpen : ', notificationOpen)
 
-    }
+    // }
 
     onLoadInAppNoti = async () => {
 
@@ -461,8 +470,8 @@ console.log('notiAnnounceMentBadge : ',SharedPreference.notiAnnounceMentBadge)
 
         // //console.log("calendarPDFAPI ==>  functionID : ", functionID)
         FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, SharedPreference.FUNCTIONID_ANNOUCEMENT, SharedPreference.profileObject.client_token)
-        //console.log("calendarPDFAPI ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
-
+        console.log("calendarPDFAPI ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
+        console.log("client_id  : ", SharedPreference.profileObject.client_id)
         let hostApi = SharedPreference.ANNOUNCEMENT_ASC_API + '&offset=0&limit=' + totalroll
         if (ascendingSort) {
             hostApi = SharedPreference.ANNOUNCEMENT_DSC_API + '&offset=0&limit=' + totalroll
@@ -478,18 +487,19 @@ console.log('notiAnnounceMentBadge : ',SharedPreference.notiAnnounceMentBadge)
             .then((response) => response.json())
             .then((responseJson) => {
                 try {
+                    console.log('responseJson: ', responseJson)
                     this.setState({
                         isscreenloading: false,
                         dataSource: responseJson,
                         announcepage: 0,
                         annrefresh: false
                     }, function () {
-                        if (this.state.dataSource.status === 200) {
+                        if (responseJson.status === 200) {
 
                             this.setState(this.renderloadingscreen());
-                            console.log('this.state.dataSource.data: ', this.state.dataSource.data)
+                            console.log('this.state.dataSource.data: ', responseJson.data)
                             tempannouncementData = []
-                            announcementData = this.state.dataSource.data;
+                            announcementData = responseJson.data;
                             announcementData.map((item, i) => {
                                 if (this.state.announcementStatus === 'All') {
                                     if (this.state.announcementType === 'All') {
@@ -514,8 +524,8 @@ console.log('notiAnnounceMentBadge : ',SharedPreference.notiAnnounceMentBadge)
                             this.setState(this.renderannouncementbody());
                         } else {
                             Alert.alert(
-                                this.state.dataSource.errors[0].code,
-                                this.state.dataSource.errors[0].detail,
+                                responseJson.errors[0].code,
+                                responseJson.errors[0].detail,
                                 [
                                     { text: 'OK', onPress: () => console.log('OK Pressed') },
                                 ],
@@ -752,7 +762,7 @@ console.log('notiAnnounceMentBadge : ',SharedPreference.notiAnnounceMentBadge)
 
                         Alert.alert(
                             this.state.dataSource.errors[0].code,
-                            SharedPreference.notipayslipID,
+                            SharedPreference.notipayslipID.toString(),
                             [
                                 { text: 'OK', onPress: () => console.log('OK Pressed') },
                             ],

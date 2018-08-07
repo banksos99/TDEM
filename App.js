@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { View, Image, Alert, Platform } from 'react-native';
+import { View, Image, Alert, Platform,Text } from 'react-native';
 
 import {
   StackNavigator,
-  createSwitchNavigator,
+  createSwitchNavigator
   
 } from 'react-navigation';
 
@@ -27,13 +27,18 @@ export default class mainview extends Component {
     this.state = {
       inactive: false,
       showpin: false,
-      notiMessage:0
+      notiMessage:0,
+      notipayslipID:0,
+      notiTitle:0,
+      notiBody:0
     }
     // SharedPreference.notiAnnounceMentBadge = 150;
   }
 
   async componentDidMount() {
-    // this.notificationListener();
+
+    this.notificationListener();
+
     this.inactivecounting();
 
     const enabled = await firebase.messaging().hasPermission();
@@ -83,16 +88,29 @@ export default class mainview extends Component {
         }
       });
 
-    firebase.analytics().setCurrentScreen(SharedPreference.SCREEN_SPLASH)
+   // firebase.analytics().setCurrentScreen(SharedPreference.SCREEN_SPLASH)
 
     notificationOpen = await firebase.notifications().getInitialNotification();
-
+    //notificationOpen = await firebase.notifications().onNotificationOpened();
     console.log('notificationOpen : ', notificationOpen)
-
+    
     if (notificationOpen) {
+      // this.setState({
+      //  // notiMessage: 10,
+       
+      // });
+
+    //   Alert.alert(
+    //     'alert',
+    //     'notificationOpen',
+    //     [
+    //         { text: 'OK', onPress: () => console.log('OK Pressed') },
+    //     ],
+    //     { cancelable: false }
+    // )
 
       const notification = notificationOpen.notification;
-      
+
       if (notification._data.type === 'Payroll') {
 
         SharedPreference.notipayslipID = notification._data.id
@@ -106,12 +124,37 @@ export default class mainview extends Component {
     }
   }
 
+  componentWillReceiveProps(nextProps) {
+
+    if (nextProps.appDidBecomeActive) {
+      
+    }
+  }
+
   notificationListener() {
     notificationListener = firebase
       .notifications()
       .onNotification(notification => {
         console.log('notification ==> notificationListener : ', notification)
-        SharedPreference.notipayslipID = 10
+
+      //   Alert.alert(
+      //     'alert',
+      //     'notificationListener',
+      //     [
+      //         { text: 'OK', onPress: () => console.log('OK Pressed') },
+      //     ],
+      //     { cancelable: false }
+      // )
+
+
+        this.setState({
+          notiMessage: 10,
+          notiTitle:notification._title,
+          notiBody:notification._body
+        });
+
+        SharedPreference.notipayslipID = 12
+       // SharedPreference.notipayslipID = 10
         if (notification._data.type === 'Payroll') {
 
           SharedPreference.notipayslipID = notification._data.id
@@ -130,7 +173,7 @@ export default class mainview extends Component {
 
   componentWillUnmount() {
     // this.notificationListener();
-    this.unsubscribeFromNotificationListener();
+   // this.unsubscribeFromNotificationListener();
 
   }
 
@@ -142,7 +185,13 @@ export default class mainview extends Component {
       });
     }, 500);
   }
-
+  cloatlabelnoti() {
+    this.timer = setTimeout(() => {
+      this.setState({
+        notiMessage:0
+      });
+    }, 5000);
+  }
   noaction() {
     this.timer = setTimeout(() => {
       this.setState({
@@ -158,23 +207,50 @@ export default class mainview extends Component {
     });
   }
 
-  renderDetailScreen() {
-    if (SharedPreference.notipayslipID) {
-      return (
-        <View style={{ width: '100%', height: '100%', position: 'absolute', backgroundColor: 'red' }}>
-         
-        </View>
-      );
-    }
-    else if (SharedPreference.notiAnnounceMentID) {
-      return (
-        <View style={{ width: '100%', height: '100%', position: 'absolute', backgroundColor: 'red' }}>
-         
-        </View>
-      );
+  rendernotificationlabel() {
 
+    if (this.state.notiMessage) {
+      this.cloatlabelnoti();
+      return (
+        <View style={{ width: '100%', height: 120, position: 'absolute', backgroundColor: 'transparent' }}>
+          <View style={{ flex: 1, borderRadius: 10, backgroundColor: 'white', justifyContent: 'center', margin: 10 }}>
+            <View style={{ flexDirection: 'column', flex: 1 }}>
+              <View style={{ flexDirection: 'row', flex: 2 }}>
+                <View style={{ flex: 1 ,justifyContent:'center',alignItems:'center'}}>
+                  <Image
+                    style={{ height: 20, width: 20, }}
+                    source={require('./resource/SplashBg.png')}
+                    /></View>
+                <View style={{ flex: 7,justifyContent:'center' }}><Text>TDEM Connect</Text></View>
+
+
+              </View>
+              <View style={{ flex: 1, marginLeft: 10 }}>
+                <Text>{this.state.notiTitle}</Text>
+              </View>
+              <View style={{ flex: 2, marginLeft: 10 }}>
+                <Text>{this.state.notiBody}</Text>
+              </View>
+            </View>
+            {/* <View style={{ backgroundColor: 'blue', flex: 1 }}></View>
+            <View style={{ backgroundColor: 'white', flex: 10 }}>
+              <Text>{this.state.notiTitle}</Text>
+              <Text>{this.state.notiTitle}</Text>
+            </View> */}
+          </View>
+        </View>
+      );
     }
   }
+  //   else if (SharedPreference.notiAnnounceMentID) {
+  //     return (
+  //       <View style={{ width: 50, height: '100%', position: 'absolute', backgroundColor: 'red' }}>
+         
+  //       </View>
+  //     );
+
+  //   }
+  // }
 
   renderPINScreen() {
     if (this.state.showpin) {
@@ -197,7 +273,7 @@ export default class mainview extends Component {
             </View>
 
           </View> */}
-          {this.renderDetailScreen()}
+          {this.rendernotificationlabel()}
         </View>
       );
     }
