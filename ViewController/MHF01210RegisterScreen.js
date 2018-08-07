@@ -53,7 +53,7 @@ export default class RegisterActivity extends Component {
             SharedPreference.profileObject = await this.saveProfile.getProfile()
             //console.log("onRegister ==> onLoadLoginWithPin")
             await this.onLoadLoginWithPin("001000200")
-        } else if (code.FORM_VALIDATE_FAILED == data.code) {
+        } else if (code.DOES_NOT_EXISTS == data.code) {
             Alert.alert(
                 StringText.REGISTER_INVALID_TITLE,
                 StringText.REGISTER_INVALID_DESC,
@@ -113,8 +113,7 @@ export default class RegisterActivity extends Component {
                 showCreatePinSuccess: true,
                 showCreatePin: false
             })
-        } else if (code.DUPLICATE == data.code) {
-            await this.onLoadLoginWithPin(this.state.pin2)
+        
         } else {
             Alert.alert(
                 StringText.SERVER_ERROR_TITLE,
