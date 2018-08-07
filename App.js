@@ -38,40 +38,40 @@ export default class mainview extends Component {
 
     const enabled = await firebase.messaging().hasPermission();
     if (enabled) {
-      console.log("firebase ==> user has permissions")
+      //console.log("firebase ==> user has permissions")
     } else {
       try {
         await firebase.messaging().requestPermission();
-        console.log("firebase ==> User has authorised")
+        //console.log("firebase ==> User has authorised")
       } catch (error) {
-        console.log("firebase ==> error")
+        //console.log("firebase ==> error")
       }
     }
 
     //////////Device Info/////////////
 
     const deviceModel = DeviceInfo.getModel();
-    // console.log("deviceModel : ", deviceModel)
+    // //console.log("deviceModel : ", deviceModel)
 
     const deviceBrand = DeviceInfo.getBrand();
-    // console.log("deviceBrand : ", deviceBrand)
+    // //console.log("deviceBrand : ", deviceBrand)
 
     const deviceOS = DeviceInfo.getSystemName();
-    // console.log("deviceOS : ", deviceOS)
+    // //console.log("deviceOS : ", deviceOS)
 
     const deviceOSVersion = DeviceInfo.getSystemVersion();
-    // console.log("deviceOSVersion : ", deviceOSVersion)
+    // //console.log("deviceOSVersion : ", deviceOSVersion)
 
     const appVersion = DeviceInfo.getVersion();
-    // console.log("appVersion : ", appVersion)
+    // //console.log("appVersion : ", appVersion)
 
     const buildNumber = DeviceInfo.getBuildNumber();
-    // console.log("buildNumber : ", buildNumber)
+    // //console.log("buildNumber : ", buildNumber)
 
 
     await firebase.messaging().getToken()
       .then((token) => {
-        console.log('firebase ==> message Device FCM Token: ', token);
+        //console.log('firebase ==> message Device FCM Token: ', token);
         SharedPreference.deviceInfo = {
           "deviceModel": deviceModel,
           "deviceBrand": deviceBrand,
@@ -86,7 +86,7 @@ export default class mainview extends Component {
     firebase.analytics().setCurrentScreen(SharedPreference.SCREEN_SPLASH)
 
     notificationOpen = await firebase.notifications().getInitialNotification();
-    console.log('notificationOpen : ', notificationOpen)
+    //console.log('notificationOpen : ', notificationOpen)
 
     if (notificationOpen) {
 
@@ -101,7 +101,7 @@ export default class mainview extends Component {
         SharedPreference.notiAnnounceMentID = notification._data.id
 
       }
-      console.log('notipayslipID : ', SharedPreference.notipayslipID);
+      //console.log('notipayslipID : ', SharedPreference.notipayslipID);
     }
   }
 
@@ -109,12 +109,13 @@ export default class mainview extends Component {
     notificationListener = firebase
       .notifications()
       .onNotification(notification => {
-        console.log('notification ==> notificationListener : ', notification)
+        //console.log('notification ==> notificationListener : ', notification)
         Alert
       });
 
     notificationOpen = firebase.notifications().getInitialNotification();
-    console.log('notificationOpen : ', notificationOpen)
+    //console.log('notificationOpen : ', notificationOpen)
+    // this.inactivecounting()
 
   }
   componentWillUnmount() {

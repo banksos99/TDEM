@@ -268,7 +268,7 @@ export default class PinActivity extends Component {
         let data = await LoginResetPinAPI(SharedPreference.FUNCTIONID_PIN)
         code = data[0]
         data = data[1]
-
+        
         console.log("onLoginResetPinAPI : ", data.code)
 
         if (code.SUCCESS == data.code) {
@@ -334,7 +334,7 @@ export default class PinActivity extends Component {
                             <Text style={[styles.pinText, { color: 'white' }]}>{this.state.pintitle}</Text>
                             {this.renderImagePin()}
                             <TouchableOpacity onPress={() => { this.onResetPIN() }}>
-                                <Text style={styles.registPinForgotContainer}>Reset PIN ?</Text>
+                                <Text style={styles.registPinForgotContainer}>Forgot your PIN ?</Text>
                             </TouchableOpacity>
                             {this.renderFailPin()}
                         </View>

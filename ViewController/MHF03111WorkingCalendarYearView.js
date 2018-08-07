@@ -32,6 +32,7 @@ import SaveProfile from "../constants/SaveProfile"
 import CalendarPDFAPI from "../constants/CalendarPDFAPI"
 import firebase from 'react-native-firebase';
 
+
 export default class calendarYearView extends Component {
 
     eventCalendar = new EventCalendar()
@@ -43,8 +44,6 @@ export default class calendarYearView extends Component {
 
         this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
         this.state = {
-            dataSource: ds.cloneWithRows(['row 1', 'row 2', 'row 3', 'row 4', 'row 5', 'row 6', 'row 7', 'row 8', 'row 9', 'row 10']),
-
             connectWithServer: true,
             url: '',
             countDay: [],
@@ -82,7 +81,6 @@ export default class calendarYearView extends Component {
             isSycnCalendarFirstTime: false,
 
 
-
         }
 
         this.LocaleConfig()
@@ -92,6 +90,8 @@ export default class calendarYearView extends Component {
         firebase.analytics().setCurrentScreen(SharedPreference.SCREEN_WORKING_CALENDAR)
 
     }
+
+
 
     componentWillMount() {
         BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
@@ -129,7 +129,8 @@ export default class calendarYearView extends Component {
             // await this.onSynWithCalendar()
             this.addEventOnCalendar()
             this.setState({
-                isSycnCalendarFirstTime: true
+                isSycnCalendarFirstTime: true,
+                isLoading: true
             })
         }
     }
@@ -457,14 +458,38 @@ export default class calendarYearView extends Component {
             });
     }
 
-    onPressSelectYear(year) {
-        //console.log("onPressSelectYear index : ", year)
+    onPDF(year) {
         this.setState({
             selectYear: year
         })
     }
 
+    onPressSelectYearWhenSelectPDF(year) {
+
+        this.setState({
+            selectYear: year,
+            yearPickerForDownloadPDFFileView: false,
+            isLoadingPDF: true
+        })
+        this.onloadPDFFile();
+
+    }
+    onPressSelectYearWhenSelectLocation(year, type) {
+
+        this.setState({
+            selectYear: year,
+            yearviewPicker: false
+        })
+
+        this.state.yearviewPicker = false
+        this.resetCalendar()
+
+
+
+    }
+
     onPressLocation(locationFull, locationShort) {
+        this.getLocation()
         this.setState({
             selectLocation: locationShort
         })
@@ -562,24 +587,13 @@ export default class calendarYearView extends Component {
                                     {
                                         this.state.yearsPickerArray.map((i, index) => (
                                             <TouchableOpacity style={styles.button}
-                                                onPress={() => { this.onPressSelectYear(i.label) }}
+                                                onPress={() => { this.onPressSelectYearWhenSelectLocation(i.label) }}
                                                 key={index + 100}>
                                                 <View style={styles.pickerViewAndroidContrianer} key={index + 200}>
                                                     <Text style={styles.pickerViewAndroidText}> {i.label}</Text>
                                                 </View>
                                             </TouchableOpacity>))}
                                 </ScrollView>
-
-                                {/* //  */}
-                                <View style={styles.alertDialogBox}>
-                                    <TouchableOpacity style={styles.button}
-                                        onPress={() => {
-                                            this.setState({ yearviewPicker: false }),
-                                                this.resetCalendar()
-                                        }}>
-                                        <Text style={[styles.alertDialogBoxText, { style: Text }]}>{StringText.CALENDER_YEARVIEW_SELECT_YEAR_BUTTON}</Text>
-                                    </TouchableOpacity>
-                                </View>
                             </View>
                         </View>
                     </View >
@@ -632,25 +646,13 @@ export default class calendarYearView extends Component {
                                     {
                                         this.state.yearsPickerArray.map((i, index) => (
                                             <TouchableOpacity style={styles.button}
-                                                onPress={() => { this.onPressSelectYear(i.label) }}
+                                                onPress={() => { this.onPressSelectYearWhenSelectPDF(i.label) }}
                                                 key={index + 100}>
                                                 <View style={styles.pickerViewAndroidContrianer} key={index + 200}>
                                                     <Text style={styles.alertDialogBoxSelectText}> {i.label}</Text>
                                                 </View>
                                             </TouchableOpacity>))}
                                 </ScrollView>
-                                <View style={styles.alertDialogBox}>
-                                    <TouchableOpacity style={styles.button}
-                                        onPress={() => {
-                                            this.setState({
-                                                yearPickerForDownloadPDFFileView: false,
-                                                isLoadingPDF: true
-                                            })
-                                            this.onloadPDFFile();
-                                        }}>
-                                        <Text style={[styles.alertDialogBoxText, { style: Text }]}>{StringText.CALENDER_YEARVIEW_SELECT_YEAR_BUTTON}</Text>
-                                    </TouchableOpacity>
-                                </View>
                             </View>
                         </View>
                     </View >
@@ -713,14 +715,6 @@ export default class calendarYearView extends Component {
                                                 </View>
                                             </TouchableOpacity>))}
                                 </ScrollView>
-                                <View style={styles.alertDialogBox}>
-                                    <TouchableOpacity style={styles.button}
-                                        onPress={() => {
-                                            this.getLocation()
-                                        }}>
-                                        <Text style={[styles.alertDialogBoxText, { style: Text }]}>{StringText.CALENDER_YEARVIEW_ALERT_LOCATION_BUTTON}</Text>
-                                    </TouchableOpacity>
-                                </View>
                             </View>
                         </View>
                     </View >
