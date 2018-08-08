@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Image, Alert, Platform,Text } from 'react-native';
+import { View, Image, Alert, Platform,Text ,PushNotificationIOS,AppRegistry} from 'react-native';
 
 import {
   StackNavigator,
@@ -93,7 +93,7 @@ export default class mainview extends Component {
     notificationOpen = await firebase.notifications().getInitialNotification();
     //notificationOpen = await firebase.notifications().onNotificationOpened();
     console.log('notificationOpen : ', notificationOpen)
-    
+    //console.log('token : ', token)
     if (notificationOpen) {
 
       const notification = notificationOpen.notification;
@@ -109,6 +109,12 @@ export default class mainview extends Component {
       }
       //console.log('notipayslipID : ', SharedPreference.notipayslipID);
     }
+
+    // set badge number on icon application
+
+    //Platform.OS === 'ios' && PushNotificationIOS.setApplicationIconBadgeNumber(2);
+    // Platform.OS === 'ios' && NotificationsIOS.setBadgesCount(0);
+    
   }
 
   componentWillReceiveProps(nextProps) {
@@ -122,38 +128,64 @@ export default class mainview extends Component {
     notificationListener = firebase
       .notifications()
       .onNotification(notification => {
-        console.log('notification ==> notificationListener : ', notification)
 
-      //   Alert.alert(
-      //     'alert',
-      //     'notificationListener',
-      //     [
-      //         { text: 'OK', onPress: () => console.log('OK Pressed') },
-      //     ],
-      //     { cancelable: false }
-      // )
+        // if (Platform.OS === 'android') {
 
+        //   const localNotification = new firebase.notifications.Notification({
+        //       sound: 'default',
+        //       show_in_foreground: true,
+        //     })
+        //     .setNotificationId(notification.notificationId)
+        //     .setTitle(notification.title)
+        //     .setSubtitle(notification.subtitle)
+        //     .setBody(notification.body)
+        //     .setData(notification.data)
+        //     .android.setChannelId('channelId') // e.g. the id you chose above
+        //     .android.setSmallIcon('ic_stat_notification') // create this icon in Android Studio
+        //     .android.setColor('#000000') // you can set a color here
+        //     .android.setPriority(firebase.notifications.Android.Priority.High);
+  
+        //   firebase.notifications()
+        //     .displayNotification(localNotification)
+        //     .catch(err => console.error(err));
+  
+        // } else if (Platform.OS === 'ios') {
+  
+        //   const localNotification = new firebase.notifications.Notification()
+        //     .setNotificationId(notification.notificationId)
+        //     .setTitle(notification.title)
+        //     .setSubtitle(notification.subtitle)
+        //     .setBody(notification.body)
+        //     .setData(notification.data)
+        //     .ios.setBadge(0);
+  
+        //   firebase.notifications()
+        //     .displayNotification(localNotification)
+        //     .catch(err => console.error(err));
+  
+        // }
 
+       // firebase.setBadge(3)
         this.setState({
           notiMessage: 10,
-          notiTitle:notification._title,
-          notiBody:notification._body
+          notiTitle: notification._title,
+          notiBody: notification._body
         });
 
-        SharedPreference.notipayslipID = 12
-       // SharedPreference.notipayslipID = 10
+        // SharedPreference.notipayslipID = 12
+        // SharedPreference.notipayslipID = 10
         if (notification._data.type === 'Payroll') {
 
           SharedPreference.notipayslipID = notification._data.id
-  
+
         } else if (notification._data.type === 'Emergency Announcement') {
-  
+
           SharedPreference.notiAnnounceMentID = notification._data.id
-  
+
         }
       });
 
-    notificationOpen = firebase.notifications().getInitialNotification();
+   // notificationOpen = firebase.notifications().getInitialNotification();
     //console.log('notificationOpen : ', notificationOpen)
     // this.inactivecounting()
 
