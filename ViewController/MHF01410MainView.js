@@ -87,7 +87,7 @@ export default class HMF01011MainView extends Component {
         rolemanagementEmpoyee = [0, 0, 0, 0, 0, 0, 0, 0];
         rolemanagementManager = [0, 0, 0, 0];
         managerstatus = 'N';
-        announcestatus = 'N';
+        announcestatus = 'Y';
         settingstatus = 'Y';
         //Check role_authoried status
         for (let i = 0; i < SharedPreference.profileObject.role_authoried.length; i++) {
@@ -202,25 +202,25 @@ console.log('notiAnnounceMentBadge : ',SharedPreference.notiAnnounceMentBadge)
 
         NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectivityChange);
 
-        if (SharedPreference.notipayslipID) {
+        // if (SharedPreference.notipayslipID) {
 
-            Alert.alert(
-                'alert',
-                'componentDidMount',
-                [
-                    { text: 'OK', onPress: () => console.log('OK Pressed') },
-                ],
-                { cancelable: false }
-            )
+        //     Alert.alert(
+        //         'alert',
+        //         'componentDidMount',
+        //         [
+        //             { text: 'OK', onPress: () => console.log('OK Pressed') },
+        //         ],
+        //         { cancelable: false }
+        //     )
 
-            this.onOpenPayslipDetail()
+        //     this.onOpenPayslipDetail()
 
-        } else if (SharedPreference.notiAnnounceMentID) {
-            // console.log("if SharedPreference.notiAnnounceMentID")
+        // } else if (SharedPreference.notiAnnounceMentID) {
+        //     // console.log("if SharedPreference.notiAnnounceMentID")
 
-            this.onOpenAnnouncementDetailnoti()
+        //     this.onOpenAnnouncementDetailnoti()
 
-        }
+        // }
         await this.loadData()
 
 
@@ -286,7 +286,9 @@ console.log('notiAnnounceMentBadge : ',SharedPreference.notiAnnounceMentBadge)
             .then((responseJson) => {
                 try {
                     if (responseJson.status == 403) {
+
                         this.onAutenticateErrorAlertDialog()
+
                     } else if (responseJson.status == 200) {
                         console.log("onLoadInAppNoti ==> responseJson ", responseJson)
                         let dataArray = responseJson.data
@@ -469,6 +471,7 @@ console.log('notiAnnounceMentBadge : ',SharedPreference.notiAnnounceMentBadge)
         }
 
         // //console.log("calendarPDFAPI ==>  functionID : ", functionID)
+        console.log("loadAnnouncementfromAPI ")
         FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, SharedPreference.FUNCTIONID_ANNOUCEMENT, SharedPreference.profileObject.client_token)
         console.log("calendarPDFAPI ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
         console.log("client_id  : ", SharedPreference.profileObject.client_id)
@@ -522,6 +525,11 @@ console.log('notiAnnounceMentBadge : ',SharedPreference.notiAnnounceMentBadge)
                                 }
                             });
                             this.setState(this.renderannouncementbody());
+
+                        }else if (responseJson.status === 403) {
+
+                            this.onAutenticateErrorAlertDialog()
+
                         } else {
                             Alert.alert(
                                 responseJson.errors[0].code,
@@ -607,6 +615,10 @@ console.log('notiAnnounceMentBadge : ',SharedPreference.notiAnnounceMentBadge)
                                 }
                             });
                             this.setState(this.renderannouncementbody());
+
+                        }else if(this.state.dataSource.status === 403){
+
+                            this.onAutenticateErrorAlertDialog()
                         }
                     });
                 } catch (error) {
@@ -762,7 +774,8 @@ console.log('notiAnnounceMentBadge : ',SharedPreference.notiAnnounceMentBadge)
 
                         Alert.alert(
                             this.state.dataSource.errors[0].code,
-                            SharedPreference.notipayslipID.toString(),
+                            this.state.dataSource.errors[0].detail,
+                            //SharedPreference.notipayslipID.toString(),
                             [
                                 { text: 'OK', onPress: () => console.log('OK Pressed') },
                             ],
@@ -1324,15 +1337,13 @@ console.log('notiAnnounceMentBadge : ',SharedPreference.notiAnnounceMentBadge)
         console.log('tabnumber : ',tabnumber)
         if (tabnumber === 1) {
             // check permission announcement
-            if (announcestatus == 'N') {
-                return
-            }
+            // if (announcestatus == 'N') {
+            //     return
+            // }
             //load data befor open announcement screen in first time
             if (announcementData.length) {
                 page = tabnumber
-                this.setState({
-
-                });
+               
             } else {
                 page = tabnumber
                 this.setState({
@@ -2550,7 +2561,9 @@ console.log('notiAnnounceMentBadge : ',SharedPreference.notiAnnounceMentBadge)
                         </TouchableOpacity>
 
 
-                        <TouchableOpacity style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }} onPress={() => { this.settabscreen(1) }}>
+                        <TouchableOpacity style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }} 
+                        disabled={!announcestatus}
+                        onPress={() => { this.settabscreen(1) }}>
 
                             <Image
                                 style={page === 1 ?
@@ -2580,7 +2593,9 @@ console.log('notiAnnounceMentBadge : ',SharedPreference.notiAnnounceMentBadge)
                             />
 
                         </TouchableOpacity> */}
-                        <TouchableOpacity style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }} onPress={() => { this.settabscreen(3) }}>
+                        <TouchableOpacity style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }} 
+                        disabled={!settingstatus}
+                        onPress={() => { this.settabscreen(3) }}>
 
                             <Image
 

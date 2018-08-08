@@ -813,7 +813,7 @@ export const styles = StyleSheet.create({
         padding: 10,
         margin: 1,
         borderColor: '#2a4944',
-        backgroundColor: 'white',
+        backgroundColor: '#F5F5F5',
         height: scale * 60
     },
     announcementitemUnread: {
@@ -824,7 +824,7 @@ export const styles = StyleSheet.create({
         margin: 1,
         borderColor: '#2a4944',
         //borderWidth: 1,
-        backgroundColor: '#F5F0F0',
+        backgroundColor: '#F7F1F1',
         height: scale * 60
     },
     handbookItem: {
