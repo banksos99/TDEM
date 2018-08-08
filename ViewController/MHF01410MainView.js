@@ -43,7 +43,7 @@ let orgcode = '';//60162305;
 
 let managerstatus = 'N';
 let announcestatus = 'Y';
-let settingstatus  = 'Y';
+let settingstatus = 'Y';
 
 let rolemanagementEmpoyee = [0, 0, 0, 0, 0, 0, 0, 0];
 let rolemanagementManager = [0, 0, 0, 0];
@@ -79,9 +79,9 @@ export default class HMF01011MainView extends Component {
             annrefresh: false,
             username: SharedPreference.profileObject.employee_name,
             nonPayrollBadge: [],
-            announcetypelist:['All','Company Announcement','Emergency Announcement','Event Announcement','General Announcement'],
-            announcestatuslist:['All','Read','Unread'],
-            notiAnnounceMentBadge:0
+            announcetypelist: ['All', 'Company Announcement', 'Emergency Announcement', 'Event Announcement', 'General Announcement'],
+            announcestatuslist: ['All', 'Read', 'Unread'],
+            notiAnnounceMentBadge: 0
             //  page: 0
         }
         rolemanagementEmpoyee = [0, 0, 0, 0, 0, 0, 0, 0];
@@ -95,6 +95,7 @@ export default class HMF01011MainView extends Component {
             if (SharedPreference.profileObject.role_authoried[i].module_function === 'HF0401') {
 
                 rolemanagementEmpoyee[0] = 1
+
             } else if (SharedPreference.profileObject.role_authoried[i].module_function === 'HF0601') {
 
                 rolemanagementEmpoyee[1] = 1
@@ -154,8 +155,8 @@ export default class HMF01011MainView extends Component {
 
         }
 
-       // this.notificationListener();
-// this.getCurrentTime();
+        // this.notificationListener();
+        // this.getCurrentTime();
     }
 
     componentWillMount() {
@@ -165,9 +166,10 @@ export default class HMF01011MainView extends Component {
             return true
         })
     }
-    componentWillReceiveProps(){
 
-console.log('notiAnnounceMentBadge : ',SharedPreference.notiAnnounceMentBadge)
+    componentWillReceiveProps() {
+
+    
 
 
     }
@@ -197,30 +199,20 @@ console.log('notiAnnounceMentBadge : ',SharedPreference.notiAnnounceMentBadge)
 
     async componentDidMount() {
 
-        
         this.redertabview()
 
         NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectivityChange);
 
-        // if (SharedPreference.notipayslipID) {
+        if (SharedPreference.notipayslipID) {
 
-        //     Alert.alert(
-        //         'alert',
-        //         'componentDidMount',
-        //         [
-        //             { text: 'OK', onPress: () => console.log('OK Pressed') },
-        //         ],
-        //         { cancelable: false }
-        //     )
+            this.onOpenPayslipDetail()
 
-        //     this.onOpenPayslipDetail()
+        } else if (SharedPreference.notiAnnounceMentID) {
 
-        // } else if (SharedPreference.notiAnnounceMentID) {
-        //     // console.log("if SharedPreference.notiAnnounceMentID")
+            this.onOpenAnnouncementDetailnoti()
 
-        //     this.onOpenAnnouncementDetailnoti()
+        }
 
-        // }
         await this.loadData()
 
 
@@ -245,7 +237,7 @@ console.log('notiAnnounceMentBadge : ',SharedPreference.notiAnnounceMentBadge)
     //         .catch(err => console.log('There was an error:' + err))
 
     // }
-        
+
 
     // notificationListener() {
     //     notificationListener = firebase
@@ -257,7 +249,7 @@ console.log('notiAnnounceMentBadge : ',SharedPreference.notiAnnounceMentBadge)
     //             })
 
     //             console.log('notification ==> notificationListener : ', notification)
-                
+
     //         });
 
     //     notificationOpen = firebase.notifications().getInitialNotification();
@@ -272,7 +264,7 @@ console.log('notiAnnounceMentBadge : ',SharedPreference.notiAnnounceMentBadge)
         const newdate = moment(today).format(_format).valueOf();
 
         FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, 1, SharedPreference.profileObject.client_token)
-        console.log('FUNCTION_TOKEN : ',FUNCTION_TOKEN)
+        console.log('FUNCTION_TOKEN : ', FUNCTION_TOKEN)
         latest_date = "2017-01-01 12:00:00"
         return fetch(SharedPreference.PULL_NOTIFICATION_API + latest_date, {
             method: 'GET',
@@ -285,12 +277,13 @@ console.log('notiAnnounceMentBadge : ',SharedPreference.notiAnnounceMentBadge)
             .then((response) => response.json())
             .then((responseJson) => {
                 try {
+                    console.log("onLoadInAppNoti ==> responseJson ", responseJson)
                     if (responseJson.status == 403) {
 
                         this.onAutenticateErrorAlertDialog()
 
                     } else if (responseJson.status == 200) {
-                        console.log("onLoadInAppNoti ==> responseJson ", responseJson)
+                        
                         let dataArray = responseJson.data
                         let currentyear = new Date().getFullYear();
 
@@ -355,8 +348,15 @@ console.log('notiAnnounceMentBadge : ',SharedPreference.notiAnnounceMentBadge)
                                             console.log("detail badge ==> ", element.badge)
                                         }
                                     }
-
                                 }
+                            } else if (dataReceive.function_id == "PHF02010") {
+
+                                console.log("announcement badge ==> ", dataReceive.badge_count)
+
+                                this.setState({
+                                    notiAnnounceMentBadge: parseInt(dataReceive.badge_count) + parseInt(this.state.notiAnnounceMentBadge)
+                                })
+
                             }
                         }
 
@@ -365,11 +365,11 @@ console.log('notiAnnounceMentBadge : ',SharedPreference.notiAnnounceMentBadge)
                             nonPayrollBadge: dataCustomArray
                         })
 
-                    } else {
-                        if (timerstatus) {
-                            this.inappTimeInterval()
-                        }
                     }
+                    if (timerstatus) {
+                        this.inappTimeInterval()
+                    }
+                    
                     // this.setState({
                     // }, function () {
                     // });
@@ -398,7 +398,12 @@ console.log('notiAnnounceMentBadge : ',SharedPreference.notiAnnounceMentBadge)
     }
 
     componentWillUnmount() {
+
         NetInfo.isConnected.removeEventListener('connectionChange', this.handleConnectivityChange);
+
+        SharedPreference.notipayslipID = 0
+
+        SharedPreference.notiAnnounceMentID = 0
     }
 
     handleConnectivityChange = isConnected => {
@@ -500,7 +505,11 @@ console.log('notiAnnounceMentBadge : ',SharedPreference.notiAnnounceMentBadge)
                         if (responseJson.status === 200) {
 
                             this.setState(this.renderloadingscreen());
+                            
                             console.log('this.state.dataSource.data: ', responseJson.data)
+                            this.setState({
+                                notiAnnounceMentBadge: 0
+                            })
                             tempannouncementData = []
                             announcementData = responseJson.data;
                             announcementData.map((item, i) => {
@@ -526,7 +535,7 @@ console.log('notiAnnounceMentBadge : ',SharedPreference.notiAnnounceMentBadge)
                             });
                             this.setState(this.renderannouncementbody());
 
-                        }else if (responseJson.status === 403) {
+                        } else if (responseJson.status === 403) {
 
                             this.onAutenticateErrorAlertDialog()
 
@@ -616,7 +625,7 @@ console.log('notiAnnounceMentBadge : ',SharedPreference.notiAnnounceMentBadge)
                             });
                             this.setState(this.renderannouncementbody());
 
-                        }else if(this.state.dataSource.status === 403){
+                        } else if (this.state.dataSource.status === 403) {
 
                             this.onAutenticateErrorAlertDialog()
                         }
@@ -1334,7 +1343,7 @@ console.log('notiAnnounceMentBadge : ',SharedPreference.notiAnnounceMentBadge)
     }
 
     settabscreen(tabnumber) {
-        console.log('tabnumber : ',tabnumber)
+        console.log('tabnumber : ', tabnumber)
         if (tabnumber === 1) {
             // check permission announcement
             // if (announcestatus == 'N') {
@@ -1343,7 +1352,7 @@ console.log('notiAnnounceMentBadge : ',SharedPreference.notiAnnounceMentBadge)
             //load data befor open announcement screen in first time
             if (announcementData.length) {
                 page = tabnumber
-               
+
             } else {
                 page = tabnumber
                 this.setState({
@@ -2103,7 +2112,7 @@ console.log('notiAnnounceMentBadge : ',SharedPreference.notiAnnounceMentBadge)
                             <View style={[styles.boxShadow, shadow]} >
                                 <View style={styles.managermenuImageButton}>
                                     <Image
-                                        style={rolemanagementManager[1] === 1?
+                                        style={rolemanagementManager[1] === 1 ?
                                             { flex: 0.5, tintColor: Colors.redTextColor } :
                                             { flex: 0.5, tintColor: Colors.lightGrayTextColor }}
                                         source={require('./../resource/images/MainMenu/MenuClock.png')}
@@ -2129,7 +2138,7 @@ console.log('notiAnnounceMentBadge : ',SharedPreference.notiAnnounceMentBadge)
                             <View style={[styles.boxShadow, shadow]} >
                                 <View style={styles.managermenuImageButton}>
                                     <Image
-                                         style={rolemanagementManager[2] === 1 ?
+                                        style={rolemanagementManager[2] === 1 ?
                                             { flex: 0.5, tintColor: Colors.redTextColor } :
                                             { flex: 0.5, tintColor: Colors.lightGrayTextColor }}
                                         source={require('./../resource/images/MainMenu/MenuAverage.png')}
@@ -2150,7 +2159,7 @@ console.log('notiAnnounceMentBadge : ',SharedPreference.notiAnnounceMentBadge)
                             <View style={[styles.boxShadow, shadow]} >
                                 <View style={styles.managermenuImageButton}>
                                     <Image
-                                         style={rolemanagementManager[3] === 1 ?
+                                        style={rolemanagementManager[3] === 1 ?
                                             { flex: 0.5, tintColor: Colors.redTextColor } :
                                             { flex: 0.5, tintColor: Colors.lightGrayTextColor }}
                                         source={require('./../resource/images/MainMenu/MenuHistory.png')}
@@ -2285,7 +2294,7 @@ console.log('notiAnnounceMentBadge : ',SharedPreference.notiAnnounceMentBadge)
                                 {
                                     this.state.announcestatuslist.map((item, index) => (
                                         <TouchableOpacity style={styles.button}
-                                        
+
                                             onPress={() => { this.on_select_Announcement_status(item) }}
                                             key={index + 100}>
                                             <View style={{ justifyContent: 'center', height: 40, alignItems: 'center', }} key={index + 200}>
@@ -2371,7 +2380,7 @@ console.log('notiAnnounceMentBadge : ',SharedPreference.notiAnnounceMentBadge)
                                 {
                                     this.state.announcetypelist.map((item, index) => (
                                         <TouchableOpacity style={styles.button}
-                                        
+
                                             onPress={() => { this.on_select_Announcement_type(item) }}
                                             key={index + 100}>
                                             <View style={{ justifyContent: 'center', height: 40, alignItems: 'center', }} key={index + 200}>
@@ -2462,17 +2471,7 @@ console.log('notiAnnounceMentBadge : ',SharedPreference.notiAnnounceMentBadge)
 
     }
 
-    rendertagNotification() {
-        if (this.state.notiAnnounceMentBadge) {
-            return (
-                <View style={{ height: 100, width: '100%', position: 'absolute', }}>
-                    <View style={{ backgroundColor: 'black', height: '100%', width: '100%', position: 'absolute', opacity: 0.7 }}>
-                    </View>
-                   
-                </View>
-            )
-        }
-    }
+   
 
     renderloadingscreen() {
 
@@ -2532,11 +2531,11 @@ console.log('notiAnnounceMentBadge : ',SharedPreference.notiAnnounceMentBadge)
         console.log('data pushstatus :', this.props.tempdata)
         let badgeBG = 'transparent'
         let badgeText = 'transparent'
-       // console.log('notiAnnounceMentBadge : ',this.state.notiAnnounceMentBadge);
-        if (this.state.notiAnnounceMentBadge) {
+
+       if (this.state.notiAnnounceMentBadge) {
             badgeBG = 'red'
             badgeText = 'white'
-        }
+       }
         return (
             <View style={{ flex: 1 }}>
                 <View style={{ flex: 1, flexDirection: 'column' }}>
@@ -2561,9 +2560,9 @@ console.log('notiAnnounceMentBadge : ',SharedPreference.notiAnnounceMentBadge)
                         </TouchableOpacity>
 
 
-                        <TouchableOpacity style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }} 
-                        disabled={!announcestatus}
-                        onPress={() => { this.settabscreen(1) }}>
+                        <TouchableOpacity style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+                            disabled={!announcestatus}
+                            onPress={() => { this.settabscreen(1) }}>
 
                             <Image
                                 style={page === 1 ?
@@ -2593,9 +2592,9 @@ console.log('notiAnnounceMentBadge : ',SharedPreference.notiAnnounceMentBadge)
                             />
 
                         </TouchableOpacity> */}
-                        <TouchableOpacity style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }} 
-                        disabled={!settingstatus}
-                        onPress={() => { this.settabscreen(3) }}>
+                        <TouchableOpacity style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+                            disabled={!settingstatus}
+                            onPress={() => { this.settabscreen(3) }}>
 
                             <Image
 
@@ -2610,7 +2609,7 @@ console.log('notiAnnounceMentBadge : ',SharedPreference.notiAnnounceMentBadge)
                         </TouchableOpacity>
                     </View>
                 </View>
-                {/* {this.rendertagNotification()} */}
+              
                 {this.renderloadingscreen()}
 
             </View>

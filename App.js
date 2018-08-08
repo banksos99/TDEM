@@ -95,19 +95,6 @@ export default class mainview extends Component {
     console.log('notificationOpen : ', notificationOpen)
     
     if (notificationOpen) {
-      // this.setState({
-      //  // notiMessage: 10,
-       
-      // });
-
-    //   Alert.alert(
-    //     'alert',
-    //     'notificationOpen',
-    //     [
-    //         { text: 'OK', onPress: () => console.log('OK Pressed') },
-    //     ],
-    //     { cancelable: false }
-    // )
 
       const notification = notificationOpen.notification;
 
