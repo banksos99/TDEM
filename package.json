@@ -44,6 +44,7 @@
     "react-native-router-flux": "^3.38.0",
     "react-native-static-server": "^0.3.0",
     "react-native-svg": "^6.4.1",
+    "react-native-user-inactivity": "0.0.1-beta.1",
     "react-native-wkwebview-reborn": "^1.21.0",
     "react-native-zip-archive": "^2.2.6",
     "react-navigation": "^2.5.5",

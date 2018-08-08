@@ -33,6 +33,7 @@ export default {
   calendarLocationBorderBoxColor:'#e0e0e0',
   calendarYellowDotColor:'#f28500',
   calendarRedDotColor:'#f20909',
+
   calendarBlueDotColor:'#0d47a1',
   calendarBlueText:'#0d47a1',
   calendarRedText:'#f20909',
