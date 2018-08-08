@@ -35,16 +35,16 @@ export default class NonpayrollActivity extends Component {
             origin = origin + num
         }
 
-        console.log("ChangePINScreen ==> setPIN : ", origin)
+        //console.log("ChangePINScreen ==> setPIN : ", origin)
 
         this.setState({
             pin: origin
         })
         this.state.pin = origin
-        console.log("1 ==> pin ====> ", this.state.pin)
-        console.log("1 ==> oldpin ====> ", this.state.oldpin)
-        console.log("1 ==> newpin1 ====> ", this.state.newpin1)
-        console.log("1 ==> newpin2 ====> ", this.state.newpin2)
+        //console.log("1 ==> pin ====> ", this.state.pin)
+        //console.log("1 ==> oldpin ====> ", this.state.oldpin)
+        //console.log("1 ==> newpin1 ====> ", this.state.newpin1)
+        //console.log("1 ==> newpin2 ====> ", this.state.newpin2)
 
         if (this.state.pin.length == 6) {
             if (this.state.oldpin == 0) {
@@ -102,18 +102,18 @@ export default class NonpayrollActivity extends Component {
             }
         }
 
-        console.log("2 ==> oldpin ====> ", this.state.oldpin)
-        console.log("2 ==> pin ====> ", this.state.pin)
+        //console.log("2 ==> oldpin ====> ", this.state.oldpin)
+        //console.log("2 ==> pin ====> ", this.state.pin)
     }
 
     onChangePINAPI = async () => {
 
-        console.log("onChangePINAPI : ", this.state.newpin2)
+        //console.log("onChangePINAPI : ", this.state.newpin2)
         let data = await LoginChangePinAPI(this.state.oldpin, this.state.newpin2)
         code = data[0]
         data = data[1]
 
-        console.log("onChangePINAPI data : ", data.code)
+        //console.log("onChangePINAPI data : ", data.code)
 
         // TODO 
         if (code.SUCCESS == data.code) {
@@ -179,7 +179,7 @@ export default class NonpayrollActivity extends Component {
     }
 
     onClosePIN = () => {
-        console.log("onClosePIN")
+        //console.log("onClosePIN")
         this.setState({
             pin: [],
             pin1: [],

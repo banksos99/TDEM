@@ -32,12 +32,12 @@ export default class PinActivity extends Component {
     }
 
     onLoadLoginWithPin = async (PIN) => {
-        //console.log("login with pin ==> ", PIN)
+        ////console.log("login with pin ==> ", PIN)
         let data = await LoginWithPinAPI(PIN, SharedPreference.FUNCTIONID_PIN)
         code = data[0]
         data = data[1]
 
-        console.log("onLoadLoginWithPin ==> ", data.code)
+        //console.log("onLoadLoginWithPin ==> ", data.code)
         if (code.SUCCESS == data.code) {
             this.setState({
                 isLoading: false
@@ -117,15 +117,19 @@ export default class PinActivity extends Component {
         code = data[0]
         data = data[1]
         if (code.SUCCESS == data.code) {
-            //console.log('app info data1 :', data)
-            //console.log('token :', SharedPreference.TOKEN)
+            ////console.log('app info data1 :', data)
+            ////console.log('token :', SharedPreference.TOKEN)
             let appversion = '1.0.0'
             if (data.data.force_update === 'Y') {
                 Alert.alert(
                     'New Version Available',
                     'This is a newer version available for download! Please update the app by visiting the Apple Store',
                     [
-                        { text: 'Update', onPress: () => console.log('OK Pressed') },
+                        {
+                            text: 'Update', onPress: () => {
+                                //console.log('OK Pressed') },
+                            }
+                        }
                     ],
                     { cancelable: false }
                 )
@@ -142,7 +146,7 @@ export default class PinActivity extends Component {
         code = data[0]
         data = data[1]
 
-        //console.log("onLoadInitialMaster : ", data.code)
+        ////console.log("onLoadInitialMaster : ", data.code)
         if (code.SUCCESS == data.code) {
             array = data.data
             for (let index = 0; index < array.length; index++) {
@@ -164,7 +168,11 @@ export default class PinActivity extends Component {
                 StringText.SERVER_ERROR_TITLE,
                 StringText.SERVER_ERROR_DESC,
                 [
-                    { text: 'OK', onPress: () => console.log('OK Pressed') },
+                    {
+                        text: 'OK', onPress: () => {
+                            //console.log('OK Pressed') },
+                        }
+                    }
                 ],
                 { cancelable: false }
             )
@@ -239,7 +247,7 @@ export default class PinActivity extends Component {
     }
 
     onResetPIN = async () => {
-        //console.log("onResetPIN")
+        ////console.log("onResetPIN")
         Alert.alert(
             StringText.ALERT_RESET_PIN_TITLE,
             StringText.ALERT_RESET_PIN_DESC,
@@ -268,8 +276,8 @@ export default class PinActivity extends Component {
         let data = await LoginResetPinAPI(SharedPreference.FUNCTIONID_PIN)
         code = data[0]
         data = data[1]
-        
-        console.log("onLoginResetPinAPI : ", data.code)
+
+        //console.log("onLoginResetPinAPI : ", data.code)
 
         if (code.SUCCESS == data.code) {
             SharedPreference.profileObject = null

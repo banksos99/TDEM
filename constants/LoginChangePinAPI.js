@@ -19,9 +19,9 @@ export default async function changePin(oldPin, newPin,functionID) {
         CUT_JSON: "700",
     }
 
-     // console.log("calendarPDFAPI ==>  functionID : ", functionID)
+     // //console.log("calendarPDFAPI ==>  functionID : ", functionID)
      FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, functionID, SharedPreference.profileObject.client_token)
-    //  console.log("calendarPDFAPI ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
+    //  //console.log("calendarPDFAPI ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
 
     return fetch(SharedPreference.SET_PIN_API, {
         method: 'POST',
@@ -39,7 +39,7 @@ export default async function changePin(oldPin, newPin,functionID) {
     })
         .then((response) => response.json())
         .then((responseJson) => {
-            // console.log("changePin ==> callback success : ", responseJson)
+            // //console.log("changePin ==> callback success : ", responseJson)
             let object
             if (responseJson.status == code.SUCCESS) {
                 object = [code, {
@@ -52,7 +52,7 @@ export default async function changePin(oldPin, newPin,functionID) {
                     data: responseJson.data
                 }]
             }
-            // console.log("changePin ==> callback object : ", JSON.stringify(object))
+            // //console.log("changePin ==> callback object : ", JSON.stringify(object))
             return object
         })
         .catch((error) => {

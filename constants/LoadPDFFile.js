@@ -4,8 +4,8 @@ import { PermissionsAndroid } from 'react-native';
 export default class LoadPDFFile {
     loadPDFFile = async (pdfPath, filename) => {
 
-        console.log("LoadPDFFile pdfPath : ", pdfPath)
-        console.log("LoadPDFFile filename : ", filename)
+        //console.log("LoadPDFFile pdfPath : ", pdfPath)
+        //console.log("LoadPDFFile filename : ", filename)
 
         if (Platform.OS === 'android') {
             if (this.state.havePermission) {
@@ -24,18 +24,18 @@ export default class LoadPDFFile {
                         'Content-Type': 'application/pdf;base64'
                     })
                     .then((resp) => {
-                        console.log("Android ==> LoadPDFFile ==> Load Success  : ", resp);
+                        //console.log("Android ==> LoadPDFFile ==> Load Success  : ", resp);
                         RNFetchBlob.android.actionViewIntent(resp.data, 'application/pdf')
                     })
                     .catch((errorCode, errorMessage) => {
-                        console.log("Android ==> LoadPDFFile ==> Load errorCode  : ", errorCode);
+                        //console.log("Android ==> LoadPDFFile ==> Load errorCode  : ", errorCode);
                         Alert.alert(
                             errorCode,
                             errorMessage,
                             [
                                 {
                                     text: 'Cancel', onPress: () => {
-                                        console.log("Android ==> LoadPDFFile ==> Load errorCode  : ", errorCode);
+                                        //console.log("Android ==> LoadPDFFile ==> Load errorCode  : ", errorCode);
 
                                     }, style: 'cancel'
                                 },
@@ -49,12 +49,12 @@ export default class LoadPDFFile {
                         )
                     })
             } else {
-                console.log('noWritePermission')
+                //console.log('noWritePermission')
                 this.requestPDFPermission()
             }
         } else {//iOS
-            console.log("loadPdf pdfPath : ", pdfPath)
-            console.log("loadPdf filename : ", filename)
+            //console.log("loadPdf pdfPath : ", pdfPath)
+            //console.log("loadPdf filename : ", filename)
             RNFetchBlob
                 .config({
                     fileCache: true,
@@ -62,19 +62,21 @@ export default class LoadPDFFile {
                 })
                 .fetch('GET', pdfPath)
                 .then((resp) => {
-                    console.log("WorkingCalendarYear pdf1 : ", resp);
-                    console.log("WorkingCalendarYear pdf2 : ", resp.path());
+                    //console.log("WorkingCalendarYear pdf1 : ", resp);
+                    //console.log("WorkingCalendarYear pdf2 : ", resp.path());
                     RNFetchBlob.fs.exists(resp.path())
                         .then((exist) => {
-                            console.log(`WorkingCalendarYear ==> file ${exist ? '' : 'not'} exists`)
+                            //console.log(`WorkingCalendarYear ==> file ${exist ? '' : 'not'} exists`)
                         })
-                        .catch(() => { console.log('WorkingCalendarYear ==> err while checking') });
+                        .catch(() => { 
+                            //console.log('WorkingCalendarYear ==> err while checking')
+                         });
 
                     RNFetchBlob.ios.openDocument(resp.path());
                 })
                 .catch((errorMessage, statusCode) => {
-                    console.log('Error: ' + errorMessage);
-                    console.log('Status code: ' + statusCode);
+                    //console.log('Error: ' + errorMessage);
+                    //console.log('Status code: ' + statusCode);
                 });
         }
     }
@@ -89,10 +91,10 @@ export default class LoadPDFFile {
                 }
             )
             if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                console.log("You can use the WRITE_EXTERNAL_STORAGE")
+                //console.log("You can use the WRITE_EXTERNAL_STORAGE")
                 this.loadPDFFile()
             } else {
-                console.log("WRITE_EXTERNAL_STORAGE permission denied")
+                //console.log("WRITE_EXTERNAL_STORAGE permission denied")
             }
         } catch (err) {
             console.warn(err)

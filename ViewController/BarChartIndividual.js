@@ -64,7 +64,7 @@ export default class PinActivity extends Component {
                 max = listdata[i]
             }
         }
-        console.log('max :', max)
+        //console.log('max :', max)
         let ratio = 50 / max
         let intratio = Math.ceil(ratio)
         let fonrsize = 12 * scale

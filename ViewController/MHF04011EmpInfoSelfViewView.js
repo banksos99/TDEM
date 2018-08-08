@@ -70,7 +70,7 @@ export default class EmpInfoDetail extends Component {
     }
 
     checkDataFormat(DataResponse) {
-        console.log('DataResponse :', DataResponse)
+        //console.log('DataResponse :', DataResponse)
 
         if (DataResponse) {
 
@@ -630,7 +630,7 @@ export default class EmpInfoDetail extends Component {
 
     }
     rendercareerpath() {
-        console.log('careerpathlist :', careerpathlist)
+        //console.log('careerpathlist :', careerpathlist)
 
 
         if (empinfodetail.career_paths) {

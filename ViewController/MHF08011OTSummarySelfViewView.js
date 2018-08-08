@@ -14,7 +14,7 @@ import {
     Platform,
     ActivityIndicator,
     Alert,
-    BackHandler,NetInfo
+    BackHandler, NetInfo
 } from 'react-native';
 
 import Colors from "./../SharedObject/Colors"
@@ -33,7 +33,7 @@ export default class OTSummaryDetail extends Component {
         this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
         let ds = new ListView.DataSource({
             rowHasChanged: (r1, r2) => r1 !== r2
-          });
+        });
 
         this.state = {
             isscreenloading: false,
@@ -60,7 +60,7 @@ export default class OTSummaryDetail extends Component {
 
             dateselected: 0,
         }
-        
+
         this.checkDataFormat(this.props.navigation.getParam("DataResponse", ""));
         firebase.analytics().setCurrentScreen(SharedPreference.SCREEN_CLOCK_IN_OUT_MANAGER)
 
@@ -70,7 +70,7 @@ export default class OTSummaryDetail extends Component {
         BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
         NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectivityChange);
     }
- 
+
     componentWillUnmount() {
         BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
         NetInfo.isConnected.removeEventListener('connectionChange', this.handleConnectivityChange);
@@ -82,15 +82,15 @@ export default class OTSummaryDetail extends Component {
         this.onBack()
         return true;
     }
- 
+
 
     checkDataFormat(DataResponse) {
-        
+
         if (DataResponse) {
-            console.log('tosummary DataResponse : ', DataResponse)
+            //console.log('tosummary DataResponse : ', DataResponse)
             this.state.tdataSource = DataResponse.detail.items;
             this.state.headerdataSource = DataResponse.header
-            console.log('tosummary data : ', this.state.tdataSource)
+            //console.log('tosummary data : ', this.state.tdataSource)
         }
 
         let today = new Date();
@@ -109,7 +109,7 @@ export default class OTSummaryDetail extends Component {
 
 
 
-        
+
     }
 
     _onRefresh() {
@@ -117,7 +117,7 @@ export default class OTSummaryDetail extends Component {
             return;
         }
 
-        //console.log('refreshing');
+        ////console.log('refreshing');
 
         this.setState({ refreshing: true, page: 1 });
         let promise = this._fetchMore(1);
@@ -127,69 +127,69 @@ export default class OTSummaryDetail extends Component {
 
         promise.then(() => this.setState({ refreshing: false }));
     }
-    
-      _fetchMore(page) {
+
+    _fetchMore(page) {
         if (this.state.fetching) {
-          return;
+            return;
         }
-    
-        this.setState({fetching: true});
-    
+
+        this.setState({ fetching: true });
+
         let promise = this._generateRows(page);
-    
+
         promise.then((rows) => {
-          var data;
-          if (this.state.refreshing) {
-            data = rows;
-          } else {
-            data = [...this.state.data, ...rows];
-          }
-    
-          this.setState({
-            page: page + 1,
-            dataSource: this.state.dataSource.cloneWithRows(data),
-            data: data,
-            fetching: false
-          });
+            var data;
+            if (this.state.refreshing) {
+                data = rows;
+            } else {
+                data = [...this.state.data, ...rows];
+            }
+
+            this.setState({
+                page: page + 1,
+                dataSource: this.state.dataSource.cloneWithRows(data),
+                data: data,
+                fetching: false
+            });
         });
-    
+
         return promise;
-      }
+    }
 
-    loadOTSummarySelffromAPI= async (omonth, oyear) =>{
+    loadOTSummarySelffromAPI = async (omonth, oyear) => {
 
-       this.setState({
+        this.setState({
             loadingtype: 1,
             isscreenloading: false,
         })
 
         let tmonth = omonth.toString();
-     
+
 
         if (omonth < 10) {
             tmonth = '0' + omonth
         }
 
         let today = new Date();
-       
+
 
         let url = SharedPreference.OTSUMMARY_DETAIL + 'month=' + tmonth + '&year=' + oyear
 
         // this.APICallback(await RestAPI(url), 'OTSummarySelfView')
-        let data = await RestAPI(url,SharedPreference.FUNCTIONID_OT_SUMMARY)
+        let data = await RestAPI(url, SharedPreference.FUNCTIONID_OT_SUMMARY)
         code = data[0]
         data = data[1]
-console.log('ot data response : ',data)
+        //console.log('ot data response : ',data)
         if (code.SUCCESS == data.code) {
 
             this.setState({
 
-            tdataSource : data.data.detail.items,
-            headerdataSource : data.data.header
-        })
-           // this.props.navigation.navigate('OTSummarySelfView', {
-           //     dataResponse: data.data,
-           // });
+                tdataSource: data.data.detail.items,
+                headerdataSource: data.data.header
+            })
+            // this.props.navigation.navigate('OTSummarySelfView', {
+            //     dataResponse: data.data,
+            // });
         } else if (code.NODATA == data.code) {
 
             Alert.alert(
@@ -197,7 +197,9 @@ console.log('ot data response : ',data)
                 data.data[0].code,
                 data.data[0].detail,
                 [{
-                    text: 'OK', onPress: () => console.log('OK Pressed')
+                    text: 'OK', onPress: () => {
+                        //console.log('OK Pressed')
+                    }
                 }],
                 { cancelable: false }
             )
@@ -216,7 +218,7 @@ console.log('ot data response : ',data)
         this.setState({
             isscreenloading: false,
         })
-        console.log("isConnected : ", this.state.isConnected)
+        //console.log("isConnected : ", this.state.isConnected)
         if (this.state.isConnected) {
             Alert.alert(
                 // 'MHF00001ACRI',
@@ -224,7 +226,9 @@ console.log('ot data response : ',data)
                 error.data[0].code,
                 error.data[0].detail,
                 [{
-                    text: 'OK', onPress: () => console.log('OK Pressed')
+                    text: 'OK', onPress: () => {
+                        //console.log('OK Pressed')
+                    }
                 }],
                 { cancelable: false }
             )
@@ -236,45 +240,45 @@ console.log('ot data response : ',data)
                 'Cannot connect to the internet.',
                 [{
                     text: 'OK', onPress: () => {
-                        console.log("onLoadErrorAlertDialog")
+                        //console.log("onLoadErrorAlertDialog")
                     }
                 }],
                 { cancelable: false }
             )
         }
-        console.log("error : ", error)
+        //console.log("error : ", error)
     }
 
 
-      _generateRows(page) {
-        //console.log(`loading rows for page ${page}`);
-    
+    _generateRows(page) {
+        ////console.log(`loading rows for page ${page}`);
+
         var rows = [];
         for (var i = 0; i < 100; i++) {
-          rows.push('Hello ' + (i + ((page - 1)*100)));
+            rows.push('Hello ' + (i + ((page - 1) * 100)));
         }
-    
+
         let promise = new Promise((resolve, reject) => {
-          setTimeout(() => {
-            resolve(rows);
-            //console.log(`resolved for page ${page}`);
-          }, 3);
+            setTimeout(() => {
+                resolve(rows);
+                ////console.log(`resolved for page ${page}`);
+            }, 3);
         });
-    
+
         return promise;
-      }
-    
-      _renderRow() {
+    }
+
+    _renderRow() {
         return (
-          <Text>fdfsfsfs</Text>
+            <Text>fdfsfsfs</Text>
         );
-      }
+    }
 
     onBack() {
         this.props.navigation.navigate('HomeScreen');
     }
-    
-    select_month(){
+
+    select_month() {
 
         this.setState({
 
@@ -286,44 +290,44 @@ console.log('ot data response : ',data)
             this.setState(this.renderloadingscreen())
         });
     }
-    select_announce_all_type = () =>{
-        
-        // //console.log('select_announce_all_type')
+    select_announce_all_type = () => {
+
+        // ////console.log('select_announce_all_type')
 
         this.setState({
-    
+
             // announcementType: month,
             loadingtype: 1,
             isscreenloading: true,
             // isscreenloading: false,
- 
+
         }, function () {
 
             let tdate = initannouncementType.split(' ')
             let mdate = 0;
-            console.log('month : ', tdate[0])
-            
+            //console.log('month : ', tdate[0])
+
             for (let i = 0; i < 12; i++) {
                 if (MONTH_LIST[i] === tdate[0]) {
-                    console.log('month : ', i)
+                    //console.log('month : ', i)
                     mdate = i;
                 }
             }
-            console.log('year : ', tdate[1])
-    
+            //console.log('year : ', tdate[1])
+
             this.setState(this.renderloadingscreen())
 
-            this.loadOTSummarySelffromAPI(mdate+1,tdate[1])
+            this.loadOTSummarySelffromAPI(mdate + 1, tdate[1])
         });
-    
+
     }
-    selected_month(monthselected){
-        
-        //console.log('monthselected : ',monthselected)
+    selected_month(monthselected) {
+
+        ////console.log('monthselected : ',monthselected)
         initannouncementType = monthselected
-        
+
         this.setState({
-            announcementTypetext : monthselected,
+            announcementTypetext: monthselected,
             loadingtype: 1,
             isscreenloading: true,
 
@@ -334,17 +338,17 @@ console.log('ot data response : ',data)
 
             for (let i = 0; i < 12; i++) {
                 if (MONTH_LIST[i] === tdate[0]) {
-                    console.log('month : ', i)
+                    //console.log('month : ', i)
                     mdate = i;
                 }
             }
 
             this.setState(this.renderloadingscreen())
 
-            this.loadOTSummarySelffromAPI(mdate+1,tdate[1])
-    
+            this.loadOTSummarySelffromAPI(mdate + 1, tdate[1])
+
         });
-    
+
     }
     renderpickerview() {
 
@@ -359,7 +363,7 @@ console.log('ot data response : ',data)
         if (this.state.loadingtype == 0) {
 
             if (Platform.OS === 'android') {
-                //console.log('android selectmonth')
+                ////console.log('android selectmonth')
                 return (
                     <View style={{ height: '100%', width: '100%', justifyContent: 'center', alignItems: 'center', position: 'absolute', }} >
                         <View style={{ width: '80%', backgroundColor: 'white' }}>
@@ -412,7 +416,7 @@ console.log('ot data response : ',data)
                         </Picker>
                         <View style={{ flexDirection: 'row', justifyContent: 'flex-end', height: 50, alignItems: 'center', }}>
                             <TouchableOpacity style={styles.button} onPress={(this.select_announce_all_type)}>
-                                <Text style={{  textAlign: 'center', color: Colors.redTextColor, fontSize: 18, width: 80, height: 30, alignItems: 'center' }}> OK</Text>
+                                <Text style={{ textAlign: 'center', color: Colors.redTextColor, fontSize: 18, width: 80, height: 30, alignItems: 'center' }}> OK</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -444,7 +448,7 @@ console.log('ot data response : ',data)
 
     }
     renderdetail() {
-console.log('this.state.tdataSource',this.state.tdataSource)
+        //console.log('this.state.tdataSource',this.state.tdataSource)
         if (this.state.tdataSource.length) {
             return (
                 <View style={{ flex: 16, backgroundColor: Colors.calendarLocationBoxColor, }}>
@@ -476,18 +480,18 @@ console.log('this.state.tdataSource',this.state.tdataSource)
         }
         return (
 
-            <View style={{flex: 16 , backgroundColor:'white',alignItems:'center'}} key={1000}>
+            <View style={{ flex: 16, backgroundColor: 'white', alignItems: 'center' }} key={1000}>
                 <Text style={styles.otsummarynoresulttext}> No result</Text>
             </View>
 
         )
 
-   }
+    }
     render() {
         // this.state.datasource.map((i, index) => (
         //     <Picker.Item key={index} label={i.label} value={i.value} />
         // ))
-        // //console.log(this.state.tdataSource.data.detail.items)
+        // ////console.log(this.state.tdataSource.data.detail.items)
         let total_ot = 0;
         let ot_15 = 0;
         let ot_20 = 0;
@@ -515,29 +519,29 @@ console.log('this.state.tdataSource',this.state.tdataSource)
         return (
             // this.state.dataSource.map((item, index) => (
             <View style={{ flex: 1, backgroundColor: Colors.backgroundColor }} >
-                <View style={[styles.navContainer,{flexDirection: 'column' }]}>
-                <View style={styles.statusbarcontainer} />
-                <View style={{ height: 50, flexDirection: 'row', }}>
-                    <View style={{ flex: 1, justifyContent: 'center', }}>
-                        <TouchableOpacity onPress={(this.onBack.bind(this))}>
-                            <Image
-                                style={{ width: 50, height: 50 }}
-                                source={require('./../resource/images/Back.png')}
-                                resizeMode='contain'
-                            />
-                        </TouchableOpacity>
-                    </View>
-                    <View style={{ flex: 3, justifyContent: 'center', alignItems: 'center' }}>
-                        <Text style={styles.navTitleTextTop}>Overtime Summary</Text>
-                    </View>
-                    <View style={{ flex: 1, }}>
+                <View style={[styles.navContainer, { flexDirection: 'column' }]}>
+                    <View style={styles.statusbarcontainer} />
+                    <View style={{ height: 50, flexDirection: 'row', }}>
+                        <View style={{ flex: 1, justifyContent: 'center', }}>
+                            <TouchableOpacity onPress={(this.onBack.bind(this))}>
+                                <Image
+                                    style={{ width: 50, height: 50 }}
+                                    source={require('./../resource/images/Back.png')}
+                                    resizeMode='contain'
+                                />
+                            </TouchableOpacity>
+                        </View>
+                        <View style={{ flex: 3, justifyContent: 'center', alignItems: 'center' }}>
+                            <Text style={styles.navTitleTextTop}>Overtime Summary</Text>
+                        </View>
+                        <View style={{ flex: 1, }}>
+                        </View>
                     </View>
                 </View>
-            </View>
                 <View style={{ flex: 1, flexDirection: 'column', }}>
 
                     <TouchableOpacity style={{ flex: 2, backgroundColor: Colors.calendarLocationBoxColor, margin: 5, borderRadius: 5, justifyContent: 'center', alignItems: 'center' }}
-                    onPress={(this.select_month.bind(this))}
+                        onPress={(this.select_month.bind(this))}
                     >
 
                         <Text style={styles.otsummarydatetext}>{this.state.announcementTypetext}</Text>
@@ -571,7 +575,7 @@ console.log('this.state.tdataSource',this.state.tdataSource)
 
                                 <View style={{ flex: 3, }}>
                                     <View style={{ flex: 1, flexDirection: 'row' }}>
-                                        <View style={{ flex: 1, justifyContent: 'center',marginLeft: 15,  flexDirection: 'column' }}>
+                                        <View style={{ flex: 1, justifyContent: 'center', marginLeft: 15, flexDirection: 'column' }}>
                                             <View style={{ flex: 1, justifyContent: 'center' }}>
                                                 <Text style={styles.otsummarydetailboldtext}>OT Hour</Text>
                                             </View>
@@ -585,48 +589,48 @@ console.log('this.state.tdataSource',this.state.tdataSource)
                                                 <Text style={styles.otsummarydetailtext}>Hour(s)</Text>
                                             </View>
                                         </View>
-                                        <View style={{ flex: 1, justifyContent: 'center',marginLeft: 15,  flexDirection: 'column' }}>
-                                        <View style={{ flex: 1, justifyContent: 'center' }}>
-                                            {/* <Text style={{ color: Colors.grayTextColor, fontSize: 18, fontWeight: 'bold' }}>OT Hour</Text> */}
+                                        <View style={{ flex: 1, justifyContent: 'center', marginLeft: 15, flexDirection: 'column' }}>
+                                            <View style={{ flex: 1, justifyContent: 'center' }}>
+                                                {/* <Text style={{ color: Colors.grayTextColor, fontSize: 18, fontWeight: 'bold' }}>OT Hour</Text> */}
+                                            </View>
+                                            <View style={{ flex: 1, justifyContent: 'center' }}>
+                                                <Text style={styles.otsummarydetailtext}>X 2.0</Text>
+                                            </View>
+                                            <View style={{ flex: 1, justifyContent: 'center' }}>
+                                                <Text style={styles.otsummarydetailredtext}>{ot_20}</Text>
+                                            </View>
+                                            <View style={{ flex: 1, justifyContent: 'center' }}>
+                                                <Text style={styles.otsummarydetailtext}>Hour(s)</Text>
+                                            </View>
                                         </View>
-                                        <View style={{ flex: 1, justifyContent: 'center' }}>
-                                            <Text style={styles.otsummarydetailtext}>X 2.0</Text>
+                                        <View style={{ flex: 1, justifyContent: 'center', marginLeft: 15, flexDirection: 'column' }}>
+                                            <View style={{ flex: 1, justifyContent: 'center' }}>
+                                                {/* <Text style={{ color: Colors.grayTextColor, fontSize: 18, fontWeight: 'bold' }}>OT Hour</Text> */}
+                                            </View>
+                                            <View style={{ flex: 1, justifyContent: 'center' }}>
+                                                <Text style={styles.otsummarydetailtext}>X 3.0</Text>
+                                            </View>
+                                            <View style={{ flex: 1, justifyContent: 'center' }}>
+                                                <Text style={styles.otsummarydetailredtext}>{ot_30}</Text>
+                                            </View>
+                                            <View style={{ flex: 1, justifyContent: 'center' }}>
+                                                <Text style={styles.otsummarydetailtext}>Hour(s)</Text>
+                                            </View>
                                         </View>
-                                        <View style={{ flex: 1, justifyContent: 'center' }}>
-                                            <Text style={styles.otsummarydetailredtext}>{ot_20}</Text>
-                                        </View>
-                                        <View style={{ flex: 1, justifyContent: 'center' }}>
-                                            <Text style={styles.otsummarydetailtext}>Hour(s)</Text>
-                                        </View>
-                                    </View>
-                                    <View style={{ flex: 1, justifyContent: 'center',marginLeft: 15,  flexDirection: 'column' }}>
-                                    <View style={{ flex: 1, justifyContent: 'center' }}>
-                                        {/* <Text style={{ color: Colors.grayTextColor, fontSize: 18, fontWeight: 'bold' }}>OT Hour</Text> */}
-                                    </View>
-                                    <View style={{ flex: 1, justifyContent: 'center' }}>
-                                        <Text style={styles.otsummarydetailtext}>X 3.0</Text>
-                                    </View>
-                                    <View style={{ flex: 1, justifyContent: 'center' }}>
-                                        <Text style={styles.otsummarydetailredtext}>{ot_30}</Text>
-                                    </View>
-                                    <View style={{ flex: 1, justifyContent: 'center' }}>
-                                        <Text style={styles.otsummarydetailtext}>Hour(s)</Text>
-                                    </View>
-                                </View>
                                     </View>
                                 </View>
                             </View>
                             <View style={{ flex: 1, backgroundColor: Colors.pink, marginLeft: 3, marginTop: 5, marginBottom: 5, borderRadius: 5, flexDirection: 'column' }}>
-                                <View style={{ flex: 1, justifyContent: 'center',marginLeft: 5 }}>
+                                <View style={{ flex: 1, justifyContent: 'center', marginLeft: 5 }}>
                                     <Text style={styles.otsummarydetailboldtext}>OT Meals</Text>
                                 </View>
-                                <View style={{ flex: 1, justifyContent: 'center',marginLeft: 5 }}>
+                                <View style={{ flex: 1, justifyContent: 'center', marginLeft: 5 }}>
                                     <Text style={styles.otsummarydetailtext}>No.</Text>
                                 </View>
-                                <View style={{ flex: 1, justifyContent: 'center',marginLeft: 5 }}>
+                                <View style={{ flex: 1, justifyContent: 'center', marginLeft: 5 }}>
                                     <Text style={styles.otsummarydetailredtext}>{ot_meals}</Text>
                                 </View>
-                                <View style={{ flex: 1, justifyContent: 'center',marginLeft: 5 }}>
+                                <View style={{ flex: 1, justifyContent: 'center', marginLeft: 5 }}>
                                     <Text style={styles.otsummarydetailtext}>Meal(s)</Text>
                                 </View>
 
@@ -644,15 +648,15 @@ console.log('this.state.tdataSource',this.state.tdataSource)
                                     <View style={{ flex: 1, flexDirection: 'row', alignItems: 'flex-end' }}>
                                         <Text style={[styles.otsummarybodytitle, { flex: 1 }]}>OT Hour</Text>
                                     </View>
-                                    <View style={{ flex: 1, flexDirection: 'row',  alignItems: 'flex-start' }}>
+                                    <View style={{ flex: 1, flexDirection: 'row', alignItems: 'flex-start' }}>
                                         <Text style={[styles.otsummarybodytitle, { flex: 1 }]}>X1.5</Text>
                                         <Text style={[styles.otsummarybodytitle, { flex: 1 }]}>X2</Text>
                                         <Text style={[styles.otsummarybodytitle, { flex: 1 }]}>X3</Text>
                                         <Text style={[styles.otsummarybodytitle, { flex: 1 }]}>Total</Text>
                                     </View>
                                 </View>
-                                <Text style={[styles.otsummarybodytitle,{ flex: 1 }]}>OT Meal No.</Text>
-                                <Text style={[styles.otsummarybodytitle,{ flex: 1.5 }]}>Shift Allowance</Text>
+                                <Text style={[styles.otsummarybodytitle, { flex: 1 }]}>OT Meal No.</Text>
+                                <Text style={[styles.otsummarybodytitle, { flex: 1.5 }]}>Shift Allowance</Text>
                             </View>
                             {this.renderdetail()}
 

@@ -34,7 +34,7 @@ export default class NonpayrollActivity extends Component {
         };
         firebase.analytics().setCurrentScreen(SharedPreference.SCREEN_NON_PAYROLL_LIST)
 
-        console.log("badgeArray ==> ", this.state.badgeArray)
+        //console.log("badgeArray ==> ", this.state.badgeArray)
 
     }
 
@@ -52,18 +52,18 @@ export default class NonpayrollActivity extends Component {
             let badge = 0
             for (let index = 0; index < this.state.badgeArray.length; index++) {
                 const element = this.state.badgeArray[index];
-                // console.log("getBadgeCount ==> element ", element)
-                // console.log("getBadgeCount ==> year ", element.year, " , year ==> ", this.state.selectYear)
+                // //console.log("getBadgeCount ==> element ", element)
+                // //console.log("getBadgeCount ==> year ", element.year, " , year ==> ", this.state.selectYear)
                 if (element.year == this.state.selectYear) {
                     let data = element.detail.find((p) => {
                         return p.month === month
                     });
-                    // console.log("getBadgeCount ==>  data : ", data)
+                    // //console.log("getBadgeCount ==>  data : ", data)
                     badge = data.badge
                 }
             }
 
-            // console.log("element badge ==> ",badge)
+            // //console.log("element badge ==> ",badge)
 
             monthRow.push(
                 this.customMonthContainer(month, this.checkAmount(this.state.selectYear, month), badge)
@@ -88,7 +88,7 @@ export default class NonpayrollActivity extends Component {
                     for (let k = 0; k < object.detail.length; k++) {
                         const element = object.detail
                         if (object.detail[k].month_no == selectMonth) {
-                            // console.log("month ==> ", object.detail.month, " , selectMonth : ", selectMonth)
+                            // //console.log("month ==> ", object.detail.month, " , selectMonth : ", selectMonth)
                             return this.convertAmount(object.detail[k].sum_nonpay_amt)
                         }
                     }
@@ -100,7 +100,7 @@ export default class NonpayrollActivity extends Component {
     }
 
     convertAmount(code) {
-        console.log("convertAmount ==> month ==> code ==> ", code)
+        //console.log("convertAmount ==> month ==> code ==> ", code)
         return Decrypt.decrypt(code);
     }
 
@@ -186,7 +186,7 @@ export default class NonpayrollActivity extends Component {
             </View>
 
         } else if (amount) {//Normal Month - Has data 
-            console.log('amount :', amount)
+            //console.log('amount :', amount)
             return (
                 <View style={styles.nonPayRollitemBg}>
                     <View style={[styles.nonPayRollitem, {
@@ -194,9 +194,9 @@ export default class NonpayrollActivity extends Component {
                     }]}>
                         <TouchableOpacity style={styles.button}
                             onPress={() => {
-                                console.log("onPress ==> monthNumber ==> ", monthNumber, " , year ==> ", this.state.selectYear)
+                                //console.log("onPress ==> monthNumber ==> ", monthNumber, " , year ==> ", this.state.selectYear)
                                 let badgeData = this.state.badgeArray
-                                console.log("onPress ==> badgeData1 ==> ", badgeData)
+                                //console.log("onPress ==> badgeData1 ==> ", badgeData)
                                 for (let index = 0; index < badgeData.length; index++) {
                                     const element = badgeData[index];
                                     if (element.year = this.state.selectYear) {
@@ -206,7 +206,7 @@ export default class NonpayrollActivity extends Component {
                                         data.badge = 0
                                     }
                                 }
-                                console.log("onPress ==> badgeData2 ==> ", badgeData)
+                                //console.log("onPress ==> badgeData2 ==> ", badgeData)
 
                                 this.props.navigation.navigate('NonPayrollDetail', {
                                     month: monthNumber,
@@ -272,17 +272,17 @@ export default class NonpayrollActivity extends Component {
             { cancelable: false }
         )
 
-        console.log("error : ", error)
+        //console.log("error : ", error)
     }
 
     onLoadAlertDialog() {
-        // //console.log("onLoadAlertDialog")
+        // ////console.log("onLoadAlertDialog")
         Alert.alert(
             StringText.ALERT_NONPAYROLL_NODATA_TITLE,
             StringText.ALERT_NONPAYROLL_NODATA_TITLE,
             [{
                 text: StringText.ALERT_NONPAYROLL_NODATA_BUTTON, onPress: () => {
-                    // //console.log("onLoadAlertDialog")
+                    // ////console.log("onLoadAlertDialog")
                 }
             },
             ],

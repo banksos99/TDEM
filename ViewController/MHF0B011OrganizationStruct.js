@@ -45,7 +45,7 @@ export default class OrganizationStruct extends Component {
         if (data) {
             option = data
         }
-        console.log('option :', option)
+        //console.log('option :', option)
     }
 
     componentWillMount() {
@@ -68,11 +68,11 @@ export default class OrganizationStruct extends Component {
     checkDataFormat(DataResponse) {
         if (DataResponse) {
             dataSource = [];
-            //console.log(DataResponse[0].data)
+            ////console.log(DataResponse[0].data)
             // dataSource = DataResponse.org_lst;
             org_code = DataResponse.org_code
-            console.log('org_code :', org_code)
-            console.log('DataResponse :', DataResponse)
+            //console.log('org_code :', org_code)
+            //console.log('DataResponse :', DataResponse)
 
             dataSource.push({
 
@@ -125,16 +125,16 @@ export default class OrganizationStruct extends Component {
 
 
 
-            console.log('dataSource :', dataSource)
+            //console.log('dataSource :', dataSource)
         } else {
 
-            console.log('orgdata : ', orgdata)
+            //console.log('orgdata : ', orgdata)
 
         }
     }
 
     componentDidMount() {
-        //console.log(Layout.window.width);
+        ////console.log(Layout.window.width);
         // this.fetchData()
     }
 
@@ -144,12 +144,12 @@ export default class OrganizationStruct extends Component {
 
     onClickOrgStruct(item, index) {
 
-        console.log('item :', item)
+        //console.log('item :', item)
 
         if (item.org_code == 0) {
 
             // *** select emp info detail
-            console.log('load empinfo  :', item.emp_id)
+            //console.log('load empinfo  :', item.emp_id)
             this.setState({
 
                 isscreenloading: true,
@@ -268,8 +268,8 @@ export default class OrganizationStruct extends Component {
         data = data[1]
 
         if (code.SUCCESS == data.code) {
-            console.log('data.data.org_lst2 :', data.data.org_lst)
-            console.log('dataSource :', dataSource)
+            //console.log('data.data.org_lst2 :', data.data.org_lst)
+            //console.log('dataSource :', dataSource)
             // if (data.data.org_lst) {
 
             if (data.data.org_lst) {
@@ -334,7 +334,7 @@ export default class OrganizationStruct extends Component {
 
                 }
                 dataSource = temparr;
-                console.log('dataSource :', dataSource)
+                //console.log('dataSource :', dataSource)
 
             } else {
 
@@ -352,7 +352,7 @@ export default class OrganizationStruct extends Component {
             //         'No data found',
             //         [{
             //             text: 'OK', onPress: () => {
-            //                 console.log("onLoadErrorAlertDialog")
+            //                 //console.log("onLoadErrorAlertDialog")
             //             }
             //         }],
             //         { cancelable: false }
@@ -378,7 +378,7 @@ export default class OrganizationStruct extends Component {
     loadEmployeeListAPI = async () => {
 
         let url = SharedPreference.ORGANIZ_STRUCTURE_API + this.state.org_code
-        console.log('url  :', url)
+        //console.log('url  :', url)
         this.APIEmpCallback(await RestAPI(url, SharedPreference.FUNCTIONID_ORGANIZ_STRUCTURE))
 
     }
@@ -480,7 +480,7 @@ export default class OrganizationStruct extends Component {
             { cancelable: false }
         )
 
-        console.log("error : ", error)
+        //console.log("error : ", error)
     }
 
     onLoadErrorAlertDialog(error, resource) {
@@ -497,7 +497,10 @@ export default class OrganizationStruct extends Component {
                 error.data[0].detail,
 
                 [{
-                    text: 'OK', onPress: () => console.log('OK Pressed')
+                    text: 'OK', onPress: () => {
+
+                    //console.log('OK Pressed')
+                }
                 }],
                 { cancelable: false }
             )
@@ -510,13 +513,13 @@ export default class OrganizationStruct extends Component {
                 'Cannot connect to the internet.',
                 [{
                     text: 'OK', onPress: () => {
-                        //console.log("onLoadErrorAlertDialog")
+                        ////console.log("onLoadErrorAlertDialog")
                     }
                 }],
                 { cancelable: false }
             )
         }
-        //console.log("error : ", error)
+        ////console.log("error : ", error)
     }
 
     // onLoadErrorAlertDialog(error) {
@@ -528,7 +531,7 @@ export default class OrganizationStruct extends Component {
     //             'MHF00001ACRI',
     //             'Cannot connect to server. Please contact system administrator.',
     //             [{
-    //                 text: 'OK', onPress: () => console.log('OK Pressed')
+    //                 text: 'OK', onPress: () => //console.log('OK Pressed')
     //             }],
     //             { cancelable: false }
     //         )
@@ -539,7 +542,7 @@ export default class OrganizationStruct extends Component {
     //             'No data found',
     //             [{
     //                 text: 'OK', onPress: () => {
-    //                     console.log("onLoadErrorAlertDialog")
+    //                     //console.log("onLoadErrorAlertDialog")
     //                 }
     //             }],
     //             { cancelable: false }
@@ -551,13 +554,13 @@ export default class OrganizationStruct extends Component {
     //             'System Error (API). Please contact system administrator.',
     //             [{
     //                 text: 'OK', onPress: () => {
-    //                     console.log("onLoadErrorAlertDialog")
+    //                     //console.log("onLoadErrorAlertDialog")
     //                 }
     //             }],
     //             { cancelable: false }
     //         )
     //     }
-    //     console.log("error : ", error)
+    //     //console.log("error : ", error)
     // }
 
 

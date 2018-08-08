@@ -74,7 +74,7 @@ export default class OrganizationStruct extends Component {
                 expand: 0,
             })
         } else {
-            console.log('orgdata : ', orgdata)
+            //console.log('orgdata : ', orgdata)
         }
     }
 
@@ -84,12 +84,12 @@ export default class OrganizationStruct extends Component {
 
     onOrgStruct(item, index) {
 
-        console.log('item :', item)
+        //console.log('item :', item)
 
         if (item.org_code == 0) {
 
             // *** select emp info detail
-            console.log('load empinfo  :', item.emp_id)
+            //console.log('load empinfo  :', item.emp_id)
             this.setState({
 
                 isscreenloading: true,
@@ -98,7 +98,7 @@ export default class OrganizationStruct extends Component {
                 org_name: item.org_name,
 
             }, function () {
-                console.log('option :', option)
+                //console.log('option :', option)
                 if (option == 1) {
 
                     this.loadOTBarChartfromAPI()
@@ -119,7 +119,7 @@ export default class OrganizationStruct extends Component {
 
                 if (item.expand === 0) {
                     // *** select expand
-                    console.log('expand  :')
+                    //console.log('expand  :')
                     this.setState({
 
                         isscreenloading: true,
@@ -135,9 +135,9 @@ export default class OrganizationStruct extends Component {
                 } else {
                     // *** select collapse   
 
-                    console.log('dataSource : ', dataSource)
-                    console.log('index : ', index)
-                    console.log('org_level : ', item.org_level)
+                    //console.log('dataSource : ', dataSource)
+                    //console.log('index : ', index)
+                    //console.log('org_level : ', item.org_level)
 
                     this.setState({
 
@@ -154,9 +154,9 @@ export default class OrganizationStruct extends Component {
                     for (let i = 0; i < dataSource.length; i++) {
 
                         if (statuscol == 0) {
-                            console.log('dataSource[i].org_level : ' + dataSource[i].org_level + ':' + item.org_level)
+                            //console.log('dataSource[i].org_level : ' + dataSource[i].org_level + ':' + item.org_level)
 
-                            console.log('     ******    ')
+                            //console.log('     ******    ')
                             if (parseInt(item.org_level) >= parseInt(dataSource[i].org_level)) {
 
                                 statuscol = 1;
@@ -174,15 +174,15 @@ export default class OrganizationStruct extends Component {
                                 expand: 0
 
                             })
-                            console.log('select org_code : ', dataSource[i].org_code)
+                            //console.log('select org_code : ', dataSource[i].org_code)
                             i = i + dataSource[i].expand;
 
                         } else if (statuscol == 0) {
-                            console.log('collapse org_code : ', dataSource[i].org_code, ' : ', dataSource[i].org_level)
+                            //console.log('collapse org_code : ', dataSource[i].org_code, ' : ', dataSource[i].org_level)
 
 
                         } else {
-                            console.log('exist org_code : ', dataSource[i].org_code)
+                            //console.log('exist org_code : ', dataSource[i].org_code)
                             temparr.push(
                                 dataSource[i]
                             )
@@ -191,7 +191,7 @@ export default class OrganizationStruct extends Component {
 
                     }
                     dataSource = temparr;
-                    console.log('dataSource : ', dataSource)
+                    //console.log('dataSource : ', dataSource)
                     this.setState({
                         isscreenloading: false,
                     })
@@ -199,7 +199,7 @@ export default class OrganizationStruct extends Component {
 
             } else {
                 // *** select employee list
-                console.log('load empinfo  :', item)
+                //console.log('load empinfo  :', item)
 
 
                 this.setState({
@@ -210,7 +210,7 @@ export default class OrganizationStruct extends Component {
                     org_name: item.org_name,
 
                 }, function () {
-                    console.log('option :', option)
+                    //console.log('option :', option)
                     if (option == 1) {
                         this.loadOTBarChartfromAPI()
 
@@ -240,7 +240,7 @@ export default class OrganizationStruct extends Component {
         data = data[1]
         if (code.SUCCESS == data.code) {
 
-            console.log('data.data :', data.data)
+            //console.log('data.data :', data.data)
            // if (data.data.org_lst) {
                 let temparr = []
                 for (let i = 0; i < dataSource.length; i++) {
@@ -299,7 +299,7 @@ export default class OrganizationStruct extends Component {
 
                 }
                 dataSource = temparr;
-                console.log('dataSource :', dataSource)
+                //console.log('dataSource :', dataSource)
 
             // } else {
 
@@ -308,7 +308,7 @@ export default class OrganizationStruct extends Component {
             //         'No data found',
             //         [{
             //             text: 'OK', onPress: () => {
-            //                 console.log("onLoadErrorAlertDialog")
+            //                 //console.log("onLoadErrorAlertDialog")
             //             }
             //         }],
             //         { cancelable: false }
@@ -339,13 +339,13 @@ export default class OrganizationStruct extends Component {
     loadOTBarChartfromAPI = async () => {
         let today = new Date();
         let url = SharedPreference.OTSUMMARY_BAR_CHART + this.state.org_code + '&month=0' + parseInt(today.getMonth() + 1) + '&year=' + today.getFullYear()
-        console.log('url  :', url)
+        //console.log('url  :', url)
         this.APIDetailCallback(await RestAPI(url, SharedPreference.FUNCTIONID_OT_SUMMARY), 'OTBarChartView')
     }
 
 
     APIDetailCallback(data, path) {
-        console.log('data  :', data)
+        //console.log('data  :', data)
         code = data[0]
         data = data[1]
         if (code.SUCCESS == data.code) {
@@ -391,7 +391,7 @@ export default class OrganizationStruct extends Component {
             { cancelable: false }
         )
 
-        console.log("error : ", error)
+        //console.log("error : ", error)
     }
 
     onLoadErrorAlertDialog(error, resource) {
@@ -408,54 +408,25 @@ export default class OrganizationStruct extends Component {
                 error.data[0].detail,
 
                 [{
-                    text: 'OK', onPress: () => console.log('OK Pressed')
+                    text: 'OK', onPress: () =>{
+
+                    } //console.log('OK Pressed')
                 }],
                 { cancelable: false }
             )
         } else {
             //inter net not connect
             Alert.alert(
-                // 'MHF00002ACRI',
-                // 'System Error (API). Please contact system administrator.',
                 'MHF00500AERR',
                 'Cannot connect to the internet.',
                 [{
                     text: 'OK', onPress: () => {
-                        //console.log("onLoadErrorAlertDialog")
                     }
                 }],
                 { cancelable: false }
             )
         }
-        //console.log("error : ", error)
     }
-    // onLoadErrorAlertDialog(error) {
-    //     this.setState({
-    //         isscreenloading: false,
-    //     })
-    //     if (this.state.isConnected) {
-    //         Alert.alert(
-    //             'MHF00001ACRI',
-    //             'Cannot connect to server. Please contact system administrator.',
-    //             [{
-    //                 text: 'OK', onPress: () => console.log('OK Pressed')
-    //             }],
-    //             { cancelable: false }
-    //         )
-    //     } else {
-    //         Alert.alert(
-    //             'MHF00002ACRI',
-    //             'System Error (API). Please contact system administrator.',
-    //             [{
-    //                 text: 'OK', onPress: () => {
-    //                     console.log("onLoadErrorAlertDialog")
-    //                 }
-    //             }],
-    //             { cancelable: false }
-    //         )
-    //     }
-    //     console.log("error : ", error)
-    // }
 
     renderloadingscreen() {
         if (this.state.isscreenloading) {

@@ -84,7 +84,7 @@ export default class LeaveQuotaActivity extends Component {
         }
 
         this.state.item = original
-        console.log("itemitemitem : ", this.state.item)
+        //console.log("itemitemitem : ", this.state.item)
     }
 
     onBack() {

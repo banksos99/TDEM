@@ -111,9 +111,9 @@ export default class ClockInOutSelfView extends Component {
 
     checkDataFormat(DataResponse) {
 
-        console.log('DataResponse :', DataResponse);
-        console.log('monthselected :', this.state.monthselected);
-        //console.log('initialmonth :', this.state.initialmonth);
+        //console.log('DataResponse :', DataResponse);
+        //console.log('monthselected :', this.state.monthselected);
+        ////console.log('initialmonth :', this.state.initialmonth);
         // if (DataResponse) {
 
         let today = new Date();
@@ -132,7 +132,7 @@ export default class ClockInOutSelfView extends Component {
 
         var monthnow = new Date(this.state.initialyear, this.state.initialmonth + 1, 1);
         var monthnext = new Date(this.state.initialyear, this.state.initialmonth + 2, 1);
-        console.log('monthnow :', this.state.initialmonth);
+        //console.log('monthnow :', this.state.initialmonth);
         var date1_ms = monthnow.getTime();
         var date2_ms = monthnext.getTime();
 
@@ -153,7 +153,7 @@ export default class ClockInOutSelfView extends Component {
 
             if (DataResponse.data) {
 
-                console.log('have data work', DataResponse.data.items.length)
+                //console.log('have data work', DataResponse.data.items.length)
 
                 for (let i = 0; i < DataResponse.data.items.length; i++) {
 
@@ -162,9 +162,9 @@ export default class ClockInOutSelfView extends Component {
                     if (parseInt(item[2]) == m + 1) {
 
                         datetype = DataResponse.data.items[i].datetype;
-                        console.log('have data work', DataResponse.data.items[i].work)
+                        //console.log('have data work', DataResponse.data.items[i].work)
                         if (DataResponse.data.items[i].work) {
-                            console.log('have data work')
+                            //console.log('have data work')
                             if (DataResponse.data.items[i].work.start) {
                                 workstart = DataResponse.data.items[i].work.start;
                             }
@@ -175,7 +175,7 @@ export default class ClockInOutSelfView extends Component {
                         }
 
                         if (DataResponse.data.items[i].actual) {
-                            console.log('have data actual')
+                            //console.log('have data actual')
                             if (DataResponse.data.items[i].actual.start) {
                                 actualstart = DataResponse.data.items[i].actual.start;
                             }
@@ -229,7 +229,7 @@ export default class ClockInOutSelfView extends Component {
         //sert initial data
         initannouncementType = this.state.months[0]
 
-        console.log('init data : ', this.state.months[0])
+        //console.log('init data : ', this.state.months[0])
 
     }
 
@@ -268,7 +268,7 @@ export default class ClockInOutSelfView extends Component {
         firstday = birthday.getDay();
 
         let url = SharedPreference.CLOCK_IN_OUT_API + SharedPreference.profileObject.employee_id + '&month=' + tmonth + '&year=' + oyear
-        console.log('CLOCK_IN_OUT_API :', url)
+        //console.log('CLOCK_IN_OUT_API :', url)
 
         this.APICallback(await RestAPI(url, SharedPreference.FUNCTIONID_CLOCK_IN_OUT))
 
@@ -278,7 +278,7 @@ export default class ClockInOutSelfView extends Component {
 
         code = data[0]
         data = data[1]
-        console.log('CLOCK_IN_OUT_API data :', data)
+        //console.log('CLOCK_IN_OUT_API data :', data)
         if (code.SUCCESS == data.code) {
 
             this.state.tdataSource = [];
@@ -354,7 +354,7 @@ export default class ClockInOutSelfView extends Component {
             this.state.tdataSource = [];
             var monthnow = new Date(this.state.yearselected, this.state.monthselected + 1, 1);
             var monthnext = new Date(this.state.yearselected, this.state.monthselected + 2, 1);
-            console.log('monthselected :', this.state.monthselected);
+            //console.log('monthselected :', this.state.monthselected);
             var date1_ms = monthnow.getTime();
             var date2_ms = monthnext.getTime();
             var difference_ms = date2_ms - date1_ms;
@@ -385,7 +385,7 @@ export default class ClockInOutSelfView extends Component {
             }
 
         }
-        console.log('tdataSource : ', this.state.tdataSource)
+        //console.log('tdataSource : ', this.state.tdataSource)
         this.setState({
             isscreenloading: false,
         })
@@ -399,7 +399,9 @@ export default class ClockInOutSelfView extends Component {
                 'MHF00001ACRI',
                 'Cannot connect to server. Please contact system administrator.',
                 [{
-                    text: 'OK', onPress: () => console.log('OK Pressed')
+                    text: 'OK', onPress: () => {
+                        //console.log('OK Pressed')
+                    }
                 }],
                 { cancelable: false }
             )
@@ -409,13 +411,13 @@ export default class ClockInOutSelfView extends Component {
                 'System Error (API). Please contact system administrator.',
                 [{
                     text: 'OK', onPress: () => {
-                        console.log("onLoadErrorAlertDialog")
+                        //console.log("onLoadErrorAlertDialog")
                     }
                 }],
                 { cancelable: false }
             )
         }
-        console.log("error : ", error)
+        //console.log("error : ", error)
     }
 
 
@@ -445,16 +447,16 @@ export default class ClockInOutSelfView extends Component {
             let tdate = initannouncementType.split(' ')
             let mdate = 0;
 
-            console.log('month : ', tdate[0])
+            //console.log('month : ', tdate[0])
 
             for (let i = 0; i < 12; i++) {
                 if (Months.monthNames[i] === tdate[0]) {
-                    console.log('month : ', i)
+                    //console.log('month : ', i)
                     mdate = i;
                 }
             }
-            console.log('month select  : ', mdate)
-            console.log('year : ', tdate[1])
+            //console.log('month select  : ', mdate)
+            //console.log('year : ', tdate[1])
 
             this.setState(this.renderloadingscreen())
 
@@ -478,16 +480,16 @@ export default class ClockInOutSelfView extends Component {
             let tdate = item.split(' ')
             let mdate = 0;
 
-            console.log('month : ', tdate[0])
+            //console.log('month : ', tdate[0])
 
             for (let i = 0; i < 12; i++) {
                 if (Months.monthNames[i] === tdate[0]) {
-                    console.log('month : ', i)
+                    //console.log('month : ', i)
                     mdate = i;
                 }
             }
-            console.log('month select  : ', mdate)
-            console.log('year : ', tdate[1])
+            //console.log('month select  : ', mdate)
+            //console.log('year : ', tdate[1])
 
             this.setState(this.renderloadingscreen())
 
@@ -517,7 +519,7 @@ export default class ClockInOutSelfView extends Component {
         if (this.state.loadingtype == 0) {
 
             if (Platform.OS === 'android') {
-                //console.log('android selectmonth')
+                ////console.log('android selectmonth')
                 return (
                     <View style={{ height: '100%', width: '100%', justifyContent: 'center', alignItems: 'center', position: 'absolute', }} >
                         <View style={{ width: '80%', backgroundColor: 'white' }}>
@@ -602,14 +604,14 @@ export default class ClockInOutSelfView extends Component {
 
     }
     renderdetail() {
-        console.log('weakday : ', (firstday + 1) % 7)
+        //console.log('weakday : ', (firstday + 1) % 7)
         let offsety = 0;
         if (this.state.initialmonth + 2 === this.state.monthselected) {
 
-            console.log('scroll hight : ', Layout.window.height - 100)
-            console.log('content height : ', this.state.tdataSource.length * 90)
-            console.log('currentday : ', (currentday + 1) * 90)
-            console.log('offsety : ', offsety)
+            //console.log('scroll hight : ', Layout.window.height - 100)
+            //console.log('content height : ', this.state.tdataSource.length * 90)
+            //console.log('currentday : ', (currentday + 1) * 90)
+            //console.log('offsety : ', offsety)
 
           //  offsety = ((currentday * 90) - 220)
 
@@ -704,7 +706,7 @@ export default class ClockInOutSelfView extends Component {
         // this.state.datasource.map((i, index) => (
         //     <Picker.Item key={index} label={i.label} value={i.value} />
         // ))
-        // //console.log(this.state.tdataSource.data.detail.items)
+        // ////console.log(this.state.tdataSource.data.detail.items)
 
         return (
             // this.state.dataSource.map((item, index) => (

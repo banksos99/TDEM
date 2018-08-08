@@ -88,8 +88,8 @@ export default class HandbookViewer extends Component {
     componentDidMount() {
 
         this.downloadEpubFile(SharedPreference.HOST + this.state.handbook_file);
-        console.log("this.state.handbook_file :", this.state.handbook_file)
-        console.log("SharedPreference.Handbook:", SharedPreference.Handbook)
+        //console.log("this.state.handbook_file :", this.state.handbook_file)
+        //console.log("SharedPreference.Handbook:", SharedPreference.Handbook)
         HandbookHighlightList = [];
         HandbookMarkList = [];
         for (let i = 0; i < SharedPreference.Handbook.length; i++) {
@@ -99,18 +99,18 @@ export default class HandbookViewer extends Component {
             }
         }
 
-        console.log("HandbookHighlightList :", HandbookHighlightList)
+        //console.log("HandbookHighlightList :", HandbookHighlightList)
 
     }
 
     componentWillMount() {
-        console.log("componentWillMount")
+        //console.log("componentWillMount")
         BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
 
     }
 
     handleBackButtonClick() {
-        console.log("handleBackButtonClick")
+        //console.log("handleBackButtonClick")
         this.onBack()
         return true;
     }
@@ -147,7 +147,7 @@ export default class HandbookViewer extends Component {
 
         SharedPreference.Handbook = tempHB
 
-        console.log("componentWillUnmount Handbook : ", SharedPreference.Handbook)
+        //console.log("componentWillUnmount Handbook : ", SharedPreference.Handbook)
 
         if (this.streamer)
             this.streamer.kill();
@@ -173,10 +173,10 @@ export default class HandbookViewer extends Component {
             })
             .then((res) => {
                 // the path should be dirs.DocumentDir + 'path-to-file.anything'
-                console.log('The file saved to ', res.path())
+                //console.log('The file saved to ', res.path())
                 /*RNFetchBlob.fs.readFile(res.path(), 'utf8')
                         .then((data) => {
-                          console.log(data);
+                          //console.log(data);
                         })*/
 
                 let target = { url: Platform.OS === 'android' ? '' + res.path() : '' + res.path() }
@@ -187,7 +187,7 @@ export default class HandbookViewer extends Component {
     }
 
     startStreamer(epubPath) {
-        console.log('Start Streamer and locating path ', epubPath)
+        //console.log('Start Streamer and locating path ', epubPath)
         this.streamer.start()
             .then((origin) => {
                 this.setState({ origin })
@@ -195,19 +195,19 @@ export default class HandbookViewer extends Component {
                 return this.streamer.get(epubPath);
             })
             .then((src) => {
-                console.log('Loading source ', src)
+                //console.log('Loading source ', src)
                 return this.setState({ src });
             }).catch((err) => {
                 // scan file error
-                console.log('[HandBookDetail] Catch Error', err);
+                //console.log('[HandBookDetail] Catch Error', err);
 
                 this.streamer.stop();
                 if (this.reloadCount < 3) {
-                    console.log('[HandBookDetail] url', SharedPreference.HOST + this.state.handbook_file);
+                    //console.log('[HandBookDetail] url', SharedPreference.HOST + this.state.handbook_file);
                     this.downloadEpubFile(SharedPreference.HOST + this.state.handbook_file)
                     this.reloadCount++;
                 } else {
-                    console.log('[HandBookDetail] Reload count reach', err);
+                    //console.log('[HandBookDetail] Reload count reach', err);
                     //this.props.navigation.navigate("Handbooklist");
                     Alert.alert("Handbook Error", "Cannot download handbook file.", [
                         {
@@ -296,7 +296,7 @@ export default class HandbookViewer extends Component {
     }
 
     _onPress(item) {
-        console.log('item :', item)
+        //console.log('item :', item)
         this.setState({
             showTOC: 0,
             location: item.href,
@@ -305,7 +305,7 @@ export default class HandbookViewer extends Component {
     }
 
     _onhilight(item) {
-        console.log('item :', item)
+        //console.log('item :', item)
         this.setState({
             showTOC: 0,
             location: item.link,
@@ -441,7 +441,7 @@ export default class HandbookViewer extends Component {
         if (this.state.loadingtype == 0) {
 
             if (Platform.OS === 'android') {
-                //console.log('android selectmonth')
+                ////console.log('android selectmonth')
                 return (
                     <View style={{ height: '100%', width: '100%', justifyContent: 'center', alignItems: 'center', position: 'absolute', }} >
                         <View style={{ width: '80%', backgroundColor: 'white' }}>
@@ -589,7 +589,7 @@ export default class HandbookViewer extends Component {
     renderTableContent() {
 
         if (this.state.typeTOC) {
-            console.log('this.state.toc :', this.state.toc)
+            //console.log('this.state.toc :', this.state.toc)
             return (
                 <ScrollView style={{ height: '40%' }}>
                     {
@@ -611,7 +611,7 @@ export default class HandbookViewer extends Component {
             );
 
         }
-        console.log('this.state.hilightList :', this.state.HandbookMarkList)
+        //console.log('this.state.hilightList :', this.state.HandbookMarkList)
 
         return (
 
@@ -689,7 +689,7 @@ export default class HandbookViewer extends Component {
                     flow={this.state.flow}
                     location={this.state.location}
                     onLocationChange={(visibleLocation) => {
-                        console.log("locationChanged : ", visibleLocation.start.displayed)
+                        //console.log("locationChanged : ", visibleLocation.start.displayed)
                         this.setState({
                             currentpage: visibleLocation.start.displayed.page,
                             totalpage: visibleLocation.start.displayed.total
@@ -723,19 +723,19 @@ export default class HandbookViewer extends Component {
 
                     onPress={(cfi, position, rendition) => {
                         this.toggleBars();
-                        console.log("press", cfi);
+                        //console.log("press", cfi);
                     }}
 
                     onLongPress={(cfi, rendition, cfiRange) => {
-                        console.log("longpress", cfiRange);
+                        //console.log("longpress", cfiRange);
                     }}
 
                     onViewAdded={(index) => {
-                        console.log("added", index)
+                        //console.log("added", index)
                     }}
 
                     beforeViewRemoved={(index) => {
-                        console.log("removed", index)
+                        //console.log("removed", index)
                     }}
 
                     onSelected={(cfiRange, rendition, selected) => {
@@ -760,7 +760,7 @@ export default class HandbookViewer extends Component {
 
                         // });
 
-                        console.log("cfiRange", cfiRange)
+                        //console.log("cfiRange", cfiRange)
 
                         HandbookHighlightList.push(
                             cfiRange
@@ -775,7 +775,7 @@ export default class HandbookViewer extends Component {
                     }}
                     
                     onMarkClicked={(cfiRange) => {
-                        console.log("mark clicked", cfiRange)
+                        //console.log("mark clicked", cfiRange)
 
                         Alert.alert(
                             'SAVE',
@@ -833,7 +833,7 @@ export default class HandbookViewer extends Component {
                     // generateLocations={true}
                     origin={this.state.origin}
                     onError={(message) => {
-                        console.log("EPUBJS-Webview", message);
+                        //console.log("EPUBJS-Webview", message);
                     }}
                 />
 

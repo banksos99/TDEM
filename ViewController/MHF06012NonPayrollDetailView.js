@@ -54,7 +54,7 @@ export default class NonpayrollDetailView extends Component {
     }
 
     handleBackButtonClick() {
-        // console.log("handleBackButtonClick")
+        // //console.log("handleBackButtonClick")
         this.onBack()
         return true;
     }
@@ -68,7 +68,7 @@ export default class NonpayrollDetailView extends Component {
     }
 
     loadDataFromAPI = async () => {
-        //console.log("loadDataFromAPI : ", this.state.selectMonth, " , selectYear : ", this.state.selectYear)
+        ////console.log("loadDataFromAPI : ", this.state.selectMonth, " , selectYear : ", this.state.selectYear)
         this.setState({ isLoading: true })
         await this.onLoadAPI(this.state.selectMonth, this.state.selectYear)
     }
@@ -78,7 +78,7 @@ export default class NonpayrollDetailView extends Component {
         let data = await RestAPI(SharedPreference.NON_PAYROLL_DETAIL_API + month + "&year=" + year, SharedPreference.FUNCTIONID_NON_PAYROLL)
         code = data[0]
         data = data[1]
-        //console.log("nonPayRollCallback data : ", data)
+        ////console.log("nonPayRollCallback data : ", data)
         if (code.SUCCESS == data.code) {
             this.convertDateTime(data.data.detail[0].pay_date)
             this.setState({
@@ -126,7 +126,7 @@ export default class NonpayrollDetailView extends Component {
             { cancelable: false }
         )
 
-        console.log("error : ", error)
+        //console.log("error : ", error)
     }
 
     getNonPayrollDetail() {
@@ -138,7 +138,7 @@ export default class NonpayrollDetailView extends Component {
 
             for (let index = 0; index < array.length; index++) {
                 const element = array[index];
-                // ////console.log("getNonPayrollDetail ==> element : ", element.pay_date)
+                // //////console.log("getNonPayrollDetail ==> element : ", element.pay_date)
                 const items = element.items;
                 const datetime = moment(element.pay_date).format(format);
                 detail.push(this.renderDate(datetime))
@@ -158,7 +158,7 @@ export default class NonpayrollDetailView extends Component {
 
             return detail
         } catch (error) {
-            //////console.log('getNonPayrollDetail ==> error :', error);
+            ////////console.log('getNonPayrollDetail ==> error :', error);
         }
     }
     // return Decrypt.decrypt(code);
@@ -186,9 +186,9 @@ export default class NonpayrollDetailView extends Component {
     }
 
     onBack() {
-        //console.log("====================")
-        //console.log("dataResponse : ", this.state.dataObject)
-        //console.log("selectYear : ", this.state.selectYear)
+        ////console.log("====================")
+        ////console.log("dataResponse : ", this.state.dataObject)
+        ////console.log("selectYear : ", this.state.selectYear)
 
         this.props.navigation.navigate('NonPayrollList', {
             dataResponse: this.state.dataObject,
