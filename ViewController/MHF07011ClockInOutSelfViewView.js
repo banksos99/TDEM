@@ -639,8 +639,8 @@ export default class ClockInOutSelfView extends Component {
                         this.state.tdataSource.map((item, index) => (
 
                             <View key={item.id} style={index === currentday && (this.state.initialmonth + 2 === this.state.monthselected) ?
-                                { height: 90, backgroundColor: '#f9eded' } :
-                                { height: 90 }} key={index + 500}>
+                                { height: 120, backgroundColor: '#F2DEDE' } :
+                                { height: 90, backgroundColor: '#F5F5F5' }} key={index + 500}>
                                 <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', }}>
                                     <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
                                         <Text style={item.datetype === 'Y' ? styles.clockinoutdaybluetext :

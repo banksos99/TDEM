@@ -75,6 +75,7 @@ export default class HMF01011MainView extends Component {
             announcetypelist: ['All', 'Company Announcement', 'Emergency Announcement', 'Event Announcement', 'General Announcement'],
             announcestatuslist: ['All', 'Read', 'Unread'],
             notiAnnounceMentBadge: 0
+            //  page: 0
         }
         rolemanagementEmpoyee = [0, 0, 0, 0, 0, 0, 0, 0];
         rolemanagementManager = [0, 0, 0, 0];
@@ -87,6 +88,7 @@ export default class HMF01011MainView extends Component {
             if (SharedPreference.profileObject.role_authoried[i].module_function === 'HF0401') {
 
                 rolemanagementEmpoyee[0] = 1
+
             } else if (SharedPreference.profileObject.role_authoried[i].module_function === 'HF0601') {
 
                 rolemanagementEmpoyee[1] = 1
@@ -154,11 +156,8 @@ export default class HMF01011MainView extends Component {
             return true
         })
     }
+
     componentWillReceiveProps() {
-
-        //console.log('notiAnnounceMentBadge : ', SharedPreference.notiAnnounceMentBadge)
-
-
     }
 
     loadData = async () => {
@@ -181,6 +180,17 @@ export default class HMF01011MainView extends Component {
     async componentDidMount() {
         this.redertabview()
         NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectivityChange);
+
+        if (SharedPreference.notipayslipID) {
+
+            this.onOpenPayslipDetail()
+
+        } else if (SharedPreference.notiAnnounceMentID) {
+
+            this.onOpenAnnouncementDetailnoti()
+
+        }
+
         await this.loadData()
     }
 
@@ -211,12 +221,13 @@ export default class HMF01011MainView extends Component {
                 console.log("onLoadInAppNoti")
                 console.log("responseJson ==> ", responseJson)
                 try {
+                    console.log("onLoadInAppNoti ==> responseJson ", responseJson)
                     if (responseJson.status == 403) {
 
                         this.onAutenticateErrorAlertDialog()
 
                     } else if (responseJson.status == 200) {
-                        //console.log("onLoadInAppNoti ==> responseJson ", responseJson)
+                        
                         let dataArray = responseJson.data
                         let currentyear = new Date().getFullYear();
 
@@ -281,8 +292,15 @@ export default class HMF01011MainView extends Component {
                                             //console.log("detail badge ==> ", element.badge)
                                         }
                                     }
-
                                 }
+                            } else if (dataReceive.function_id == "PHF02010") {
+
+                                console.log("announcement badge ==> ", dataReceive.badge_count)
+
+                                this.setState({
+                                    notiAnnounceMentBadge: parseInt(dataReceive.badge_count) + parseInt(this.state.notiAnnounceMentBadge)
+                                })
+
                             }
                         }
 
@@ -291,11 +309,11 @@ export default class HMF01011MainView extends Component {
                             nonPayrollBadge: dataCustomArray
                         })
 
-                    } else {
-                        if (timerstatus) {
-                            this.inappTimeInterval()
-                        }
                     }
+                    if (timerstatus) {
+                        this.inappTimeInterval()
+                    }
+                    
                     // this.setState({
                     // }, function () {
                     // });
@@ -324,7 +342,12 @@ export default class HMF01011MainView extends Component {
     }
 
     componentWillUnmount() {
+
         NetInfo.isConnected.removeEventListener('connectionChange', this.handleConnectivityChange);
+
+        SharedPreference.notipayslipID = 0
+
+        SharedPreference.notiAnnounceMentID = 0
     }
 
     handleConnectivityChange = isConnected => {
@@ -411,6 +434,11 @@ export default class HMF01011MainView extends Component {
                     }, function () {
                         if (responseJson.status === 200) {
                             this.setState(this.renderloadingscreen());
+                            
+                            console.log('this.state.dataSource.data: ', responseJson.data)
+                            this.setState({
+                                notiAnnounceMentBadge: 0
+                            })
                             tempannouncementData = []
                             announcementData = responseJson.data;
                             announcementData.map((item, i) => {
@@ -2394,17 +2422,7 @@ export default class HMF01011MainView extends Component {
 
     }
 
-    rendertagNotification() {
-        if (this.state.notiAnnounceMentBadge) {
-            return (
-                <View style={{ height: 100, width: '100%', position: 'absolute', }}>
-                    <View style={{ backgroundColor: 'black', height: '100%', width: '100%', position: 'absolute', opacity: 0.7 }}>
-                    </View>
-
-                </View>
-            )
-        }
-    }
+   
 
     renderloadingscreen() {
 
@@ -2464,11 +2482,11 @@ export default class HMF01011MainView extends Component {
         //console.log('data pushstatus :', this.props.tempdata)
         let badgeBG = 'transparent'
         let badgeText = 'transparent'
-        // //console.log('notiAnnounceMentBadge : ',this.state.notiAnnounceMentBadge);
-        if (this.state.notiAnnounceMentBadge) {
+
+       if (this.state.notiAnnounceMentBadge) {
             badgeBG = 'red'
             badgeText = 'white'
-        }
+       }
         return (
             <View style={{ flex: 1 }}>
                 <View style={{ flex: 1, flexDirection: 'column' }}>
@@ -2542,7 +2560,7 @@ export default class HMF01011MainView extends Component {
                         </TouchableOpacity>
                     </View>
                 </View>
-                {/* {this.rendertagNotification()} */}
+              
                 {this.renderloadingscreen()}
 
             </View>

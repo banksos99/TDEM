@@ -68,7 +68,6 @@ export default class calendarEventDetailView extends Component {
 
 
         if (this.state.monthObject) {
-            console.log("getDataOnView : ", this.state.monthObject)
             if (selectedMonth == this.state.monthObject.month) {
 
                 this.state.dayObject = this.state.monthObject.days;
@@ -77,8 +76,8 @@ export default class calendarEventDetailView extends Component {
 
                     const datemonth = this.state.dayObject[index].date;
 
-                    console.log("selectedMonth ==> datemonth ", datemonth)
-                    console.log("selectedMonth ==> datemonth ", this.state.dayObject[index].special_holiday)
+                    // console.log("selectedMonth ==> datemonth ", datemonth)
+                    // console.log("selectedMonth ==> datemonth ", this.state.dayObject[index].special_holiday)
 
                     if (this.state.dayObject[index].special_holiday == "Y") {
                         // //console.log("selectedMonth ==> Y")
@@ -134,7 +133,6 @@ export default class calendarEventDetailView extends Component {
                     } else {//W
                         // //console.log("selectedMonth ==> W")
                         let count = this.state.dayObject[index].events.length;
-                        console.log("dayObject ==> count ==> ", count)
 
                         if (count > 1) {
                             const copy = {
@@ -380,11 +378,6 @@ export default class calendarEventDetailView extends Component {
             eventDetail = []
             array = object.events
 
-            console.log("specailHoliday ==> ",specailHoliday)
-            console.log("date ==> ",date)
-            console.log("object ==> ",object)
-
-          
 
             for (let index = 0; index < array.length; index++) {
                 const element = array[index];
