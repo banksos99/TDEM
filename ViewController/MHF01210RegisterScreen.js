@@ -45,8 +45,6 @@ export default class RegisterActivity extends Component {
         code = data[0]
         data = data[1]
 
-        ////console.log("onRegister ==> data : ", data)
-        ////console.log("onRegister ==> data code : ", data.code)
 
         if (code.SUCCESS == data.code) {
             this.saveProfile.setProfile(data.data)
@@ -85,10 +83,8 @@ export default class RegisterActivity extends Component {
     onLoadLoginWithPin = async (PIN) => {
 
         let data = await LoginWithPinAPI(PIN, SharedPreference.FUNCTIONID_PIN)
-        //////console.log("onLoadLoginWithPin ==> ", data)
         code = data[0]
         data = data[1]
-        //////console.log("onLoadLoginWithPin ==> ", data.code)
 
         if (code.DUPLICATE_DATA == data.code) {//409
             this.onOpenPinActivity()
