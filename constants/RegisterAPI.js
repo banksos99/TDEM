@@ -5,9 +5,9 @@ export default async function getRestAPI(username, password) {
 
     let code = {
         SUCCESS: "200",
-        INVALID_USER_PASS = "100",
-        INVALID_USER_PASS_MANY_TIME = "101",
-        USER_EXPIRED = "102",
+        INVALID_USER_PASS: "100",
+        INVALID_USER_PASS_MANY_TIME: "101",
+        USER_EXPIRED: "102",
         FAILED: "400",
         DOES_NOT_EXISTS: "401",
         INVALID_AUTH_TOKEN: "403",

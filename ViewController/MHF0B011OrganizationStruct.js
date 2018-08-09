@@ -54,12 +54,13 @@ export default class OrganizationStruct extends Component {
     }
 
     componentWillUnmount() {
-        BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
+        // BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
         NetInfo.isConnected.removeEventListener('connectionChange', this.handleConnectivityChange);
     }
     handleConnectivityChange = isConnected => {
         this.setState({ isConnected });
     };
+    
     handleBackButtonClick() {
         this.onBack()
         return true;

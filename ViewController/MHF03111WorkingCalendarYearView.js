@@ -12,7 +12,6 @@ import {
     Platform,
     ScrollView,
     BackHandler,
-    TouchableHighlight
 } from 'react-native';
 
 import { Calendar, LocaleConfig } from 'react-native-calendars';
@@ -83,23 +82,21 @@ export default class calendarYearView extends Component {
 
         }
 
+        console.log("dataResponse :", this.state.dataResponse)
         this.LocaleConfig()
-        this.onPressCalendar = this.onPressCalendar.bind(this)
         this.getYearSelect()
         this.setNewPicker()
         firebase.analytics().setCurrentScreen(SharedPreference.SCREEN_WORKING_CALENDAR)
 
     }
 
-
-
     componentWillMount() {
         BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
     }
 
-    componentWillUnmount() {
-        BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
-    }
+    // componentWillUnmount() {
+    //     BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
+    // }
 
     handleBackButtonClick() {
         this.onBack()
@@ -123,10 +120,7 @@ export default class calendarYearView extends Component {
     async componentDidMount() {
         this.getYearSelect()
         this.getYearView(this.state.selectYear, this.state.dataResponse)
-
-        //console.log("page : ", this.state.page)
         if ((SharedPreference.calendarAutoSync == true) && (this.state.page == 1)) {
-            // await this.onSynWithCalendar()
             this.addEventOnCalendar()
             this.setState({
                 isSycnCalendarFirstTime: true,
@@ -475,7 +469,6 @@ export default class calendarYearView extends Component {
 
     }
     onPressSelectYearWhenSelectLocation(year, type) {
-
         this.setState({
             selectYear: year,
             yearviewPicker: false
@@ -483,16 +476,20 @@ export default class calendarYearView extends Component {
 
         this.state.yearviewPicker = false
         this.resetCalendar()
-
-
-
     }
 
     onPressLocation(locationFull, locationShort) {
-        this.getLocation()
+
+        console.log("onPressLocation ==> locationShort : ", locationShort)
         this.setState({
             selectLocation: locationShort
         })
+
+        this.state.selectLocation = locationShort
+        console.log("onPressLocation ==> locationShort2 : ", this.state.selectLocation)
+
+        this.getLocation()
+
     }
 
     getShortLocation = async (fullLocation) => {
@@ -517,38 +514,47 @@ export default class calendarYearView extends Component {
         return
     }
 
-    getLocation = async () => {
+    getLocation = async (location) => {
 
         if (Platform.OS === 'ios') {
             locationShort = await this.getShortLocation(this.state.selectLocation)
-            ////console.log("locationShort : ", locationShort)
             this.setState({
                 selectLocation: locationShort
             })
-
+        } else {
+            this.setState({
+                selectLocation: location
+            })
         }
+
+        console.log("workingCalendar ==> getLocation : ", location)
+
 
         this.setState({
             locationPickerView: false,
             isLoading: true,
         })
 
-
         await this.openNewPage(this.state.selectLocation)
     }
 
     openNewPage = async (location) => {
-
+        // console.log("onLoadCalendarAPI ====> location ==> ", location)
         let data = await RestAPI(SharedPreference.CALENDER_YEAR_API + this.state.selectYear + '&company=' + location, SharedPreference.FUNCTIONID_WORKING_CALENDAR)
         code = data[0]
         data = data[1]
 
         if (code.SUCCESS == data.code) {
-            // ////console.log("onLoadCalendarAPI ====> SUCCESS")
+            // console.log("onLoadCalendarAPI ====> SUCCESS year ==> ", this.state.selectYear)
+            // console.log("onLoadCalendarAPI ====> SUCCESS location ==> ", location)
+
+            // console.log("onLoadCalendarAPI ====> SUCCESS code  ==> ", data.code)
+            // console.log("onLoadCalendarAPI ====> SUCCESS data ==> ", data)
+
             this.props.navigation.navigate('calendarYearView2', {
                 dataResponse: data,
                 selectYear: this.state.selectYear,
-                location: this.state.selectLocation
+                location: location
             });
         } else {
             Alert.alert(
@@ -566,8 +572,6 @@ export default class calendarYearView extends Component {
             )
         }
     }
-
-
 
     renderDialog() {
         if (this.state.yearviewPicker) {
@@ -739,7 +743,6 @@ export default class calendarYearView extends Component {
                                     <TouchableOpacity style={styles.button}
                                         onPress={() => {
                                             this.getLocation()
-
                                         }}>
                                         <Text style={[styles.alertDialogBoxText, { style: Text }]}>{StringText.CALENDER_YEARVIEW_ALERT_LOCATION_BUTTON}</Text>
                                     </TouchableOpacity>
@@ -754,15 +757,6 @@ export default class calendarYearView extends Component {
 
     onBack() {
         this.props.navigation.navigate('HomeScreen');
-    }
-
-    onloadPDFFile11 = async () => {
-        // EventCalendar._findEventCalendar()
-        await this.eventCalendar._findEventCalendar()
-        this.setState({
-            isLoadingPDF: false
-        })
-
     }
 
     onloadPDFFile = async () => {
@@ -948,7 +942,6 @@ export default class calendarYearView extends Component {
         )
     }
 
-
     deleteEventOnCalendar = async () => {
         await this.eventCalendar._deleteEventCalendar()
     }
@@ -976,7 +969,6 @@ export default class calendarYearView extends Component {
         return [checkFlag, duplicateEventArray]
 
     }
-
 
     addEventOnCalendar = async () => {
 

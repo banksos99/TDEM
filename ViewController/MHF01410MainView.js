@@ -201,7 +201,6 @@ export default class HMF01011MainView extends Component {
     }
 
     onLoadInAppNoti = async () => {
-        //TODO bell
         let lastTime = await this.saveTimeNonPayroll.getTimeStamp()
 
         if ((lastTime == null) || (lastTime == undefined)) {
@@ -211,13 +210,8 @@ export default class HMF01011MainView extends Component {
             lastTime = newdate
         }
 
-
-        //console.log("onLoadInAppNoti ==> lastTime ==> ", lastTime)
         FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, 1, SharedPreference.profileObject.client_token)
-        console.log('FB token : ',SharedPreference.deviceInfo);
-        console.log('FUNCTION_TOKEN : ', FUNCTION_TOKEN)
-        latest_date = "2017-01-01 12:00:00"
-        return fetch(SharedPreference.PULL_NOTIFICATION_API + latest_date, {
+        return fetch(SharedPreference.PULL_NOTIFICATION_API + lastTime, {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
@@ -227,14 +221,12 @@ export default class HMF01011MainView extends Component {
         })
             .then((response) => response.json())
             .then((responseJson) => {
-                console.log("onLoadInAppNoti")
-                console.log("responseJson ==> ", responseJson)
+                // console.log("onLoadInAppNoti")
+                // console.log("responseJson ==> ", responseJson)
                 try {
-                    console.log("onLoadInAppNoti ==> responseJson ", responseJson)
+                    // console.log("onLoadInAppNoti ==> responseJson ", responseJson)
                     if (responseJson.status == 403) {
-
                         this.onAutenticateErrorAlertDialog()
-
                     } else if (responseJson.status == 200) {
                         
                         let dataArray = responseJson.data
@@ -304,7 +296,7 @@ export default class HMF01011MainView extends Component {
                                 }
                             } else if (dataReceive.function_id == "PHF02010") {
 
-                                console.log("announcement badge ==> ", dataReceive.badge_count)
+                                // console.log("announcement badge ==> ", dataReceive.badge_count)
 
                                 this.setState({
                                     notiAnnounceMentBadge: parseInt(dataReceive.badge_count) + parseInt(this.state.notiAnnounceMentBadge)
@@ -312,7 +304,7 @@ export default class HMF01011MainView extends Component {
 
                             }else if (dataReceive.function_id == "PHF05010") {
 
-                                console.log("announcement badge ==> ", dataReceive.badge_count)
+                                // console.log("announcement badge ==> ", dataReceive.badge_count)
 
                                 this.setState({
                                     notiPayslipBadge: parseInt(dataReceive.badge_count)
