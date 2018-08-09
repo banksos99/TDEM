@@ -82,6 +82,9 @@ export default class mainview extends Component {
       });
 
     notificationOpen = await firebase.notifications().getInitialNotification();
+    //notificationOpen = await firebase.notifications().onNotificationOpened();
+    console.log('notificationOpen : ', notificationOpen)
+    //console.log('token : ', token)
     if (notificationOpen) {
       const notification = notificationOpen.notification;
       if (notification._data.type === 'Payroll') {
@@ -90,6 +93,12 @@ export default class mainview extends Component {
         SharedPreference.notiAnnounceMentID = notification._data.id
       }
     }
+
+    // set badge number on icon application
+
+    //Platform.OS === 'ios' && PushNotificationIOS.setApplicationIconBadgeNumber(2);
+    // Platform.OS === 'ios' && NotificationsIOS.setBadgesCount(0);
+    
   }
 
 
@@ -97,22 +106,65 @@ export default class mainview extends Component {
     notificationListener = firebase
       .notifications()
       .onNotification(notification => {
+
+        // if (Platform.OS === 'android') {
+
+        //   const localNotification = new firebase.notifications.Notification({
+        //       sound: 'default',
+        //       show_in_foreground: true,
+        //     })
+        //     .setNotificationId(notification.notificationId)
+        //     .setTitle(notification.title)
+        //     .setSubtitle(notification.subtitle)
+        //     .setBody(notification.body)
+        //     .setData(notification.data)
+        //     .android.setChannelId('channelId') // e.g. the id you chose above
+        //     .android.setSmallIcon('ic_stat_notification') // create this icon in Android Studio
+        //     .android.setColor('#000000') // you can set a color here
+        //     .android.setPriority(firebase.notifications.Android.Priority.High);
+  
+        //   firebase.notifications()
+        //     .displayNotification(localNotification)
+        //     .catch(err => console.error(err));
+  
+        // } else if (Platform.OS === 'ios') {
+  
+        //   const localNotification = new firebase.notifications.Notification()
+        //     .setNotificationId(notification.notificationId)
+        //     .setTitle(notification.title)
+        //     .setSubtitle(notification.subtitle)
+        //     .setBody(notification.body)
+        //     .setData(notification.data)
+        //     .ios.setBadge(0);
+  
+        //   firebase.notifications()
+        //     .displayNotification(localNotification)
+        //     .catch(err => console.error(err));
+  
+        // }
+
+       // firebase.setBadge(3)
         this.setState({
           notiMessage: 10,
           notiTitle: notification._title,
           notiBody: notification._body
         });
 
-        SharedPreference.notipayslipID = 12
+        // SharedPreference.notipayslipID = 12
         // SharedPreference.notipayslipID = 10
         if (notification._data.type === 'Payroll') {
           SharedPreference.notipayslipID = notification._data.id
+
         } else if (notification._data.type === 'Emergency Announcement') {
+
           SharedPreference.notiAnnounceMentID = notification._data.id
+
         }
       });
 
-    notificationOpen = firebase.notifications().getInitialNotification();
+   // notificationOpen = firebase.notifications().getInitialNotification();
+    //console.log('notificationOpen : ', notificationOpen)
+    // this.inactivecounting()
 
   }
 

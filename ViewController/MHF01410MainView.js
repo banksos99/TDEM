@@ -74,7 +74,8 @@ export default class HMF01011MainView extends Component {
             nonPayrollBadge: [],
             announcetypelist: ['All', 'Company Announcement', 'Emergency Announcement', 'Event Announcement', 'General Announcement'],
             announcestatuslist: ['All', 'Read', 'Unread'],
-            notiAnnounceMentBadge: 0
+            notiAnnounceMentBadge: 0,
+            notiPayslipBadge:0
             //  page: 0
         }
         rolemanagementEmpoyee = [0, 0, 0, 0, 0, 0, 0, 0];
@@ -158,6 +159,8 @@ export default class HMF01011MainView extends Component {
     }
 
     componentWillReceiveProps() {
+
+    
     }
 
     loadData = async () => {
@@ -171,10 +174,7 @@ export default class HMF01011MainView extends Component {
 
         await this.onLoadInAppNoti()
         SharedPreference.calendarAutoSync = autoSyncCalendarBool
-        if (!timerstatus) {
-            this.inappTimeInterval();
-            timerstatus = true;
-        }
+      
     }
 
     async componentDidMount() {
@@ -192,6 +192,12 @@ export default class HMF01011MainView extends Component {
         }
 
         await this.loadData()
+
+        if (!timerstatus) {
+            // console.log("componentDidMount timerstatus ==> start")
+            this.inappTimeInterval();
+            timerstatus = true;
+        }
     }
 
     onLoadInAppNoti = async () => {
@@ -208,7 +214,10 @@ export default class HMF01011MainView extends Component {
 
         //console.log("onLoadInAppNoti ==> lastTime ==> ", lastTime)
         FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, 1, SharedPreference.profileObject.client_token)
-        return fetch(SharedPreference.PULL_NOTIFICATION_API + lastTime, {
+        console.log('FB token : ',SharedPreference.deviceInfo);
+        console.log('FUNCTION_TOKEN : ', FUNCTION_TOKEN)
+        latest_date = "2017-01-01 12:00:00"
+        return fetch(SharedPreference.PULL_NOTIFICATION_API + latest_date, {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
@@ -301,6 +310,14 @@ export default class HMF01011MainView extends Component {
                                     notiAnnounceMentBadge: parseInt(dataReceive.badge_count) + parseInt(this.state.notiAnnounceMentBadge)
                                 })
 
+                            }else if (dataReceive.function_id == "PHF05010") {
+
+                                console.log("announcement badge ==> ", dataReceive.badge_count)
+
+                                this.setState({
+                                    notiPayslipBadge: parseInt(dataReceive.badge_count)
+                                })
+
                             }
                         }
 
@@ -310,6 +327,7 @@ export default class HMF01011MainView extends Component {
                         })
 
                     }
+
                     if (timerstatus) {
                         this.inappTimeInterval()
                     }
@@ -332,8 +350,8 @@ export default class HMF01011MainView extends Component {
     inappTimeInterval() {
         this.timer = setTimeout(() => {
             this.onLoadInAppNoti()
-        }, 2000);
-        // }, 60000);
+            // }, 2000);
+        }, 20000);
     };
 
     getnotidata(msg) {
@@ -375,8 +393,8 @@ export default class HMF01011MainView extends Component {
 
         }, function () {
 
-            let promise = this.loadAnnouncementfromAPI();
-
+           let promise = this.loadAnnouncementfromAPI();
+            // let promise = this.temploadAnnouncementfromAPI();
             if (!promise) {
                 return;
             }
@@ -394,7 +412,9 @@ export default class HMF01011MainView extends Component {
 
         }, function () {
             this.setState(this.renderloadingscreen())
-            this.loadAnnouncementMorefromAPI()
+           this.loadAnnouncementMorefromAPI()
+            // this.temploadAnnouncementMorefromAPI()
+     
         });
     }
 
@@ -407,8 +427,11 @@ export default class HMF01011MainView extends Component {
             totalroll = ROLL_ANNOUNCE
         }
 
-        // ////console.log("calendarPDFAPI ==>  functionID : ", functionID)
+        // //console.log("calendarPDFAPI ==>  functionID : ", functionID)
+        //console.log("loadAnnouncementfromAPI ")
         FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, SharedPreference.FUNCTIONID_ANNOUCEMENT, SharedPreference.profileObject.client_token)
+        //console.log("calendarPDFAPI ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
+       // console.log("client_id  : ", SharedPreference.profileObject.client_id)
         let hostApi = SharedPreference.ANNOUNCEMENT_ASC_API + '&offset=0&limit=' + totalroll
         if (ascendingSort) {
             hostApi = SharedPreference.ANNOUNCEMENT_DSC_API + '&offset=0&limit=' + totalroll
@@ -577,6 +600,148 @@ export default class HMF01011MainView extends Component {
                 });
             });
     }
+
+
+    
+    temploadAnnouncementfromAPI = async () => {
+        
+        let totalroll = announcementData.length;
+
+        if (this.state.annrefresh) {
+
+            totalroll = ROLL_ANNOUNCE;
+
+        } else if (!totalroll) {
+
+            totalroll = ROLL_ANNOUNCE
+        }
+
+        let hostApi = SharedPreference.ANNOUNCEMENT_ASC_API + '&offset=' + announcementData.length + '&limit=' + ROLL_ANNOUNCE
+        if (ascendingSort) {
+            hostApi = SharedPreference.ANNOUNCEMENT_DSC_API + '&offset=' + announcementData.length + '&limit=' + ROLL_ANNOUNCE
+        }
+
+        this.APIAnnouncementListCallback(await RestAPI(hostApi, SharedPreference.FUNCTIONID_ANNOUCEMENT),
+        'AnnouncementDetail', 0)
+
+    }
+    temploadAnnouncementMorefromAPI = async () => {
+        let hostApi = SharedPreference.ANNOUNCEMENT_ASC_API + '&offset=' + announcementData.length + '&limit=' + ROLL_ANNOUNCE
+        if (ascendingSort) {
+            hostApi = SharedPreference.ANNOUNCEMENT_DSC_API + '&offset=' + announcementData.length + '&limit=' + ROLL_ANNOUNCE
+        }
+
+        this.APIAnnouncementListMoreCallback(await RestAPI(hostApi, SharedPreference.FUNCTIONID_ANNOUCEMENT),
+        'AnnouncementDetail', 0)
+
+
+    }
+
+    APIAnnouncementListCallback(data, rount, index) {
+        console.log('APIAnnouncementListCallback ==> data ==> ', data)
+        code = data[0]
+        data = data[1]
+
+        this.setState({
+
+            isscreenloading: false,
+
+        })
+
+        if (code.SUCCESS == data.code) {
+            this.setState(this.renderloadingscreen());
+            console.log('this.state.dataSource.data: ', responseJson.data)
+            this.setState({
+                notiAnnounceMentBadge: 0
+            })
+            tempannouncementData = []
+            announcementData = responseJson.data;
+            announcementData.map((item, i) => {
+                if (this.state.announcementStatus === 'All') {
+                    if (this.state.announcementType === 'All') {
+                        tempannouncementData.push(item)
+                    } else {
+                        if (item.category === this.state.announcementType) {
+                            tempannouncementData.push(item)
+                        }
+                    }
+                } else {
+                    if (item.attributes.read === this.state.announcementStatus) {
+                        if (this.state.announcementType === 'All') {
+                            tempannouncementData.push(item)
+                        } else {
+                            if (item.category === this.state.announcementType) {
+                                tempannouncementData.push(item)
+                            }
+                        }
+                    }
+                }
+            });
+            this.setState(this.renderannouncementbody());
+
+        } else if (code.INVALID_AUTH_TOKEN == data.code) {
+
+            this.onAutenticateErrorAlertDialog(data)
+
+        } else {
+
+            this.onLoadErrorAlertDialog(data, rount)
+        }
+
+    }
+
+    APIAnnouncementListMoreCallback(data, rount, index) {
+        console.log('APIAnnouncementListCallback ==> data ==> ', data)
+        code = data[0]
+        data = data[1]
+
+        this.setState({
+
+            isscreenloading: false,
+            dataSource: responseJson,
+            announcepage: this.state.announcepage + 1,
+            loadmore: false
+        })
+
+        if (code.SUCCESS == data.code) {
+            this.setState(this.renderloadingscreen());
+
+            this.state.dataSource.data.map((item, i) => {
+
+                announcementData.push(item)
+                if (this.state.announcementStatus === 'All') {
+                    if (this.state.announcementType === 'All') {
+                        tempannouncementData.push(item)
+                    } else {
+                        if (item.category === this.state.announcementType) {
+                            tempannouncementData.push(item)
+                        }
+                    }
+                } else {
+                    if (item.attributes.read === this.state.announcementStatus) {
+                        if (this.state.announcementType === 'All') {
+                            tempannouncementData.push(item)
+                        } else {
+                            if (item.category === this.state.announcementType) {
+                                tempannouncementData.push(item)
+                            }
+                        }
+                    }
+                }
+            });
+            this.setState(this.renderannouncementbody());
+
+        } else if (code.INVALID_AUTH_TOKEN == data.code) {
+
+            this.onAutenticateErrorAlertDialog(data)
+
+        } else {
+
+            this.onLoadErrorAlertDialog(data, rount)
+        }
+
+    }
+
     loadAnnouncementDetailfromAPINoti = async () => {
         //console.log("loadAnnouncementDetailfromAPINoti")
         this.APIAnnouncementDetailCallback(await RestAPI(SharedPreference.ANNOUNCEMENT_DETAIL_API + SharedPreference.notiAnnounceMentID, SharedPreference.FUNCTIONID_ANNOUCEMENT),
@@ -615,22 +780,7 @@ export default class HMF01011MainView extends Component {
             });
 
             SharedPreference.notipayAnnounceMentID = 0;
-            // } else if (code.NODATA == data.code) {
-
-            //     Alert.alert(
-            //         StringText.ALERT_NONPAYROLL_NODATA_TITLE,
-            //         StringText.ALERT_NONPAYROLL_NODATA_TITLE,
-            //         [{
-            //             text: 'OK', onPress: () => {
-
-            //             }
-            //         }],
-            //         { cancelable: false }
-            //     )
-            // } else if (code.DOES_NOT_EXISTS == data.code) {
-
-            //     this.onNodataExistErrorAlertDialog()
-
+        
         } else if (code.INVALID_AUTH_TOKEN == data.code) {
 
             this.onAutenticateErrorAlertDialog(data)
@@ -1136,6 +1286,7 @@ export default class HMF01011MainView extends Component {
         }, function () {
             this.setState(this.renderloadingscreen())
             this.loadAnnouncementfromAPI()
+           // this.temploadAnnouncementfromAPI()
         });
     }
 
@@ -1312,6 +1463,7 @@ export default class HMF01011MainView extends Component {
                     loadingtype: 3
                 }, function () {
                     this.loadAnnouncementfromAPI()
+                     // this.temploadAnnouncementfromAPI()
                 });
             }
         } if (tabnumber === 3) {
@@ -1573,6 +1725,8 @@ export default class HMF01011MainView extends Component {
     /*************************************************************** */
 
     renderhomeview() {
+        //notiPayslipBadge
+        
         return (
             <View style={{ flex: 1, justifyContent: 'center' }}>
                 <View style={styles.mainmenutabbarstyle} />
@@ -1675,6 +1829,9 @@ export default class HMF01011MainView extends Component {
                                 <View style={styles.mainmenuTextButton}>
                                     <Text style={styles.mainmenuTextname}>Pay Slip</Text>
                                 </View>
+
+
+
                             </View>
                         </TouchableOpacity>
                     </View>
@@ -2001,6 +2158,7 @@ export default class HMF01011MainView extends Component {
     }
 
     renderannouncementview() {
+
         return (
             <View style={{ flex: 1, flexDirection: 'column' }}>
 
@@ -2009,10 +2167,10 @@ export default class HMF01011MainView extends Component {
             </View>
         )
 
-
     }
 
     rendermanagerview() {
+
         return (
             <View style={{ flex: 1, justifyContent: 'center' }}>
                 <View style={styles.mainmenutabbarstyle} />
