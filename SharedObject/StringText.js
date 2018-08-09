@@ -55,7 +55,7 @@ export default {
   SERVER_ERROR_DESC: 'System Error (API). Please contact system administrator.',
 
   INVALID_AUTH_TOKEN_TITLE:'Sorry',
-  INVALID_AUTH_TOKEN_DESC:'User Expire.Please login with USER and PASS again.',
+  INVALID_AUTH_TOKEN_DESC:'Have login from another device',
 
 
   REGISTER_PIN_ERROR_TITLE: 'Sorry',

@@ -58,7 +58,7 @@ export default class OrganizationStruct extends Component {
             
         } else {
 
-            console.log('orgdata : ', orgdata)
+            //console.log('orgdata : ', orgdata)
 
         }
     }
@@ -86,7 +86,7 @@ export default class OrganizationStruct extends Component {
 
     showDetail(item, index) {
 
-        console.log('emp list item :', item)
+        //console.log('emp list item :', item)
 
         this.setState({
 
@@ -113,7 +113,7 @@ export default class OrganizationStruct extends Component {
         data = data[1]
         if (code.SUCCESS == data.code) {
 
-            console.log('option : ', option)
+            //console.log('option : ', option)
             if (option == 2) {
                 this.props.navigation.navigate('ClockInOutSelfView', {
                     DataResponse: data.data,
@@ -164,7 +164,7 @@ export default class OrganizationStruct extends Component {
             { cancelable: false }
         )
 
-        console.log("error : ", error)
+        //console.log("error : ", error)
     }
     onLoadErrorAlertDialog(error) {
         this.setState({
@@ -176,7 +176,8 @@ export default class OrganizationStruct extends Component {
                 error.data[0].code,
                 error.data[0].detail,
                 [{
-                    text: 'OK', onPress: () => console.log('OK Pressed')
+                    text: 'OK', onPress: () => { //console.log('OK Pressed')
+                }
                 }],
                 { cancelable: false }
             )
@@ -186,13 +187,13 @@ export default class OrganizationStruct extends Component {
                 'Cannot connect to the internet.',
                 [{
                     text: 'OK', onPress: () => {
-                        console.log("onLoadErrorAlertDialog")
+                        //console.log("onLoadErrorAlertDialog")
                     }
                 }],
                 { cancelable: false }
             )
         }
-        console.log("error : ", error)
+        //console.log("error : ", error)
     }
     renderloadingscreen() {
 

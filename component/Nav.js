@@ -21,7 +21,7 @@ class Nav extends Component {
   constructor(props) {
     super(props);
 
-    const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1.id !== r2.id});
+    const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1.id !== r2.id });
 
     this.state = {
       error: '',
@@ -55,11 +55,11 @@ class Nav extends Component {
   }
 
   show() {
-    this.setState({modalVisible: true});
+    this.setState({ modalVisible: true });
   }
 
   hide() {
-    this.setState({modalVisible: false});
+    this.setState({ modalVisible: false });
   }
 
   _closeModal() {
@@ -68,7 +68,7 @@ class Nav extends Component {
 
   _onPress(item) {
     // var item = this.props.toc[event.selectedIndex];
-    if(this.props.display) {
+    if (this.props.display) {
       this.props.display(item.href);
     }
     this.hide();
@@ -93,8 +93,10 @@ class Nav extends Component {
         <Modal
           animationType={"slide"}
           visible={this.state.modalVisible}
-          onRequestClose={() => console.log("close requested")}
-          >
+          onRequestClose={() => {
+            //console.log("close requested")}
+          }}
+        >
           <View
             style={styles.header}>
             <Text style={styles.headerTitle}>Table of Contents</Text>
@@ -202,7 +204,7 @@ const styles = StyleSheet.create({
     right: 0,
     left: 0,
     borderBottomWidth: 1,
-    borderBottomColor:"#000",
+    borderBottomColor: "#000",
   },
   backButton: {
     width: 130,

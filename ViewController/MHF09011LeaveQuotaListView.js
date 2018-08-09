@@ -57,7 +57,7 @@ export default class LeaveQuotaActivity extends Component {
     }
 
     leaveQuotaListview() {
-        console.log(" this.state.dataSource  : ", this.state.dataSource.code)
+        //console.log(" this.state.dataSource  : ", this.state.dataSource.code)
         if (this.state.dataSource.code != '200') {
             return (<View style={{
                 height: 50, justifyContent: 'center',
@@ -68,7 +68,7 @@ export default class LeaveQuotaActivity extends Component {
         }
 
         let dataArray = this.state.dataSource.data.years
-        console.log("dataArray : ", dataArray)
+        //console.log("dataArray : ", dataArray)
         let yearArray = []
 
         if (!dataArray) {
@@ -86,7 +86,7 @@ export default class LeaveQuotaActivity extends Component {
             }
         }
 
-        // console.log("yearArray : ", yearArray)
+        // //console.log("yearArray : ", yearArray)
 
         if (yearArray.length == 0) {
             return (<View style={{
@@ -167,7 +167,7 @@ export default class LeaveQuotaActivity extends Component {
 
     renderTabYearSelect() {
         let lastYear = new Date().getFullYear() - 1
-        // console.log("lastYear : ", lastYear)
+        // //console.log("lastYear : ", lastYear)
         // if (this.state.dataSource.status != '200') {
         //     return (
         //         <View style={styles.selectYearContainer}>

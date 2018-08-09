@@ -155,7 +155,7 @@ export default class rootNavigation extends Component {
 
     getProfileObject = async () => {
         profileObject = await this.saveProfile.getProfile()
-        console.log("NavigationController ==> ", profileObject)
+        //console.log("NavigationController ==> ", profileObject)
         if (profileObject) {
             this.setState({
                 hasPin: true
@@ -190,8 +190,8 @@ export default class rootNavigation extends Component {
 
     }
     render() {
-        // console.log('data pushstatus :', this.props.pushstatus)
-        // console.log('data pushstatus :', AppNavigatorRegister.props.navigation)
+        // //console.log('data pushstatus :', this.props.pushstatus)
+        // //console.log('data pushstatus :', AppNavigatorRegister.props.navigation)
         //AppNavigatorRegister.homeScreen.getnotidata(this.props.pushstatus)
         // const newState = this.AppNavigatorRegister.navigate('HomeScreen')
         if (this.state.hasPin == false) {
@@ -199,7 +199,7 @@ export default class rootNavigation extends Component {
                 <AppNavigatorRegister
                     onNavigationStateChange={(prevState, currentState) => {
                       //  const currentScreen = currentState.routes[navigationState.index];
-                        console.log('statec change',currentState)
+                        //console.log('statec change',currentState)
                     }} />
             );
         } else {
@@ -207,7 +207,7 @@ export default class rootNavigation extends Component {
                 <AppNavigatorPin  
                 onNavigationStateChange={(prevState, currentState) => {
                    // const currentScreen = currentState.routes[navigationState.index];
-                    console.log('statec change',currentState)
+                    //console.log('statec change',currentState)
                 }} />
             );
         }

@@ -1,14 +1,14 @@
 import { AsyncStorage } from 'react-native';
 
-export default class SavePIN {
+export default class SaveTimeNonPayroll {
 
-    getPin = async () => {
-        const value = await AsyncStorage.getItem('pin');
+    getTimeStamp = async () => {
+        const value = await AsyncStorage.getItem('time');
         return value
     }
 
-    setPin(PIN) {
-        return AsyncStorage.setItem('pin', PIN)
+    setTimeStamp(time) {
+        return AsyncStorage.setItem('time', time)
             .then(json => {
                 //console.log('success!')
             })
@@ -16,5 +16,4 @@ export default class SavePIN {
                 //console.log('error!')
             });
     }
-
 }

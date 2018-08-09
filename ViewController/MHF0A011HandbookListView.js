@@ -38,7 +38,7 @@ class BookCover extends Component {
 
 
     updateSource(newUrl) {
-        console.log("Book updateSource : " + newUrl);
+        //console.log("Book updateSource : " + newUrl);
 
         if (this.terminated) {
             return;
@@ -51,7 +51,7 @@ class BookCover extends Component {
 
 
     refresh() {
-        console.log('[BookCover] Refresh');
+        //console.log('[BookCover] Refresh');
 
         let dirs = RNFetchBlob.fs.dirs
         let filename = this.props.bookName + '.png'
@@ -62,10 +62,10 @@ class BookCover extends Component {
         RNFetchBlob.fs.exists(targetFile)
             .then((exist) => {
                 hasFile = exist;
-                console.log("======================");
-                console.log("Has file : " + hasFile);
-                console.log("======================");
-                console.log("======================");
+                //console.log("======================");
+                //console.log("Has file : " + hasFile);
+                //console.log("======================");
+                //console.log("======================");
 
                 hasFile = false
                 //   if (hasFile) {
@@ -89,27 +89,27 @@ class BookCover extends Component {
                 this.task.then((res) => {
                     // the path should be dirs.DocumentDir + 'path-to-file.anything'
 
-                    console.log('load cover TOKEN ', FUNCTION_TOKEN)
-                    console.log('The file saved to ', res.path())
+                    //console.log('load cover TOKEN ', FUNCTION_TOKEN)
+                    //console.log('The file saved to ', res.path())
                     if (this.terminated) {
                         return;
                     }
                     this.updateSource(targetFile);
                 }).catch((err) => {
                     // scan file error
-                    console.log('[BookCover] Catch Error', err);
+                    //console.log('[BookCover] Catch Error', err);
                 });
                 //   }
 
             })
             .catch(() => {
-                console.log('[Error] BookCover ==> Error on DidMounted')
+                //console.log('[Error] BookCover ==> Error on DidMounted')
             });
 
     }
 
     componentDidMount() {
-        console.log('[BookCover] componentDidMount');
+        //console.log('[BookCover] componentDidMount');
         this.refresh();
     }
 
@@ -157,21 +157,21 @@ export default class Handbookctivity extends Component {
 
     updateToken() {
         FUNCTION_TOKEN = Authorization.convert(SharedPreference.profileObject.client_id, 1, SharedPreference.profileObject.client_token)
-        console.log('[Handbookctivity] FUNCTION_TOKEN :', FUNCTION_TOKEN)
+        //console.log('[Handbookctivity] FUNCTION_TOKEN :', FUNCTION_TOKEN)
     }
 
     checkDataFormat(DataResponse) {
-        console.log('dataSource :', dataSource.length)
+        //console.log('dataSource :', dataSource.length)
         if (dataSource.length == 0) {
 
             if (DataResponse) {
 
-                console.log('Handbookctivity DataResponse :', DataResponse)
+                //console.log('Handbookctivity DataResponse :', DataResponse)
                 // dataSource = DataResponse.data;
                 dataSource = DataResponse;
 
             } else {
-                console.log('inappdata :', inappdata.dataSource.data.detail)
+                //console.log('inappdata :', inappdata.dataSource.data.detail)
                 dataSource = inappdata.dataSource.data.detail.items;
 
             }

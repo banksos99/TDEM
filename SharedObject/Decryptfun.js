@@ -8,7 +8,7 @@ import SharedPreference from "./../SharedObject/SharedPreference"
 var Decrypt = {
 
     decrypt(enc64) {
-        console.log("enc64 : ", enc64)
+        //console.log("enc64 : ", enc64)
         if (enc64) {
 
             try {

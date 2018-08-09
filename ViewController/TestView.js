@@ -37,7 +37,7 @@ export default class TestView extends Component {
 
     async componentDidMount() {
 
-        console.log('componentDidMount')
+        //console.log('componentDidMount')
         this.downloadEpubFile(this.state.url);
     
       }
@@ -61,8 +61,8 @@ export default class TestView extends Component {
 
     downloadEpubFile(bookUrl) {
 
-        console.log('[EPub] downloadEpubFilep path', bookUrl);
-        console.log('[EPub] downloadEpubFile TOKEN', this.state.FUNCTION_TOKEN);
+        //console.log('[EPub] downloadEpubFilep path', bookUrl);
+        //console.log('[EPub] downloadEpubFile TOKEN', this.state.FUNCTION_TOKEN);
 
         let dirs = RNFetchBlob.fs.dirs;
         let filename = this.filename(bookUrl);
@@ -82,10 +82,10 @@ export default class TestView extends Component {
           })
           .then((res) => {
             // the path should be dirs.DocumentDir + 'path-to-file.anything'
-            console.log('The file saved to ', res.path())
+            //console.log('The file saved to ', res.path())
             /*RNFetchBlob.fs.readFile(res.path(), 'utf8')
                     .then((data) => {
-                      console.log(data);
+                      //console.log(data);
                     })*/
     
             let target = { url: Platform.OS === 'android' ? '' + res.path() : '' + res.path() }
@@ -96,7 +96,7 @@ export default class TestView extends Component {
       }
     
       startStreamer(epubPath) {
-        console.log('Start Streamer and locating path ', epubPath)
+        //console.log('Start Streamer and locating path ', epubPath)
         this.streamer.start()
           .then((origin) => {
             this.setState({ origin })
@@ -104,19 +104,19 @@ export default class TestView extends Component {
             return this.streamer.get(epubPath);
           })
           .then((src) => {
-            console.log('Loading source ', src)
+            //console.log('Loading source ', src)
             return this.setState({ src });
           }).catch((err) => {
             // scan file error
-            console.log('[HandBookDetail] Catch Error', err);
+            //console.log('[HandBookDetail] Catch Error', err);
            
             this.streamer.stop();
             if (this.reloadCount < 3) {
-                console.log('[HandBookDetail] url', SharedPreference.HOST+ this.state.handbook_file);
+                //console.log('[HandBookDetail] url', SharedPreference.HOST+ this.state.handbook_file);
               this.downloadEpubFile(SharedPreference.HOST+ this.state.handbook_file)
               this.reloadCount++;
             } else {
-              console.log('[HandBookDetail] Reload count reach', err);
+              //console.log('[HandBookDetail] Reload count reach', err);
               //this.props.navigation.navigate("Handbooklist");
               Alert.alert("Handbook Error", "Cannot download handbook file.", [
                 {

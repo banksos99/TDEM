@@ -26,13 +26,13 @@ export default class PaySlipActivity extends Component {
     }
 
     checkDataFormat(DataResponse) {
-        console.log("PaySlipActivity ==> ", DataResponse)
+        //console.log("PaySlipActivity ==> ", DataResponse)
         if (DataResponse) {
             title = DataResponse.title
             content = DataResponse.content
 
         }
-        console.log('content : ', content)
+        //console.log('content : ', content)
     }
 
     componentWillMount() {

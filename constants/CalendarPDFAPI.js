@@ -32,7 +32,7 @@ export default async function getPDF(year, company,functionID) {
     })
         .then((response) => response.json())
         .then((responseJson) => {
-            // console.log("callback success : ", responseJson.status)
+            // //console.log("callback success : ", responseJson.status)
             let object
             if (responseJson.status == code.SUCCESS) {
                 object = [code, {

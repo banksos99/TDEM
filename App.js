@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { View, Image, Alert, Platform,Text ,PushNotificationIOS,AppRegistry} from 'react-native';
+import { View, Image, Alert, Platform, Text } from 'react-native';
 
 import {
   StackNavigator,
   createSwitchNavigator
-  
+
 } from 'react-navigation';
 
 import SharedPreference from './SharedObject/SharedPreference';
@@ -16,7 +16,9 @@ import DeviceInfo from 'react-native-device-info';
 
 import firebase from 'react-native-firebase';
 import Layout from "./SharedObject/Layout";
+import UserInactivity from 'react-native-user-inactivity';
 
+import { styles } from "./SharedObject/MainStyles"
 
 export default class mainview extends Component {
 
@@ -27,56 +29,47 @@ export default class mainview extends Component {
     this.state = {
       inactive: false,
       showpin: false,
-      notiMessage:0,
-      notipayslipID:0,
-      notiTitle:0,
-      notiBody:0
+      notiMessage: 0,
+      notipayslipID: 0,
+      notiTitle: 0,
+      notiBody: 0,
+      timeWentInactive: false,
+
     }
-    // SharedPreference.notiAnnounceMentBadge = 150;
+  }
+
+  onInactivity = (timeWentInactive) => {
+    console.log("onInactivity : ", timeWentInactive)
+    this.setState({
+      showpin: true
+    });
   }
 
   async componentDidMount() {
-
     this.notificationListener();
-
     this.inactivecounting();
-
     const enabled = await firebase.messaging().hasPermission();
     if (enabled) {
-      //console.log("firebase ==> user has permissions")
+      ////console.log("firebase ==> user has permissions")
     } else {
       try {
         await firebase.messaging().requestPermission();
-        //console.log("firebase ==> User has authorised")
+        ////console.log("firebase ==> User has authorised")
       } catch (error) {
-        //console.log("firebase ==> error")
       }
     }
 
     //////////Device Info/////////////
-
     const deviceModel = DeviceInfo.getModel();
-    // //console.log("deviceModel : ", deviceModel)
-
     const deviceBrand = DeviceInfo.getBrand();
-    // //console.log("deviceBrand : ", deviceBrand)
-
     const deviceOS = DeviceInfo.getSystemName();
-    // //console.log("deviceOS : ", deviceOS)
-
     const deviceOSVersion = DeviceInfo.getSystemVersion();
-    // //console.log("deviceOSVersion : ", deviceOSVersion)
-
     const appVersion = DeviceInfo.getVersion();
-    // //console.log("appVersion : ", appVersion)
-
     const buildNumber = DeviceInfo.getBuildNumber();
-    // //console.log("buildNumber : ", buildNumber)
-
 
     await firebase.messaging().getToken()
       .then((token) => {
-        //console.log('firebase ==> message Device FCM Token: ', token);
+        ////console.log('firebase ==> message Device FCM Token: ', token);
         SharedPreference.deviceInfo = {
           "deviceModel": deviceModel,
           "deviceBrand": deviceBrand,
@@ -88,26 +81,17 @@ export default class mainview extends Component {
         }
       });
 
-   // firebase.analytics().setCurrentScreen(SharedPreference.SCREEN_SPLASH)
-
     notificationOpen = await firebase.notifications().getInitialNotification();
     //notificationOpen = await firebase.notifications().onNotificationOpened();
     console.log('notificationOpen : ', notificationOpen)
     //console.log('token : ', token)
     if (notificationOpen) {
-
       const notification = notificationOpen.notification;
-
       if (notification._data.type === 'Payroll') {
-
         SharedPreference.notipayslipID = notification._data.id
-
       } else if (notification._data.type === 'Emergency Announcement') {
-
         SharedPreference.notiAnnounceMentID = notification._data.id
-
       }
-      //console.log('notipayslipID : ', SharedPreference.notipayslipID);
     }
 
     // set badge number on icon application
@@ -117,12 +101,6 @@ export default class mainview extends Component {
     
   }
 
-  componentWillReceiveProps(nextProps) {
-
-    if (nextProps.appDidBecomeActive) {
-      
-    }
-  }
 
   notificationListener() {
     notificationListener = firebase
@@ -175,7 +153,6 @@ export default class mainview extends Component {
         // SharedPreference.notipayslipID = 12
         // SharedPreference.notipayslipID = 10
         if (notification._data.type === 'Payroll') {
-
           SharedPreference.notipayslipID = notification._data.id
 
         } else if (notification._data.type === 'Emergency Announcement') {
@@ -191,11 +168,6 @@ export default class mainview extends Component {
 
   }
 
-  componentWillUnmount() {
-    // this.notificationListener();
-   // this.unsubscribeFromNotificationListener();
-
-  }
 
   inactivecounting() {
     this.timer = setTimeout(() => {
@@ -208,7 +180,7 @@ export default class mainview extends Component {
   cloatlabelnoti() {
     this.timer = setTimeout(() => {
       this.setState({
-        notiMessage:0
+        notiMessage: 0
       });
     }, 5000);
   }
@@ -236,12 +208,12 @@ export default class mainview extends Component {
           <View style={{ flex: 1, borderRadius: 10, backgroundColor: 'white', justifyContent: 'center', margin: 10 }}>
             <View style={{ flexDirection: 'column', flex: 1 }}>
               <View style={{ flexDirection: 'row', flex: 2 }}>
-                <View style={{ flex: 1 ,justifyContent:'center',alignItems:'center'}}>
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                   <Image
                     style={{ height: 20, width: 20, }}
                     source={require('./resource/SplashBg.png')}
-                    /></View>
-                <View style={{ flex: 7,justifyContent:'center' }}><Text>TDEM Connect</Text></View>
+                  /></View>
+                <View style={{ flex: 7, justifyContent: 'center' }}><Text>TDEM Connect</Text></View>
 
 
               </View>
@@ -262,39 +234,37 @@ export default class mainview extends Component {
       );
     }
   }
-  //   else if (SharedPreference.notiAnnounceMentID) {
-  //     return (
-  //       <View style={{ width: 50, height: '100%', position: 'absolute', backgroundColor: 'red' }}>
-         
-  //       </View>
-  //     );
-
-  //   }
-  // }
 
   renderPINScreen() {
     if (this.state.showpin) {
       return (
-        <View style={{ width: '100%', height: '100%', position: 'absolute', backgroundColor: 'red' }}>
-          <PINScreen onPINScreen={this.getdata} />
+        <View style={styles.alertDialogContainer}>
+          {/* <PINScreen  /> */}
         </View>
       );
     }
   }
 
   render() {
+
+    const { timeWentInactive } = this.state;
+
     if (this.state.inactive) {
       return (
-        <View style={{ flex: 1, }}>
-          <RootViewController
-            pushstatus={this.state.notiMessage} />
-          {/* <View style={{ height: 100, width: '100%', position: 'absolute', }}>
-            <View style={{ backgroundColor: 'black', height: '100%', width: '100%', position: 'absolute', opacity: 0.7 }}>
+        <UserInactivity
+          timeForInactivity={500000}
+          checkInterval={500000}
+          onInactivity={this.onInactivity} >
+          <View style={styles.container} >
+            <View style={styles.container} >
+              <RootViewController
+                pushstatus={this.state.notiMessage} />
+              {this.rendernotificationlabel()}
             </View>
+            {this.renderPINScreen()}
+          </View>
+        </UserInactivity>
 
-          </View> */}
-          {this.rendernotificationlabel()}
-        </View>
       );
     }
     return (
@@ -304,7 +274,7 @@ export default class mainview extends Component {
           source={require('./resource/SplashBg.png')}
           resizeMode='contain'
           style={{ flex: 1 }} />
-          
+
       </View>
 
     );

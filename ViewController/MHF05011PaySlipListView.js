@@ -7,7 +7,7 @@ import {
     Image,
     ActivityIndicator,
     Alert,
-    BackHandler,NetInfo
+    BackHandler, NetInfo
 } from 'react-native';
 
 import Colors from "./../SharedObject/Colors"
@@ -59,10 +59,10 @@ export default class PaySlipActivity extends Component {
     }
 
     checkDataFormat(DataResponse) {
-        console.log('DataResponse : ', DataResponse)
+        //console.log('DataResponse : ', DataResponse)
         if (DataResponse) {
-            console.log('DataResponse : ', DataResponse)
-            console.log('DataResponse.years : ', DataResponse.years)
+            //console.log('DataResponse : ', DataResponse)
+            //console.log('DataResponse.years : ', DataResponse.years)
 
             dataSource = DataResponse;
 
@@ -143,7 +143,7 @@ export default class PaySlipActivity extends Component {
             selectYearArray: selectYearArray,
         })
 
-        console.log("getArrayOfYear ==> selectYearArray : ", this.state.selectYearArray)
+        //console.log("getArrayOfYear ==> selectYearArray : ", this.state.selectYearArray)
 
     }
 
@@ -302,13 +302,13 @@ export default class PaySlipActivity extends Component {
     }
 
     onLoadAlertDialog() {
-        // //console.log("onLoadAlertDialog")
+        // ////console.log("onLoadAlertDialog")
         Alert.alert(
             StringText.ALERT_NONPAYROLL_NODATA_TITLE,
             StringText.ALERT_NONPAYROLL_NODATA_TITLE,
             [{
                 text: StringText.ALERT_NONPAYROLL_NODATA_BUTTON, onPress: () => {
-                    // //console.log("onLoadAlertDialog")
+                    // ////console.log("onLoadAlertDialog")
                 }
             },
             ],
@@ -378,7 +378,11 @@ export default class PaySlipActivity extends Component {
             'no data',
             'no data',
             [
-                { text: 'OK', onPress: () => console.log('OK Pressed') },
+                {
+                    text: 'OK', onPress: () => {
+                        //console.log('OK Pressed') },
+                    }
+                }
             ],
             { cancelable: false }
         )
@@ -389,7 +393,7 @@ export default class PaySlipActivity extends Component {
 
         // pay_date_str = dataSource.years[this.state.indexselectyear].detail[index].pay_date;
 
-        console.log('detail', pay_date_str)
+        //console.log('detail', pay_date_str)
 
         this.setState({
 
@@ -397,7 +401,7 @@ export default class PaySlipActivity extends Component {
             loadingtype: 3
 
         }, function () {
-            // console.log(this.state.indexselectyear)
+            // //console.log(this.state.indexselectyear)
             // this.setState(this.renderloadingscreen())
 
             this.getPayslipDetailfromAPI(year, index)
@@ -454,7 +458,7 @@ export default class PaySlipActivity extends Component {
 
 
     componentDidMount() {
-        // console.log(Layout.window.width);
+        // //console.log(Layout.window.width);
         // this.fetchData()
     }
 
@@ -476,11 +480,11 @@ export default class PaySlipActivity extends Component {
         let host = SharedPreference.PAYSLIP_DETAIL_API + rollid
         // console
 
-        console.log('host : ', host);
+        //console.log('host : ', host);
         FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, SharedPreference.FUNCTIONID_PAYSLIP, SharedPreference.profileObject.client_token)
 
 
-        // console.log('rollid', rollid)
+        // //console.log('rollid', rollid)
         return fetch(host, {
             method: 'GET',
             headers: {
@@ -497,10 +501,10 @@ export default class PaySlipActivity extends Component {
                     // datadetail: PayslipDataDetail.detail[dataSource.years[year].detail[index].payroll_id]
 
                 }, function () {
-                    console.log('status : ', this.state.dataSource.status);
+                    //console.log('status : ', this.state.dataSource.status);
                     if (this.state.dataSource.status === 200) {
-                        console.log('payslip detail DataResponse : ', this.state.dataSource, rollid);
-                        // console.log('DataResponse year : ',dataSource.data.years[year].year);
+                        //console.log('payslip detail DataResponse : ', this.state.dataSource, rollid);
+                        // //console.log('DataResponse year : ',dataSource.data.years[year].year);
                         // this.setState(this.renderloadingscreen())
                         this.props.navigation.navigate('PayslipDetail', {
                             // DataResponse:dataSource,
@@ -518,7 +522,11 @@ export default class PaySlipActivity extends Component {
                             this.state.dataSource.errors[0].code,
                             this.state.dataSource.errors[0].detail,
                             [
-                                { text: 'OK', onPress: () => console.log('OK Pressed') },
+                                {
+                                    text: 'OK', onPress: () => {
+                                        //console.log('OK Pressed') },
+                                    }
+                                }
                             ],
                             { cancelable: false }
                         )

@@ -58,7 +58,7 @@ export default class OTSummaryLineChart extends Component {
 
         this.checkDataFormat(this.props.navigation.getParam("DataResponse", ""));
         firebase.analytics().setCurrentScreen(SharedPreference.SCREEN_OT_SUMMARY_MANAGER)
-        console.log('org_name : ', this.state.org_name)
+        //console.log('org_name : ', this.state.org_name)
 
     }
 
@@ -81,7 +81,7 @@ export default class OTSummaryLineChart extends Component {
             }
 
             this.state.tdataSource = DataResponse;
-            console.log('tosummary data : ', this.state.tdataSource)
+            //console.log('tosummary data : ', this.state.tdataSource)
 
         }
     }
@@ -123,7 +123,7 @@ export default class OTSummaryLineChart extends Component {
         if (this.state.dimensions) return // layout was already called
         let { width, height } = event.nativeEvent.layout
         this.setState({ dimensions: { width, height } })
-        console.log('dimensions :', width);
+        //console.log('dimensions :', width);
 
     }
 
@@ -131,7 +131,7 @@ export default class OTSummaryLineChart extends Component {
         // this.state.datasource.map((i, index) => (
         //     <Picker.Item key={index} label={i.label} value={i.value} />
         // ))
-        // //console.log(this.state.tdataSource.data.detail.items)
+        // ////console.log(this.state.tdataSource.data.detail.items)
         let step = Layout.window.width;
         let listData = [20, 100, 5, 150, 30, 190, 30, 30, 30, 30, 100, 30, 30];
         let max = 200;

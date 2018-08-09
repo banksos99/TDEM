@@ -45,21 +45,21 @@ export default class PinActivity extends Component {
     }
 
     render() {
-        console.log('data list :', this.props.datalist)
+        //console.log('data list :', this.props.datalist)
         let tmax = 0
         for (let i = 0; i < this.props.datalist.length; i++) {
-            console.log('datalist :', this.props.datalist[i].total_ot)
+            //console.log('datalist :', this.props.datalist[i].total_ot)
             if (parseInt(this.props.datalist[i].total_ot) > tmax) {
                 tmax = this.props.datalist[i].total_ot
             }
 
         }
-        console.log('dmax value :', tmax)
+        //console.log('dmax value :', tmax)
         let max = 200;
         let shiftdown = 50 * scale
         let shiftRight = 70 * scale
         let ratio = Math.floor(200 / Math.floor(tmax));
-        console.log('ratio :', ratio)
+        //console.log('ratio :', ratio)
 
        
 

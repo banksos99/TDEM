@@ -15,13 +15,13 @@ import {
     BackHandler
 } from 'react-native';
 
-import Colors from "./../SharedObject/Colors"
-import Layout from "./../SharedObject/Layout"
-import { styles } from "./../SharedObject/MainStyles"
+import Colors from "../SharedObject/Colors"
+import Layout from "../SharedObject/Layout"
+import { styles } from "../SharedObject/MainStyles"
 // import AnnounceTable from "../../components/TableviewCell"
-import SharedPreference from "./../SharedObject/SharedPreference"
-import Decryptfun from "./../SharedObject/Decryptfun"
-import Months from "./../constants/Month"
+import SharedPreference from "../SharedObject/SharedPreference"
+import Decryptfun from "../SharedObject/Decryptfun"
+import Months from "../constants/Month"
 
 let currentmonth = new Date().getMonth();
 
@@ -100,7 +100,7 @@ export default class PayslipDetail extends Component {
 
         filename = "Payslip_" + this.state.yearArray[this.state.monthselected] + "_" + yearSelect + '.pdf'
         FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, SharedPreference.FUNCTIONID_PAYSLIP, SharedPreference.profileObject.client_token)
-        // console.log("calendarPDFAPI ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
+        // //console.log("calendarPDFAPI ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
 
         if (Platform.OS === 'android') {
             RNFetchBlob
@@ -119,11 +119,11 @@ export default class PayslipDetail extends Component {
                     Authorization: FUNCTION_TOKEN
                 })
                 .then((resp) => {
-                    //console.log("Android ==> LoadPDFFile ==> Load Success  : ", resp);
+                    ////console.log("Android ==> LoadPDFFile ==> Load Success  : ", resp);
                     RNFetchBlob.android.actionViewIntent(resp.data, 'application/pdf')
                 })
                 .catch((errorCode, errorMessage) => {
-                    //console.log("Android ==> LoadPDFFile ==> Load errorCode  : ", errorCode);
+                    ////console.log("Android ==> LoadPDFFile ==> Load errorCode  : ", errorCode);
                     Alert.alert(
                         StringText.ALERT_PAYSLIP_CANNOT_DOWNLOAD_TITLE,
                         StringText.ALERT_PAYSLIP_CANNOT_DOWNLOAD_DESC,
@@ -139,8 +139,8 @@ export default class PayslipDetail extends Component {
                     )
                 })
         } else {//iOS
-            //console.log("loadPdf pdfPath : ", pdfPath)
-            //console.log("loadPdf filename : ", filename)
+            ////console.log("loadPdf pdfPath : ", pdfPath)
+            ////console.log("loadPdf filename : ", filename)
             RNFetchBlob
                 .config({
                     fileCache: true,
@@ -152,14 +152,14 @@ export default class PayslipDetail extends Component {
                     Authorization: FUNCTION_TOKEN
                 })
                 .then((resp) => {
-                    //console.log("WorkingCalendarYear pdf1 : ", resp);
-                    //console.log("WorkingCalendarYear pdf2 : ", resp.path());
+                    ////console.log("WorkingCalendarYear pdf1 : ", resp);
+                    ////console.log("WorkingCalendarYear pdf2 : ", resp.path());
                     RNFetchBlob.fs.exists(resp.path())
                         .then((exist) => {
-                            //console.log(`WorkingCalendarYear ==> file ${exist ? '' : 'not'} exists`)
+                            ////console.log(`WorkingCalendarYear ==> file ${exist ? '' : 'not'} exists`)
                         })
                         .catch(() => {
-                            //console.log('WorkingCalendarYear ==> err while checking')
+                            ////console.log('WorkingCalendarYear ==> err while checking')
                         });
 
                     RNFetchBlob.ios.openDocument(resp.path());
@@ -182,7 +182,7 @@ export default class PayslipDetail extends Component {
     }
 
     requestPDFPermission = async () => {
-        console.log("requestPDFPermission")
+        //console.log("requestPDFPermission")
         try {
             const granted = await PermissionsAndroid.request(
                 PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
@@ -192,14 +192,14 @@ export default class PayslipDetail extends Component {
                 }
             )
             if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                console.log("You can use the WRITE_EXTERNAL_STORAGE")
+                //console.log("You can use the WRITE_EXTERNAL_STORAGE")
 
                 this.setState({
                     havePermission: true
                 })
                 this.onDownloadPDFFile()
             } else {
-                console.log("WRITE_EXTERNAL_STORAGE permission denied")
+                //console.log("WRITE_EXTERNAL_STORAGE permission denied")
             }
         } catch (err) {
             console.warn(err)
@@ -212,17 +212,17 @@ export default class PayslipDetail extends Component {
 
         for (let i = 0; i < this.state.yearlist[this.state.yearselected].monthlistdata.length; i++) {
 
-            console.log(' loop  rollid :', this.state.yearlist[this.state.yearselected].monthlistdata[i].id)
+            //console.log(' loop  rollid :', this.state.yearlist[this.state.yearselected].monthlistdata[i].id)
 
             if (this.state.yearlist[this.state.yearselected].monthlistdata[i].month === this.state.monthselected + 1) {
 
                 this.state.rollid = this.state.yearlist[this.state.yearselected].monthlistdata[i].id
             }
         }
-        console.log('rollid :', this.state.rollid)
+        //console.log('rollid :', this.state.rollid)
 
         FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, SharedPreference.FUNCTIONID_PAYSLIP, SharedPreference.profileObject.client_token)
-        console.log("calendarPDFAPI ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
+        //console.log("calendarPDFAPI ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
 
 
         if (this.state.rollid) {
@@ -249,8 +249,8 @@ export default class PayslipDetail extends Component {
 
                     }, function () {
 
-                        // console.log('data response : ', this.state.datadetail.data.detail.deduct);
-                        console.log('data detail :', responseJson)
+                        // //console.log('data response : ', this.state.datadetail.data.detail.deduct);
+                        //console.log('data detail :', responseJson)
 
                         this.setState(this.renderloadingscreen())
                     }
@@ -272,8 +272,8 @@ export default class PayslipDetail extends Component {
 
             }, function () {
 
-                // console.log('data response : ', this.state.datadetail.data.detail.deduct);
-                // console.log('data detail :', this.state.Monthlist[this.state.monthselected].id)
+                // //console.log('data response : ', this.state.datadetail.data.detail.deduct);
+                // //console.log('data detail :', this.state.Monthlist[this.state.monthselected].id)
 
                 this.setState(this.renderloadingscreen())
             }
@@ -318,7 +318,7 @@ export default class PayslipDetail extends Component {
                 this.state.yearselected -= 1;
             }
 
-            console.log('nextmonth monthselected : ', this.state.monthselected);
+            //console.log('nextmonth monthselected : ', this.state.monthselected);
 
             this.onChangeMonth()
         });
@@ -338,8 +338,8 @@ export default class PayslipDetail extends Component {
                 this.state.yearselected += 1;
             }
 
-            console.log('monthselected : ', this.state.monthselected);
-            console.log('yearselected : ', this.state.yearselected);
+            //console.log('monthselected : ', this.state.monthselected);
+            //console.log('yearselected : ', this.state.yearselected);
 
             this.onChangeMonth()
         });
@@ -640,7 +640,7 @@ export default class PayslipDetail extends Component {
 
         if (!this.state.yearlist) {
 
-            console.log('pay_date_str : ',pay_date_str)
+            //console.log('pay_date_str : ',pay_date_str)
 
             let temp = pay_date_str.split(' ')
 

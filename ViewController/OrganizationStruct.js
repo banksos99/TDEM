@@ -35,7 +35,7 @@ export default class OrganizationStruct extends Component {
 
         if(DataResponse){
 
-            //console.log(DataResponse[0].data)
+            ////console.log(DataResponse[0].data)
 
             dataSource = DataResponse.data;
 
@@ -46,7 +46,7 @@ export default class OrganizationStruct extends Component {
 
 
     componentDidMount() {
-        //console.log(Layout.window.width);
+        ////console.log(Layout.window.width);
         // this.fetchData()
     }
     onBack() {
@@ -77,7 +77,7 @@ export default class OrganizationStruct extends Component {
 
                     // for (let i = 0; i < 2; i++) {
 
-                    //     // //console.log(this.state.dataSource[i].picture.large);
+                    //     // ////console.log(this.state.dataSource[i].picture.large);
 
                     //     people.push({
 
@@ -87,7 +87,7 @@ export default class OrganizationStruct extends Component {
                     //         name2: this.state.dataSource[(i * 2) + 1].name.first,
                     //     });
                     // }
-                    // //console.log(people)
+                    // ////console.log(people)
 
                         // tempannouncementData = [];
 
@@ -103,10 +103,10 @@ export default class OrganizationStruct extends Component {
 
                         // });
 
-                        // //console.log(tempannouncementData)
+                        // ////console.log(tempannouncementData)
                         tempannouncementData = [];
                         tempdata = [];
-                        //console.log( this.state.dataSource.length)
+                        ////console.log( this.state.dataSource.length)
 
                         // for(){
 
@@ -128,7 +128,7 @@ export default class OrganizationStruct extends Component {
                            
 
                         });
-                        //console.log(tempannouncementData)
+                        ////console.log(tempannouncementData)
                     }
 
                     

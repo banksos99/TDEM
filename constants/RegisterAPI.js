@@ -19,10 +19,10 @@ export default async function getRestAPI(username, password) {
         CUT_JSON: "700",
     }
 
-    // console.log("getRestAPI ===> username : ", username, " ,  password :", password)
-    // console.log("getRestAPI ===> SharedPreference.REGISTER_API : ", SharedPreference.REGISTER_API)
-    // console.log("getRestAPI ===> SharedPreference.company : ", SharedPreference.company)
-    // console.log("getRestAPI ===> SharedPreference.deviceInfo: ", SharedPreference.deviceInfo)
+    // //console.log("getRestAPI ===> username : ", username, " ,  password :", password)
+    // //console.log("getRestAPI ===> SharedPreference.REGISTER_API : ", SharedPreference.REGISTER_API)
+    // //console.log("getRestAPI ===> SharedPreference.company : ", SharedPreference.company)
+    // //console.log("getRestAPI ===> SharedPreference.deviceInfo: ", SharedPreference.deviceInfo)
 
     
     return fetch(SharedPreference.REGISTER_API, {
@@ -46,7 +46,7 @@ export default async function getRestAPI(username, password) {
     })
         .then((response) => response.json())
         .then((responseJson) => {
-            // console.log("RegisterAPI ==> callback  success : ", responseJson)
+            // //console.log("RegisterAPI ==> callback  success : ", responseJson)
             let object
             if (responseJson.status == code.SUCCESS) {
                 SharedPreference.profileObject = responseJson.data
@@ -64,7 +64,7 @@ export default async function getRestAPI(username, password) {
 
         })
         .catch((error) => {
-            // console.log("callback error : ", error)
+            // //console.log("callback error : ", error)
             object = [code, {
                 code: code.NETWORK_ERROR
             }]

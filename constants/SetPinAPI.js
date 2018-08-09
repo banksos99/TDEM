@@ -19,9 +19,9 @@ export default async function getRestAPI(pin, functionID) {
         CUT_JSON: "700",
     }
 
-    console.log("setPinAPI ==>  functionID : ", functionID)
+    //console.log("setPinAPI ==>  functionID : ", functionID)
     FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, functionID, SharedPreference.profileObject.client_token)
-    console.log("setPinAPI ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
+    //console.log("setPinAPI ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
 
     return fetch(SharedPreference.SET_PIN_API, {
         method: 'POST',
@@ -38,7 +38,7 @@ export default async function getRestAPI(pin, functionID) {
     })
         .then((response) => response.json())
         .then((responseJson) => {
-            console.log("callback success22222 : ", responseJson)
+            //console.log("callback success22222 : ", responseJson)
             let object
             if (responseJson.status == code.SUCCESS) {
                 object = [code, {
@@ -55,7 +55,7 @@ export default async function getRestAPI(pin, functionID) {
 
         })
         .catch((error) => {
-            console.log("callback error : ", error)
+            //console.log("callback error : ", error)
         });
 
 }

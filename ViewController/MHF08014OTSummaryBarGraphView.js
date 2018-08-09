@@ -96,23 +96,23 @@ export default class OTSummaryBarChart extends Component {
     componentWillMount() {
         BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
     }
- 
+
     componentWillUnmount() {
         BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
     }
- 
+
     handleBackButtonClick() {
         this.onBack()
         return true;
     }
- 
+
 
     _onRefresh() {
         if (this.state.refreshing) {
             return;
         }
 
-        //console.log('refreshing');
+        ////console.log('refreshing');
 
         this.setState({ refreshing: true, page: 1 });
         let promise = this._fetchMore(1);
@@ -153,9 +153,9 @@ export default class OTSummaryBarChart extends Component {
 
     onOrgStruct(item, index) {
 
-        console.log('item :', item)
+        //console.log('item :', item)
 
-        console.log('load empinfo  :', item.emp_id)
+        //console.log('load empinfo  :', item.emp_id)
         this.setState({
 
             isscreenloading: true,
@@ -174,7 +174,7 @@ export default class OTSummaryBarChart extends Component {
             tmonth = '0' + omonth
         }
         let url = SharedPreference.OTSUMMARY_BAR_CHART + this.state.org_code + '&month=' + tmonth + '&year=' + oyear
-        console.log('OT summary url  :', url)
+        //console.log('OT summary url  :', url)
         this.APIDetailCallback(await RestAPI(url, SharedPreference.FUNCTIONID_OT_SUMMARY), 'OTBarChartView')
     }
 
@@ -186,7 +186,7 @@ export default class OTSummaryBarChart extends Component {
 
         if (code.SUCCESS == data.code) {
 
-            console.log('data  :', data.data)
+            //console.log('data  :', data.data)
             this.setState({
                 isscreenloading: false,
                 tdataSource: data.data
@@ -217,7 +217,9 @@ export default class OTSummaryBarChart extends Component {
                 'MHF00001ACRI',
                 'Cannot connect to server. Please contact system administrator.',
                 [{
-                    text: 'OK', onPress: () => console.log('OK Pressed')
+                    text: 'OK', onPress: () => {
+                        //console.log('OK Pressed')
+                    }
                 }],
                 { cancelable: false }
             )
@@ -227,17 +229,17 @@ export default class OTSummaryBarChart extends Component {
                 'System Error (API). Please contact system administrator.',
                 [{
                     text: 'OK', onPress: () => {
-                        console.log("onLoadErrorAlertDialog")
+                        //console.log("onLoadErrorAlertDialog")
                     }
                 }],
                 { cancelable: false }
             )
         }
-        console.log("error : ", error)
+        //console.log("error : ", error)
     }
 
     _generateRows(page) {
-        //console.log(`loading rows for page ${page}`);
+        ////console.log(`loading rows for page ${page}`);
 
         var rows = [];
         for (var i = 0; i < 100; i++) {
@@ -247,7 +249,7 @@ export default class OTSummaryBarChart extends Component {
         let promise = new Promise((resolve, reject) => {
             setTimeout(() => {
                 resolve(rows);
-                //console.log(`resolved for page ${page}`);
+                ////console.log(`resolved for page ${page}`);
             }, 3);
         });
 
@@ -299,11 +301,11 @@ export default class OTSummaryBarChart extends Component {
     }
     selected_month(monthselected) {
 
-        //console.log('monthselected : ',monthselected)
+        ////console.log('monthselected : ',monthselected)
         initannouncementType = monthselected
-        
+
         this.setState({
-            announcementTypetext : monthselected,
+            announcementTypetext: monthselected,
             loadingtype: 1,
             isscreenloading: true,
 
@@ -314,15 +316,15 @@ export default class OTSummaryBarChart extends Component {
 
             for (let i = 0; i < 12; i++) {
                 if (MONTH_LIST[i] === tdate[0]) {
-                    console.log('month : ', i)
+                    //console.log('month : ', i)
                     mdate = i;
                 }
             }
 
             this.setState(this.renderloadingscreen())
 
-            this.loadOTSummarySelffromAPI(mdate+1,tdate[1])
-    
+            this.loadOTSummarySelffromAPI(mdate + 1, tdate[1])
+
         });
 
     }
@@ -339,7 +341,7 @@ export default class OTSummaryBarChart extends Component {
         if (this.state.loadingtype == 0) {
 
             if (Platform.OS === 'android') {
-                //console.log('android selectmonth')
+                ////console.log('android selectmonth')
                 return (
                     <View style={{ height: '100%', width: '100%', justifyContent: 'center', alignItems: 'center', position: 'absolute', }} >
                         <View style={{ width: '80%', backgroundColor: 'white' }}>
