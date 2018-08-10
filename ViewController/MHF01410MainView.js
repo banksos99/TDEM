@@ -50,13 +50,15 @@ import Authorization from "../SharedObject/Authorization";
 // getTimeStamp
 
 export default class HMF01011MainView extends Component {
-
     saveAutoSyncCalendar = new SaveAutoSyncCalendar()
     saveProfile = new SaveProfile()
     saveTimeNonPayroll = new SaveTimeNonPayroll()
+    
 
     constructor(props) {
+
         super(props);
+        
         this.state = {
             isscreenloading: false,
             syncCalendar: true,
@@ -77,6 +79,54 @@ export default class HMF01011MainView extends Component {
             notiAnnounceMentBadge: 0,
             notiPayslipBadge:0
             //  page: 0
+        }
+        
+
+       
+        
+    }
+
+    
+
+    componentWillMount() {
+        // if (Platform.OS !== 'android') return
+        // BackHandler.addEventListener('hardwareBackPress', () => {
+        //     this.props.navigation.navigate('HomeScreen');
+        //     return true
+        // })
+    }
+
+    componentWillReceiveProps() {
+
+    
+    }
+
+    loadData = async () => {
+        let autoSyncCalendarBool = await this.saveAutoSyncCalendar.getAutoSyncCalendar()
+        if (autoSyncCalendarBool == null) {
+            autoSyncCalendarBool = true
+        }
+        this.setState({
+            syncCalendar: autoSyncCalendarBool
+        })
+
+       // await this.onLoadInAppNoti()
+        SharedPreference.calendarAutoSync = autoSyncCalendarBool
+      
+    }
+
+    async componentDidMount() {
+       // this.redertabview()
+        NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectivityChange);
+
+        if (SharedPreference.notipayslipID) {
+
+            this.onOpenPayslipDetail()
+
+        } else if (SharedPreference.notiAnnounceMentID) {
+
+            this.onOpenAnnouncementDetailnoti()
+
         }
         rolemanagementEmpoyee = [0, 0, 0, 0, 0, 0, 0, 0];
         rolemanagementManager = [0, 0, 0, 0];
@@ -148,68 +198,27 @@ export default class HMF01011MainView extends Component {
             }
 
         }
-    }
-
-    componentWillMount() {
-        if (Platform.OS !== 'android') return
-        BackHandler.addEventListener('hardwareBackPress', () => {
-            this.props.navigation.navigate('HomeScreen');
-            return true
-        })
-    }
-
-    componentWillReceiveProps() {
-
-    
-    }
-
-    loadData = async () => {
-        let autoSyncCalendarBool = await this.saveAutoSyncCalendar.getAutoSyncCalendar()
-        if (autoSyncCalendarBool == null) {
-            autoSyncCalendarBool = true
-        }
-        this.setState({
-            syncCalendar: autoSyncCalendarBool
-        })
-
-        await this.onLoadInAppNoti()
-        SharedPreference.calendarAutoSync = autoSyncCalendarBool
-      
-    }
-
-    async componentDidMount() {
-        this.redertabview()
-        NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectivityChange);
-
-        if (SharedPreference.notipayslipID) {
-
-            this.onOpenPayslipDetail()
-
-        } else if (SharedPreference.notiAnnounceMentID) {
-
-            this.onOpenAnnouncementDetailnoti()
-
-        }
-
-        await this.loadData()
-
-        if (!timerstatus) {
+         if (!timerstatus) {
             // console.log("componentDidMount timerstatus ==> start")
             this.inappTimeInterval();
             timerstatus = true;
         }
+
+       // await this.loadData()
+
+        
     }
 
     onLoadInAppNoti = async () => {
         //TODO bell
-        let lastTime = await this.saveTimeNonPayroll.getTimeStamp()
+        // let lastTime = await this.saveTimeNonPayroll.getTimeStamp()
 
-        if ((lastTime == null) || (lastTime == undefined)) {
-            let today = new Date()
-            const _format = 'YYYY-MM-DD hh:mm:ss'
-            const newdate = moment(today).format(_format).valueOf();
-            lastTime = newdate
-        }
+        // if ((lastTime == null) || (lastTime == undefined)) {
+        //     let today = new Date()
+        //     const _format = 'YYYY-MM-DD hh:mm:ss'
+        //     const newdate = moment(today).format(_format).valueOf();
+        //     lastTime = newdate
+        // }
 
 
         //console.log("onLoadInAppNoti ==> lastTime ==> ", lastTime)
@@ -237,88 +246,93 @@ export default class HMF01011MainView extends Component {
 
                     } else if (responseJson.status == 200) {
                         
-                        let dataArray = responseJson.data
-                        let currentyear = new Date().getFullYear();
+                        // let dataArray = responseJson.data
+                        // let currentyear = new Date().getFullYear();
 
-                        let monthArray = []
-                        for (let index = 0; index < 12; index++) {
-                            monthData = {
-                                "month": index + 1,
-                                "badge": 0
-                            }
-                            monthArray.push(monthData)
-                        }
-                        // //console.log("monthArray ==> ", monthArray)
+                        // let monthArray = []
+                        // for (let index = 0; index < 12; index++) {
+                        //     monthData = {
+                        //         "month": index + 1,
+                        //         "badge": 0
+                        //     }
+                        //     monthArray.push(monthData)
+                        // }
+                        // // //console.log("monthArray ==> ", monthArray)
 
-                        let dataCustomArray = [
-                            {
-                                "year": currentyear - 1,
-                                "detail": monthArray
-                            },
-                            {
-                                "year": currentyear,
-                                "detail": monthArray
-                            },
-                        ]
+                        // let dataCustomArray = [
+                        //     {
+                        //         "year": currentyear - 1,
+                        //         "detail": monthArray
+                        //     },
+                        //     {
+                        //         "year": currentyear,
+                        //         "detail": monthArray
+                        //     },
+                        // ]
 
-                        for (let index = 0; index < dataArray.length; index++) {
-                            const dataReceive = dataArray[index];
-                            // //console.log("element ==> ", dataReceive.function_id)
+                        //for (let index = 0; index < dataArray.length; index++) {
+                         //   const dataReceive = dataArray[index];
+                        //     // //console.log("element ==> ", dataReceive.function_id)
 
-                            if (dataReceive.function_id == "PHF06010") {//if nonPayroll
-                                dataListArray = dataReceive.data_list //TODO Bell
+                        //     if (dataReceive.function_id == "PHF06010") {//if nonPayroll
+                        //         dataListArray = dataReceive.data_list //TODO Bell
 
-                                // //console.log("dataListArray ==> ", dataListArray)
-                                for (let index = 0; index < dataListArray.length; index++) {
-                                    const str = dataListArray[index];
-                                    // //console.log("str ==> ", str)
-                                    var res = str.split("|");
-                                    // //console.log("res ==> ", res[1])
-                                    var data = res[1]
+                        //         // //console.log("dataListArray ==> ", dataListArray)
+                        //         for (let index = 0; index < dataListArray.length; index++) {
+                        //             const str = dataListArray[index];
+                        //             // //console.log("str ==> ", str)
+                        //             var res = str.split("|");
+                        //             // //console.log("res ==> ", res[1])
+                        //             var data = res[1]
 
-                                    var monthYear = data.split("-");
-                                    // //console.log("dataListArray ==> monthYear ==> ", monthYear)
+                        //             var monthYear = data.split("-");
+                        //             // //console.log("dataListArray ==> monthYear ==> ", monthYear)
 
-                                    var year = monthYear[0]
-                                    var month = monthYear[1]
+                        //             var year = monthYear[0]
+                        //             var month = monthYear[1]
 
-                                    for (let index = 0; index < dataCustomArray.length; index++) {
-                                        const data = dataCustomArray[index];
-                                        // //console.log("dataCustomArray data ==> ", data)
-                                        // //console.log("dataCustomArray year ==> ", data.year)
+                        //             for (let index = 0; index < dataCustomArray.length; index++) {
+                        //                 const data = dataCustomArray[index];
+                        //                 // //console.log("dataCustomArray data ==> ", data)
+                        //                 // //console.log("dataCustomArray year ==> ", data.year)
 
-                                        if (year == data.year) {
-                                            const detail = data.detail
-                                            // //console.log("detail ==> ", detail)
-                                            // //console.log("month select  ==> ", month)
+                        //                 if (year == data.year) {
+                        //                     const detail = data.detail
+                        //                     // //console.log("detail ==> ", detail)
+                        //                     // //console.log("month select  ==> ", month)
 
-                                            let element = detail.find((p) => {
-                                                return p.month === JSON.parse(month)
-                                            });
-                                            // //console.log("element ==> ", element)
+                        //                     let element = detail.find((p) => {
+                        //                         return p.month === JSON.parse(month)
+                        //                     });
+                        //                     // //console.log("element ==> ", element)
 
-                                            element.badge = element.badge + 1
-                                            //console.log("detail badge ==> ", element.badge)
-                                        }
-                                    }
-                                }
-                            } else if (dataReceive.function_id == "PHF02010") {
+                        //                     element.badge = element.badge + 1
+                        //                     //console.log("detail badge ==> ", element.badge)
+                        //                 }
+                        //             }
+                        //         }
+                        //    } else
 
-                                console.log("announcement badge ==> ", dataReceive.badge_count)
+                        for (let i = 0; i < responseJson.data.length; i++) {
+                            console.log("function_id => ", responseJson.data[i].function_id)
+                            if (responseJson.data[i].function_id == "PHF03010") {
 
-                                this.setState({
-                                    notiAnnounceMentBadge: parseInt(dataReceive.badge_count) + parseInt(this.state.notiAnnounceMentBadge)
-                                })
+                                console.log("announcement badge ==> ", responseJson.data[i].badge_count)
 
-                            }else if (dataReceive.function_id == "PHF05010") {
+                                // this.setState({
+                                //     notiAnnounceMentBadge: 1
+                                // })
 
-                                console.log("announcement badge ==> ", dataReceive.badge_count)
+                           }
+                            // else if (dataReceive.function_id == "PHF05010") {
 
-                                this.setState({
-                                    notiPayslipBadge: parseInt(dataReceive.badge_count)
-                                })
+                            //     console.log("announcement badge ==> ", dataReceive.badge_count)
 
-                            }
+                            //     this.setState({
+                            //         notiPayslipBadge: parseInt(dataReceive.badge_count)
+                            //     })
+
+                            // }
                         }
 
                         //console.log("MainView ==> time ==> ", dataCustomArray)
@@ -327,11 +341,7 @@ export default class HMF01011MainView extends Component {
                         })
 
                     }
-
-                    if (timerstatus) {
-                        this.inappTimeInterval()
-                    }
-                    
+                     
                     // this.setState({
                     // }, function () {
                     // });
@@ -339,6 +349,12 @@ export default class HMF01011MainView extends Component {
                 } catch (error) {
                     //console.log('erreo1 :', error);
                 }
+
+                if (timerstatus) {
+                    this.inappTimeInterval()
+                }
+               // this.onLoadInAppNoti()
+
             })
             .catch((error) => {
 
@@ -351,7 +367,7 @@ export default class HMF01011MainView extends Component {
         this.timer = setTimeout(() => {
             this.onLoadInAppNoti()
             // }, 2000);
-        }, 20000);
+        }, 30000);
     };
 
     getnotidata(msg) {
@@ -366,6 +382,11 @@ export default class HMF01011MainView extends Component {
         SharedPreference.notipayslipID = 0
 
         SharedPreference.notiAnnounceMentID = 0
+        this.setState({ notiAnnounceMentBadge: 0, },function(){
+            SharedPreference.notiAnnounceMentBadge =2
+        });
+        
+
     }
 
     handleConnectivityChange = isConnected => {
@@ -918,7 +939,7 @@ export default class HMF01011MainView extends Component {
 
         if (code.SUCCESS == data.code) {
             this.props.navigation.navigate(rount, {
-                DataResponse: data.data,
+               DataResponse: data.data,
             });
         } else if (code.NODATA == data.code) {
             this.props.navigation.navigate(rount, {

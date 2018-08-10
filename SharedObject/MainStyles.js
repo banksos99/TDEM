@@ -1063,9 +1063,10 @@ export const styles = StyleSheet.create({
     },
     registText: {
         fontSize: 17 * scale,
-        color: Colors.lightGrayTextColor,
+        //color: Colors.lightGrayTextColor,
         flex: 1,
-        height: 45
+        height: 45,
+        fontFamily:font_medium
     },
     registTitleText: {
         fontSize: 12,
@@ -1085,8 +1086,9 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
     },
     registTextButton: {
-        fontSize: 12,
-        color: 'white'
+        fontSize: 16 * scale,
+        color: 'white',
+        fontFamily: font_medium
     },
     registPinImageSubContainer: {
         width: 30,
