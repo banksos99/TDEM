@@ -516,7 +516,7 @@ export default class RegisterActivity extends Component {
                             <View style={styles.registTextContainer}>
                                 <Image style={[styles.registetImageContainer, { height: 20, width: 20, }]}
                                     source={require('../resource/regist/regist_location.png')} />
-                                <Text style={[styles.registText, { color: Colors.grayTextColor,marginTop:15 }]}>TMAP-EM</Text>
+                                <Text style={[styles.registText, { color: Colors.grayTextColor,marginTop:15 }]}>TDEM</Text>
                             </View>
                             <View style={styles.registLine} />
 

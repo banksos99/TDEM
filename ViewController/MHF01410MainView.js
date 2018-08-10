@@ -81,12 +81,7 @@ export default class HMF01011MainView extends Component {
             //  page: 0
         }
         
-
-       
-        
     }
-
-    
 
     componentWillMount() {
         // if (Platform.OS !== 'android') return
