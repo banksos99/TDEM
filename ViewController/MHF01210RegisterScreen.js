@@ -556,6 +556,7 @@ export default class RegisterActivity extends Component {
                                     source={require('../resource/regist/regist_user.png')} />
                                 <TextInput
                                     onSubmitEditing={Keyboard.dismiss}
+                                    autoCapitalize = 'none'
                                     underlineColorAndroid="transparent"
                                     selectionColor='black'
                                     style={styles.registText}
@@ -571,6 +572,7 @@ export default class RegisterActivity extends Component {
                                     source={require('../resource/regist/regist_locked.png')} />
                                 <TextInput
                                     onSubmitEditing={Keyboard.dismiss}
+                                    autoCapitalize = 'none'
                                     underlineColorAndroid="transparent"
                                     secureTextEntry={true}
                                     selectionColor='black'

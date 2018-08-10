@@ -298,7 +298,9 @@ export default class EmpInfoDetail extends Component {
                         </View>
                     </View>
                     <View style={{ height: 1, justifyContent: 'center', backgroundColor: Colors.calendarLocationBoxColor }} />
-                    <View style={{ height: 30, justifyContent: 'center', backgroundColor: Colors.calendarGrayBackgroundColor, flexDirection: 'row' }}>
+                    <View style={this.state.manager ? { height: 0, justifyContent: 'center', backgroundColor: Colors.calendarGrayBackgroundColor, flexDirection: 'row' } :
+                        { height: 30, justifyContent: 'center', backgroundColor: Colors.calendarGrayBackgroundColor, flexDirection: 'row' }}>
+
                         <View style={{ flex: 2, justifyContent: 'center' }}>
                             <Text style={styles.empinfoDetailRedText} >ID</Text>
                         </View>

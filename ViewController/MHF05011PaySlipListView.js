@@ -54,10 +54,9 @@ export default class PaySlipActivity extends Component {
             dataSource: [],
             selectYearArray: [2000, 2000, 2000],
             DataResponse:this.props.navigation.getParam("DataResponse", "")
-            
         };
 
-        firebase.analytics().setCurrentScreen(SharedPreference.SCREEN_PAYSLIP_LIST)
+       // firebase.analytics().setCurrentScreen(SharedPreference.SCREEN_PAYSLIP_LIST)
     }
 
     componentDidMount() {
@@ -124,7 +123,7 @@ export default class PaySlipActivity extends Component {
     }
 
     componentWillUnmount() {
-        // BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
         NetInfo.isConnected.removeEventListener('connectionChange', this.handleConnectivityChange);
 
     }
@@ -375,9 +374,9 @@ export default class PaySlipActivity extends Component {
     }
 
     onBack() {
+        // this.props.navigator.pop();
 
-
-        this.props.navigation.navigate('HomeScreen');
+       this.props.navigation.navigate('HomeScreen');
 
     }
     onNoDataDetail(year, index) {

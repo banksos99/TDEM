@@ -46,9 +46,13 @@ export default class mainview extends Component {
   }
 
   async componentDidMount() {
+
     this.notificationListener();
-    this.inactivecounting();
+
+   // this.inactivecounting();
+
     const enabled = await firebase.messaging().hasPermission();
+
     if (enabled) {
       ////console.log("firebase ==> user has permissions")
     } else {
@@ -81,6 +85,10 @@ export default class mainview extends Component {
         }
       });
 
+    this.setState({
+      inactive: true,
+    });
+
     notificationOpen = await firebase.notifications().getInitialNotification();
     //notificationOpen = await firebase.notifications().onNotificationOpened();
     console.log('notificationOpen : ', notificationOpen)
@@ -100,7 +108,6 @@ export default class mainview extends Component {
     // Platform.OS === 'ios' && NotificationsIOS.setBadgesCount(0);
     
   }
-
 
   notificationListener() {
     notificationListener = firebase
@@ -169,15 +176,15 @@ export default class mainview extends Component {
   }
 
 
-  inactivecounting() {
-    this.timer = setTimeout(() => {
-      this.setState({
-        inactive: true,
-        modalVisible: true
-      });
-    }, 500);
-  }
-  cloatlabelnoti() {
+  // inactivecounting() {
+  //   this.timer = setTimeout(() => {
+  //     this.setState({
+  //       inactive: true,
+  //       modalVisible: true
+  //     });
+  //   }, 500);
+  // }
+  closelabelnoti() {
     this.timer = setTimeout(() => {
       this.setState({
         notiMessage: 0
@@ -202,7 +209,7 @@ export default class mainview extends Component {
   rendernotificationlabel() {
 
     if (this.state.notiMessage) {
-      this.cloatlabelnoti();
+      this.closelabelnoti();
       return (
         <View style={{ width: '100%', height: 120, position: 'absolute', backgroundColor: 'transparent' }}>
           <View style={{ flex: 1, borderRadius: 10, backgroundColor: 'white', justifyContent: 'center', margin: 10 }}>
@@ -257,11 +264,10 @@ export default class mainview extends Component {
           onInactivity={this.onInactivity} >
           <View style={styles.container} >
             <View style={styles.container} >
-              <RootViewController
-                pushstatus={this.state.notiMessage} />
-              {this.rendernotificationlabel()}
+              <RootViewController />
+              {/* {this.rendernotificationlabel()} */}
             </View>
-            {this.renderPINScreen()}
+            {/* {this.renderPINScreen()} */}
           </View>
         </UserInactivity>
 

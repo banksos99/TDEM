@@ -50,15 +50,13 @@ import Authorization from "../SharedObject/Authorization";
 // getTimeStamp
 
 export default class HMF01011MainView extends Component {
+
     saveAutoSyncCalendar = new SaveAutoSyncCalendar()
     saveProfile = new SaveProfile()
     saveTimeNonPayroll = new SaveTimeNonPayroll()
-    
 
     constructor(props) {
-
         super(props);
-        
         this.state = {
             isscreenloading: false,
             syncCalendar: true,
@@ -150,15 +148,21 @@ export default class HMF01011MainView extends Component {
             }
 
         }
+
+        if (!timerstatus) {
+            // console.log("componentDidMount timerstatus ==> start")
+            this.inappTimeInterval();
+            timerstatus = true;
+        }
         
     }
 
     componentWillMount() {
-        // if (Platform.OS !== 'android') return
-        // BackHandler.addEventListener('hardwareBackPress', () => {
-        //     this.props.navigation.navigate('HomeScreen');
-        //     return true
-        // })
+        if (Platform.OS !== 'android') return
+        BackHandler.addEventListener('hardwareBackPress', () => {
+            this.props.navigation.navigate('HomeScreen');
+            return true
+        })
     }
 
     componentWillReceiveProps() {
@@ -193,30 +197,30 @@ export default class HMF01011MainView extends Component {
             this.onOpenAnnouncementDetailnoti()
 
         }
-        
-         if (!timerstatus) {
-            // console.log("componentDidMount timerstatus ==> start")
-            this.inappTimeInterval();
-            timerstatus = true;
-        }
 
-       // await this.loadData()
+        await this.loadData()
 
         
     }
 
     onLoadInAppNoti = async () => {
+        //TODO bell
         let lastTime = await this.saveTimeNonPayroll.getTimeStamp()
 
-        // if ((lastTime == null) || (lastTime == undefined)) {
-        //     let today = new Date()
-        //     const _format = 'YYYY-MM-DD hh:mm:ss'
-        //     const newdate = moment(today).format(_format).valueOf();
-        //     lastTime = newdate
-        // }
+        if ((lastTime == null) || (lastTime == undefined)) {
+            let today = new Date()
+            const _format = 'YYYY-MM-DD hh:mm:ss'
+            const newdate = moment(today).format(_format).valueOf();
+            lastTime = newdate
+        }
 
+
+        //console.log("onLoadInAppNoti ==> lastTime ==> ", lastTime)
         FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, 1, SharedPreference.profileObject.client_token)
-        return fetch(SharedPreference.PULL_NOTIFICATION_API + lastTime, {
+        console.log('FB token : ',SharedPreference.deviceInfo);
+        console.log('FUNCTION_TOKEN : ', FUNCTION_TOKEN)
+        latest_date = "2017-01-01 12:00:00"
+        return fetch(SharedPreference.PULL_NOTIFICATION_API + latest_date, {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
@@ -226,12 +230,14 @@ export default class HMF01011MainView extends Component {
         })
             .then((response) => response.json())
             .then((responseJson) => {
-                // console.log("onLoadInAppNoti")
-                // console.log("responseJson ==> ", responseJson)
+                console.log("onLoadInAppNoti")
+                console.log("responseJson ==> ", responseJson)
                 try {
-                    // console.log("onLoadInAppNoti ==> responseJson ", responseJson)
+                    console.log("onLoadInAppNoti ==> responseJson ", responseJson)
                     if (responseJson.status == 403) {
+
                         this.onAutenticateErrorAlertDialog()
+
                     } else if (responseJson.status == 200) {
                         
                         let dataArray = responseJson.data
@@ -301,7 +307,7 @@ export default class HMF01011MainView extends Component {
                                 }
                             } else if (dataReceive.function_id == "PHF02010") {
 
-                                // console.log("announcement badge ==> ", dataReceive.badge_count)
+                                console.log("announcement badge ==> ", dataReceive.badge_count)
 
                                 this.setState({
                                     notiAnnounceMentBadge: parseInt(dataReceive.badge_count) + parseInt(this.state.notiAnnounceMentBadge)
@@ -310,7 +316,7 @@ export default class HMF01011MainView extends Component {
                             }
                             // else if (dataReceive.function_id == "PHF05010") {
 
-                            //     // console.log("announcement badge ==> ", dataReceive.badge_count)
+                            //     console.log("announcement badge ==> ", dataReceive.badge_count)
 
                             //     this.setState({
                             //         notiPayslipBadge: parseInt(dataReceive.badge_count)
@@ -325,7 +331,11 @@ export default class HMF01011MainView extends Component {
                         })
 
                     }
-                     
+
+                    if (timerstatus) {
+                        this.inappTimeInterval()
+                    }
+                    
                     // this.setState({
                     // }, function () {
                     // });
@@ -333,12 +343,6 @@ export default class HMF01011MainView extends Component {
                 } catch (error) {
                     //console.log('erreo1 :', error);
                 }
-
-                if (timerstatus) {
-                    this.inappTimeInterval()
-                }
-               // this.onLoadInAppNoti()
-
             })
             .catch((error) => {
 
@@ -351,7 +355,7 @@ export default class HMF01011MainView extends Component {
         this.timer = setTimeout(() => {
             this.onLoadInAppNoti()
             // }, 2000);
-        }, 30000);
+        }, 20000);
     };
 
     getnotidata(msg) {
@@ -366,11 +370,6 @@ export default class HMF01011MainView extends Component {
         SharedPreference.notipayslipID = 0
 
         SharedPreference.notiAnnounceMentID = 0
-        this.setState({ notiAnnounceMentBadge: 0, },function(){
-            SharedPreference.notiAnnounceMentBadge =2
-        });
-        
-
     }
 
     handleConnectivityChange = isConnected => {
@@ -923,7 +922,7 @@ export default class HMF01011MainView extends Component {
 
         if (code.SUCCESS == data.code) {
             this.props.navigation.navigate(rount, {
-               DataResponse: data.data,
+                DataResponse: data.data,
             });
         } else if (code.NODATA == data.code) {
             this.props.navigation.navigate(rount, {
