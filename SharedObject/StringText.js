@@ -65,7 +65,7 @@ export default {
   ALERT_PIN_DESC_NOT_CORRECT: 'Incorrect PIN.Please try again.',
   ALERT_PIN_DESC_TOO_MANY_NOT_CORRECT: 'Too many attempts.Please Login again.',
 
-  ALERT_RESET_PIN_TITLE: 'Reset PIN',
+  ALERT_RESET_PIN_TITLE: 'Forgot your PIN',
   ALERT_RESET_PIN_DESC: 'Do you want to reset the PIN? ',
 
   ALERT_CANNOT_DELETE_PIN_TITLE: 'Reset PIN',

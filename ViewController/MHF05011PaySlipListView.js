@@ -52,26 +52,26 @@ export default class PaySlipActivity extends Component {
 
             updatedHeight: 50,
             dataSource: [],
-            selectYearArray: [2000, 2000, 2000]
+            selectYearArray: [2000, 2000, 2000],
+            DataResponse:this.props.navigation.getParam("DataResponse", "")
+            
         };
-        this.checkDataFormat(this.props.navigation.getParam("DataResponse", ""));
+
         firebase.analytics().setCurrentScreen(SharedPreference.SCREEN_PAYSLIP_LIST)
     }
 
-    checkDataFormat(DataResponse) {
-        //console.log('DataResponse : ', DataResponse)
-        if (DataResponse) {
-            //console.log('DataResponse : ', DataResponse)
-            //console.log('DataResponse.years : ', DataResponse.years)
+    componentDidMount() {
+  
+        if (this.state.DataResponse) {
 
-            dataSource = DataResponse;
+            dataSource = this.state.DataResponse;
 
-            for (let i = 0; i < DataResponse.years.length; i++) {
+            for (let i = 0; i < this.state.DataResponse.years.length; i++) {
 
-                yearnumber = DataResponse.years[i].year;
+                yearnumber = this.state.DataResponse.years[i].year;
 
-                if (DataResponse.years[i].detail) {
-                    for (let j = DataResponse.years[i].detail.length - 1; j >= 0; j--) {
+                if (this.state.DataResponse.years[i].detail) {
+                    for (let j = this.state.DataResponse.years[i].detail.length - 1; j >= 0; j--) {
 
                         if (i == 0 && j == 0) {
 
@@ -80,9 +80,9 @@ export default class PaySlipActivity extends Component {
                         }
 
                         monthlistdata.push({
-                            year: DataResponse.years[i].year,
-                            month: DataResponse.years[i].detail[j].month_no,
-                            id: DataResponse.years[i].detail[j].payroll_id
+                            year: this.state.DataResponse.years[i].year,
+                            month: this.state.DataResponse.years[i].detail[j].month_no,
+                            id: this.state.DataResponse.years[i].detail[j].payroll_id
 
                         })
                     }
@@ -109,6 +109,13 @@ export default class PaySlipActivity extends Component {
         this.createPayslipItem();
     }
 
+    
+
+        // //console.log(Layout.window.width);
+        // this.fetchData()
+
+
+   // }
 
     async componentWillMount() {
         await this.getArrayOfYear()
@@ -457,10 +464,7 @@ export default class PaySlipActivity extends Component {
     }
 
 
-    componentDidMount() {
-        // //console.log(Layout.window.width);
-        // this.fetchData()
-    }
+
 
     onRefresh() {
 

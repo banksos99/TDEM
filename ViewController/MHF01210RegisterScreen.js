@@ -380,6 +380,11 @@ export default class RegisterActivity extends Component {
             pin2: [],
         })
     }
+    componentDidMount() {
+        this.setState({
+            versionCode: "Version : " + SharedPreference.deviceInfo.buildNumber
+        })
+    }
 
     componentWillMount() {
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow.bind(this));
@@ -699,7 +704,7 @@ export default class RegisterActivity extends Component {
                             <View style={styles.registTextContainer}>
                                 <Image style={[styles.registetImageContainer, { height: 20, width: 20, }]}
                                     source={require('../resource/regist/regist_location.png')} />
-                                <Text style={[styles.registLocationText, { color: Colors.grayTextColor }]}>TMAP-EM</Text>
+                                <Text style={[styles.registText, { color: Colors.grayTextColor,marginTop:15 }]}>TDEM</Text>
                             </View>
                             <View style={styles.registLine} />
 
@@ -713,6 +718,7 @@ export default class RegisterActivity extends Component {
                                     selectionColor='black'
                                     style={styles.registText}
                                     placeholder="User ID"
+                                    placeholderTextColor={Colors.lightGrayTextColor}
                                     onChangeText={(username) => this.setState({ username })} />
 
                             </View>
@@ -728,6 +734,7 @@ export default class RegisterActivity extends Component {
                                     selectionColor='black'
                                     style={styles.registText}
                                     placeholder="Password"
+                                    placeholderTextColor={Colors.lightGrayTextColor}
                                     onChangeText={(password) => this.setState({ password })} />
                             </View>
 

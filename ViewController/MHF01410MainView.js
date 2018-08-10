@@ -51,13 +51,15 @@ import Authorization from "../SharedObject/Authorization";
 
 
 export default class HMF01011MainView extends Component {
-
     saveAutoSyncCalendar = new SaveAutoSyncCalendar()
     saveProfile = new SaveProfile()
     saveTimeNonPayroll = new SaveTimeNonPayroll()
+    
 
     constructor(props) {
+
         super(props);
+        
         this.state = {
             isscreenloading: true,
             syncCalendar: true,
@@ -181,13 +183,13 @@ export default class HMF01011MainView extends Component {
             syncCalendar: autoSyncCalendarBool
         })
 
-        await this.onLoadInAppNoti()
+       // await this.onLoadInAppNoti()
         SharedPreference.calendarAutoSync = autoSyncCalendarBool
 
     }
 
     async componentDidMount() {
-        this.redertabview()
+       // this.redertabview()
         NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectivityChange);
 
         if (SharedPreference.notipayslipID) {
@@ -199,25 +201,27 @@ export default class HMF01011MainView extends Component {
             this.onOpenAnnouncementDetailnoti()
 
         }
-
-        await this.loadData()
-
-        if (!timerstatus) {
+        
+         if (!timerstatus) {
             // console.log("componentDidMount timerstatus ==> start")
             this.inappTimeInterval();
             timerstatus = true;
         }
+
+       // await this.loadData()
+
+        
     }
 
     onLoadInAppNoti = async () => {
         let lastTime = await this.saveTimeNonPayroll.getTimeStamp()
 
-        if ((lastTime == null) || (lastTime == undefined)) {
-            let today = new Date()
-            const _format = 'YYYY-MM-DD hh:mm:ss'
-            const newdate = moment(today).format(_format).valueOf();
-            lastTime = newdate
-        }
+        // if ((lastTime == null) || (lastTime == undefined)) {
+        //     let today = new Date()
+        //     const _format = 'YYYY-MM-DD hh:mm:ss'
+        //     const newdate = moment(today).format(_format).valueOf();
+        //     lastTime = newdate
+        // }
 
         FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, 1, SharedPreference.profileObject.client_token)
         return fetch(SharedPreference.PULL_NOTIFICATION_API + lastTime, {
@@ -311,15 +315,16 @@ export default class HMF01011MainView extends Component {
                                     notiAnnounceMentBadge: parseInt(dataReceive.badge_count) + parseInt(this.state.notiAnnounceMentBadge)
                                 })
 
-                            } else if (dataReceive.function_id == "PHF05010") {
-
-                                // console.log("announcement badge ==> ", dataReceive.badge_count)
-
-                                this.setState({
-                                    notiPayslipBadge: parseInt(dataReceive.badge_count)
-                                })
-
                             }
+                            // else if (dataReceive.function_id == "PHF05010") {
+
+                            //     // console.log("announcement badge ==> ", dataReceive.badge_count)
+
+                            //     this.setState({
+                            //         notiPayslipBadge: parseInt(dataReceive.badge_count)
+                            //     })
+
+                            // }
                         }
 
                         //console.log("MainView ==> time ==> ", dataCustomArray)
@@ -328,11 +333,7 @@ export default class HMF01011MainView extends Component {
                         })
 
                     }
-
-                    if (timerstatus) {
-                        this.inappTimeInterval()
-                    }
-
+                     
                     // this.setState({
                     // }, function () {
                     // });
@@ -340,6 +341,12 @@ export default class HMF01011MainView extends Component {
                 } catch (error) {
                     //console.log('erreo1 :', error);
                 }
+
+                if (timerstatus) {
+                    this.inappTimeInterval()
+                }
+               // this.onLoadInAppNoti()
+
             })
             .catch((error) => {
 
@@ -352,7 +359,7 @@ export default class HMF01011MainView extends Component {
         this.timer = setTimeout(() => {
             this.onLoadInAppNoti()
             // }, 2000);
-        }, 20000);
+        }, 30000);
     };
 
     getnotidata(msg) {
@@ -367,6 +374,11 @@ export default class HMF01011MainView extends Component {
         SharedPreference.notipayslipID = 0
 
         SharedPreference.notiAnnounceMentID = 0
+        this.setState({ notiAnnounceMentBadge: 0, },function(){
+            SharedPreference.notiAnnounceMentBadge =2
+        });
+        
+
     }
 
     handleConnectivityChange = isConnected => {
@@ -919,7 +931,7 @@ export default class HMF01011MainView extends Component {
 
         if (code.SUCCESS == data.code) {
             this.props.navigation.navigate(rount, {
-                DataResponse: data.data,
+               DataResponse: data.data,
             });
         } else if (code.NODATA == data.code) {
             this.props.navigation.navigate(rount, {
