@@ -4,7 +4,8 @@ import {
     View,
     TouchableOpacity,
     Image,
-    Alert
+    Alert,
+    ActivityIndicator
 } from 'react-native';
 
 import Colors from "./../SharedObject/Colors"
@@ -22,8 +23,23 @@ export default class NonpayrollActivity extends Component {
             newpin1: [],
             newpin2: [],
             pintitle: StringText.CHANGE_PIN_ENTER_CURRENT_PIN_TITLE,
-            showCreatePinSuccess: false
+            showCreatePinSuccess: false,
+            isLoading: false
         };
+    }
+
+    renderProgressView() {
+        if (this.state.isLoading) {
+            return (
+                <View style={styles.alertDialogContainer}>
+                    <View style={styles.alertDialogBackgroudAlpha} />
+                    {/* bg */}
+                    <View style={styles.alertDialogContainer}>
+                        <ActivityIndicator />
+                    </View>
+                </View>
+            )
+        }
     }
 
     setPIN(num) {
@@ -41,39 +57,51 @@ export default class NonpayrollActivity extends Component {
             pin: origin
         })
         this.state.pin = origin
-        //console.log("1 ==> pin ====> ", this.state.pin)
-        //console.log("1 ==> oldpin ====> ", this.state.oldpin)
-        //console.log("1 ==> newpin1 ====> ", this.state.newpin1)
-        //console.log("1 ==> newpin2 ====> ", this.state.newpin2)
 
         if (this.state.pin.length == 6) {
             if (this.state.oldpin == 0) {
+                console.log("state ==> oldpin")
+                this.setState({
+                    isLoading: true
+                })
+
                 this.setState({
                     oldpin: this.state.pin,
                     pin: [],
                     pintitle: StringText.CHANGE_PIN_ENTER_NEW_PIN_1_TITLE,
+                    isLoading: false
                 })
                 this.state.oldpin = this.state.pin
                 this.state.pin = []
                 this.state.pintitle = StringText.CHANGE_PIN_ENTER_NEW_PIN_1_TITLE
+                this.state.isLoading = false
+
+                console.log("oldpin ==> ", this.state.oldpin)
+
             } else if (this.state.newpin1 == 0) {
+                this.setState({
+                    isLoading: true
+                })
                 this.setState({
                     newpin1: this.state.pin,
                     pin: [],
                     pintitle: StringText.CHANGE_PIN_ENTER_NEW_PIN_2_TITLE,
+                    isLoading: false
                 })
+
                 this.state.newpin1 = this.state.pin
                 this.state.pin = []
                 this.state.pintitle = StringText.CHANGE_PIN_ENTER_NEW_PIN_2_TITLE
+                this.state.isLoading = false
 
             } else if (this.state.newpin2 == 0) {
                 this.setState({
                     newpin2: this.state.pin,
-                    pin: []
+                    pin: [],
+                    isLoading: true
                 })
                 this.state.newpin2 = this.state.pin
                 this.state.pin = []
-
                 if (this.state.newpin1 == this.state.newpin2) {
                     this.onChangePINAPI()
                 } else {
@@ -90,7 +118,9 @@ export default class NonpayrollActivity extends Component {
                                         newpin1: [],
                                         newpin2: [],
                                         pintitle: StringText.CHANGE_PIN_ENTER_CURRENT_PIN_TITLE,
-                                        showCreatePinSuccess: false
+                                        showCreatePinSuccess: false,
+                                        isLoading: false
+
                                     })
 
                                 }
@@ -101,9 +131,6 @@ export default class NonpayrollActivity extends Component {
                 }
             }
         }
-
-        //console.log("2 ==> oldpin ====> ", this.state.oldpin)
-        //console.log("2 ==> pin ====> ", this.state.pin)
     }
 
     onChangePINAPI = async () => {
@@ -113,12 +140,11 @@ export default class NonpayrollActivity extends Component {
         code = data[0]
         data = data[1]
 
-        //console.log("onChangePINAPI data : ", data.code)
-
         // TODO 
         if (code.SUCCESS == data.code) {
             this.setState({
-                showCreatePinSuccess: true
+                showCreatePinSuccess: true,
+                isLoading: false
             })
         } else {
             Alert.alert(
@@ -132,6 +158,7 @@ export default class NonpayrollActivity extends Component {
                                 pin: [],
                                 oldpin: [],
                                 newpin1: [],
+                                isLoading: false,
                                 newpin2: [],
                                 pintitle: StringText.CHANGE_PIN_ENTER_CURRENT_PIN_TITLE,
                                 showCreatePinSuccess: false
@@ -179,7 +206,6 @@ export default class NonpayrollActivity extends Component {
     }
 
     onClosePIN = () => {
-        //console.log("onClosePIN")
         this.setState({
             pin: [],
             pin1: [],
@@ -332,9 +358,12 @@ export default class NonpayrollActivity extends Component {
     render() {
         return (
             <View style={styles.container} >
-                {this.renderCreatePin()}
-                {this.renderCreatePinSuccess()}
-            </View >
+                <View style={styles.container} >
+                    {this.renderCreatePin()}
+                    {this.renderCreatePinSuccess()}
+                </View >
+                {this.renderProgressView()}
+            </View>
         );
     }
 }
