@@ -41,14 +41,16 @@ export default class calendarEventDetailView extends Component {
             location: this.props.navigation.getParam("location", ""),
             isLoading: false
         }
-        ////console.log("calendarEventDetailView ==> ", this.state.monthObject)
+        console.log("calendarEventDetailView ==> monthObject ==> ", this.state.monthObject)
+        console.log("calendarEventDetailView ==> monthText ==> ", this.state.monthText)
+
         firebase.analytics().setCurrentScreen(SharedPreference.FUNCTIONID_CALENDAR_EVENT)
 
     }
 
-    componentWillUnmount() {
-        BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
-    }
+    // componentWillUnmount() {
+    //     BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
+    // }
 
     handleBackButtonClick() {
         this.onBack()
@@ -76,11 +78,11 @@ export default class calendarEventDetailView extends Component {
 
                     const datemonth = this.state.dayObject[index].date;
 
-                    // console.log("selectedMonth ==> datemonth ", datemonth)
-                    // console.log("selectedMonth ==> datemonth ", this.state.dayObject[index].special_holiday)
+                    console.log("selectedMonth ==> datemonth ", datemonth)
+                    console.log("selectedMonth ==> datemonth ", this.state.dayObject[index].special_holiday)
 
                     if (this.state.dayObject[index].special_holiday == "Y") {
-                        // //console.log("selectedMonth ==> Y")
+                        console.log("selectedMonth ==> Y")
                         let count = this.state.dayObject[index].events.length;
 
                         if (count > 1) {
@@ -112,8 +114,6 @@ export default class calendarEventDetailView extends Component {
                                 };
                                 original = copy
                             }
-
-
                         } else {
                             const copy = {
                                 ...original, [datemonth]: { marked: true, selectedColor: Colors.calendarBlueText }
@@ -121,17 +121,47 @@ export default class calendarEventDetailView extends Component {
                             original = copy
                         }
 
-
-
                     } else if (this.state.dayObject[index].special_holiday == "N") {
-                        // //console.log("selectedMonth ==> N")
-                        const copy = {
-                            ...original, [datemonth]: { marked: true, selectedColor: Colors.calendarRedText }
-                        };
-                        original = copy
+                        console.log("selectedMonth ==> N")
+                        let count = this.state.dayObject[index].events.length;
+
+                        if (count > 1) {
+                            let hasEvent = false
+                            let countEvent = 0
+                            let array = this.state.dayObject[index].events
+                            for (let index = 0; index < array.length; index++) {
+                                const element = array[index];
+                                if (element.event_id != null) {
+                                    countEvent = countEvent + 1
+                                    hasEvent = true
+                                }
+                            }
+                            if (hasEvent == false) {
+                                const copy = {
+                                    ...original, [datemonth]: { marked: true, selectedColor: Colors.calendarRedText }
+                                };
+                                original = copy
+
+                            } else if ((hasEvent == true) && (countEvent == 1)) {
+                                const copy = {
+                                    ...original, [datemonth]: { dots: [vacation1], marked: true, selectedColor: Colors.calendarRedText }
+                                };
+                                original = copy
+                            } else {
+                                const copy = {
+                                    ...original, [datemonth]: { dots: [vacation1, vacation2], marked: true, selectedColor: Colors.calendarRedText }
+                                };
+                                original = copy
+                            }
+                        }else{
+                            const copy = {
+                                ...original, [datemonth]: { marked: true, selectedColor: Colors.calendarRedText }
+                            };
+                            original = copy
+                        }
 
                     } else {//W
-                        // //console.log("selectedMonth ==> W")
+                        console.log("selectedMonth ==> W")
                         let count = this.state.dayObject[index].events.length;
 
                         if (count > 1) {
@@ -381,10 +411,10 @@ export default class calendarEventDetailView extends Component {
 
             for (let index = 0; index < array.length; index++) {
                 const element = array[index];
-                if(element.event_id != null){
+                if (element.event_id != null) {
                     specailHoliday = 'W'
                 }
-                
+
                 eventDetail.push(this.getSectionEventView(specailHoliday, element.all_day, date, element))
             }
 

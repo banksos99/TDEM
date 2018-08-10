@@ -72,7 +72,7 @@ export default class OTSummaryDetail extends Component {
     }
 
     componentWillUnmount() {
-        BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
+        // BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
         NetInfo.isConnected.removeEventListener('connectionChange', this.handleConnectivityChange);
     }
     handleConnectivityChange = isConnected => {

@@ -80,49 +80,6 @@ export default class HMF01011MainView extends Component {
             notiPayslipBadge:0
             //  page: 0
         }
-        
-    }
-
-    componentWillMount() {
-        // if (Platform.OS !== 'android') return
-        // BackHandler.addEventListener('hardwareBackPress', () => {
-        //     this.props.navigation.navigate('HomeScreen');
-        //     return true
-        // })
-    }
-
-    componentWillReceiveProps() {
-
-    
-    }
-
-    loadData = async () => {
-        let autoSyncCalendarBool = await this.saveAutoSyncCalendar.getAutoSyncCalendar()
-        if (autoSyncCalendarBool == null) {
-            autoSyncCalendarBool = true
-        }
-        this.setState({
-            syncCalendar: autoSyncCalendarBool
-        })
-
-       // await this.onLoadInAppNoti()
-        SharedPreference.calendarAutoSync = autoSyncCalendarBool
-      
-    }
-
-    async componentDidMount() {
-       // this.redertabview()
-        NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectivityChange);
-
-        if (SharedPreference.notipayslipID) {
-
-            this.onOpenPayslipDetail()
-
-        } else if (SharedPreference.notiAnnounceMentID) {
-
-            this.onOpenAnnouncementDetailnoti()
-
-        }
         rolemanagementEmpoyee = [0, 0, 0, 0, 0, 0, 0, 0];
         rolemanagementManager = [0, 0, 0, 0];
         managerstatus = 'N';
@@ -193,6 +150,50 @@ export default class HMF01011MainView extends Component {
             }
 
         }
+        
+    }
+
+    componentWillMount() {
+        // if (Platform.OS !== 'android') return
+        // BackHandler.addEventListener('hardwareBackPress', () => {
+        //     this.props.navigation.navigate('HomeScreen');
+        //     return true
+        // })
+    }
+
+    componentWillReceiveProps() {
+
+    
+    }
+
+    loadData = async () => {
+        let autoSyncCalendarBool = await this.saveAutoSyncCalendar.getAutoSyncCalendar()
+        if (autoSyncCalendarBool == null) {
+            autoSyncCalendarBool = true
+        }
+        this.setState({
+            syncCalendar: autoSyncCalendarBool
+        })
+
+       // await this.onLoadInAppNoti()
+        SharedPreference.calendarAutoSync = autoSyncCalendarBool
+      
+    }
+
+    async componentDidMount() {
+       // this.redertabview()
+        NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectivityChange);
+
+        if (SharedPreference.notipayslipID) {
+
+            this.onOpenPayslipDetail()
+
+        } else if (SharedPreference.notiAnnounceMentID) {
+
+            this.onOpenAnnouncementDetailnoti()
+
+        }
+        
          if (!timerstatus) {
             // console.log("componentDidMount timerstatus ==> start")
             this.inappTimeInterval();
@@ -205,8 +206,7 @@ export default class HMF01011MainView extends Component {
     }
 
     onLoadInAppNoti = async () => {
-        //TODO bell
-        // let lastTime = await this.saveTimeNonPayroll.getTimeStamp()
+        let lastTime = await this.saveTimeNonPayroll.getTimeStamp()
 
         // if ((lastTime == null) || (lastTime == undefined)) {
         //     let today = new Date()
@@ -215,13 +215,8 @@ export default class HMF01011MainView extends Component {
         //     lastTime = newdate
         // }
 
-
-        //console.log("onLoadInAppNoti ==> lastTime ==> ", lastTime)
         FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, 1, SharedPreference.profileObject.client_token)
-        console.log('FB token : ',SharedPreference.deviceInfo);
-        console.log('FUNCTION_TOKEN : ', FUNCTION_TOKEN)
-        latest_date = "2017-01-01 12:00:00"
-        return fetch(SharedPreference.PULL_NOTIFICATION_API + latest_date, {
+        return fetch(SharedPreference.PULL_NOTIFICATION_API + lastTime, {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
@@ -231,97 +226,91 @@ export default class HMF01011MainView extends Component {
         })
             .then((response) => response.json())
             .then((responseJson) => {
-                console.log("onLoadInAppNoti")
-                console.log("responseJson ==> ", responseJson)
+                // console.log("onLoadInAppNoti")
+                // console.log("responseJson ==> ", responseJson)
                 try {
-                    console.log("onLoadInAppNoti ==> responseJson ", responseJson)
+                    // console.log("onLoadInAppNoti ==> responseJson ", responseJson)
                     if (responseJson.status == 403) {
-
                         this.onAutenticateErrorAlertDialog()
-
                     } else if (responseJson.status == 200) {
                         
-                        // let dataArray = responseJson.data
-                        // let currentyear = new Date().getFullYear();
+                        let dataArray = responseJson.data
+                        let currentyear = new Date().getFullYear();
 
-                        // let monthArray = []
-                        // for (let index = 0; index < 12; index++) {
-                        //     monthData = {
-                        //         "month": index + 1,
-                        //         "badge": 0
-                        //     }
-                        //     monthArray.push(monthData)
-                        // }
-                        // // //console.log("monthArray ==> ", monthArray)
+                        let monthArray = []
+                        for (let index = 0; index < 12; index++) {
+                            monthData = {
+                                "month": index + 1,
+                                "badge": 0
+                            }
+                            monthArray.push(monthData)
+                        }
+                        // //console.log("monthArray ==> ", monthArray)
 
-                        // let dataCustomArray = [
-                        //     {
-                        //         "year": currentyear - 1,
-                        //         "detail": monthArray
-                        //     },
-                        //     {
-                        //         "year": currentyear,
-                        //         "detail": monthArray
-                        //     },
-                        // ]
+                        let dataCustomArray = [
+                            {
+                                "year": currentyear - 1,
+                                "detail": monthArray
+                            },
+                            {
+                                "year": currentyear,
+                                "detail": monthArray
+                            },
+                        ]
 
-                        //for (let index = 0; index < dataArray.length; index++) {
-                         //   const dataReceive = dataArray[index];
-                        //     // //console.log("element ==> ", dataReceive.function_id)
+                        for (let index = 0; index < dataArray.length; index++) {
+                            const dataReceive = dataArray[index];
+                            // //console.log("element ==> ", dataReceive.function_id)
 
-                        //     if (dataReceive.function_id == "PHF06010") {//if nonPayroll
-                        //         dataListArray = dataReceive.data_list //TODO Bell
+                            if (dataReceive.function_id == "PHF06010") {//if nonPayroll
+                                dataListArray = dataReceive.data_list //TODO Bell
 
-                        //         // //console.log("dataListArray ==> ", dataListArray)
-                        //         for (let index = 0; index < dataListArray.length; index++) {
-                        //             const str = dataListArray[index];
-                        //             // //console.log("str ==> ", str)
-                        //             var res = str.split("|");
-                        //             // //console.log("res ==> ", res[1])
-                        //             var data = res[1]
+                                // //console.log("dataListArray ==> ", dataListArray)
+                                for (let index = 0; index < dataListArray.length; index++) {
+                                    const str = dataListArray[index];
+                                    // //console.log("str ==> ", str)
+                                    var res = str.split("|");
+                                    // //console.log("res ==> ", res[1])
+                                    var data = res[1]
 
-                        //             var monthYear = data.split("-");
-                        //             // //console.log("dataListArray ==> monthYear ==> ", monthYear)
+                                    var monthYear = data.split("-");
+                                    // //console.log("dataListArray ==> monthYear ==> ", monthYear)
 
-                        //             var year = monthYear[0]
-                        //             var month = monthYear[1]
+                                    var year = monthYear[0]
+                                    var month = monthYear[1]
 
-                        //             for (let index = 0; index < dataCustomArray.length; index++) {
-                        //                 const data = dataCustomArray[index];
-                        //                 // //console.log("dataCustomArray data ==> ", data)
-                        //                 // //console.log("dataCustomArray year ==> ", data.year)
+                                    for (let index = 0; index < dataCustomArray.length; index++) {
+                                        const data = dataCustomArray[index];
+                                        // //console.log("dataCustomArray data ==> ", data)
+                                        // //console.log("dataCustomArray year ==> ", data.year)
 
-                        //                 if (year == data.year) {
-                        //                     const detail = data.detail
-                        //                     // //console.log("detail ==> ", detail)
-                        //                     // //console.log("month select  ==> ", month)
+                                        if (year == data.year) {
+                                            const detail = data.detail
+                                            // //console.log("detail ==> ", detail)
+                                            // //console.log("month select  ==> ", month)
 
-                        //                     let element = detail.find((p) => {
-                        //                         return p.month === JSON.parse(month)
-                        //                     });
-                        //                     // //console.log("element ==> ", element)
+                                            let element = detail.find((p) => {
+                                                return p.month === JSON.parse(month)
+                                            });
+                                            // //console.log("element ==> ", element)
 
-                        //                     element.badge = element.badge + 1
-                        //                     //console.log("detail badge ==> ", element.badge)
-                        //                 }
-                        //             }
-                        //         }
-                        //    } else
+                                            element.badge = element.badge + 1
+                                            //console.log("detail badge ==> ", element.badge)
+                                        }
+                                    }
+                                }
+                            } else if (dataReceive.function_id == "PHF02010") {
 
-                        for (let i = 0; i < responseJson.data.length; i++) {
-                            console.log("function_id => ", responseJson.data[i].function_id)
-                            if (responseJson.data[i].function_id == "PHF03010") {
+                                // console.log("announcement badge ==> ", dataReceive.badge_count)
 
-                                console.log("announcement badge ==> ", responseJson.data[i].badge_count)
+                                this.setState({
+                                    notiAnnounceMentBadge: parseInt(dataReceive.badge_count) + parseInt(this.state.notiAnnounceMentBadge)
+                                })
 
-                                // this.setState({
-                                //     notiAnnounceMentBadge: 1
-                                // })
-
-                           }
+                            }
                             // else if (dataReceive.function_id == "PHF05010") {
 
-                            //     console.log("announcement badge ==> ", dataReceive.badge_count)
+                            //     // console.log("announcement badge ==> ", dataReceive.badge_count)
 
                             //     this.setState({
                             //         notiPayslipBadge: parseInt(dataReceive.badge_count)

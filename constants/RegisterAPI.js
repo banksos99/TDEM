@@ -5,8 +5,7 @@ export default async function getRestAPI(username, password) {
 
     let code = {
         SUCCESS: "200",
-        INVALID_API_KEY: "100",
-        INVALID_API_SIGNATURE: "102",
+        INVALID_USER_PASS: "101",
         FAILED: "400",
         DOES_NOT_EXISTS: "401",
         INVALID_AUTH_TOKEN: "403",
@@ -17,6 +16,7 @@ export default async function getRestAPI(username, password) {
         ERROR: "501",
         UPDATE_APPLICATION: "600",
         CUT_JSON: "700",
+        NETWORK_ERROR: "800"
     }
 
     // //console.log("getRestAPI ===> username : ", username, " ,  password :", password)
@@ -24,7 +24,7 @@ export default async function getRestAPI(username, password) {
     // //console.log("getRestAPI ===> SharedPreference.company : ", SharedPreference.company)
     // //console.log("getRestAPI ===> SharedPreference.deviceInfo: ", SharedPreference.deviceInfo)
 
-    
+
     return fetch(SharedPreference.REGISTER_API, {
         method: 'POST',
         headers: {
@@ -46,13 +46,23 @@ export default async function getRestAPI(username, password) {
     })
         .then((response) => response.json())
         .then((responseJson) => {
-            // //console.log("RegisterAPI ==> callback  success : ", responseJson)
+            console.log("RegisterAPI ==> callback  success : ", responseJson)
             let object
             if (responseJson.status == code.SUCCESS) {
                 SharedPreference.profileObject = responseJson.data
                 object = [code, {
                     code: responseJson.status,
                     data: responseJson.data
+                }]
+            } else if (responseJson.status == code.INVALID_USER_PASS) {
+                statusText = responseJson.errors[0]
+                // console.log("statusText ==> ",statusText)
+                // console.log("statusText ==> code ==> ",statusText.code)
+                // console.log("statusText ==> detail ==> ",statusText.detail)
+
+                object = [code, {
+                    code: responseJson.status,
+                    data: statusText
                 }]
             } else {
                 object = [code, {
@@ -64,9 +74,10 @@ export default async function getRestAPI(username, password) {
 
         })
         .catch((error) => {
-            // //console.log("callback error : ", error)
+            console.log("callback error : ", error)
             object = [code, {
-                code: code.NETWORK_ERROR
+                code: code.NETWORK_ERROR,
+                data: "Cannot connect Network"
             }]
             return object
         });

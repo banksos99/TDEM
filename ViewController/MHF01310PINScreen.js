@@ -37,13 +37,49 @@ export default class PinActivity extends Component {
         code = data[0]
         data = data[1]
 
-        //console.log("onLoadLoginWithPin ==> ", data.code)
+        console.log("onLoadLoginWithPin ==> ", data.code)
         if (code.SUCCESS == data.code) {
             this.setState({
                 isLoading: false
             })
             SharedPreference.calendarAutoSync = await this.saveAutoSyncCalendar.getAutoSyncCalendar()
             await this.onLoadInitialMaster()
+        } else if (code.INVALID_USER_PASS == data.code) {
+
+            if (data.data.code == "MSC29132AERR") {
+
+                Alert.alert(
+                    StringText.ALERT_PIN_CANNOT_FIND_TITLE,
+                    StringText.ALERT_PIN_CANNOT_FIND_DESC,
+                    [
+                        {
+                            text: 'OK', onPress: () => {
+                                SharedPreference.profileObject = null
+                                this.saveProfile.setProfile(null)
+                                this.props.navigation.navigate('RegisterScreen')
+                            }
+                        }
+                    ],
+                    { cancelable: false }
+                )
+            } else {
+                Alert.alert(
+                    data.data.code,
+                    data.data.detail,
+                    [
+                        {
+                            text: 'OK', onPress: () => {
+                                SharedPreference.profileObject = null
+                                this.saveProfile.setProfile(null)
+                                this.props.navigation.navigate('RegisterScreen')
+                            }
+                        }
+                    ],
+                    { cancelable: false }
+                )
+
+            }
+
         } else if (code.INVALID_AUTH_TOKEN == data.code) {
             Alert.alert(
                 StringText.INVALID_AUTH_TOKEN_TITLE,
@@ -71,7 +107,19 @@ export default class PinActivity extends Component {
                 ],
                 { cancelable: false })
 
-
+        } else if (code.NETWORK_ERROR == data.code) {
+            Alert.alert(
+                StringText.ALERT_CANNOT_CONNECT_NETWORK_TITLE,
+                StringText.ALERT_CANNOT_CONNECT_NETWORK_DESC,
+                [{
+                    text: 'OK', onPress: () => {
+                        SharedPreference.profileObject = null
+                        this.saveProfile.setProfile(null)
+                        this.props.navigation.navigate('RegisterScreen')
+                    }
+                }
+                ],
+                { cancelable: false })
         } else {
             if (this.state.failPin == 4) {
                 this.setState({
@@ -297,7 +345,33 @@ export default class PinActivity extends Component {
                 ],
                 { cancelable: false }
             )
-
+        } else if (code.INVALID_SOMETHING == data.code) {
+            Alert.alert(
+                StringText.ALERT_AUTHORLIZE_ERROR_TITLE,
+                StringText.ALERT_AUTHORLIZE_ERROR_MESSAGE,
+                [{
+                    text: 'OK', onPress: () => {
+                        SharedPreference.profileObject = null
+                        this.saveProfile.setProfile(null)
+                        this.props.navigation.navigate('RegisterScreen')
+                    }
+                }
+                ],
+                { cancelable: false }
+            )
+        } else if (code.NETWORK_ERROR == data.code) {
+            Alert.alert(
+                StringText.ALERT_CANNOT_CONNECT_NETWORK_TITLE,
+                StringText.ALERT_CANNOT_CONNECT_NETWORK_DESC,
+                [
+                    {
+                        text: 'OK', onPress: () => {
+                            console.log('OK Pressed')
+                        }
+                    }
+                ],
+                { cancelable: false }
+            )
         } else {
             Alert.alert(
                 StringText.ALERT_CANNOT_DELETE_PIN_TITLE,

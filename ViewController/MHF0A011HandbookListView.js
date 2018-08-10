@@ -145,9 +145,9 @@ export default class Handbookctivity extends Component {
         BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
     }
 
-    componentWillUnmount() {
-        BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
-    }
+    // componentWillUnmount() {
+    //     BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
+    // }
 
     handleBackButtonClick() {
         this.onBack()

@@ -5,8 +5,7 @@ export default async function resetPIN(functionID) {
 
     let code = {
         SUCCESS: "200",
-        INVALID_API_KEY: "100",
-        INVALID_API_SIGNATURE: "102",
+        INVALID_SOMETHING: "101",
         FAILED: "400",
         DOES_NOT_EXISTS: "401",
         INVALID_AUTH_TOKEN: "403",
@@ -17,6 +16,8 @@ export default async function resetPIN(functionID) {
         ERROR: "501",
         UPDATE_APPLICATION: "600",
         CUT_JSON: "700",
+        NETWORK_ERROR: "800"
+
     }
 
     //console.log("resetPIN ==>  functionID : ", functionID)
@@ -44,6 +45,16 @@ export default async function resetPIN(functionID) {
                     code: responseJson.status,
                     data: responseJson.data
                 }]
+            } else if (responseJson.status == code.INVALID_SOMETHING) {
+                statusText = responseJson.errors[0]
+                // console.log("statusText ==> ",statusText)
+                // console.log("statusText ==> code ==> ",statusText.code)
+                // console.log("statusText ==> detail ==> ",statusText.detail)
+
+                object = [code, {
+                    code: responseJson.status,
+                    data: statusText
+                }]
             } else {
                 object = [code, {
                     code: responseJson.status,
@@ -55,7 +66,7 @@ export default async function resetPIN(functionID) {
         })
         .catch((error) => {
             object = [code, {
-                code: code.ERROR,
+                code: code.NETWORK_ERROR,
                 data: error
             }]
             return object

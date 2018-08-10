@@ -54,8 +54,8 @@ export default {
   SERVER_ERROR_TITLE: 'MHF00002ACRI',
   SERVER_ERROR_DESC: 'System Error (API). Please contact system administrator.',
 
-  INVALID_AUTH_TOKEN_TITLE:'Sorry',
-  INVALID_AUTH_TOKEN_DESC:'Have login from another device',
+  INVALID_AUTH_TOKEN_TITLE: 'Sorry',
+  INVALID_AUTH_TOKEN_DESC: 'Have login from another device',
 
 
   REGISTER_PIN_ERROR_TITLE: 'Sorry',
@@ -65,7 +65,7 @@ export default {
   ALERT_PIN_DESC_NOT_CORRECT: 'Incorrect PIN.Please try again.',
   ALERT_PIN_DESC_TOO_MANY_NOT_CORRECT: 'Too many attempts.Please Login again.',
 
-  ALERT_RESET_PIN_TITLE: 'Reset PIN',
+  ALERT_RESET_PIN_TITLE: 'Forgot your PIN',
   ALERT_RESET_PIN_DESC: 'Do you want to reset the PIN? ',
 
   ALERT_CANNOT_DELETE_PIN_TITLE: 'Reset PIN',
@@ -86,5 +86,13 @@ export default {
   ALERT_PAYSLIP_CANNOT_DOWNLOAD_TITLE: 'Sorry',
   ALERT_PAYSLIP_CANNOT_DOWNLOAD_DESC: 'Cannot download file.',
 
+  ALERT_CANNOT_CONNECT_NETWORK_TITLE: 'Sorry',
+  ALERT_CANNOT_CONNECT_NETWORK_DESC: 'Cannot connect network.',
+
+  ALERT_PLEASE_FILL_TITLE: 'Sorry',
+  ALERT_PLEASE_FILL_DESC: 'Please fill in your username or password.',
+
+  ALERT_PIN_CANNOT_FIND_TITLE: 'Sorry',
+  ALERT_PIN_CANNOT_FIND_DESC: 'Cannot find your PIN. Please try again.',
 
 };
