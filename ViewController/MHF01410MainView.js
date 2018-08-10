@@ -2,14 +2,15 @@ import React, { Component } from "react";
 import {
     View, Text, TouchableOpacity, Picker,
     Image, Switch, ActivityIndicator, ScrollView,
-    Button, RefreshControl, Alert, NetInfo,
+    RefreshControl, Alert, NetInfo,
     Platform, Dimensions, BackHandler
 } from "react-native";
 import { styles } from "../SharedObject/MainStyles";
-import Layout from "../SharedObject/Layout"
 import Colors from "../SharedObject/Colors"
 import SharedPreference from "../SharedObject/SharedPreference"
 import RestAPI from "../constants/RestAPI"
+import SignOutAPI from "../constants/SignOutAPI"
+
 import SaveAutoSyncCalendar from "../constants/SaveAutoSyncCalendar";
 import SaveProfile from "../constants/SaveProfile"
 import SaveTimeNonPayroll from "../constants/SaveTimeNonPayroll"
@@ -47,7 +48,7 @@ import moment from 'moment'
 
 import Authorization from "../SharedObject/Authorization";
 
-// getTimeStamp
+
 
 export default class HMF01011MainView extends Component {
 
@@ -58,7 +59,7 @@ export default class HMF01011MainView extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            isscreenloading: false,
+            isscreenloading: true,
             syncCalendar: true,
             announcementType: initannouncementType,
             announcementTypetext: initannouncementTypetext,
@@ -75,15 +76,17 @@ export default class HMF01011MainView extends Component {
             announcetypelist: ['All', 'Company Announcement', 'Emergency Announcement', 'Event Announcement', 'General Announcement'],
             announcestatuslist: ['All', 'Read', 'Unread'],
             notiAnnounceMentBadge: 0,
-            notiPayslipBadge:0
+            notiPayslipBadge: 0
             //  page: 0
         }
+
+        SharedPreference.currentNavigator = SharedPreference.SCREEN_MAIN
+
         rolemanagementEmpoyee = [0, 0, 0, 0, 0, 0, 0, 0];
         rolemanagementManager = [0, 0, 0, 0];
         managerstatus = 'N';
         announcestatus = 'Y';
         settingstatus = 'Y';
-        //Check role_authoried status
         for (let i = 0; i < SharedPreference.profileObject.role_authoried.length; i++) {
 
             if (SharedPreference.profileObject.role_authoried[i].module_function === 'HF0401') {
@@ -146,22 +149,28 @@ export default class HMF01011MainView extends Component {
 
                 settingstatus = 'Y'
             }
-
         }
+
+
+
     }
 
     componentWillMount() {
+        this.interval = setInterval(() => {
+            this.setState({
+                isscreenloading: false
+            })
+        }, 1000);
+
         if (Platform.OS !== 'android') return
         BackHandler.addEventListener('hardwareBackPress', () => {
             this.props.navigation.navigate('HomeScreen');
             return true
         })
+
+
     }
 
-    componentWillReceiveProps() {
-
-    
-    }
 
     loadData = async () => {
         let autoSyncCalendarBool = await this.saveAutoSyncCalendar.getAutoSyncCalendar()
@@ -174,7 +183,7 @@ export default class HMF01011MainView extends Component {
 
         await this.onLoadInAppNoti()
         SharedPreference.calendarAutoSync = autoSyncCalendarBool
-      
+
     }
 
     async componentDidMount() {
@@ -228,7 +237,7 @@ export default class HMF01011MainView extends Component {
                     if (responseJson.status == 403) {
                         this.onAutenticateErrorAlertDialog()
                     } else if (responseJson.status == 200) {
-                        
+
                         let dataArray = responseJson.data
                         let currentyear = new Date().getFullYear();
 
@@ -258,7 +267,7 @@ export default class HMF01011MainView extends Component {
                             // //console.log("element ==> ", dataReceive.function_id)
 
                             if (dataReceive.function_id == "PHF06010") {//if nonPayroll
-                                dataListArray = dataReceive.data_list //TODO Bell
+                                dataListArray = dataReceive.data_list
 
                                 // //console.log("dataListArray ==> ", dataListArray)
                                 for (let index = 0; index < dataListArray.length; index++) {
@@ -302,7 +311,7 @@ export default class HMF01011MainView extends Component {
                                     notiAnnounceMentBadge: parseInt(dataReceive.badge_count) + parseInt(this.state.notiAnnounceMentBadge)
                                 })
 
-                            }else if (dataReceive.function_id == "PHF05010") {
+                            } else if (dataReceive.function_id == "PHF05010") {
 
                                 // console.log("announcement badge ==> ", dataReceive.badge_count)
 
@@ -323,7 +332,7 @@ export default class HMF01011MainView extends Component {
                     if (timerstatus) {
                         this.inappTimeInterval()
                     }
-                    
+
                     // this.setState({
                     // }, function () {
                     // });
@@ -385,7 +394,7 @@ export default class HMF01011MainView extends Component {
 
         }, function () {
 
-           let promise = this.loadAnnouncementfromAPI();
+            let promise = this.loadAnnouncementfromAPI();
             // let promise = this.temploadAnnouncementfromAPI();
             if (!promise) {
                 return;
@@ -404,9 +413,9 @@ export default class HMF01011MainView extends Component {
 
         }, function () {
             this.setState(this.renderloadingscreen())
-           this.loadAnnouncementMorefromAPI()
+            this.loadAnnouncementMorefromAPI()
             // this.temploadAnnouncementMorefromAPI()
-     
+
         });
     }
 
@@ -423,7 +432,7 @@ export default class HMF01011MainView extends Component {
         //console.log("loadAnnouncementfromAPI ")
         FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, SharedPreference.FUNCTIONID_ANNOUCEMENT, SharedPreference.profileObject.client_token)
         //console.log("calendarPDFAPI ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
-       // console.log("client_id  : ", SharedPreference.profileObject.client_id)
+        // console.log("client_id  : ", SharedPreference.profileObject.client_id)
         let hostApi = SharedPreference.ANNOUNCEMENT_ASC_API + '&offset=0&limit=' + totalroll
         if (ascendingSort) {
             hostApi = SharedPreference.ANNOUNCEMENT_DSC_API + '&offset=0&limit=' + totalroll
@@ -449,7 +458,7 @@ export default class HMF01011MainView extends Component {
                     }, function () {
                         if (responseJson.status === 200) {
                             this.setState(this.renderloadingscreen());
-                            
+
                             console.log('this.state.dataSource.data: ', responseJson.data)
                             this.setState({
                                 notiAnnounceMentBadge: 0
@@ -594,9 +603,9 @@ export default class HMF01011MainView extends Component {
     }
 
 
-    
+
     temploadAnnouncementfromAPI = async () => {
-        
+
         let totalroll = announcementData.length;
 
         if (this.state.annrefresh) {
@@ -614,7 +623,7 @@ export default class HMF01011MainView extends Component {
         }
 
         this.APIAnnouncementListCallback(await RestAPI(hostApi, SharedPreference.FUNCTIONID_ANNOUCEMENT),
-        'AnnouncementDetail', 0)
+            'AnnouncementDetail', 0)
 
     }
     temploadAnnouncementMorefromAPI = async () => {
@@ -624,7 +633,7 @@ export default class HMF01011MainView extends Component {
         }
 
         this.APIAnnouncementListMoreCallback(await RestAPI(hostApi, SharedPreference.FUNCTIONID_ANNOUCEMENT),
-        'AnnouncementDetail', 0)
+            'AnnouncementDetail', 0)
 
 
     }
@@ -772,7 +781,7 @@ export default class HMF01011MainView extends Component {
             });
 
             SharedPreference.notipayAnnounceMentID = 0;
-        
+
         } else if (code.INVALID_AUTH_TOKEN == data.code) {
 
             this.onAutenticateErrorAlertDialog(data)
@@ -1278,7 +1287,7 @@ export default class HMF01011MainView extends Component {
         }, function () {
             this.setState(this.renderloadingscreen())
             this.loadAnnouncementfromAPI()
-           // this.temploadAnnouncementfromAPI()
+            // this.temploadAnnouncementfromAPI()
         });
     }
 
@@ -1455,7 +1464,7 @@ export default class HMF01011MainView extends Component {
                     loadingtype: 3
                 }, function () {
                     this.loadAnnouncementfromAPI()
-                     // this.temploadAnnouncementfromAPI()
+                    // this.temploadAnnouncementfromAPI()
                 });
             }
         } if (tabnumber === 3) {
@@ -1526,24 +1535,6 @@ export default class HMF01011MainView extends Component {
         });
     }
 
-    // select_announce_all_type = () => {
-    //     this.setState({
-    //         announcementType: 'All',
-    //         announcementTypetext: 'All'
-    //     }, function () {
-    //         this.setState(this.select_announce_type())
-    //     });
-    // }
-
-    // select_announce_company_type = () => {
-    //     this.setState({
-    //         announcementType: 'All',
-    //         announcementTypetext: 'All'
-    //     }, function () {
-    //         this.setState(this.select_announce_type())
-    //     });
-    // }
-
     on_select_Announcement_type(item) {
         // select_announce_company_type = () => {
         this.setState({
@@ -1570,60 +1561,6 @@ export default class HMF01011MainView extends Component {
             this.setState(this.select_announce_status())
         });
     }
-
-    // select_announce_emergency_type = () => {
-    //     this.setState({
-    //         announcementType: 'Emergency Announcement',
-    //         announcementTypetext: 'Emergency Announcement'
-    //     }, function () {
-    //         this.setState(this.select_announce_type())
-    //     });
-    // }
-
-    // select_announce_event_type = () => {
-    //     this.setState({
-    //         announcementType: 'Event Announcement',
-    //         announcementTypetext: 'Event Announcement'
-    //     }, function () {
-    //         this.setState(this.select_announce_type())
-    //     });
-    // }
-
-    // select_announce_general_type = () => {
-    //     this.setState({
-    //         announcementType: 'General Announcement',
-    //         announcementTypetext: 'General Announcement'
-    //     }, function () {
-    //         this.setState(this.select_announce_type())
-    //     });
-    // }
-
-    // select_announce_all_status = () => {
-    //     this.setState({
-    //         announcementStatus: 'All',
-    //         announcementStatustext: 'All'
-    //     }, function () {
-    //         this.setState(this.select_announce_status())
-    //     });
-    // }
-
-    // select_announce_read_status = () => {
-    //     this.setState({
-    //         announcementStatus: true,
-    //         announcementStatustext: 'Read'
-    //     }, function () {
-    //         this.setState(this.select_announce_status())
-    //     });
-    // }
-
-    // select_announce_unread_status = () => {
-    //     this.setState({
-    //         announcementStatus: false,
-    //         announcementStatustext: 'Unread'
-    //     }, function () {
-    //         this.setState(this.select_announce_status())
-    //     });
-    // }
 
     select_search_announce = () => {
 
@@ -1703,14 +1640,6 @@ export default class HMF01011MainView extends Component {
         ////console.log("onChangeFunction ==> calendarAutoSync ==>  ", SharedPreference.calendarAutoSync)
     }
 
-    // onChangeFunction = () => this.setState(state => ({
-    //     syncCalendar: !state.syncCalendar
-    // }))
-
-    // onSetWhenSwitch() {
-    //     ////console.log("onSetWhenSwitch : ", this.state.syncCalendar)
-    //     this.saveAutoSyncCalendar.setAutoSyncCalendar(this.state.syncCalendar)
-    // }
 
     /*************************************************************** */
     /*************************   render class ********************** */
@@ -1718,7 +1647,7 @@ export default class HMF01011MainView extends Component {
 
     renderhomeview() {
         //notiPayslipBadge
-        
+
         return (
             <View style={{ flex: 1, justifyContent: 'center' }}>
                 <View style={styles.mainmenutabbarstyle} />
@@ -2368,12 +2297,77 @@ export default class HMF01011MainView extends Component {
 
     select_sign_out() {
 
-        page = 0
-        timerstatus = false
-        SharedPreference.Handbook = []
-        SharedPreference.profileObject = null
-        this.saveProfile.setProfile(null)
-        this.props.navigation.navigate('RegisterScreen')
+
+
+
+        this.setState({
+            isscreenloading: true
+        })
+        //TODO Bell
+
+        this.loadSignOutAPI()
+
+
+    }
+
+    loadSignOutAPI = async () => {
+        //TODO Bell signout
+        let data = await SignOutAPI("1")
+        code = data[0]
+        data = data[1]
+
+        this.setState({
+            isscreenloading: false,
+        })
+
+        if (code.SUCCESS == data.code) {
+            page = 0
+            timerstatus = false
+            SharedPreference.Handbook = []
+            SharedPreference.profileObject = null
+            this.saveProfile.setProfile(null)
+            this.setState({
+                isscreenloading: false
+            })
+            this.props.navigation.navigate('RegisterScreen')
+        } else if (code.INVALID_USER_PASS == data.code) {
+            Alert.alert(
+                StringText.ALERT_PIN_CANNOT_FIND_TITLE,
+                StringText.ALERT_PIN_CANNOT_FIND_DESC,
+                [
+                    {
+                        text: 'OK', onPress: () => {
+                            page = 0
+                            timerstatus = false
+                            SharedPreference.Handbook = []
+                            SharedPreference.profileObject = null
+                            this.saveProfile.setProfile(null)
+                            this.setState({
+                                isscreenloading: false
+                            })
+                            this.props.navigation.navigate('RegisterScreen')
+                        }
+                    }
+                ],
+                { cancelable: false }
+            )
+        } else {
+            Alert.alert(
+                StringText.ALERT_PIN_CANNOT_LOGOUT_TITILE,
+                StringText.ALERT_PIN_CANNOT_LOGOUT_DESC,
+                [
+                    {
+                        text: 'OK', onPress: () => {
+                            //TODO Log out
+                            this.setState({
+                                isscreenloading: false
+                            })
+                        }
+                    }
+                ],
+                { cancelable: false }
+            )
+        }
     }
 
     onChangePIN() {
@@ -2572,7 +2566,7 @@ export default class HMF01011MainView extends Component {
 
     }
 
-   
+
 
     renderloadingscreen() {
 
@@ -2628,15 +2622,16 @@ export default class HMF01011MainView extends Component {
         );
 
     }
+
     render() {
-        //console.log('data pushstatus :', this.props.tempdata)
         let badgeBG = 'transparent'
         let badgeText = 'transparent'
 
-       if (this.state.notiAnnounceMentBadge) {
+        if (this.state.notiAnnounceMentBadge) {
             badgeBG = 'red'
             badgeText = 'white'
-       }
+        }
+
         return (
             <View style={{ flex: 1 }}>
                 <View style={{ flex: 1, flexDirection: 'column' }}>
@@ -2645,9 +2640,7 @@ export default class HMF01011MainView extends Component {
                         {this.redertabview()}
                     </View>
                     <View style={{ height: 1, backgroundColor: Colors.lightGrayTextColor }} />
-
                     <View style={{ height: 50, flexDirection: 'row', }} >
-
                         <TouchableOpacity style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }} onPress={() => { this.settabscreen(0) }}>
                             <Image
                                 style={page === 0 ?
@@ -2655,16 +2648,12 @@ export default class HMF01011MainView extends Component {
                                     { width: ICON_SIZE, height: ICON_SIZE, tintColor: Colors.lightGrayTextColor }
                                 }
                                 source={require('./../resource/images/home_icon.png')}
-
                                 resizeMode='contain'
                             />
                         </TouchableOpacity>
-
-
                         <TouchableOpacity style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
                             disabled={!announcestatus}
                             onPress={() => { this.settabscreen(1) }}>
-
                             <Image
                                 style={page === 1 ?
                                     { width: ICON_SIZE, height: ICON_SIZE, tintColor: Colors.redTextColor } :
@@ -2681,24 +2670,10 @@ export default class HMF01011MainView extends Component {
 
                         </TouchableOpacity>
                         {this.rendermanagertab()}
-                        {/* <TouchableOpacity style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }} onPress={() => { this.settabscreen(2) }}>
-
-                            <Image
-                                style={page === 2 ?
-                                    { width: ICON_SIZE, height: ICON_SIZE, tintColor: Colors.redTextColor } :
-                                    { width: ICON_SIZE, height: ICON_SIZE, tintColor: Colors.lightGrayTextColor }
-                                }
-                                source={require('../assets/images/manager_icon.png')}
-                                resizeMode='contain'
-                            />
-
-                        </TouchableOpacity> */}
                         <TouchableOpacity style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
                             disabled={!settingstatus}
                             onPress={() => { this.settabscreen(3) }}>
-
                             <Image
-
                                 style={page === 3 ?
                                     { width: ICON_SIZE, height: ICON_SIZE, tintColor: Colors.redTextColor } :
                                     { width: ICON_SIZE, height: ICON_SIZE, tintColor: Colors.lightGrayTextColor }
@@ -2710,7 +2685,7 @@ export default class HMF01011MainView extends Component {
                         </TouchableOpacity>
                     </View>
                 </View>
-              
+
                 {this.renderloadingscreen()}
 
             </View>

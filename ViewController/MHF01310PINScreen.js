@@ -29,6 +29,8 @@ export default class PinActivity extends Component {
             isLoading: false
         }
         firebase.analytics().setCurrentScreen(SharedPreference.SCREEN_PIN)
+        SharedPreference.currentNavigator = SharedPreference.SCREEN_PIN
+
     }
 
     onLoadLoginWithPin = async (PIN) => {
@@ -47,7 +49,6 @@ export default class PinActivity extends Component {
         } else if (code.INVALID_USER_PASS == data.code) {
 
             if (data.data.code == "MSC29132AERR") {
-
                 Alert.alert(
                     StringText.ALERT_PIN_CANNOT_FIND_TITLE,
                     StringText.ALERT_PIN_CANNOT_FIND_DESC,
@@ -165,8 +166,6 @@ export default class PinActivity extends Component {
         code = data[0]
         data = data[1]
         if (code.SUCCESS == data.code) {
-            ////console.log('app info data1 :', data)
-            ////console.log('token :', SharedPreference.TOKEN)
             let appversion = '1.0.0'
             if (data.data.force_update === 'Y') {
                 Alert.alert(

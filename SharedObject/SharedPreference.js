@@ -141,5 +141,7 @@ export default {
 
     SCREEN_GENERAL_INFORMATION_SHARING: 'MHF0C110GeneralInformationSharing',
     SCREEN_ORGANIZ_STRUCTURE: 'MHF0C110OrgamizStructure',
+
+    currentNavigator: 'home'
 }
 

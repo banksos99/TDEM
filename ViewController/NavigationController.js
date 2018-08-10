@@ -141,16 +141,14 @@ export default class rootNavigation extends Component {
             number: "111111",
             notiMessage: this.props.pushstatus,
         };
+    
     }
 
-    async componentDidMount() {
-        // this.inappTimeInterval();
-
-    }
 
     async componentWillMount() {
         // number = await this.getPINFromDevice()
         profile = await this.getProfileObject()
+        console.log("rootNavigation ==> showPin ==> ",this.state.showPin)
     }
 
     getProfileObject = async () => {
@@ -168,11 +166,11 @@ export default class rootNavigation extends Component {
                 <View style={{ height: 100, width: '100%', position: 'absolute', }}>
                     <View style={{ backgroundColor: 'black', height: '100%', width: '100%', position: 'absolute', opacity: 0.7 }}>
                     </View>
-                   
                 </View>
             )
         }
     }
+
     // getCurrentRouteName(navigationState) {
     //     if (!navigationState) {
     //       return null;
@@ -185,30 +183,21 @@ export default class rootNavigation extends Component {
     //     return route.routeName;
     //   }
 
-    gotoHomemenu() {
 
-
-    }
     render() {
-        // //console.log('data pushstatus :', this.props.pushstatus)
-        // //console.log('data pushstatus :', AppNavigatorRegister.props.navigation)
-        //AppNavigatorRegister.homeScreen.getnotidata(this.props.pushstatus)
-        // const newState = this.AppNavigatorRegister.navigate('HomeScreen')
         if (this.state.hasPin == false) {
             return (
                 <AppNavigatorRegister
                     onNavigationStateChange={(prevState, currentState) => {
-                      //  const currentScreen = currentState.routes[navigationState.index];
-                        //console.log('statec change',currentState)
                     }} />
             );
         } else {
             return (
-                <AppNavigatorPin  
-                onNavigationStateChange={(prevState, currentState) => {
-                   // const currentScreen = currentState.routes[navigationState.index];
-                    //console.log('statec change',currentState)
-                }} />
+                <AppNavigatorPin
+                    onNavigationStateChange={(prevState, currentState) => {
+                        // const currentScreen = currentState.routes[navigationState.index];
+                        //console.log('statec change',currentState)
+                    }} />
             );
         }
 

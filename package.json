@@ -49,6 +49,7 @@
     "react-native-zip-archive": "^2.2.6",
     "react-navigation": "^2.5.5",
     "react-pdf-reader": "^0.1.8",
+    "react-timer-mixin": "^0.13.4",
     "utf8": "^3.0.0"
   },
   "rnpm": {
