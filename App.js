@@ -616,7 +616,7 @@ export default class mainview extends Component {
               <RootViewController />
               {/* {this.rendernotificationlabel()} */}
             </View>
-            {/* {this.renderPINScreen()} */}
+            {this.renderPINScreen()}
           </View>
         </UserInactivity>
       );

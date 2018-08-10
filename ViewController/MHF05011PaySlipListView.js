@@ -377,7 +377,7 @@ export default class PaySlipActivity extends Component {
         // this.props.navigator.pop();
 
        this.props.navigation.navigate('HomeScreen');
-
+      // this.props.navigation.pop();
     }
     onNoDataDetail(year, index) {
         Alert.alert(
