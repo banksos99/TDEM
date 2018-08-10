@@ -46,11 +46,12 @@ export default class RegisterActivity extends Component {
         data = data[1]
 
 
+        console.log("onRegister ==> ",data.code)
         if (code.SUCCESS == data.code) {
             this.saveProfile.setProfile(data.data)
             SharedPreference.profileObject = await this.saveProfile.getProfile()
-            ////console.log("onRegister ==> onLoadLoginWithPin")
             await this.onLoadLoginWithPin("001000200")
+
         } else if (code.DOES_NOT_EXISTS == data.code) {
             Alert.alert(
                 StringText.REGISTER_INVALID_TITLE,
@@ -64,10 +65,39 @@ export default class RegisterActivity extends Component {
                 ],
                 { cancelable: false }
             )
+        } else if (code.INVALID_USER_PASS == data.code) {
+            // console.log("11 statusText ==> code ==> ", data.data.code)
+            // console.log("11 statusText ==> detail ==> ", data.data.detail)
+            Alert.alert(
+                data.data.code,
+                data.data.detail,
+                [
+                    {
+                        text: 'OK', onPress: () => {
+                            console.log('OK Pressed')
+                        }
+                    }
+                ],
+                { cancelable: false }
+            )
+
+        } else if (code.NETWORK_ERROR == data.code) {
+            Alert.alert(
+                StringText.ALERT_CANNOT_CONNECT_NETWORK_TITLE,
+                StringText.ALERT_CANNOT_CONNECT_NETWORK_DESC,
+                [
+                    {
+                        text: 'OK', onPress: () => {
+                            console.log('OK Pressed')
+                        }
+                    }
+                ],
+                { cancelable: false }
+            )
         } else {
             Alert.alert(
-                StringText.SERVER_ERROR_TITLE,
-                StringText.SERVER_ERROR_DESC,
+                StringText.ALERT_PLEASE_FILL_TITLE,
+                StringText.ALERT_PLEASE_FILL_DESC,
                 [
                     {
                         text: 'OK', onPress: () => {
@@ -88,10 +118,14 @@ export default class RegisterActivity extends Component {
 
         if (code.DUPLICATE_DATA == data.code) {//409
             this.onOpenPinActivity()
-        } else if (code.DOES_NOT_EXISTS == data.code) {//401
-            this.setState({
-                showCreatePin: true
-            })
+        } else if (code.INVALID_USER_PASS == data.code) {//401
+            
+            if(data.data.code == "MSC29132AERR"){
+                this.setState({
+                    showCreatePin: true
+                })
+            }
+           
         } else {//500 
             Alert.alert(
                 StringText.SERVER_ERROR_TITLE,

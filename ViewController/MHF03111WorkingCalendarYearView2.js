@@ -545,11 +545,6 @@ export default class calendarYearView extends Component {
         data = data[1]
 
         if (code.SUCCESS == data.code) {
-            // console.log("onLoadCalendarAPI ====> SUCCESS year ==> ", this.state.selectYear)
-            // console.log("onLoadCalendarAPI ====> SUCCESS location ==> ", location)
-
-            // console.log("onLoadCalendarAPI ====> SUCCESS code  ==> ", data.code)
-            // console.log("onLoadCalendarAPI ====> SUCCESS data ==> ", data)
 
             this.props.navigation.navigate('calendarYearView', {
                 dataResponse: data,
