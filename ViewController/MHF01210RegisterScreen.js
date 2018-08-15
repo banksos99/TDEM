@@ -40,6 +40,9 @@ export default class RegisterActivity extends Component {
         firebase.analytics().setCurrentScreen(SharedPreference.SCREEN_REGISTER)
 
         SharedPreference.currentNavigator = SharedPreference.SCREEN_REGISTER
+
+        
+
     }
 
     onRegister = async () => {
@@ -398,44 +401,15 @@ export default class RegisterActivity extends Component {
         })
     }
     async componentDidMount() {
-        const enabled = await firebase.messaging().hasPermission();
+        const fcmToken = await firebase.messaging().getToken();
 
-        if (enabled) {
-          ////console.log("firebase ==> user has permissions")
+        if (fcmToken) {
+            // user has a device token
+            SharedPreference.deviceInfo.firebaseToken = fcmToken
+
         } else {
-          try {
-            await firebase.messaging().requestPermission();
-            ////console.log("firebase ==> User has authorised")
-          } catch (error) {
-            
-          }
+            // user doesn't have a device token yet
         }
-    
-        //////////Device Info/////////////
-        const deviceModel = DeviceInfo.getModel();
-        const deviceBrand = DeviceInfo.getBrand();
-        const deviceOS = DeviceInfo.getSystemName();
-        const deviceOSVersion = DeviceInfo.getSystemVersion();
-        const appVersion = DeviceInfo.getVersion();
-        const buildNumber = DeviceInfo.getBuildNumber();
-    
-        await firebase.messaging().getToken()
-          .then((token) => {
-            console.log('Register ==> firebase ==> message Device FCM Token: ', token);
-            SharedPreference.deviceInfo = {
-              "deviceModel": deviceModel,
-              "deviceBrand": deviceBrand,
-              "deviceOS": deviceOS,
-              "deviceOSVersion": deviceOSVersion,
-              "firebaseToken": token,
-              "appVersion": appVersion,
-              "buildNumber": buildNumber
-            }
-          });
-
-        this.setState({
-            versionCode: "Version : " + SharedPreference.deviceInfo.buildNumber
-        })
     }
 
     componentWillMount() {
@@ -469,14 +443,11 @@ export default class RegisterActivity extends Component {
             origin = origin + num
         }
 
-        // //////console.log("origin origin origin : ", origin)
-
         this.setState({
             pin: origin
         })
         this.state.pin = origin
-        console.log("pin ====> ", this.state.pin)
-        console.log("pin length ====> ", this.state.pin.length)
+
 
         if (this.state.pin.length == 6) {
             if (this.state.pin1.length == 0) {
@@ -807,16 +778,11 @@ export default class RegisterActivity extends Component {
                         {/* Device Info */}
                         <Text></Text>
                         <Text>{this.state.versionCode}</Text>
-                        <Text style={{ color: 'lightgray' }}>{this.state.datastatus}</Text>
-                        <Text style={{  color: 'lightgray' }}></Text>
-                                <Text style={{ fontSize:10, color: 'lightgray' }}>{SharedPreference.deviceInfo.deviceBrand},{SharedPreference.deviceInfo.deviceOS},{SharedPreference.deviceInfo.deviceModel},{SharedPreference.deviceInfo.deviceOSVersion},{SharedPreference.deviceInfo.appVersion}</Text>
-                                <Text style={{ fontSize:10, color: 'lightgray' }}>{SharedPreference.deviceInfo.firebaseToken}</Text>
-                        
-                       
-                        
+                        {/* <Text style={{ color: 'lightgray' }}>{this.state.datastatus}</Text>
+                        <Text style={{ fontSize: 10, color: 'lightgray' }}>{SharedPreference.deviceInfo.deviceBrand},{SharedPreference.deviceInfo.deviceOS},{SharedPreference.deviceInfo.deviceModel},{SharedPreference.deviceInfo.deviceOSVersion},{SharedPreference.deviceInfo.appVersion}</Text>
+                        <Text style={{ fontSize: 10, color: 'lightgray' }}>{SharedPreference.deviceInfo.firebaseToken}</Text> */}
                     </View>
                 </View >
-
                 {this.renderCreatePin()}
                 {this.renderCreatePinSuccess()}
             </View >

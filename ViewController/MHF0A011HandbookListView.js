@@ -161,7 +161,7 @@ export default class Handbookctivity extends Component {
     }
 
     checkDataFormat(DataResponse) {
-        //console.log('dataSource :', dataSource.length)
+        
         if (dataSource.length == 0) {
 
             if (DataResponse) {
@@ -175,7 +175,7 @@ export default class Handbookctivity extends Component {
                 dataSource = inappdata.dataSource.data.detail.items;
 
             }
-
+console.log('dataSource :', dataSource)
             this.createShelfHandbook();
         }
     }

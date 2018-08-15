@@ -612,7 +612,8 @@ export default class HandbookViewer extends Component {
 
         }
         //console.log('this.state.hilightList :', this.state.HandbookMarkList)
-
+        let item = item.date.split(' ')
+        let time = item[2] + item[1] + item[3]
         return (
 
             <ScrollView style={{ height: '40%' }}>
@@ -623,7 +624,7 @@ export default class HandbookViewer extends Component {
                             key={index + 100}>
                             <View style={{ justifyContent: 'center', height: 40, marginLeft: 20, marginRight: 20 }}>
                                 <View style={{ flex: 1, ustifyContent: 'center', flexDirection: 'column' }}>
-                                    <Text style={styles.epubHighlightdateText} numberOfLines={1}> {item.date}</Text>
+                                    <Text style={styles.epubHighlightdateText} numberOfLines={1}> {time}</Text>
                                     <Text style={styles.epubHighlighttitleText} numberOfLines={1}> {item.title}</Text>
                                 </View>
                             </View>
