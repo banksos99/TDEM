@@ -550,12 +550,17 @@ export default class EmpInfoDetail extends Component {
             if (empinfodetail.education.toeic) {
                 toeic = empinfodetail.education.toeic
             }
-
-            graduate = empinfodetail.education.graduate_year
-            degree = empinfodetail.education.degree
-            gpa = empinfodetail.education.gpa
-            major = empinfodetail.education.major
-            school_university = empinfodetail.education.school_university
+            
+            if (empinfodetail.education.graduate_year)
+                graduate = empinfodetail.education.graduate_year
+            if (empinfodetail.education.degree)
+                degree = empinfodetail.education.degree
+            if (empinfodetail.education.gpa)
+                gpa = empinfodetail.education.gpa
+            if (empinfodetail.education.major)
+                major = empinfodetail.education.major
+            if (empinfodetail.education.school_university)
+                school_university = empinfodetail.education.school_university
         }
 
         if (this.state.educationexpand) {

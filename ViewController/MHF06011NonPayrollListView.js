@@ -66,11 +66,11 @@ export default class NonpayrollActivity extends Component {
             // //console.log("element badge ==> ",badge)
 
             monthRow.push(
-                this.customMonthContainer(month, this.checkAmount(this.state.selectYear, month), badge)
+                this.customMonthContainer(month, this.checkAmount(this.state.selectYear, month), badge,index)
             )
             if (index % 3 === 2) {
                 monthContainer.push(
-                    <View style={{ flex: 1, flexDirection: 'row' }}>
+                    <View style={{ flex: 1, flexDirection: 'row' }} key={index}>
                         {monthRow}
                     </View>)
                 monthRow = []
@@ -104,7 +104,7 @@ export default class NonpayrollActivity extends Component {
         return Decrypt.decrypt(code);
     }
 
-    customMonthContainer(monthNumber, amount, badge) {
+    customMonthContainer(monthNumber, amount, badge,index) {
 
         if (badge == null) {
             badge = 0
@@ -117,12 +117,12 @@ export default class NonpayrollActivity extends Component {
 
             if (amount) {
 
-                return (<View style={styles.nonPayRollitemBg}>
+                return (<View style={styles.nonPayRollitemBg} key={index}>
                     <View style={[styles.nonPayRollitem, {
                         backgroundColor: Colors.calendarRedDotColor
                     }]}>
                         <TouchableOpacity
-                            style={styles.button}
+                            style={{ width: '100%',height:'100%' }}
                             disable={amount}
                             onPress={() => {
 
@@ -150,12 +150,12 @@ export default class NonpayrollActivity extends Component {
                 </View>)
             }
             amount = '0.00'
-            return (<View style={styles.nonPayRollitemBg}>
+            return (<View style={styles.nonPayRollitemBg}  key={index}>
                 <View style={[styles.nonPayRollitem, {
                     backgroundColor: Colors.calendarRedDotColor
                 }]}>
                     <TouchableOpacity
-                        style={styles.button}
+                        style={{ width: '100%',height:'100%' }}
                         disable={amount}
                         onPress={() => {
                             this.onLoadAlertDialog()
@@ -182,17 +182,18 @@ export default class NonpayrollActivity extends Component {
             // nodata
             return <View style={[styles.nonPayRollitem, {
                 backgroundColor: 'white',
-            }]}>
+            }]}  key={index}>
             </View>
 
         } else if (amount) {//Normal Month - Has data 
             //console.log('amount :', amount)
             return (
-                <View style={styles.nonPayRollitemBg}>
+                <View style={styles.nonPayRollitemBg}  key={index}>
                     <View style={[styles.nonPayRollitem, {
                         backgroundColor: Colors.calendarLocationBoxColor
                     }]}>
-                        <TouchableOpacity style={styles.button}
+                        <TouchableOpacity 
+                        style={{ width: '100%',height:'100%' }}
                             onPress={() => {
                                 //console.log("onPress ==> monthNumber ==> ", monthNumber, " , year ==> ", this.state.selectYear)
                                 let badgeData = this.state.badgeArray
@@ -238,8 +239,9 @@ export default class NonpayrollActivity extends Component {
             return (//Normal Month - No data
                 <View style={[styles.nonPayRollitem, {
                     backgroundColor: "white",
-                }]}>
-                    <TouchableOpacity style={styles.button}
+                }]}  key={index}>
+                    <TouchableOpacity 
+                    style={{ width: '100%',height:'100%' }}
                         onPress={() => {
                             this.onLoadAlertDialog()
                         }}>
@@ -259,7 +261,6 @@ export default class NonpayrollActivity extends Component {
         this.setState({
             isscreenloading: false,
         })
-
 
         Alert.alert(
             StringText.ALERT_AUTHORLIZE_ERROR_TITLE,

@@ -193,10 +193,12 @@ export default class PaySlipActivity extends Component {
                     }
 
                     return (
+
+                        //have data
                         <View style={i === currentmonth && indexselectyear === 0 ?
                             styles.payslipitemlast :
                             i > currentmonth && indexselectyear === 0 ? styles.payslipitemdisable : styles.payslipitem} key={i}>
-                            <TouchableOpacity style={{ flex: 1 }}
+                            <TouchableOpacity style={{ width: '100%',height:'100%' }}
                                 onPress={() => { this.onDetail(indexselectyear, i) }}
                             >
 
@@ -253,7 +255,7 @@ export default class PaySlipActivity extends Component {
                         styles.payslipitemlast :
                         styles.payslipitemdisable}
                         key={i}>
-                        <TouchableOpacity style={{ flex: 1 }}
+                        <TouchableOpacity style={{ width: '100%',height:'100%' }}
                             onPress={() => { this.onNoDataDetail(indexselectyear, i) }}
                         >
                             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', }}>
@@ -277,7 +279,7 @@ export default class PaySlipActivity extends Component {
                 styles.payslipitemlast :
                 styles.payslipitemdisable}
                 key={i}>
-                <TouchableOpacity style={{ flex: 1 }}
+                <TouchableOpacity style={{ width: '100%',height:'100%' }}
                     onPress={() => {
                         this.onLoadAlertDialog()
                     }}

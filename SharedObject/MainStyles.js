@@ -914,6 +914,7 @@ export const styles = StyleSheet.create({
 
         fontSize: 25 * scale,
         textAlign: 'center',
+        justifyContent:'center',
         color: Colors.redTextColor,
         fontFamily: font_medium
 
@@ -992,45 +993,45 @@ export const styles = StyleSheet.create({
     nonPayrollBadgeText: {
         color: 'white',
         textAlign: 'center',
-        fontSize: 10
+        fontSize: 10* scale
     },
     payslipTextCente_income_ena: {
         color: 'white',
-        fontSize: 15,
+        fontSize: 15* scale,
         textAlign: 'left',
         fontFamily: font_medium
 
     },
     payslipTextCente_income_dis: {
         color: Colors.midnightblue,
-        fontSize: 15,
+        fontSize: 15* scale,
         textAlign: 'left',
         fontFamily: font_medium
 
     },
     payslipTextCente_deduct_ena: {
         color: 'white',
-        fontSize: 15,
+        fontSize: 15 * scale,
         textAlign: 'left',
         fontFamily: font_medium
 
     },
     payslipTextCente_deduct_dis: {
         color: 'red',
-        fontSize: 15,
+        fontSize: 15 * scale,
         textAlign: 'left',
         fontFamily: font_medium
 
     },
     payslipTextLeft: {
         color: 'white',
-        fontSize: 20,
+        fontSize: 16 * scale,
         textAlign: 'left',
         fontFamily: font_medium
 
     }, payslipTextRight: {
         color: 'white',
-        fontSize: 20,
+        fontSize: 16 * scale,
         textAlign: 'right',
         fontFamily: font_medium
     },
@@ -1121,6 +1122,14 @@ export const styles = StyleSheet.create({
     },
     registPinForgotContainer: {
         marginTop: 10,
+        color: 'white',
+        fontSize: 15,
+        textAlign: 'right',
+        fontFamily: font_medium
+
+    },
+    registPinEnterContainer: {
+        //marginTop: 10,
         color: 'white',
         fontSize: 15,
         textAlign: 'right',
@@ -1237,7 +1246,8 @@ export const styles = StyleSheet.create({
     },
     pinFailBoxText: {
         color: Colors.redColor,
-        fontSize: 12
+        fontSize: 12,
+        fontFamily: font_medium,
     },
     emptyDialogContainer: {
         flex: 1,
@@ -1391,6 +1401,30 @@ export const styles = StyleSheet.create({
     calendarDownloadCancelText: {
         color: Colors.redTextColor,
         fontSize: 12 * scale,
+    },
+    titlepicker: {
+
+        marginLeft: 20 * scale,
+        marginTop: 10 * scale,
+        textAlign: 'left',
+        color: 'black',
+        fontSize: 15 * scale,
+        fontWeight: 'bold',
+        fontFamily: font_medium
+    },
+    buttonpicker: {
+        textAlign: 'center',
+        color: Colors.redTextColor,
+        fontSize: 17 * scale,
+        width: 80 * scale,
+        height: 30 * scale,
+        alignItems: 'center',
+        fontFamily: font_medium
+    },
+    datapicker:{
+
+
+
     }
 
 })

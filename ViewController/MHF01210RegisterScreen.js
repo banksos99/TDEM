@@ -14,6 +14,7 @@ import SaveTOKEN from "./../constants/SaveToken"
 import LoginWithPinAPI from "./../constants/LoginWithPinAPI"
 import RestAPI from "./../constants/RestAPI"
 import firebase from 'react-native-firebase';
+import DeviceInfo from 'react-native-device-info';
 
 export default class RegisterActivity extends Component {
 
@@ -33,7 +34,8 @@ export default class RegisterActivity extends Component {
             pintitle: 'Create Pin',
             username: '',
             password: '',
-            versionCode: "Version : " + SharedPreference.deviceInfo.buildNumber
+            versionCode: "Version : " + SharedPreference.deviceInfo.buildNumber,
+            datastatus:0,
         }
         firebase.analytics().setCurrentScreen(SharedPreference.SCREEN_REGISTER)
 
@@ -47,8 +49,22 @@ export default class RegisterActivity extends Component {
         code = data[0]
         data = data[1]
 
-
         console.log("onRegister ==> ", data.code)
+        this.setState({
+            datastatus: data.code
+        })
+        // Alert.alert(
+        //     SharedPreference.deviceInfo.deviceOSVersion,
+        //     data.code.toString(),
+        //     [
+        //         {
+        //             text: 'OK', onPress: () => {
+        //                 console.log('OK Pressed')
+        //             }
+        //         }
+        //     ],
+        //     { cancelable: false }
+        // )
         if (code.SUCCESS == data.code) {
             this.saveProfile.setProfile(data.data)
             SharedPreference.profileObject = await this.saveProfile.getProfile()
@@ -98,8 +114,10 @@ export default class RegisterActivity extends Component {
             )
         } else {
             Alert.alert(
-                StringText.ALERT_PLEASE_FILL_TITLE,
-                StringText.ALERT_PLEASE_FILL_DESC,
+                // StringText.ALERT_PLEASE_FILL_TITLE,
+                // StringText.ALERT_PLEASE_FILL_DESC,
+                data.data.code,
+                data.data.detail,
                 [
                     {
                         text: 'OK', onPress: () => {
@@ -367,7 +385,6 @@ export default class RegisterActivity extends Component {
 
             }
 
-
         }
         this.props.navigation.navigate('HomeScreen')
     }
@@ -380,7 +397,42 @@ export default class RegisterActivity extends Component {
             pin2: [],
         })
     }
-    componentDidMount() {
+    async componentDidMount() {
+        const enabled = await firebase.messaging().hasPermission();
+
+        if (enabled) {
+          ////console.log("firebase ==> user has permissions")
+        } else {
+          try {
+            await firebase.messaging().requestPermission();
+            ////console.log("firebase ==> User has authorised")
+          } catch (error) {
+            
+          }
+        }
+    
+        //////////Device Info/////////////
+        const deviceModel = DeviceInfo.getModel();
+        const deviceBrand = DeviceInfo.getBrand();
+        const deviceOS = DeviceInfo.getSystemName();
+        const deviceOSVersion = DeviceInfo.getSystemVersion();
+        const appVersion = DeviceInfo.getVersion();
+        const buildNumber = DeviceInfo.getBuildNumber();
+    
+        await firebase.messaging().getToken()
+          .then((token) => {
+            ////console.log('firebase ==> message Device FCM Token: ', token);
+            SharedPreference.deviceInfo = {
+              "deviceModel": deviceModel,
+              "deviceBrand": deviceBrand,
+              "deviceOS": deviceOS,
+              "deviceOSVersion": deviceOSVersion,
+              "firebaseToken": token,
+              "appVersion": appVersion,
+              "buildNumber": buildNumber
+            }
+          });
+
         this.setState({
             versionCode: "Version : " + SharedPreference.deviceInfo.buildNumber
         })
@@ -741,7 +793,9 @@ export default class RegisterActivity extends Component {
                             </View>
 
                             <View style={styles.registLine} />
-                            <TouchableOpacity onPress={() => this.onRegister()}>
+                            <TouchableOpacity 
+                           onPress={() => this.onRegister()}
+                            >
                                 <View style={styles.registButton}>
                                     <Text style={styles.registTextButton}>
                                         Log In
@@ -750,8 +804,15 @@ export default class RegisterActivity extends Component {
                             </TouchableOpacity>
                         </View>
                         {/* Device Info */}
+                        <Text></Text>
                         <Text>{this.state.versionCode}</Text>
-
+                        <Text style={{ color: 'lightgray' }}>{this.state.datastatus}</Text>
+                        <Text style={{  color: 'lightgray' }}></Text>
+                                <Text style={{ fontSize:10, color: 'lightgray' }}>{SharedPreference.deviceInfo.deviceBrand},{SharedPreference.deviceInfo.deviceOS},{SharedPreference.deviceInfo.deviceModel},{SharedPreference.deviceInfo.deviceOSVersion},{SharedPreference.deviceInfo.appVersion}</Text>
+                                <Text style={{ fontSize:10, color: 'lightgray' }}>{SharedPreference.deviceInfo.firebaseToken}</Text>
+                        
+                       
+                        
                     </View>
                 </View >
 

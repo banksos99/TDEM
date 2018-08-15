@@ -327,11 +327,11 @@ export default class calendarYearView extends Component {
                                     <Text style={{ fontSize: 10, textAlign: 'right', color: state === 'disabled' ? 'white' : Colors.calendarGrayText }}>
                                         {date.day}</Text>
                                 </View>
-                            } else if ((this.state.countDay.length % 7) == 0 || (this.state.countDay.length % 7) == 1) {//Holiday
-                                return <View style={styles.calendarDayContainer}>
-                                    <Text style={{ fontSize: 10, textAlign: 'right', color: state === 'disabled' ? 'white' : Colors.redTextColor }}>
-                                        {date.day}</Text>
-                                </View>
+                //} else if ((this.state.countDay.length % 7) == 0 || (this.state.countDay.length % 7) == 1) {//Holiday
+                  //              return <View style={styles.calendarDayContainer}>
+                    //                <Text style={{ fontSize: 10, textAlign: 'right', color: state === 'disabled' ? 'white' : Colors.redTextColor }}>
+                      //                  {date.day}</Text>
+                        //s        </View>
                             } else if ((this.state.today.getDate() == date.day) && ((this.state.today.getMonth() + 1) == date.month)
                                 && (this.state.today.getFullYear() == date.year)) {
                                 return <View style={styles.calendarCurrentDayCicleContainer}>
