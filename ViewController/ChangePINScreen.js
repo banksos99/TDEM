@@ -62,7 +62,7 @@ export default class NonpayrollActivity extends Component {
             if (this.state.oldpin == 0) {
                 console.log("state ==> oldpin")
                 this.setState({
-                    isLoading: true,
+                    // isLoading: true,
                     oldpin: this.state.pin,
                 })
                 this.state.oldpin = this.state.pin
@@ -80,11 +80,11 @@ export default class NonpayrollActivity extends Component {
                     console.log("ChangePIN ==> oldpin ==> ", this.state.oldpin)
                     console.log("ChangePIN ==> pin ==> ", this.state.pin)
 
-                }, 600);
+                }, 300);
 
             } else if (this.state.newpin1 == 0) {
                 this.setState({
-                    isLoading: true,
+                    // isLoading: true,
                     newpin1: this.state.pin
                 })
                 this.state.newpin1 = this.state.pin
@@ -103,17 +103,29 @@ export default class NonpayrollActivity extends Component {
                     this.state.pintitle = StringText.CHANGE_PIN_ENTER_NEW_PIN_2_TITLE
                     this.state.isLoading = false
                     console.log("ChangePIN ==> pintitle2 ==> ", StringText.CHANGE_PIN_ENTER_NEW_PIN_2_TITLE)
-                }, 600);
+                }, 300);
             } else if (this.state.newpin2 == 0) {
                 this.setState({
-                    newpin2: this.state.pin,
-                    pin: [],
-                    isLoading: true
+                    isLoading: true,
+                    newpin2: this.state.pin
                 })
                 this.state.newpin2 = this.state.pin
-                this.state.pin = []
 
-                console.log("newpin2 ==> ",this.state.newpin2)
+
+                this.timer = setTimeout(() => {
+
+                    this.setState({
+                        // newpin2: this.state.pin,
+                        pin: [],
+                        // isLoading: true
+                    })
+                    // this.state.newpin2 = this.state.pin
+                    this.state.pin = []
+
+                }, 300);
+
+
+                console.log("newpin2 ==> ", this.state.newpin2)
                 if (this.state.newpin1 == this.state.newpin2) {
                     this.onChangePINAPI()
                 } else {
@@ -123,7 +135,6 @@ export default class NonpayrollActivity extends Component {
                         [
                             {
                                 text: 'OK', onPress: () => {
-
                                     this.setState({
                                         pin: [],
                                         oldpin: [],

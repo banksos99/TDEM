@@ -664,6 +664,7 @@ export default class RegisterActivity extends Component {
                 </View>)
         }
     }
+    
     renderProgressView() {
         if (this.state.isLoading) {
             return (

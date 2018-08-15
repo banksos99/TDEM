@@ -3,7 +3,7 @@ import {
     View, Text, TouchableOpacity, Picker,
     Image, Switch, ActivityIndicator, ScrollView,
     RefreshControl, Alert, NetInfo,
-    Platform, Dimensions, BackHandler,StatusBar
+    Platform, Dimensions, BackHandler, StatusBar
 } from "react-native";
 import { styles } from "../SharedObject/MainStyles";
 import Colors from "../SharedObject/Colors"
@@ -59,7 +59,7 @@ export default class HMF01011MainView extends Component {
     constructor(props) {
         super(props);
         this.state = {
-           // isscreenloading: true,
+            // isscreenloading: true,
             syncCalendar: true,
             announcementType: initannouncementType,
             announcementTypetext: initannouncementTypetext,
@@ -76,7 +76,8 @@ export default class HMF01011MainView extends Component {
             announcetypelist: ['All', 'Company Announcement', 'Emergency Announcement', 'Event Announcement', 'General Announcement'],
             announcestatuslist: ['All', 'Read', 'Unread'],
             notiAnnounceMentBadge: SharedPreference.notiAnnounceMentBadge,
-            notiPayslipBadge: 0
+            notiPayslipBadge: 0,
+            nonPayrollBadgeFirstTime: true
             //  page: 0
         }
 
@@ -150,7 +151,7 @@ export default class HMF01011MainView extends Component {
                 settingstatus = 'Y'
             }
         }
-    
+
     }
 
     componentWillMount() {
@@ -178,16 +179,14 @@ export default class HMF01011MainView extends Component {
         this.setState({
             syncCalendar: autoSyncCalendarBool
         })
-
-        // await this.onLoadInAppNoti()
         SharedPreference.calendarAutoSync = autoSyncCalendarBool
-
+        this.onLoadInAppNoti()
     }
 
     async componentDidMount() {
 
         this.inappTimeInterval()
-       // this.redertabview()
+        // this.redertabview()
         NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectivityChange);
 
         if (SharedPreference.notipayslipID) {
@@ -201,7 +200,7 @@ export default class HMF01011MainView extends Component {
         }
 
         await this.loadData()
-        
+
     }
 
     onLoadInAppNoti = async () => {
@@ -209,19 +208,23 @@ export default class HMF01011MainView extends Component {
         let lastTime = await this.saveTimeNonPayroll.getTimeStamp()
 
         if ((lastTime == null) || (lastTime == undefined)) {
-            let today = new Date()
-            const _format = 'YYYY-MM-DD hh:mm:ss'
-            const newdate = moment(today).format(_format).valueOf();
-            lastTime = newdate
+
+            if (this.state.nonPayrollBadgeFirstTime == true) {
+                let today = new Date()
+                const _format = 'YYYY-MM-DD hh:mm:ss'
+                const newdate = moment(today).format(_format).valueOf();
+                lastTime = newdate,
+                    this.setState({
+                        nonPayrollBadgeFirstTime: false
+                    })
+            }
         }
 
+        console.log("onLoadInAppNoti ==> ", SharedPreference.PULL_NOTIFICATION_API + lastTime)
 
-        //console.log("onLoadInAppNoti ==> lastTime ==> ", lastTime)
         FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, 1, SharedPreference.profileObject.client_token)
-        console.log('FB token : ', SharedPreference.deviceInfo);
-        console.log('FUNCTION_TOKEN : ', FUNCTION_TOKEN)
-        latest_date = "2017-01-01 12:00:00"
-        return fetch(SharedPreference.PULL_NOTIFICATION_API + latest_date, {
+        return fetch(SharedPreference.PULL_NOTIFICATION_API + lastTime, {
+
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
@@ -240,7 +243,7 @@ export default class HMF01011MainView extends Component {
                         this.onAutenticateErrorAlertDialog()
 
                     } else if (responseJson.status == 200) {
-                        
+
                         let dataArray = responseJson.data
                         let currentyear = new Date().getFullYear();
 
@@ -315,7 +318,7 @@ export default class HMF01011MainView extends Component {
                                     notiAnnounceMentBadge: parseInt(dataReceive.badge_count) + parseInt(this.state.notiAnnounceMentBadge)
                                 })
 
-                            //    this.notificationListener(this.state.notiAnnounceMentBadge)
+                                //    this.notificationListener(this.state.notiAnnounceMentBadge)
 
                             }
                             // else if (dataReceive.function_id == "PHF05010") {
@@ -336,8 +339,8 @@ export default class HMF01011MainView extends Component {
 
                     }
 
-                     this.inappTimeInterval()
-                  
+                    this.inappTimeInterval()
+
 
                 } catch (error) {
                     //console.log('erreo1 :', error);
@@ -353,13 +356,12 @@ export default class HMF01011MainView extends Component {
     inappTimeInterval() {
 
         this.timer = setTimeout(() => {
-
             this.onLoadInAppNoti()
-          
-           }, 60000);
-      
+        // }, 3000);
+        }, 60000);
+
     };
-   
+
     componentWillUnmount() {
 
         clearTimeout(this.timer);
@@ -461,7 +463,7 @@ export default class HMF01011MainView extends Component {
                         annrefresh: false
                     }, function () {
 
-                        console.log("loadAnnouncementfromAPI responseJson => ",responseJson)
+                        console.log("loadAnnouncementfromAPI responseJson => ", responseJson)
                         if (responseJson.status === 200) {
                             this.setState(this.renderloadingscreen());
 
@@ -469,7 +471,7 @@ export default class HMF01011MainView extends Component {
                             this.setState({
                                 notiAnnounceMentBadge: 0
                             })
-                           this.notificationListener(this.state.notiAnnounceMentBadge);
+                            this.notificationListener(this.state.notiAnnounceMentBadge);
                             tempannouncementData = []
                             announcementData = responseJson.data;
                             announcementData.map((item, i) => {
@@ -663,7 +665,7 @@ export default class HMF01011MainView extends Component {
             this.setState({
                 notiAnnounceMentBadge: 0
             })
-           this.notificationListener(this.state.notiAnnounceMentBadge)
+            this.notificationListener(this.state.notiAnnounceMentBadge)
             tempannouncementData = []
             announcementData = responseJson.data;
             announcementData.map((item, i) => {
@@ -925,9 +927,9 @@ export default class HMF01011MainView extends Component {
         this.setState({
             isscreenloading: false,
         })
-        console.log('datadetail => ',data) 
+        console.log('datadetail => ', data)
         if (code.SUCCESS == data.code) {
-            
+
             this.props.navigation.navigate(rount, {
                 DataResponse: data.data,
             });
@@ -1101,8 +1103,6 @@ export default class HMF01011MainView extends Component {
                         isscreenloading: false
                     })
                     this.props.navigation.navigate('RegisterScreen')
-
-
                 }
             }],
             { cancelable: false }
@@ -1110,7 +1110,7 @@ export default class HMF01011MainView extends Component {
 
         //console.log("error : ", error)
 
-        
+
 
     }
 
@@ -1297,7 +1297,7 @@ export default class HMF01011MainView extends Component {
 
     onOpenAnnouncementDetail(item, index) {
 
-        console.log('onOpenAnnouncementDetail',)
+        console.log('onOpenAnnouncementDetail', )
         this.setState({
             isscreenloading: true,
             loadingtype: 3
@@ -2076,7 +2076,7 @@ export default class HMF01011MainView extends Component {
                     ? { width: '100%', height: '100%', position: 'absolute', }
                     : { width: 1, height: 1, position: 'absolute', }}>
                     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                        <Text style={tempannouncementData.length === 0?{ fontSize: 25, textAlign: 'center', color: 'transparent' }:{ fontSize: 25, textAlign: 'center', color: 'black' }}> No Data</Text>
+                        <Text style={tempannouncementData.length === 0 ? { fontSize: 25, textAlign: 'center', color: 'transparent' } : { fontSize: 25, textAlign: 'center', color: 'black' }}> No Data</Text>
 
 
                     </View>
@@ -2317,7 +2317,7 @@ export default class HMF01011MainView extends Component {
 
     select_sign_out() {
 
-        
+
         clearTimeout(this.timer);
 
         this.setState({
@@ -2346,25 +2346,25 @@ export default class HMF01011MainView extends Component {
             //   .android.setSmallIcon('ic_stat_notification') // create this icon in Android Studio
             //   .android.setColor('#000000') // you can set a color here
             //   .android.setPriority(firebase.notifications.Android.Priority.High);
-    
+
             // firebase.notifications()
             //   .displayNotification(localNotification)
             //   .catch(err => console.error(err));
 
-        }else if (Platform.OS === 'ios') {
+        } else if (Platform.OS === 'ios') {
             const localNotification = new firebase.notifications.Notification()
-            //   .setNotificationId(notification.notificationId)
-            //   .setTitle(notification.title)
-            //   .setSubtitle(notification.subtitle)
-            //   .setBody(notification.body)
-            //   .setData(notification.data)
-              .ios.setBadge(badge);
-              firebase.notifications()
-              .displayNotification(localNotification)
-              .catch(err => console.error(err));
+                //   .setNotificationId(notification.notificationId)
+                //   .setTitle(notification.title)
+                //   .setSubtitle(notification.subtitle)
+                //   .setBody(notification.body)
+                //   .setData(notification.data)
+                .ios.setBadge(badge);
+            firebase.notifications()
+                .displayNotification(localNotification)
+                .catch(err => console.error(err));
         }
-        
-       
+
+
     }
 
     loadSignOutAPI = async () => {
@@ -2381,8 +2381,8 @@ export default class HMF01011MainView extends Component {
             page = 0
             timerstatus = false
             SharedPreference.Handbook = []
-            announcementData=[]
-            tempannouncementData=[]
+            announcementData = []
+            tempannouncementData = []
             SharedPreference.profileObject = null
             this.saveProfile.setProfile(null)
             this.setState({
@@ -2400,8 +2400,8 @@ export default class HMF01011MainView extends Component {
                             page = 0
                             timerstatus = false
                             SharedPreference.Handbook = []
-                            announcementData=[]
-                            tempannouncementData=[]
+                            announcementData = []
+                            tempannouncementData = []
                             SharedPreference.profileObject = null
                             this.saveProfile.setProfile(null)
                             this.setState({
@@ -2707,7 +2707,7 @@ export default class HMF01011MainView extends Component {
 
         return (
             <View style={{ flex: 1 }}>
-                
+
                 <View style={{ flex: 1, flexDirection: 'column' }}>
                     {/* <View style={{ height: 1, }} /> */}
                     <View style={{ flex: 1 }} >

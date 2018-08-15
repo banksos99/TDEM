@@ -101,4 +101,6 @@ export default {
   ALERT_PIN_CANNOT_LOGOUT_TITILE: 'Sorry',
   ALERT_PIN_CANNOT_LOGOUT_DESC: 'Find problem about log out.Please try again.',
 
+  ALERT_SESSION_TIMEOUT_TITILE: 'Sorry',
+  ALERT_SESSION_TIMEOUT_DESC: 'Session Time out.Please try again',
 };
