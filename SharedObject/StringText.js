@@ -99,6 +99,6 @@ export default {
   ALERT_PIN_CANNOT_FIND_DESC: 'Cannot find your PIN. Please try again.',
 
   ALERT_PIN_CANNOT_LOGOUT_TITILE: 'Sorry',
-  ALERT_PIN_CANNOT_LOGOUT_DESC: 'Cannot logout.Please try again.',
+  ALERT_PIN_CANNOT_LOGOUT_DESC: 'Find problem about log out.Please try again.',
 
 };

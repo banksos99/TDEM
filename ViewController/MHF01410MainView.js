@@ -184,13 +184,13 @@ export default class HMF01011MainView extends Component {
             syncCalendar: autoSyncCalendarBool
         })
 
-       // await this.onLoadInAppNoti()
+        // await this.onLoadInAppNoti()
         SharedPreference.calendarAutoSync = autoSyncCalendarBool
 
     }
 
     async componentDidMount() {
-       // this.redertabview()
+        // this.redertabview()
         NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectivityChange);
 
         if (SharedPreference.notipayslipID) {
@@ -205,7 +205,7 @@ export default class HMF01011MainView extends Component {
 
         await this.loadData()
 
-        
+
     }
 
     onLoadInAppNoti = async () => {
@@ -222,7 +222,7 @@ export default class HMF01011MainView extends Component {
 
         //console.log("onLoadInAppNoti ==> lastTime ==> ", lastTime)
         FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, 1, SharedPreference.profileObject.client_token)
-        console.log('FB token : ',SharedPreference.deviceInfo);
+        console.log('FB token : ', SharedPreference.deviceInfo);
         console.log('FUNCTION_TOKEN : ', FUNCTION_TOKEN)
         latest_date = "2017-01-01 12:00:00"
         return fetch(SharedPreference.PULL_NOTIFICATION_API + latest_date, {
@@ -340,7 +340,7 @@ export default class HMF01011MainView extends Component {
                     if (timerstatus) {
                         this.inappTimeInterval()
                     }
-                    
+
                     // this.setState({
                     // }, function () {
                     // });
@@ -1090,7 +1090,18 @@ export default class HMF01011MainView extends Component {
             StringText.ALERT_AUTHORLIZE_ERROR_MESSAGE,
             [{
                 text: 'OK', onPress: () => {
-                    this.select_sign_out()
+                    // this.select_sign_out()/
+                    page = 0
+                    timerstatus = false
+                    SharedPreference.Handbook = []
+                    SharedPreference.profileObject = null
+                    this.saveProfile.setProfile(null)
+                    this.setState({
+                        isscreenloading: false
+                    })
+                    this.props.navigation.navigate('RegisterScreen')
+
+
                 }
             }],
             { cancelable: false }
@@ -2321,8 +2332,8 @@ export default class HMF01011MainView extends Component {
             this.props.navigation.navigate('RegisterScreen')
         } else if (code.INVALID_USER_PASS == data.code) {
             Alert.alert(
-                StringText.ALERT_PIN_CANNOT_FIND_TITLE,
-                StringText.ALERT_PIN_CANNOT_FIND_DESC,
+                data.data.code,
+                data.data.detail,
                 [
                     {
                         text: 'OK', onPress: () => {
@@ -2335,11 +2346,13 @@ export default class HMF01011MainView extends Component {
                                 isscreenloading: false
                             })
                             this.props.navigation.navigate('RegisterScreen')
+
                         }
                     }
                 ],
                 { cancelable: false }
             )
+
         } else {
             Alert.alert(
                 StringText.ALERT_PIN_CANNOT_LOGOUT_TITILE,
@@ -2348,9 +2361,18 @@ export default class HMF01011MainView extends Component {
                     {
                         text: 'OK', onPress: () => {
                             //TODO Log out
+                            // this.setState({
+                            //     isscreenloading: false
+                            // })
+                            page = 0
+                            timerstatus = false
+                            SharedPreference.Handbook = []
+                            SharedPreference.profileObject = null
+                            this.saveProfile.setProfile(null)
                             this.setState({
                                 isscreenloading: false
                             })
+                            this.props.navigation.navigate('RegisterScreen')
                         }
                     }
                 ],

@@ -62,38 +62,48 @@ export default class NonpayrollActivity extends Component {
             if (this.state.oldpin == 0) {
                 console.log("state ==> oldpin")
                 this.setState({
-                    isLoading: true
-                })
-
-                this.setState({
+                    isLoading: true,
                     oldpin: this.state.pin,
-                    pin: [],
-                    pintitle: StringText.CHANGE_PIN_ENTER_NEW_PIN_1_TITLE,
-                    isLoading: false
                 })
                 this.state.oldpin = this.state.pin
-                this.state.pin = []
-                this.state.pintitle = StringText.CHANGE_PIN_ENTER_NEW_PIN_1_TITLE
-                this.state.isLoading = false
 
-                console.log("oldpin ==> ", this.state.oldpin)
+                this.timer = setTimeout(() => {
+                    this.setState({
+                        pin: [],
+                        pintitle: StringText.CHANGE_PIN_ENTER_NEW_PIN_1_TITLE,
+                        isLoading: false
+                    })
+                    this.state.pin = []
+                    this.state.pintitle = StringText.CHANGE_PIN_ENTER_NEW_PIN_1_TITLE
+                    this.state.isLoading = false
+                    console.log("ChangePIN ==> pintitle1 ==> ", StringText.CHANGE_PIN_ENTER_NEW_PIN_1_TITLE)
+                    console.log("ChangePIN ==> oldpin ==> ", this.state.oldpin)
+                    console.log("ChangePIN ==> pin ==> ", this.state.pin)
+
+                }, 600);
 
             } else if (this.state.newpin1 == 0) {
                 this.setState({
-                    isLoading: true
+                    isLoading: true,
+                    newpin1: this.state.pin
                 })
-                this.setState({
-                    newpin1: this.state.pin,
-                    pin: [],
-                    pintitle: StringText.CHANGE_PIN_ENTER_NEW_PIN_2_TITLE,
-                    isLoading: false
-                })
-
                 this.state.newpin1 = this.state.pin
-                this.state.pin = []
-                this.state.pintitle = StringText.CHANGE_PIN_ENTER_NEW_PIN_2_TITLE
-                this.state.isLoading = false
 
+
+                this.timer = setTimeout(() => {
+                    this.setState({
+                        // newpin1: this.state.pin,
+                        pin: [],
+                        pintitle: StringText.CHANGE_PIN_ENTER_NEW_PIN_2_TITLE,
+                        isLoading: false
+                    })
+
+                    // this.state.newpin1 = this.state.pin
+                    this.state.pin = []
+                    this.state.pintitle = StringText.CHANGE_PIN_ENTER_NEW_PIN_2_TITLE
+                    this.state.isLoading = false
+                    console.log("ChangePIN ==> pintitle2 ==> ", StringText.CHANGE_PIN_ENTER_NEW_PIN_2_TITLE)
+                }, 600);
             } else if (this.state.newpin2 == 0) {
                 this.setState({
                     newpin2: this.state.pin,
@@ -102,6 +112,7 @@ export default class NonpayrollActivity extends Component {
                 })
                 this.state.newpin2 = this.state.pin
                 this.state.pin = []
+                
                 if (this.state.newpin1 == this.state.newpin2) {
                     this.onChangePINAPI()
                 } else {

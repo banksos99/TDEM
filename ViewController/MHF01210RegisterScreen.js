@@ -47,7 +47,6 @@ export default class RegisterActivity extends Component {
         code = data[0]
         data = data[1]
 
-
         console.log("onRegister ==> ", data.code)
         if (code.SUCCESS == data.code) {
             this.saveProfile.setProfile(data.data)
@@ -431,7 +430,7 @@ export default class RegisterActivity extends Component {
                 this.setState({
                     isLoading: true
                 })
-                this.timer = setTimeout(() => {
+                // this.timer = setTimeout(() => {
                     this.setState({
                         pin: [],
                         pin1: origin,
@@ -442,7 +441,7 @@ export default class RegisterActivity extends Component {
                     this.state.pin1 = origin
                     this.state.pintitle = 'Confirm Pin'
                     this.state.isLoading = false
-                }, 1000);
+                // }, 1000);
             } else {
                 this.setState({
                     isLoading: true
