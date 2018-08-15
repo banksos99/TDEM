@@ -16,7 +16,8 @@ import SaveProfile from "../constants/SaveProfile"
 import SaveTimeNonPayroll from "../constants/SaveTimeNonPayroll"
 import StringText from '../SharedObject/StringText';
 import firebase from 'react-native-firebase';
-const ROLL_ANNOUNCE = 10;
+
+const ROLL_ANNOUNCE = 50;
 
 let annountype = { 'All': 'All', 'Company Announcement': 'Company Announcement', 'Emergency Announcement': 'Emergency Announcement', 'Event Announcement': 'Event Announcement', 'General Announcement': 'General Announcement' };
 let announstatus = { 'All': 'All', 'true': 'Read', 'false': 'Unread' };
@@ -47,8 +48,6 @@ let timerstatus = false;
 import moment from 'moment'
 
 import Authorization from "../SharedObject/Authorization";
-
-
 
 export default class HMF01011MainView extends Component {
 
@@ -81,7 +80,7 @@ export default class HMF01011MainView extends Component {
         }
 
         SharedPreference.currentNavigator = SharedPreference.SCREEN_MAIN
-
+        inappTimeIntervalStatus = true
         rolemanagementEmpoyee = [0, 0, 0, 0, 0, 0, 0, 0];
         rolemanagementManager = [0, 0, 0, 0];
         managerstatus = 'N';
@@ -187,7 +186,7 @@ export default class HMF01011MainView extends Component {
     async componentDidMount() {
 
         this.inappTimeInterval()
-       // this.redertabview()
+  
         NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectivityChange);
 
         if (SharedPreference.notipayslipID) {
@@ -217,11 +216,13 @@ export default class HMF01011MainView extends Component {
 
 
         //console.log("onLoadInAppNoti ==> lastTime ==> ", lastTime)
-        FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, 1, SharedPreference.profileObject.client_token)
-        console.log('FB token : ',SharedPreference.deviceInfo);
-        console.log('FUNCTION_TOKEN : ', FUNCTION_TOKEN)
         latest_date = "2017-01-01 12:00:00"
-        return fetch(SharedPreference.PULL_NOTIFICATION_API + latest_date, {
+        FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, 1, SharedPreference.profileObject.client_token)
+        let urlPullnoti = SharedPreference.PULL_NOTIFICATION_API + latest_date
+        console.log('urlPullnoti : ',urlPullnoti);
+        console.log('FUNCTION_TOKEN : ', FUNCTION_TOKEN)
+        
+        return fetch(urlPullnoti, {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
@@ -239,8 +240,10 @@ export default class HMF01011MainView extends Component {
 
                         this.onAutenticateErrorAlertDialog()
 
+                        inappTimeIntervalStatus = false
+
                     } else if (responseJson.status == 200) {
-                        
+
                         let dataArray = responseJson.data
                         let currentyear = new Date().getFullYear();
 
@@ -252,7 +255,6 @@ export default class HMF01011MainView extends Component {
                             }
                             monthArray.push(monthData)
                         }
-                        // //console.log("monthArray ==> ", monthArray)
 
                         let dataCustomArray = [
                             {
@@ -315,18 +317,10 @@ export default class HMF01011MainView extends Component {
                                     notiAnnounceMentBadge: parseInt(dataReceive.badge_count) + parseInt(this.state.notiAnnounceMentBadge)
                                 })
 
-                            //    this.notificationListener(this.state.notiAnnounceMentBadge)
+                        
 
                             }
-                            // else if (dataReceive.function_id == "PHF05010") {
-
-                            //     console.log("announcement badge ==> ", dataReceive.badge_count)
-
-                            //     this.setState({
-                            //         notiPayslipBadge: parseInt(dataReceive.badge_count)
-                            //     })
-
-                            // }
+                       
                         }
 
                         //console.log("MainView ==> time ==> ", dataCustomArray)
@@ -335,9 +329,11 @@ export default class HMF01011MainView extends Component {
                         })
 
                     }
+                    if (inappTimeIntervalStatus) {
+                        this.inappTimeInterval()
+                    }
+                    
 
-                     this.inappTimeInterval()
-                  
 
                 } catch (error) {
                     //console.log('erreo1 :', error);
@@ -356,7 +352,7 @@ export default class HMF01011MainView extends Component {
 
             this.onLoadInAppNoti()
           
-           }, 60000);
+           }, SharedPreference.timeinterval);
       
     };
    
@@ -433,7 +429,7 @@ export default class HMF01011MainView extends Component {
         }
 
         // //console.log("calendarPDFAPI ==>  functionID : ", functionID)
-        console.log("loadAnnouncementfromAPI ")
+        
         FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, SharedPreference.FUNCTIONID_ANNOUCEMENT, SharedPreference.profileObject.client_token)
         //console.log("calendarPDFAPI ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
         // console.log("client_id  : ", SharedPreference.profileObject.client_id)
@@ -441,7 +437,7 @@ export default class HMF01011MainView extends Component {
         if (ascendingSort) {
             hostApi = SharedPreference.ANNOUNCEMENT_DSC_API + '&offset=0&limit=' + totalroll
         }
-
+        console.log("loadAnnouncementfromAPI ",hostApi)
         return fetch(hostApi, {
             method: 'GET',
             headers: {

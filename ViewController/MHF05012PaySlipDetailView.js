@@ -95,6 +95,21 @@ export default class PayslipDetail extends Component {
 
     onDownloadPDFFile = async () => {
 
+        this.setState({
+
+            isscreenloading: true,
+       
+            // dataSource: responseJson.results,
+            // datadetail: PayslipDataDetail.detail[this.state.Monthlist[this.state.monthselected].id]
+
+        }, function () {
+
+            // //console.log('data response : ', this.state.datadetail.data.detail.deduct);
+            //console.log('data detail :', responseJson)
+
+            this.setState(this.renderloadingscreen())
+        });
+
         PAYSLIP_DOWNLOAD_API = SharedPreference.PAYSLIP_DOWNLOAD_API + this.state.rollid
         pdfPath = PAYSLIP_DOWNLOAD_API
 
@@ -166,7 +181,17 @@ export default class PayslipDetail extends Component {
                         });
 
                     RNFetchBlob.ios.openDocument(resp.path());
+                    this.setState({
+
+                        isscreenloading: false,
+                   
+                    }, function () {
+                        this.setState(this.renderloadingscreen())
+                    });
+
                 })
+
+               
                 .catch((errorMessage, statusCode) => {
                     Alert.alert(
                         StringText.ALERT_PAYSLIP_CANNOT_DOWNLOAD_TITLE,
@@ -635,6 +660,8 @@ export default class PayslipDetail extends Component {
                     bankicon = require('./../resource/images/bankIcon/scb.png')
                 } else if (bank_name_str === 'BANK OF AYUDHYA PUBLIC COMPANY LIMITED') {
                     bankicon = require('./../resource/images/bankIcon/bay.png')
+                } else if (bank_name_str === 'BANK OF AYUDHYA PUBLIC COMPANY LIMITED (BAY)') {
+                    bankicon = require('./../resource/images/bankIcon/bay.png')
                 } else if (bank_name_str === 'Bangkok Bank Public Company Limited') {
                     bankicon = require('./../resource/images/bankIcon/bbc.png')
                 }
@@ -678,7 +705,7 @@ export default class PayslipDetail extends Component {
                         </View>
                         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'flex-end' }}>
                             <TouchableOpacity 
-                            disabled = {true}
+                            disabled = {!this.state.datadetail.data}
                             onPress={(this.onDownloadPDFFile.bind(this))}
                             >
                                 <Image

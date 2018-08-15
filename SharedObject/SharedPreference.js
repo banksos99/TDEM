@@ -64,7 +64,7 @@ export default {
     notiAnnounceMentBadge: 0,
     setHomeViewStatus: 0,
 
-
+    timeinterval: 20000,
 
     HandbookHighlightList: [],
     Handbook: [],

@@ -39,8 +39,158 @@ export default class NonpayrollActivity extends Component {
     }
 
     onBack() {
+
         this.props.navigation.navigate('HomeScreen');
     }
+    componentDidMount() {
+
+        //this.inappTimeInterval()
+    }
+    componentWillUnmount() {
+
+       // clearTimeout(this.timer);
+
+    }
+    inappTimeInterval() {
+
+        this.timer = setTimeout(() => {
+
+            this.onLoadInAppNoti()
+          
+           },SharedPreference.timeinterval);
+      
+    };
+
+    onLoadInAppNoti = async () => {
+        //TODO bell
+        let lastTime = await this.saveTimeNonPayroll.getTimeStamp()
+
+        if ((lastTime == null) || (lastTime == undefined)) {
+            let today = new Date()
+            const _format = 'YYYY-MM-DD hh:mm:ss'
+            const newdate = moment(today).format(_format).valueOf();
+            lastTime = newdate
+        }
+        latest_date = "2017-01-01 12:00:00"
+        FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, 1, SharedPreference.profileObject.client_token)
+        let urlPullnoti = SharedPreference.PULL_NOTIFICATION_API + latest_date
+        console.log('urlPullnoti : ', urlPullnoti);
+        console.log('FUNCTION_TOKEN : ', FUNCTION_TOKEN)
+
+        return fetch(urlPullnoti, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                Authorization: FUNCTION_TOKEN,
+            },
+        })
+            .then((response) => response.json())
+            .then((responseJson) => {
+  
+                try {
+                   
+                    if (responseJson.status == 403) {
+
+                        this.onAutenticateErrorAlertDialog()
+
+                        inappTimeIntervalStatus = false
+
+                    } else if (responseJson.status == 200) {
+
+                        let dataArray = responseJson.data
+                        let currentyear = new Date().getFullYear();
+
+                        let monthArray = []
+                        for (let index = 0; index < 12; index++) {
+                            monthData = {
+                                "month": index + 1,
+                                "badge": 0
+                            }
+                            monthArray.push(monthData)
+                        }
+
+                        let dataCustomArray = [
+                            {
+                                "year": currentyear - 1,
+                                "detail": monthArray
+                            },
+                            {
+                                "year": currentyear,
+                                "detail": monthArray
+                            },
+                        ]
+
+                        for (let index = 0; index < dataArray.length; index++) {
+                            const dataReceive = dataArray[index];
+                            // //console.log("element ==> ", dataReceive.function_id)
+
+                            if (dataReceive.function_id == "PHF06010") {//if nonPayroll
+                                dataListArray = dataReceive.data_list
+
+                                // //console.log("dataListArray ==> ", dataListArray)
+                                for (let index = 0; index < dataListArray.length; index++) {
+                                    const str = dataListArray[index];
+                                    // //console.log("str ==> ", str)
+                                    var res = str.split("|");
+
+                                    var data = res[1]
+
+                                    var monthYear = data.split("-");
+
+                                    var year = monthYear[0]
+                                    var month = monthYear[1]
+
+                                    for (let index = 0; index < dataCustomArray.length; index++) {
+                                        const data = dataCustomArray[index];
+
+
+                                        if (year == data.year) {
+                                            const detail = data.detail
+
+
+                                            let element = detail.find((p) => {
+                                                return p.month === JSON.parse(month)
+                                            });
+
+                                            element.badge = element.badge + 1
+
+                                        }
+                                    }
+                                }
+                            } else if (dataReceive.function_id == "PHF02010") {
+
+                                console.log("announcement badge ==> ", dataReceive.badge_count)
+
+                                SharedPreference.notiAnnounceMentBadge = parseInt(dataReceive.badge_count) + parseInt(SharedPreference.notiAnnounceMentBadge)
+
+                            }
+
+                        }
+
+                        this.setState({
+                            nonPayrollBadge: dataCustomArray
+                        })
+
+                    }
+                    if (inappTimeIntervalStatus) {
+                        this.inappTimeInterval()
+                    }
+
+
+
+                } catch (error) {
+
+                }
+            })
+            .catch((error) => {
+
+
+
+            });
+    }
+
+    
 
     renderRollItem() {
         year = 12
