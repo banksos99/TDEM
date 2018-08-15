@@ -24,6 +24,7 @@ import Decryptfun from "../SharedObject/Decryptfun"
 import Months from "../constants/Month"
 
 let currentmonth = new Date().getMonth();
+let scale = Layout.window.width / 320;
 
 import Authorization from '../SharedObject/Authorization'
 import StringText from '../SharedObject/StringText';
@@ -58,11 +59,13 @@ export default class PayslipDetail extends Component {
             yearArray: ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"]
         }
         firebase.analytics().setCurrentScreen(SharedPreference.SCREEN_PAYSLIP_DETAIL)
-
+        console.log('yearlist => ',this.state.yearlist) 
+        console.log('datadetail => ',this.state.datadetail) 
     }
 
     componentWillMount() {
         BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
+
     }
  
     componentWillUnmount() {
@@ -613,30 +616,37 @@ export default class PayslipDetail extends Component {
         let sum_income_str = 0;
         let sum_deduct_str = 0;
         let bankicon = require('./../resource/images/bankIcon/blank.png')
+        let date_text = ''
         if (this.state.datadetail.data) {
-            income = (Decryptfun.decrypt(this.state.datadetail.data.header.sum_income));
-            deduct = (Decryptfun.decrypt(this.state.datadetail.data.header.sum_deduct));
-            let tincome = parseFloat(income.replace(',', ''));
-            let tdeduct = parseFloat(deduct.replace(',', ''));
-            netincome = tincome - tdeduct;
-            let datearr = this.state.datadetail.data.header.pay_date.split('-');
-            pay_date_str = datearr[2] + ' ' + Months.monthNamesShort[parseInt(datearr[1]) - 1] + ' ' + datearr[0]
-            bank_name_str = this.state.datadetail.data.header.bank_name;
-            bank_acc_str = this.state.datadetail.data.header.bank_acc_no;
-            sum_income_str = Decryptfun.decrypt(this.state.datadetail.data.header.sum_income);
-            sum_deduct_str = Decryptfun.decrypt(this.state.datadetail.data.header.sum_deduct);
+            if(this.state.datadetail.data.header){
+                income = (Decryptfun.decrypt(this.state.datadetail.data.header.sum_income));
+                deduct = (Decryptfun.decrypt(this.state.datadetail.data.header.sum_deduct));
+                let tincome = parseFloat(income.replace(',', ''));
+                let tdeduct = parseFloat(deduct.replace(',', ''));
+                netincome = tincome - tdeduct;
+                let datearr = this.state.datadetail.data.header.pay_date.split('-');
+                pay_date_str = datearr[2] + ' ' + Months.monthNamesShort[parseInt(datearr[1]) - 1] + ' ' + datearr[0]
+                bank_name_str = this.state.datadetail.data.header.bank_name;
+                bank_acc_str = this.state.datadetail.data.header.bank_acc_no;
+                sum_income_str = Decryptfun.decrypt(this.state.datadetail.data.header.sum_income);
+                sum_deduct_str = Decryptfun.decrypt(this.state.datadetail.data.header.sum_deduct);
 
-            if (bank_name_str === 'The Siam Commercial Bank Public Company Limited') {
-                bankicon = require('./../resource/images/bankIcon/scb.png')
-            } else if (bank_name_str === 'BANK OF AYUDHYA PUBLIC COMPANY LIMITED') {
-                bankicon = require('./../resource/images/bankIcon/bay.png')
-            } else if (bank_name_str === 'Bangkok Bank Public Company Limited') {
-                bankicon = require('./../resource/images/bankIcon/bbc.png')
+                if (bank_name_str === 'The Siam Commercial Bank Public Company Limited') {
+                    bankicon = require('./../resource/images/bankIcon/scb.png')
+                } else if (bank_name_str === 'BANK OF AYUDHYA PUBLIC COMPANY LIMITED') {
+                    bankicon = require('./../resource/images/bankIcon/bay.png')
+                } else if (bank_name_str === 'Bangkok Bank Public Company Limited') {
+                    bankicon = require('./../resource/images/bankIcon/bbc.png')
+                }
+
+                let tdatearr = this.state.datadetail.data.header.pay_date.split('-');
+                date_text = Months.monthNames[this.state.monthselected] + ' ' + tdatearr[0]
             }
+            
 
         }
-        let tdatearr = this.state.datadetail.data.header.pay_date.split('-');
-        let date_text = Months.monthNames[this.state.monthselected] +' ' +tdatearr[0]
+        let yearstr = this.state.initialyear - this.state.yearselected
+        date_text = Months.monthNames[this.state.monthselected] + ' ' + yearstr.toString()
 
         if (!this.state.yearlist) {
 
@@ -667,9 +677,14 @@ export default class PayslipDetail extends Component {
                             <Text style={styles.navTitleTextTop}>Pay Detail</Text>
                         </View>
                         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'flex-end' }}>
-                            <TouchableOpacity onPress={(this.onDownloadPDFFile.bind(this))}>
+                            <TouchableOpacity 
+                            disabled = {true}
+                            onPress={(this.onDownloadPDFFile.bind(this))}
+                            >
                                 <Image
-                                    style={{ width: 50, height: 50 }}
+                                    style={this.state.datadetail.data ?
+                                        { width: 50, height: 50, tintColor: 'white' } :
+                                        { width: 50, height: 50, tintColor: 'red' }}
                                     source={require('./../resource/images/PDFdownload.png')}
                                     resizeMode='contain'
                                 />
@@ -757,10 +772,10 @@ export default class PayslipDetail extends Component {
                         </View>
                         <View style={{ flex: 1, marginTop: 5, marginLeft: 5, borderRadius: 5, backgroundColor: this.state.deductBG, flexDirection: 'column', }}>
                             <TouchableOpacity style={{ flex: 1 }} onPress={(this.onShowDeductView.bind(this))}>
-                                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: 10 }}>
+                                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: 10 * scale }}>
                                     <Text style={this.state.showincome ? styles.payslipTextCente_deduct_dis : styles.payslipTextCente_deduct_ena}>DEDUCT</Text>
                                 </View>
-                                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginBottom: 10 }}>
+                                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginBottom: 10 * scale }}>
                                     <Text style={this.state.showincome ? styles.payslipTextCente_deduct_dis : styles.payslipTextCente_deduct_ena}>
                                         {sum_deduct_str}
                                     </Text>

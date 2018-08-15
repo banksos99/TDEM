@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Image, Alert, Platform, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Image, Alert, Platform, Text, TouchableOpacity, ActivityIndicator,StatusBar } from 'react-native';
 
 import SharedPreference from './SharedObject/SharedPreference';
 
@@ -72,10 +72,11 @@ export default class mainview extends Component {
         await firebase.messaging().requestPermission();
         ////console.log("firebase ==> User has authorised")
       } catch (error) {
+        
       }
     }
 
-    //////////Device Info/////////////
+    ////////Device Info/////////////
     const deviceModel = DeviceInfo.getModel();
     const deviceBrand = DeviceInfo.getBrand();
     const deviceOS = DeviceInfo.getSystemName();
@@ -91,15 +92,13 @@ export default class mainview extends Component {
           "deviceBrand": deviceBrand,
           "deviceOS": deviceOS,
           "deviceOSVersion": deviceOSVersion,
-          "firebaseToken": token,
+         "firebaseToken": token,
           "appVersion": appVersion,
           "buildNumber": buildNumber
         }
       });
 
-    this.setState({
-      inactive: true,
-    });
+    
 
     notificationOpen = await firebase.notifications().getInitialNotification();
     //notificationOpen = await firebase.notifications().onNotificationOpened();
@@ -113,6 +112,10 @@ export default class mainview extends Component {
         SharedPreference.notiAnnounceMentID = notification._data.id
       }
     }
+
+    this.setState({
+      inactive: true,
+    });
 
   }
 
@@ -128,6 +131,7 @@ export default class mainview extends Component {
         });
 
         if (notification._data.type === 'Payroll') {
+          
           SharedPreference.notipayslipID = notification._data.id
 
         } else if (notification._data.type === 'Emergency Announcement') {
@@ -139,15 +143,15 @@ export default class mainview extends Component {
 
   }
 
+  inactivecounting() {
+    this.timer = setTimeout(() => {
+      this.setState({
+        inactive: true,
+        modalVisible: true
+      });
+    }, 1000);
+  }
 
-  // inactivecounting() {
-  //   this.timer = setTimeout(() => {
-  //     this.setState({
-  //       inactive: true,
-  //       modalVisible: true
-  //     });
-  //   }, 500);
-  // }
   closelabelnoti() {
     this.timer = setTimeout(() => {
       this.setState({
@@ -618,6 +622,10 @@ export default class mainview extends Component {
           timeForInactivity={300000}
           checkInterval={300000}
           onInactivity={this.onInactivity} >
+          <StatusBar
+                    barStyle="light-content"
+                    backgroundColor="#e60c0c"
+                />
           <View style={styles.container} >
             <View style={styles.container} >
               <RootViewController />

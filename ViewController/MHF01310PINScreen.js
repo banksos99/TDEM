@@ -412,7 +412,7 @@ export default class PinActivity extends Component {
                                 style={styles.pinImage}
                                 source={require('../resource/regist/regist_lock_white.png')}
                                 resizeMode="cover" />
-                            <Text style={[styles.pinText, { color: 'white' }]}>{this.state.pintitle}</Text>
+                            <Text style={styles.registPinEnterContainer}>{this.state.pintitle}</Text>
                             {this.renderImagePin()}
                             <TouchableOpacity onPress={() => { this.onResetPIN() }}>
                                 <Text style={styles.registPinForgotContainer}>Forgot your PIN ?</Text>

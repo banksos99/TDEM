@@ -358,8 +358,10 @@ export default class OTSummaryBarChart extends Component {
                                                 <Text style={{ textAlign: 'center', fontSize: 18, width: '100%', height: 30, alignItems: 'center' }}> {item}</Text>
                                             </View>
                                         </TouchableOpacity>
+
                                     ))}
                             </ScrollView>
+                            
                         </View>
                     </View>
                 )
@@ -386,15 +388,16 @@ export default class OTSummaryBarChart extends Component {
                                     <Picker.Item label={item} value={item} key={index} />
 
                                 ))}
-                            {/* <Picker.Item label="All" value="All" />
-                            <Picker.Item label="Company Announcement" value="Company Announcement" />
-                            <Picker.Item label="Emergency Announcement" value="Emergency Announcement" />
-                            <Picker.Item label="Event Announcement" value="Event Announcement" />
-                            <Picker.Item label="General Announcement" value="General Announcement" /> */}
+                           
                         </Picker>
-                        <View style={{ flexDirection: 'row', justifyContent: 'flex-end', height: 50, alignItems: 'center', }}>
+                        <View style={{ flexDirection: 'row', height: 50, alignItems: 'center',backgroundColor:'blue' }}>
                             <TouchableOpacity style={styles.button} onPress={(this.select_announce_all_type)}>
                                 <Text style={{ textAlign: 'center', color: Colors.redTextColor, fontSize: 18, width: 80, height: 30, alignItems: 'center' }}> OK</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.button}
+                                onPress={() => { this.selected_month(item) }}
+                            >
+                               <Text style={{ textAlign: 'center', color: Colors.redTextColor, fontSize: 18, width: 80, height: 30, alignItems: 'center' }}> cancel</Text>
                             </TouchableOpacity>
                         </View>
                     </View>

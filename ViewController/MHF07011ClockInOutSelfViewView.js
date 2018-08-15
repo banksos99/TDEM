@@ -80,7 +80,9 @@ export default class ClockInOutSelfView extends Component {
             employee_name: this.props.navigation.getParam("employee_name", ""),
             employee_position: this.props.navigation.getParam("employee_position", ""),
         }
-
+        tempannouncementType=0;
+        tempinitannouncementType = 0;
+        tempinitannouncementTypetext = 0;
         this.checkDataFormat(this.props.navigation.getParam("DataResponse", ""));
         let birthday = new Date(Months.monthNames[this.state.initialmonth + 1] + '1,' + this.state.initialyear);
         firstday = birthday.getDay() + 1;
@@ -111,7 +113,7 @@ export default class ClockInOutSelfView extends Component {
 
     checkDataFormat(DataResponse) {
 
-        //console.log('DataResponse :', DataResponse);
+        console.log('DataResponse :', DataResponse);
         //console.log('monthselected :', this.state.monthselected);
         ////console.log('initialmonth :', this.state.initialmonth);
         // if (DataResponse) {
@@ -228,7 +230,11 @@ export default class ClockInOutSelfView extends Component {
         }
         //sert initial data
         initannouncementType = this.state.months[0]
-
+        tempinitannouncementType = this.state.months[0];
+        initannouncementType = tempinitannouncementType;
+        //tempinitannouncementTypetext = tempinitannouncementType;
+      //  this.state.announcementType = initannouncementType;
+        this.state.tempannouncementTypetext= initannouncementType;
         //console.log('init data : ', this.state.months[0])
 
     }
@@ -422,7 +428,7 @@ export default class ClockInOutSelfView extends Component {
 
 
     select_month() {
-
+        tempannouncementType = this.state.announcementType
         this.setState({
 
             loadingtype: 0,
@@ -433,17 +439,41 @@ export default class ClockInOutSelfView extends Component {
             this.setState(this.renderloadingscreen())
         });
     }
-    select_month_clockinout() {
+    cancel_select_change_month = () => {
+        
+       // console.log('tempannouncementType =>', tempannouncementType)
 
         this.setState({
+           announcementType: tempannouncementType,
+            loadingtype: 1,
+            isscreenloading: false,
 
-            // announcementType: month,
+        })
+
+    }
+    cancel_select_change_month_andr(){
+        
+        // console.log('tempannouncementType =>', tempannouncementType)
+ 
+         this.setState({
+           // announcementType: tempannouncementType,
+             loadingtype: 1,
+             isscreenloading: false,
+ 
+         })
+ 
+     }
+    select_month_clockinout() {
+
+      
+        this.setState({
             loadingtype: 1,
             isscreenloading: true,
-            // isscreenloading: false,
+            announcementTypetext:this.state.tempannouncementTypetext
 
         }, function () {
-
+            initannouncementType = tempinitannouncementType;
+            initannouncementTypetext = tempinitannouncementTypetext
             let tdate = initannouncementType.split(' ')
             let mdate = 0;
 
@@ -533,11 +563,19 @@ export default class ClockInOutSelfView extends Component {
                                             onPress={() => { this.select_month_clockinout_and(item) }}
                                             key={index + 100}>
                                             <View style={{ justifyContent: 'center', height: 40, alignItems: 'center', }} key={index + 200}>
-                                                <Text style={{ textAlign: 'center', fontSize: 18 * scale, width: '100%', height: 30, alignItems: 'center' }}> {item}</Text>
+                                                <Text style={{ textAlign: 'center', fontSize: 10 * scale, width: '100%', height: 30, alignItems: 'center' }}> {item}</Text>
                                             </View>
                                         </TouchableOpacity>
                                     ))}
                             </ScrollView>
+                            <View style={{ flexDirection: 'row', height: 40, }}>
+                                <View style={{ flex: 2 }} />
+                                <TouchableOpacity style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+                                    onPress={() => { this.cancel_select_change_month_andr() }}
+                                >
+                                    <Text style={{ fontSize: 16, color: Colors.redTextColor, textAlign: 'center' }}> cancel</Text>
+                                </TouchableOpacity>
+                            </View>
                         </View>
                     </View>
                 )
@@ -547,32 +585,34 @@ export default class ClockInOutSelfView extends Component {
                 <View style={{ height: '100%', width: '100%', justifyContent: 'center', alignItems: 'center', position: 'absolute', }} >
                     <View style={{ width: '80%', backgroundColor: 'white' }}>
                         <View style={{ height: 50, width: '100%', justifyContent: 'center', }}>
-                            <Text style={{ marginLeft: 20, marginTop: 10, textAlign: 'left', color: 'black', fontSize: 18 * scale, fontWeight: 'bold' }}>Select Month and Year</Text>
+                            <Text style={styles.titlepicker}>Select Month and Year</Text>
                         </View>
                         <Picker
                             selectedValue={this.state.announcementType}
                             onValueChange={(itemValue, itemIndex) => this.setState({
                                 announcementType: itemValue,
-                                announcementTypetext: this.state.months[itemIndex],
+                                tempannouncementTypetext: this.state.months[itemIndex],
                             }, function () {
 
-                                initannouncementType = itemValue;
-                                initannouncementTypetext = itemValue;
+                                tempinitannouncementType = itemValue;
+                                tempinitannouncementTypetext = itemValue;
 
                             })}>{
                                 this.state.months.map((item, index) => (
-                                    <Picker.Item label={item} value={item} key={index} />
+                                    <Picker.Item label={item} value={item} key={index}  />
 
                                 ))}
-                            {/* <Picker.Item label="All" value="All" />
-                            <Picker.Item label="Company Announcement" value="Company Announcement" />
-                            <Picker.Item label="Emergency Announcement" value="Emergency Announcement" />
-                            <Picker.Item label="Event Announcement" value="Event Announcement" />
-                            <Picker.Item label="General Announcement" value="General Announcement" /> */}
+
                         </Picker>
                         <View style={{ flexDirection: 'row', justifyContent: 'flex-end', height: 50, alignItems: 'center', }}>
-                            <TouchableOpacity style={styles.button} onPress={(this.select_month_clockinout.bind(this))}>
-                                <Text style={{ textAlign: 'center', color: Colors.redTextColor, fontSize: 18 * scale, width: 80, height: 30, alignItems: 'center' }}> OK</Text>
+                            <TouchableOpacity style={{ flex: 2, justifyContent: 'flex-start' }}
+                                onPress={(this.cancel_select_change_month)}>
+                                >
+                                <Text style={styles.buttonpicker}> cancel</Text>
+                            </TouchableOpacity>
+                            <View style={{ flex: 3, justifyContent: 'center' }} />
+                            <TouchableOpacity style={{ flex: 2, justifyContent: 'flex-end' }} onPress={(this.select_month_clockinout.bind(this))}>
+                                <Text style={styles.buttonpicker}> OK</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -644,16 +684,14 @@ export default class ClockInOutSelfView extends Component {
                                 <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', }}>
                                     <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
                                         <Text style={item.datetype === 'Y' ? styles.clockinoutdaybluetext :
-                                            ((firstday + index) % 7) === 0 | ((firstday + index) % 7) === 6 ?
-                                                styles.clockinoutdayredtext : item.datetype === 'N' ? styles.clockinoutdayredtext : styles.clockinoutdaytext
+                                            item.datetype === 'N' ? styles.clockinoutdayredtext : styles.clockinoutdaytext
 
                                         }
                                         >
                                             {index + 1}
                                         </Text >
                                         <Text style={item.datetype === 'Y' ? styles.clockinoutweakdaybluetext :
-                                            ((firstday + index) % 7) === 0 | ((firstday + index) % 7) === 6 ?
-                                                styles.clockinoutweakdayredtext : item.datetype === 'N' ? styles.clockinoutweakdayredtext : styles.clockinoutweakdaytext
+                                             item.datetype === 'N' ? styles.clockinoutweakdayredtext : styles.clockinoutweakdaytext
                                         }>
                                             {Months.dayNamesShortMonthView[(firstday + index) % 7]}</Text>
                                     </View>
@@ -736,7 +774,7 @@ export default class ClockInOutSelfView extends Component {
                         <Text style={{ flex: 1, marginLeft: 20, color: 'white', fontFamily: 'Prompt-Regular' }}>{this.state.employee_name}</Text>
                         <Text style={{ flex: 1, marginLeft: 20, color: 'white', fontFamily: 'Prompt-Regular' }}>{this.state.employee_position}</Text>
                     </View>
-                    <TouchableOpacity style={{ height: 40, backgroundColor: Colors.calendarLocationBoxColor, margin: 5, borderRadius: 5, justifyContent: 'center', alignItems: 'center', borderWidth: 1 }}
+                    <TouchableOpacity style={{ backgroundColor: Colors.calendarLocationBoxColor, margin: 5, borderRadius: 5, justifyContent: 'center', alignItems: 'center', borderWidth: 1 }}
                         onPress={(this.select_month.bind(this))}
                     >
 

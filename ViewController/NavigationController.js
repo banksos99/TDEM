@@ -150,7 +150,9 @@ export default class rootNavigation extends Component {
         profile = await this.getProfileObject()
         console.log("rootNavigation ==> showPin ==> ",this.state.showPin)
     }
-
+    componentDidMount() {
+this.inappTimeInterval()
+    }
     getProfileObject = async () => {
         profileObject = await this.saveProfile.getProfile()
         //console.log("NavigationController ==> ", profileObject)
@@ -183,7 +185,18 @@ export default class rootNavigation extends Component {
     //     return route.routeName;
     //   }
 
+    inappTimeInterval() {
+        this.timer = setTimeout(() => {
+            this.onLoadInAppNoti()
+            // }, 2000);
+        }, 20000);
+    };
 
+    onLoadInAppNoti() {
+        console.log('onLoadInAppNoti')
+
+        this.inappTimeInterval()
+    }
     render() {
         if (this.state.hasPin == false) {
             return (

@@ -57,10 +57,13 @@ export default class OTSummaryDetail extends Component {
             headerdataSource: {},
             initialyear: 0,
             initialmonth: 0,
-
+            tempannouncementTypetext:0,
+            
             dateselected: 0,
         }
-
+        tempannouncementType=0;
+        tempinitannouncementType = 0;
+        tempinitannouncementTypetext = 0;
         this.checkDataFormat(this.props.navigation.getParam("DataResponse", ""));
         firebase.analytics().setCurrentScreen(SharedPreference.SCREEN_CLOCK_IN_OUT_MANAGER)
 
@@ -107,9 +110,12 @@ export default class OTSummaryDetail extends Component {
             this.state.months.push(MONTH_LIST[i % 12] + ' ' + this.state.initialyear)
         }
 
-
-
-
+        tempinitannouncementType = this.state.months[0];
+        initannouncementType = tempinitannouncementType;
+        //tempinitannouncementTypetext = tempinitannouncementType;
+      //  this.state.announcementType = initannouncementType;
+        this.state.tempannouncementTypetext= initannouncementType;
+        console.log('initannouncementType : ',initannouncementType)
     }
 
     _onRefresh() {
@@ -279,7 +285,9 @@ export default class OTSummaryDetail extends Component {
     }
 
     select_month() {
-
+        console.log('announcementType : ',this.state.announcementType)
+        tempannouncementType = this.state.announcementType
+        
         this.setState({
 
             loadingtype: 0,
@@ -290,7 +298,20 @@ export default class OTSummaryDetail extends Component {
             this.setState(this.renderloadingscreen())
         });
     }
-    select_announce_all_type = () => {
+
+    cancel_select_change_month = () => {
+        
+        console.log('tempannouncementType =>', tempannouncementType)
+        this.setState({
+            announcementType: tempannouncementType,
+            loadingtype: 1,
+            isscreenloading: false,
+
+        })
+
+    }
+
+    select_change_month = () => {
 
         // ////console.log('select_announce_all_type')
 
@@ -299,10 +320,12 @@ export default class OTSummaryDetail extends Component {
             // announcementType: month,
             loadingtype: 1,
             isscreenloading: true,
+            announcementTypetext:this.state.tempannouncementTypetext
             // isscreenloading: false,
 
         }, function () {
-
+            initannouncementType = tempinitannouncementType;
+            initannouncementTypetext = tempinitannouncementTypetext
             let tdate = initannouncementType.split(' ')
             let mdate = 0;
             //console.log('month : ', tdate[0])
@@ -321,6 +344,7 @@ export default class OTSummaryDetail extends Component {
         });
 
     }
+
     selected_month(monthselected) {
 
         ////console.log('monthselected : ',monthselected)
@@ -362,6 +386,8 @@ export default class OTSummaryDetail extends Component {
         // } else 
         if (this.state.loadingtype == 0) {
 
+            
+
             if (Platform.OS === 'android') {
                 ////console.log('android selectmonth')
                 return (
@@ -387,37 +413,44 @@ export default class OTSummaryDetail extends Component {
                 )
 
             }
+
+            
+
             return (
                 <View style={{ height: '100%', width: '100%', justifyContent: 'center', alignItems: 'center', position: 'absolute', }} >
                     <View style={{ width: '80%', backgroundColor: 'white' }}>
                         <View style={{ height: 50, width: '100%', justifyContent: 'center', }}>
-                            <Text style={{ marginLeft: 20, marginTop: 10, textAlign: 'left', color: 'black', fontSize: 18, fontWeight: 'bold' }}>Select Date</Text>
+                            <Text style={styles.titlepicker}>Select Date</Text>
                         </View>
                         <Picker
+                         
                             selectedValue={this.state.announcementType}
                             onValueChange={(itemValue, itemIndex) => this.setState({
                                 announcementType: itemValue,
-                                announcementTypetext: this.state.months[itemIndex],
+                                tempannouncementTypetext: this.state.months[itemIndex],
                             }, function () {
 
-                                initannouncementType = itemValue;
-                                initannouncementTypetext = itemValue;
+                                tempinitannouncementType = itemValue;
+                                tempinitannouncementTypetext = itemValue;
 
                             })}>{
                                 this.state.months.map((item, index) => (
                                     <Picker.Item label={item} value={item} key={index} />
 
                                 ))}
-                            {/* <Picker.Item label="All" value="All" />
-                            <Picker.Item label="Company Announcement" value="Company Announcement" />
-                            <Picker.Item label="Emergency Announcement" value="Emergency Announcement" />
-                            <Picker.Item label="Event Announcement" value="Event Announcement" />
-                            <Picker.Item label="General Announcement" value="General Announcement" /> */}
                         </Picker>
-                        <View style={{ flexDirection: 'row', justifyContent: 'flex-end', height: 50, alignItems: 'center', }}>
-                            <TouchableOpacity style={styles.button} onPress={(this.select_announce_all_type)}>
-                                <Text style={{ textAlign: 'center', color: Colors.redTextColor, fontSize: 18, width: 80, height: 30, alignItems: 'center' }}> OK</Text>
+                        <View style={{ flexDirection: 'row', height: 50, alignItems: 'center', }}>
+                            <TouchableOpacity style={{ flex: 2, justifyContent: 'flex-start' }}
+                                onPress={(this.cancel_select_change_month)}>
+                            >
+                                <Text style={styles.buttonpicker}> cancel</Text>
                             </TouchableOpacity>
+                            <View style={{ flex: 3, justifyContent: 'center' }} />
+                            <TouchableOpacity style={{ flex: 2, justifyContent: 'flex-end' }}
+                                onPress={(this.select_change_month)}>
+                                <Text style={styles.buttonpicker}> OK</Text>
+                            </TouchableOpacity>
+
                         </View>
                     </View>
                 </View>
