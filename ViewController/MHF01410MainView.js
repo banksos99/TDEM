@@ -150,7 +150,10 @@ export default class HMF01011MainView extends Component {
                 settingstatus = 'Y'
             }
         }
-
+        if (!timerstatus) {
+            this.inappTimeInterval()
+            timerstatus = true;
+        }
 
 
     }
@@ -357,7 +360,7 @@ export default class HMF01011MainView extends Component {
         this.timer = setTimeout(() => {
             this.onLoadInAppNoti()
             // }, 2000);
-        }, 20000);
+        }, 60000);
     };
 
     getnotidata(msg) {

@@ -531,26 +531,26 @@ export const styles = StyleSheet.create({
     },
     leavequotalisttext: {
         color: Colors.lightgrayText,
-        fontSize: 10,
+        fontSize: 10 * scale,
         textAlign: 'left',
         fontFamily: font_medium
     },
     leavequotalisttextboldUnit: {
         color: Colors.grayTextColor,
-        fontSize: 13,
+        fontSize: 13 * scale,
         textAlign: 'right',
         fontFamily: font_medium
     },
 
     leavequotalisttextred: {
         color: Colors.redTextColor,
-        fontSize: 13,
+        fontSize: 13*scale,
         textAlign: 'center',
         fontFamily: font_medium
     },
     leavequotalisttextgreen: {
         color: Colors.greenTextColor,
-        fontSize: 13,
+        fontSize: 13*scale,
         textAlign: 'center',
         fontFamily: font_medium
     },
@@ -565,7 +565,7 @@ export const styles = StyleSheet.create({
         paddingTop: 20, paddingBottom: 20, marginBottom: 5
     },
     leaveQuotaDescText: {
-        fontSize: 15, color: Colors.grayTextColor, fontFamily: font_light
+        fontSize: 15*scale, color: Colors.grayTextColor, fontFamily: font_light
     },
     leaveQuotaDetailContentTextContainer: {
         height: 30,
@@ -575,24 +575,24 @@ export const styles = StyleSheet.create({
     },
     leaveQuotaContentTitleText: {
         flex: 1,
-        fontSize: 15,
+        fontSize: 15*scale,
         color: Colors.grayTextColor,
         fontFamily: font_medium
     },
     leaveQuotaContentDescText: {
         flex: 1,
-        fontSize: 15,
+        fontSize: 15*scale,
         color: Colors.grayTextColor,
         textAlign: 'left',
         fontFamily: font_medium
     },
     leaveQuotaContentGrayText: {
-        fontSize: 15,
+        fontSize: 15*scale,
         color: Colors.grayTextColor,
         fontFamily: font_medium
     },
     leaveQuotaContentRedText: {
-        fontSize: 15,
+        fontSize: 15*scale,
         color: Colors.redTextColor,
         fontFamily: font_medium
     },
@@ -611,7 +611,7 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
     },
     leaveQuotaDetailItemTopTitleText: {
-        fontSize: 16, color: Colors.grayTextColor,
+        fontSize: 16*scale, color: Colors.grayTextColor,
         fontFamily: font_medium
     },
     leaveQuotaDetailItemTopCircleContainer: {
@@ -620,11 +620,11 @@ export const styles = StyleSheet.create({
         , marginTop: 10, marginBottom: 10
     },
     leaveQuotaDetailItemTopCircleText: {
-        textAlign: 'center', fontSize: 20, color: 'white',
+        textAlign: 'center', fontSize: 20*scale, color: 'white',
         fontFamily: font_medium
     },
     leaveQuotaDetailItemTopDescText: {
-        fontSize: 15, color: Colors.grayText, fontFamily: font_light//TODO
+        fontSize: 15*scale, color: Colors.grayText, fontFamily: font_light//TODO
     },
     pinnumber: {
         flex: 1,
