@@ -1096,25 +1096,6 @@ export default class HMF01011MainView extends Component {
         //console.log("error : ", error)
     }
 
-    // onNodataErrorAlertDialog(rount) {
-    //     this.setState({
-    //         isscreenloading: false,
-    //     })
-
-    //     Alert.alert(
-    //         StringText.ALERT_NONPAYROLL_NODATA_TITLE,
-    //         StringText.ALERT_NONPAYROLL_NODATA_TITLE,
-    //         [{
-    //             text: 'OK', onPress: () => {
-
-    //             }
-    //         }],
-    //         { cancelable: false }
-    //     )
-
-    //     //console.log("error : ", error)
-    // }
-
     onNodataExistErrorAlertDialog() {
         this.setState({
             isscreenloading: false,

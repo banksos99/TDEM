@@ -49,6 +49,11 @@ export default class mainview extends Component {
     this.setState({
       showpin: true
     });
+
+    this.state.showpin = true
+
+    console.log("showpin : ", this.state.showpin)
+
   }
 
 
@@ -56,7 +61,7 @@ export default class mainview extends Component {
 
     this.notificationListener();
 
-   // this.inactivecounting();
+    // this.inactivecounting();
 
     const enabled = await firebase.messaging().hasPermission();
 
@@ -335,6 +340,8 @@ export default class mainview extends Component {
 
   renderPINScreen() {
     if (this.state.showpin) {
+
+      console.log("SharedPreference.currentNavigator : ", SharedPreference.currentNavigator);
       if (SharedPreference.currentNavigator == SharedPreference.SCREEN_MAIN) {
         return (
           <View style={styles.alertDialogContainer}>
@@ -616,7 +623,7 @@ export default class mainview extends Component {
               <RootViewController />
               {/* {this.rendernotificationlabel()} */}
             </View>
-            {/* {this.renderPINScreen()} */}
+            {this.renderPINScreen()}
           </View>
         </UserInactivity>
       );

@@ -41,8 +41,8 @@ export default class calendarEventDetailView extends Component {
             location: this.props.navigation.getParam("location", ""),
             isLoading: false
         }
-        console.log("calendarEventDetailView ==> monthObject ==> ", this.state.monthObject)
-        console.log("calendarEventDetailView ==> monthText ==> ", this.state.monthText)
+        // console.log("calendarEventDetailView ==> monthObject ==> ", this.state.monthObject)
+        // console.log("calendarEventDetailView ==> monthText ==> ", this.state.monthText)
 
         firebase.analytics().setCurrentScreen(SharedPreference.FUNCTIONID_CALENDAR_EVENT)
 
@@ -153,7 +153,7 @@ export default class calendarEventDetailView extends Component {
                                 };
                                 original = copy
                             }
-                        }else{
+                        } else {
                             const copy = {
                                 ...original, [datemonth]: { marked: true, selectedColor: Colors.calendarRedText }
                             };

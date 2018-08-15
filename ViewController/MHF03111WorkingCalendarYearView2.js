@@ -50,7 +50,7 @@ export default class calendarYearView extends Component {
             yearObject: '',
             monthObject: '',
             yearsPickerArray: [],
-            locationPickerArrya: [],
+            locationPickerArray: [],
             //
             selectYear: this.props.navigation.getParam("selectYear", ""),
             selectDownloadYear: '',
@@ -168,16 +168,17 @@ export default class calendarYearView extends Component {
 
         } else {
             Alert.alert(
-                StringText.ALERT_CANNOT_CONNECT_TITLE,
-                StringText.ALERT_CANNOT_CONNECT_DESC,
+                StringText.CALENDAR_ALERT_NO_DATA_TITLE,
+                StringText.CALENDAR_ALERT_NO_DATA_DESC,
                 [{
                     text: 'OK', onPress: () => {
+                        ////console.log("cancel downlosad")
                         this.setState({
-                            isLoading: false
+                            isLoading: false,
+                            selectYear: this.state.showYear,
                         })
                     }
-                },
-                ],
+                }],
                 { cancelable: false }
             )
         }
@@ -327,11 +328,11 @@ export default class calendarYearView extends Component {
                                     <Text style={{ fontSize: 10, textAlign: 'right', color: state === 'disabled' ? 'white' : Colors.calendarGrayText }}>
                                         {date.day}</Text>
                                 </View>
-                            } else if ((this.state.countDay.length % 7) == 0 || (this.state.countDay.length % 7) == 1) {//Holiday
-                                return <View style={styles.calendarDayContainer}>
-                                    <Text style={{ fontSize: 10, textAlign: 'right', color: state === 'disabled' ? 'white' : Colors.redTextColor }}>
-                                        {date.day}</Text>
-                                </View>
+                                //} else if ((this.state.countDay.length % 7) == 0 || (this.state.countDay.length % 7) == 1) {//Holiday
+                                //              return <View style={styles.calendarDayContainer}>
+                                //                <Text style={{ fontSize: 10, textAlign: 'right', color: state === 'disabled' ? 'white' : Colors.redTextColor }}>
+                                //                  {date.day}</Text>
+                                //s        </View>
                             } else if ((this.state.today.getDate() == date.day) && ((this.state.today.getMonth() + 1) == date.month)
                                 && (this.state.today.getFullYear() == date.year)) {
                                 return <View style={styles.calendarCurrentDayCicleContainer}>
@@ -431,11 +432,11 @@ export default class calendarYearView extends Component {
 
     resetCalendar() {
 
-        if (this.state.connectWithServer == true) {
-            this.loadDataFromAPI(this.state.selectYear, this.state.selectLocation)
-        } else {
-            this.getLocalYearView(this.state.selectYear)
-        }
+        // if (this.state.connectWithServer == true) {
+        this.loadDataFromAPI(this.state.selectYear, this.state.selectLocation)
+        // } else {
+        // this.getLocalYearView(this.state.selectYear)
+        // }
     }
 
     onPressCalendar(datetime) {
@@ -487,7 +488,6 @@ export default class calendarYearView extends Component {
 
         this.state.selectLocation = locationShort
         console.log("onPressLocation ==> locationShort2 : ", this.state.selectLocation)
-
         this.getLocation()
 
     }
@@ -515,9 +515,14 @@ export default class calendarYearView extends Component {
     }
 
     getLocation = async (location) => {
-
+        console.log("WorkingCalender ==> getLocation ==> ", location)
         if (Platform.OS === 'ios') {
+
             locationShort = await this.getShortLocation(this.state.selectLocation)
+            if (locationShort == undefined) {
+                locationShort = this.state.locationPicker[0].value
+            }
+
             this.setState({
                 selectLocation: locationShort
             })
@@ -527,9 +532,7 @@ export default class calendarYearView extends Component {
             })
         }
 
-        // console.log("workingCalendar ==> getLocation : ", location)
-
-
+        console.log("workingCalendar ==> getLocation : ", this.state.selectLocation)
         this.setState({
             locationPickerView: false,
             isLoading: true,
@@ -539,7 +542,7 @@ export default class calendarYearView extends Component {
     }
 
     openNewPage = async (location) => {
-        // console.log("onLoadCalendarAPI ====> location ==> ", location)
+        console.log("openNewPage ==> ", location)
         let data = await RestAPI(SharedPreference.CALENDER_YEAR_API + this.state.selectYear + '&company=' + location, SharedPreference.FUNCTIONID_WORKING_CALENDAR)
         code = data[0]
         data = data[1]
@@ -942,10 +945,8 @@ export default class calendarYearView extends Component {
     }
 
     checkDuplicateEventCalendar = async (duplicateEventArray, newEventID) => {
-
         //console.log("checkDuplicateEventCalendar ==> checkDuplication ==> ", duplicateEventArray)
         //console.log("checkDuplicateEventCalendar ==> newEventID ==> ", newEventID)
-
         let checkFlag = false
         for (let index = 0; index < duplicateEventArray.length; index++) {
             const eventID = duplicateEventArray[index];
@@ -955,7 +956,6 @@ export default class calendarYearView extends Component {
         }
 
         //console.log("checkDuplicateEventCalendar ==> checkFlag ==> ", checkFlag)
-
         if (checkFlag == false) {
             duplicateEventArray.push(newEventID)
             return [checkFlag, duplicateEventArray]
@@ -976,7 +976,6 @@ export default class calendarYearView extends Component {
 
         let duplicateEventArray = []
 
-        // //console.log("this.state.calendarEventData 1 : ", this.state.calendarEventData)
         if (this.state.calendarEventData.code == 200) {
             let holidayArray = this.state.calendarEventData.data.holidays;
 
