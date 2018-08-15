@@ -114,8 +114,6 @@ export default class NonpayrollActivity extends Component {
                 this.state.pin = []
 
                 console.log("newpin2 ==> ",this.state.newpin2)
-
-                console.log("newpin2 ==> ",this.state.newpin2)
                 if (this.state.newpin1 == this.state.newpin2) {
                     this.onChangePINAPI()
                 } else {

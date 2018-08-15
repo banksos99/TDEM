@@ -421,7 +421,7 @@ export default class RegisterActivity extends Component {
     
         await firebase.messaging().getToken()
           .then((token) => {
-            ////console.log('firebase ==> message Device FCM Token: ', token);
+            console.log('Register ==> firebase ==> message Device FCM Token: ', token);
             SharedPreference.deviceInfo = {
               "deviceModel": deviceModel,
               "deviceBrand": deviceBrand,
