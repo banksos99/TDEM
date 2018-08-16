@@ -60,9 +60,9 @@ export default class PayslipDetail extends Component {
             selectedindex:this.props.navigation.getParam("selectedindex", ""),
         }
         firebase.analytics().setCurrentScreen(SharedPreference.SCREEN_PAYSLIP_DETAIL)
-        console.log('yearlist => ',this.state.yearlist) 
-        console.log('datadetail => ',this.state.datadetail) 
-        console.log('roll ID => ',this.state.yearlist[this.state.selectedindex]) 
+        // console.log('yearlist => ',this.state.yearlist) 
+        // console.log('datadetail => ',this.state.datadetail) 
+        // console.log('roll ID => ',this.state.yearlist[this.state.selectedindex]) 
     }
 
     componentWillMount() {
@@ -72,7 +72,7 @@ export default class PayslipDetail extends Component {
  
     componentWillUnmount() {
        
-        // BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
     }
  
     handleBackButtonClick() {
@@ -84,14 +84,14 @@ export default class PayslipDetail extends Component {
     onBack() {
         SharedPreference.notipayslipID = 0
 
-        if (this.state.yearlist) {
+        // if (this.state.yearlist) {
 
             this.props.navigation.navigate('PayslipList');
 
-        } else {
+        // } else {
 
-            this.props.navigation.navigate('HomeScreen');
-        }
+        //     this.props.navigation.navigate('HomeScreen');
+        // }
 
     }
 
@@ -687,7 +687,7 @@ selectedindex:this.state.selectedindex - 1
 
         }
         let yearstr = this.state.initialyear - this.state.yearselected
-        date_text = this.state.yearlist[this.state.selectedindex].month +'-'+ this.state.yearlist[this.state.selectedindex].year//Months.monthNames[this.state.monthselected] + ' ' + yearstr.toString()
+        //date_text = this.state.yearlist[this.state.selectedindex].month +'-'+ this.state.yearlist[this.state.selectedindex].year//Months.monthNames[this.state.monthselected] + ' ' + yearstr.toString()
 
         if (!this.state.yearlist) {
 

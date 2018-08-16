@@ -314,6 +314,7 @@ export default class RegisterActivity extends Component {
     
 
     componentWillMount() {
+        clearTimeout(this.timer);
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow.bind(this));
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide.bind(this));
     }

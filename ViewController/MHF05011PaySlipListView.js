@@ -24,7 +24,7 @@ import Month from "../constants/Month"
 import firebase from 'react-native-firebase';
 
 let monthlistdata = [];
-let yearlistdata = [];
+
 let payslipItems = [];
 let dataSource = [];
 
@@ -55,7 +55,8 @@ export default class PaySlipActivity extends Component {
             updatedHeight: 50,
             dataSource: [],
             selectYearArray: [],
-            DataResponse:this.props.navigation.getParam("DataResponse", "")
+            DataResponse:this.props.navigation.getParam("DataResponse", ""),
+            yearlistdata : []
         };
 
        // firebase.analytics().setCurrentScreen(SharedPreference.SCREEN_PAYSLIP_LIST)
@@ -67,7 +68,7 @@ export default class PaySlipActivity extends Component {
         
 
         if (this.state.DataResponse) {
-            yearlistdata=[]
+            this.state.yearlistdata=[]
             dataSource = this.state.DataResponse;
             let yearnow = new Date().getFullYear();
             let monthnow = new Date().getMonth();
@@ -91,7 +92,7 @@ export default class PaySlipActivity extends Component {
 
                             }
 
-                            yearlistdata.push({
+                            this.state.yearlistdata.push({
                                 rollID: rollID,
                                 month:Month.monthNamesShort[k],
                                 year:this.state.selectYearArray[i]
@@ -104,7 +105,7 @@ export default class PaySlipActivity extends Component {
 
                         for (let k = 0; k < 12; k++) {
                             let rollID = 0;
-                            yearlistdata.push({
+                            this.state.yearlistdata.push({
                                 rollID: rollID,
                                 month:Month.monthNamesShort[k],
                                 year:this.state.selectYearArray[i]
@@ -117,7 +118,7 @@ export default class PaySlipActivity extends Component {
                 }
             }
 
-            console.log('yearlistdata : ', yearlistdata)
+            console.log('yearlistdata : ', this.state.yearlistdata)
 
             this.savedata()
 
@@ -633,7 +634,7 @@ this.savedata()
                         // this.setState(this.renderloadingscreen())
                         this.props.navigation.navigate('PayslipDetail', {
                             // DataResponse:dataSource,
-                            yearlist: yearlistdata,
+                            yearlist: this.state.yearlistdata,
                             initialyear: initialyear,
                             initialmonth: 0,
                             monthselected: index,

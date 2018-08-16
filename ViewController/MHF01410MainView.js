@@ -180,7 +180,9 @@ export default class HMF01011MainView extends Component {
             syncCalendar: autoSyncCalendarBool
         })
         SharedPreference.calendarAutoSync = autoSyncCalendarBool
-        this.onLoadInAppNoti()
+
+       this.onLoadInAppNoti()
+
     }
 
     async componentDidMount() {
