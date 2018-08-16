@@ -40,11 +40,9 @@ export default class RegisterActivity extends Component {
             isLoading: false
         }
         firebase.analytics().setCurrentScreen(SharedPreference.SCREEN_REGISTER)
-
         SharedPreference.currentNavigator = SharedPreference.SCREEN_REGISTER
 
-
-
+        console.log("RegisterScreen")
     }
 
     async componentDidMount() {
@@ -205,11 +203,10 @@ export default class RegisterActivity extends Component {
         code = data[0]
         data = data[1]
 
-
         this.setState({
             isLoading: false
         })
-        
+
         // TODO 
         if (code.SUCCESS == data.code) {
             // await this.savePIN.setPin(this.state.pin2)
@@ -354,37 +351,30 @@ export default class RegisterActivity extends Component {
         if (this.state.pin.length == 6) {
             if (this.state.pin1.length == 0) {
                 this.setState({
-                    isLoading: true
-                })
-                // this.timer = setTimeout(() => {
-                this.setState({
-                    pin: [],
                     pin1: origin,
-                    pintitle: 'Confirm Pin',
-                    isLoading: false
                 })
-                this.state.pin = []
-                this.state.pin1 = origin
-                this.state.pintitle = 'Confirm Pin'
-                this.state.isLoading = false
-                // }, 1000);
+
+                this.timer = setTimeout(() => {
+                    this.setState({
+                        pin: [],
+                        pintitle: 'Confirm Pin',
+                    })
+                }, 300);
             } else {
                 this.setState({
                     isLoading: true
                 })
+
                 this.timer = setTimeout(() => {
                     this.setState({
                         pin: [],
                         pin2: origin,
                     })
-                    this.state.pin = []
-                    this.state.pin2 = origin
+                    // this.state.pin = []
+                    // this.state.pin2 = origin
                     if (this.state.pin1 == this.state.pin2) {
-                        //////console.log("========> pin ===> same ")
                         this.onSetPin()
                     } else {
-                        //////console.log("========> pin ===> not same ")
-                        //TODO Alert
                         Alert.alert(
                             StringText.REGISTER_PIN_ERROR_TITLE,
                             StringText.REGISTER_PIN_ERROR_DESC,
@@ -405,7 +395,7 @@ export default class RegisterActivity extends Component {
                         )
                     }
 
-                }, 1000);
+                }, 300);
             }
         }
     }

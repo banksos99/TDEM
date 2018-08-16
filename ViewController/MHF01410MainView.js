@@ -2361,7 +2361,6 @@ export default class HMF01011MainView extends Component {
     }
 
     loadSignOutAPI = async () => {
-        //TODO Bell signout
         let data = await SignOutAPI("1")
         code = data[0]
         data = data[1]

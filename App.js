@@ -46,15 +46,14 @@ export default class mainview extends Component {
   }
 
   onInactivity = (timeWentInactive) => {
-    console.log("onInactivity : ", timeWentInactive)
-    console.log("onInactivity ==> SessionTimeoutBool : ", SharedPreference.sessionTimeoutBool)
-
+    // //console.log("onInactivity : ", timeWentInactive)
+    // //console.log("onInactivity ==> SessionTimeoutBool : ", SharedPreference.sessionTimeoutBool)
 
     if (timeWentInactive != null) {
 
-      console.log("SharedPreference.currentNavigator 11 ==> ", SharedPreference.currentNavigator)
+      //console.log("SharedPreference.currentNavigator 11 ==> ", SharedPreference.currentNavigator)
       if (SharedPreference.currentNavigator == SharedPreference.SCREEN_MAIN) {
-        console.log("SharedPreference.currentNavigator 22 ==> ", SharedPreference.currentNavigator)
+        //console.log("SharedPreference.currentNavigator 22 ==> ", SharedPreference.currentNavigator)
 
         Alert.alert(
           StringText.ALERT_SESSION_TIMEOUT_TITILE,
@@ -78,7 +77,7 @@ export default class mainview extends Component {
     //   //   sessionTimeoutBool: true
     //   // })
 
-    //   console.log("onInactivity : show alert Dialog")
+    //   //console.log("onInactivity : show alert Dialog")
 
 
 
@@ -106,11 +105,11 @@ export default class mainview extends Component {
     const enabled = await firebase.messaging().hasPermission();
 
     if (enabled) {
-      console.log("firebase ==> user has permissions")
+      //console.log("firebase ==> user has permissions")
     } else {
       try {
         await firebase.messaging().requestPermission();
-        console.log("firebase ==> User has authorised")
+        //console.log("firebase ==> User has authorised")
       } catch (error) {
 
       }
@@ -127,7 +126,7 @@ export default class mainview extends Component {
 
     await firebase.messaging().getToken()
       .then((token) => {
-        // console.log('App ==> firebase ==> message Device FCM Token: ', token);
+        // //console.log('App ==> firebase ==> message Device FCM Token: ', token);
         SharedPreference.deviceInfo = {
           "deviceModel": deviceModel,
           "deviceBrand": deviceBrand,
@@ -279,7 +278,7 @@ export default class mainview extends Component {
   }
 
   onResetPIN = async () => {
-    //console.log("onResetPIN")
+    ////console.log("onResetPIN")
     Alert.alert(
       StringText.ALERT_RESET_PIN_TITLE,
       StringText.ALERT_RESET_PIN_DESC,
@@ -309,7 +308,7 @@ export default class mainview extends Component {
     code = data[0]
     data = data[1]
 
-    //console.log("onLoginResetPinAPI : ", data.code)
+    ////console.log("onLoginResetPinAPI : ", data.code)
 
     if (code.SUCCESS == data.code) {
       SharedPreference.profileObject = null
@@ -356,7 +355,7 @@ export default class mainview extends Component {
         [
           {
             text: 'OK', onPress: () => {
-              console.log('OK Pressed')
+              //console.log('OK Pressed')
             }
           }
         ],
@@ -382,7 +381,7 @@ export default class mainview extends Component {
   renderPINScreen() {
     if (this.state.showpin) {
 
-      console.log("SharedPreference.currentNavigator : ", SharedPreference.currentNavigator);
+      //console.log("SharedPreference.currentNavigator : ", SharedPreference.currentNavigator);
       // if (SharedPreference.currentNavigator == SharedPreference.SCREEN_MAIN) {
       return (
         <View style={styles.alertDialogContainer}>
@@ -523,12 +522,12 @@ export default class mainview extends Component {
   }
 
   onLoadLoginWithPin = async (PIN) => {
-    console.log("login with pin ==> ", PIN)
+    //console.log("login with pin ==> ", PIN)
     let data = await LoginWithPinAPI(PIN, SharedPreference.FUNCTIONID_PIN)
     code = data[0]
     data = data[1]
 
-    console.log("onLoadLoginWithPin ==> ", data.code)
+    //console.log("onLoadLoginWithPin ==> ", data.code)
     if (code.SUCCESS == data.code) {
       this.setState({
         isLoading: false,
@@ -656,8 +655,6 @@ export default class mainview extends Component {
     if (this.state.inactive) {
       return (
         <UserInactivity
-          // timeForInactivity={150000}
-          // checkInterval={150000}
           timeForInactivity={150000}
           checkInterval={150000}
           onInactivity={this.onInactivity} >
