@@ -19,10 +19,10 @@ export default async function loginWithPinAPI(pin, functionID) {
         NETWORK_ERROR: "800"
     }
 
-    console.log("LoginWithPin ==> url  : ",SharedPreference.REGISTER_API)
-    console.log("LoginWithPin ==> pin  : ", pin, " , functionID : ", functionID)
+    // console.log("LoginWithPin ==> url  : ",SharedPreference.REGISTER_API)
+    // console.log("LoginWithPin ==> pin  : ", pin, " , functionID : ", functionID)
     let FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, functionID, SharedPreference.profileObject.client_token)
-    console.log("LoginWithPin ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
+    // console.log("LoginWithPin ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
 
     return fetch(SharedPreference.REGISTER_API, {
         method: 'POST',

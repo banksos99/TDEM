@@ -48,149 +48,145 @@ export default class NonpayrollActivity extends Component {
     }
     componentWillUnmount() {
 
-       // clearTimeout(this.timer);
+        // clearTimeout(this.timer);
 
     }
-    inappTimeInterval() {
+    // inappTimeInterval() {
 
-        this.timer = setTimeout(() => {
+    //     this.timer = setTimeout(() => {
+    //         this.onLoadInAppNoti()
+    //        },SharedPreference.timeinterval);
+    // };
 
-            this.onLoadInAppNoti()
-          
-           },SharedPreference.timeinterval);
-      
-    };
+    // onLoadInAppNoti = async () => {
+    //     //TODO bell
+    //     let lastTime = await this.saveTimeNonPayroll.getTimeStamp()
+    //     if ((lastTime == null) || (lastTime == undefined)) {
+    //         let today = new Date()
+    //         const _format = 'YYYY-MM-DD hh:mm:ss'
+    //         const newdate = moment(today).format(_format).valueOf();
+    //         lastTime = newdate
+    //     }
+    //     latest_date = "2017-01-01 12:00:00"
+    //     FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, 1, SharedPreference.profileObject.client_token)
+    //     let urlPullnoti = SharedPreference.PULL_NOTIFICATION_API + latest_date
+    //     console.log('urlPullnoti : ', urlPullnoti);
+    //     console.log('FUNCTION_TOKEN : ', FUNCTION_TOKEN)
 
-    onLoadInAppNoti = async () => {
-        //TODO bell
-        let lastTime = await this.saveTimeNonPayroll.getTimeStamp()
+    //     return fetch(urlPullnoti, {
+    //         method: 'GET',
+    //         headers: {
+    //             'Accept': 'application/json',
+    //             'Content-Type': 'application/json',
+    //             Authorization: FUNCTION_TOKEN,
+    //         },
+    //     })
+    //         .then((response) => response.json())
+    //         .then((responseJson) => {
 
-        if ((lastTime == null) || (lastTime == undefined)) {
-            let today = new Date()
-            const _format = 'YYYY-MM-DD hh:mm:ss'
-            const newdate = moment(today).format(_format).valueOf();
-            lastTime = newdate
-        }
-        latest_date = "2017-01-01 12:00:00"
-        FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, 1, SharedPreference.profileObject.client_token)
-        let urlPullnoti = SharedPreference.PULL_NOTIFICATION_API + latest_date
-        console.log('urlPullnoti : ', urlPullnoti);
-        console.log('FUNCTION_TOKEN : ', FUNCTION_TOKEN)
+    //             try {
 
-        return fetch(urlPullnoti, {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                Authorization: FUNCTION_TOKEN,
-            },
-        })
-            .then((response) => response.json())
-            .then((responseJson) => {
-  
-                try {
-                   
-                    if (responseJson.status == 403) {
+    //                 if (responseJson.status == 403) {
 
-                        this.onAutenticateErrorAlertDialog()
+    //                     this.onAutenticateErrorAlertDialog()
 
-                        inappTimeIntervalStatus = false
+    //                     inappTimeIntervalStatus = false
 
-                    } else if (responseJson.status == 200) {
+    //                 } else if (responseJson.status == 200) {
 
-                        let dataArray = responseJson.data
-                        let currentyear = new Date().getFullYear();
+    //                     let dataArray = responseJson.data
+    //                     let currentyear = new Date().getFullYear();
 
-                        let monthArray = []
-                        for (let index = 0; index < 12; index++) {
-                            monthData = {
-                                "month": index + 1,
-                                "badge": 0
-                            }
-                            monthArray.push(monthData)
-                        }
+    //                     let monthArray = []
+    //                     for (let index = 0; index < 12; index++) {
+    //                         monthData = {
+    //                             "month": index + 1,
+    //                             "badge": 0
+    //                         }
+    //                         monthArray.push(monthData)
+    //                     }
 
-                        let dataCustomArray = [
-                            {
-                                "year": currentyear - 1,
-                                "detail": monthArray
-                            },
-                            {
-                                "year": currentyear,
-                                "detail": monthArray
-                            },
-                        ]
+    //                     let dataCustomArray = [
+    //                         {
+    //                             "year": currentyear - 1,
+    //                             "detail": monthArray
+    //                         },
+    //                         {
+    //                             "year": currentyear,
+    //                             "detail": monthArray
+    //                         },
+    //                     ]
 
-                        for (let index = 0; index < dataArray.length; index++) {
-                            const dataReceive = dataArray[index];
-                            // //console.log("element ==> ", dataReceive.function_id)
+    //                     for (let index = 0; index < dataArray.length; index++) {
+    //                         const dataReceive = dataArray[index];
+    //                         // //console.log("element ==> ", dataReceive.function_id)
 
-                            if (dataReceive.function_id == "PHF06010") {//if nonPayroll
-                                dataListArray = dataReceive.data_list
+    //                         if (dataReceive.function_id == "PHF06010") {//if nonPayroll
+    //                             dataListArray = dataReceive.data_list
 
-                                // //console.log("dataListArray ==> ", dataListArray)
-                                for (let index = 0; index < dataListArray.length; index++) {
-                                    const str = dataListArray[index];
-                                    // //console.log("str ==> ", str)
-                                    var res = str.split("|");
+    //                             // //console.log("dataListArray ==> ", dataListArray)
+    //                             for (let index = 0; index < dataListArray.length; index++) {
+    //                                 const str = dataListArray[index];
+    //                                 // //console.log("str ==> ", str)
+    //                                 var res = str.split("|");
 
-                                    var data = res[1]
+    //                                 var data = res[1]
 
-                                    var monthYear = data.split("-");
+    //                                 var monthYear = data.split("-");
 
-                                    var year = monthYear[0]
-                                    var month = monthYear[1]
+    //                                 var year = monthYear[0]
+    //                                 var month = monthYear[1]
 
-                                    for (let index = 0; index < dataCustomArray.length; index++) {
-                                        const data = dataCustomArray[index];
+    //                                 for (let index = 0; index < dataCustomArray.length; index++) {
+    //                                     const data = dataCustomArray[index];
 
 
-                                        if (year == data.year) {
-                                            const detail = data.detail
+    //                                     if (year == data.year) {
+    //                                         const detail = data.detail
 
 
-                                            let element = detail.find((p) => {
-                                                return p.month === JSON.parse(month)
-                                            });
+    //                                         let element = detail.find((p) => {
+    //                                             return p.month === JSON.parse(month)
+    //                                         });
 
-                                            element.badge = element.badge + 1
+    //                                         element.badge = element.badge + 1
 
-                                        }
-                                    }
-                                }
-                            } else if (dataReceive.function_id == "PHF02010") {
+    //                                     }
+    //                                 }
+    //                             }
+    //                         } else if (dataReceive.function_id == "PHF02010") {
 
-                                console.log("announcement badge ==> ", dataReceive.badge_count)
+    //                             console.log("announcement badge ==> ", dataReceive.badge_count)
 
-                                SharedPreference.notiAnnounceMentBadge = parseInt(dataReceive.badge_count) + parseInt(SharedPreference.notiAnnounceMentBadge)
+    //                             SharedPreference.notiAnnounceMentBadge = parseInt(dataReceive.badge_count) + parseInt(SharedPreference.notiAnnounceMentBadge)
 
-                            }
+    //                         }
 
-                        }
+    //                     }
 
-                        this.setState({
-                            nonPayrollBadge: dataCustomArray
-                        })
+    //                     this.setState({
+    //                         nonPayrollBadge: dataCustomArray
+    //                     })
 
-                    }
-                    if (inappTimeIntervalStatus) {
-                        this.inappTimeInterval()
-                    }
+    //                 }
+    //                 if (inappTimeIntervalStatus) {
+    //                     this.inappTimeInterval()
+    //                 }
 
 
 
-                } catch (error) {
+    //             } catch (error) {
 
-                }
-            })
-            .catch((error) => {
+    //             }
+    //         })
+    //         .catch((error) => {
 
 
 
-            });
-    }
+    //         });
+    // }
 
-    
+
 
     renderRollItem() {
         year = 12
@@ -216,7 +212,7 @@ export default class NonpayrollActivity extends Component {
             // //console.log("element badge ==> ",badge)
 
             monthRow.push(
-                this.customMonthContainer(month, this.checkAmount(this.state.selectYear, month), badge,index)
+                this.customMonthContainer(month, this.checkAmount(this.state.selectYear, month), badge, index)
             )
             if (index % 3 === 2) {
                 monthContainer.push(
@@ -254,7 +250,7 @@ export default class NonpayrollActivity extends Component {
         return Decrypt.decrypt(code);
     }
 
-    customMonthContainer(monthNumber, amount, badge,index) {
+    customMonthContainer(monthNumber, amount, badge, index) {
 
         if (badge == null) {
             badge = 0
@@ -272,7 +268,7 @@ export default class NonpayrollActivity extends Component {
                         backgroundColor: Colors.calendarRedDotColor
                     }]}>
                         <TouchableOpacity
-                            style={{ width: '100%',height:'100%' }}
+                            style={{ width: '100%', height: '100%' }}
                             disable={amount}
                             onPress={() => {
 
@@ -300,12 +296,12 @@ export default class NonpayrollActivity extends Component {
                 </View>)
             }
             amount = '0.00'
-            return (<View style={styles.nonPayRollitemBg}  key={index}>
+            return (<View style={styles.nonPayRollitemBg} key={index}>
                 <View style={[styles.nonPayRollitem, {
                     backgroundColor: Colors.calendarRedDotColor
                 }]}>
                     <TouchableOpacity
-                        style={{ width: '100%',height:'100%' }}
+                        style={{ width: '100%', height: '100%' }}
                         disable={amount}
                         onPress={() => {
                             this.onLoadAlertDialog()
@@ -332,18 +328,18 @@ export default class NonpayrollActivity extends Component {
             // nodata
             return <View style={[styles.nonPayRollitem, {
                 backgroundColor: 'white',
-            }]}  key={index}>
+            }]} key={index}>
             </View>
 
         } else if (amount) {//Normal Month - Has data 
             //console.log('amount :', amount)
             return (
-                <View style={styles.nonPayRollitemBg}  key={index}>
+                <View style={styles.nonPayRollitemBg} key={index}>
                     <View style={[styles.nonPayRollitem, {
                         backgroundColor: Colors.calendarLocationBoxColor
                     }]}>
-                        <TouchableOpacity 
-                        style={{ width: '100%',height:'100%' }}
+                        <TouchableOpacity
+                            style={{ width: '100%', height: '100%' }}
                             onPress={() => {
                                 //console.log("onPress ==> monthNumber ==> ", monthNumber, " , year ==> ", this.state.selectYear)
                                 let badgeData = this.state.badgeArray
@@ -389,9 +385,9 @@ export default class NonpayrollActivity extends Component {
             return (//Normal Month - No data
                 <View style={[styles.nonPayRollitem, {
                     backgroundColor: "white",
-                }]}  key={index}>
-                    <TouchableOpacity 
-                    style={{ width: '100%',height:'100%' }}
+                }]} key={index}>
+                    <TouchableOpacity
+                        style={{ width: '100%', height: '100%' }}
                         onPress={() => {
                             this.onLoadAlertDialog()
                         }}>

@@ -20,9 +20,15 @@ export default async function signOutAPI(functionID) {
         CUT_JSON: "700",
         NETWORK_ERROR: "800"
     }
-    // console.log("SignOutAPI ==> ", functionID)
+    console.log("SignOutAPI ==> ", SharedPreference.profileObject)
+    console.log("client_id ==> ", SharedPreference.profileObject.client_id)
+
+    console.log("functionID ==> ", functionID)
+    console.log("client_token ==> ", SharedPreference.profileObject.client_token)
 
     FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, functionID, SharedPreference.profileObject.client_token)
+    console.log("signOutAPI FUNCTION_TOKEN ==> ", FUNCTION_TOKEN)
+
     return fetch(SharedPreference.REGISTER_API, {
         method: 'POST',
         headers: {

@@ -54,11 +54,8 @@ export default async function getRestAPI(username, password) {
                     code: responseJson.status,
                     data: responseJson.data
                 }]
-            } else if (responseJson.status == code.INVALID_USER_PASS) {
+            } else if ((responseJson.status == code.INVALID_USER_PASS)||(responseJson.status == code.FAILED)) {
                 statusText = responseJson.errors[0]
-                // console.log("statusText ==> ",statusText)
-                // console.log("statusText ==> code ==> ",statusText.code)
-                // console.log("statusText ==> detail ==> ",statusText.detail)
 
                 object = [code, {
                     code: responseJson.status,
