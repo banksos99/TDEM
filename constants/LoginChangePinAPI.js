@@ -1,7 +1,7 @@
 import SharedPreference from "../SharedObject/SharedPreference";
 import Authorization from "../SharedObject/Authorization";
 
-export default async function changePin(oldPin, newPin,functionID) {
+export default async function changePin(oldPin, newPin, functionID) {
 
     let code = {
         SUCCESS: "200",
@@ -10,7 +10,7 @@ export default async function changePin(oldPin, newPin,functionID) {
         FAILED: "400",
         DOES_NOT_EXISTS: "401",
         INVALID_AUTH_TOKEN: "403",
-        NODATA: "404",
+        INVALID_DATA: "404",
         DUPLICATE_DATA: "409",
         TIME_OUT: "500",
         INTERNAL_SERVER_ERROR: "500",
@@ -19,9 +19,10 @@ export default async function changePin(oldPin, newPin,functionID) {
         CUT_JSON: "700",
     }
 
-     // //console.log("calendarPDFAPI ==>  functionID : ", functionID)
-     FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, functionID, SharedPreference.profileObject.client_token)
-    //  //console.log("calendarPDFAPI ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
+    FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, functionID, SharedPreference.profileObject.client_token)
+    console.log("changePin ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
+    console.log("changePin ==> oldPin  : ", oldPin)
+    console.log("changePin ==> newPin  : ", newPin)
 
     return fetch(SharedPreference.SET_PIN_API, {
         method: 'POST',
@@ -39,12 +40,19 @@ export default async function changePin(oldPin, newPin,functionID) {
     })
         .then((response) => response.json())
         .then((responseJson) => {
-            // //console.log("changePin ==> callback success : ", responseJson)
+            console.log("changePin ==> callback success : ", responseJson)
             let object
             if (responseJson.status == code.SUCCESS) {
                 object = [code, {
                     code: responseJson.status,
                     data: responseJson.data
+                }]
+            } else if (responseJson.status == code.INVALID_DATA) {
+                statusText = responseJson.errors[0]
+
+                object = [code, {
+                    code: responseJson.status,
+                    data: statusText
                 }]
             } else {
                 object = [code, {

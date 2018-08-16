@@ -12,9 +12,10 @@ import SharedPreference from "../SharedObject/SharedPreference";
 import SaveTOKEN from "./../constants/SaveToken"
 
 import LoginWithPinAPI from "./../constants/LoginWithPinAPI"
+import LoginChangePinAPI from "./../constants/LoginChangePinAPI"
+
 import RestAPI from "./../constants/RestAPI"
 import firebase from 'react-native-firebase';
-import DeviceInfo from 'react-native-device-info';
 
 export default class RegisterActivity extends Component {
 
@@ -35,246 +36,127 @@ export default class RegisterActivity extends Component {
             username: '',
             password: '',
             versionCode: "Version : " + SharedPreference.deviceInfo.buildNumber,
-            datastatus:0,
+            datastatus: 0,
+            isLoading: false
         }
         firebase.analytics().setCurrentScreen(SharedPreference.SCREEN_REGISTER)
 
         SharedPreference.currentNavigator = SharedPreference.SCREEN_REGISTER
 
-        
+
 
     }
 
     onRegister = async () => {
-        ////console.log("onRegister")
+        this.setState({
+            isLoading: true
+        })
+        console.log("onRegister")
         Keyboard.dismiss()
         let data = await RegisterAPI(this.state.username, this.state.password)
         code = data[0]
         data = data[1]
 
-        console.log("onRegister ==> ", data.code)
+        console.log("onRegister ==> ", data)
         this.setState({
             datastatus: data.code
         })
-        // Alert.alert(
-        //     SharedPreference.deviceInfo.deviceOSVersion,
-        //     data.code.toString(),
-        //     [
-        //         {
-        //             text: 'OK', onPress: () => {
-        //                 console.log('OK Pressed')
-        //             }
-        //         }
-        //     ],
-        //     { cancelable: false }
-        // )
+
         if (code.SUCCESS == data.code) {
             this.saveProfile.setProfile(data.data)
             SharedPreference.profileObject = await this.saveProfile.getProfile()
-            await this.onLoadLoginWithPin("001000200")
+            await this.onCheckPINWithChangePIN('1111', '2222')
+            this.setState({
+                isLoading: false
+            })
 
         } else if (code.DOES_NOT_EXISTS == data.code) {
+            console.log("onRegister ==> DOES_NOT_EXISTS")
+
             Alert.alert(
                 StringText.REGISTER_INVALID_TITLE,
                 StringText.REGISTER_INVALID_DESC,
                 [
                     {
                         text: 'OK', onPress: () => {
-                            console.log('OK Pressed')
-                        }
-                    }
-                ],
-                { cancelable: false }
-            )
-        } else if (code.INVALID_USER_PASS == data.code) {
-            // console.log("11 statusText ==> code ==> ", data.data.code)
-            // console.log("11 statusText ==> detail ==> ", data.data.detail)
-            Alert.alert(
-                data.data.code,
-                data.data.detail,
-                [
-                    {
-                        text: 'OK', onPress: () => {
-                            console.log('OK Pressed')
-                        }
-                    }
-                ],
-                { cancelable: false }
-            )
-
-        } else if (code.NETWORK_ERROR == data.code) {
-            Alert.alert(
-                StringText.ALERT_CANNOT_CONNECT_NETWORK_TITLE,
-                StringText.ALERT_CANNOT_CONNECT_NETWORK_DESC,
-                [
-                    {
-                        text: 'OK', onPress: () => {
-                            console.log('OK Pressed')
-                        }
-                    }
-                ],
-                { cancelable: false }
-            )
-        } else {
-            Alert.alert(
-                // StringText.ALERT_PLEASE_FILL_TITLE,
-                // StringText.ALERT_PLEASE_FILL_DESC,
-                data.data.code,
-                data.data.detail,
-                [
-                    {
-                        text: 'OK', onPress: () => {
-                            console.log('OK Pressed')
-                        }
-                    }
-                ],
-                { cancelable: false }
-            )
-        }
-    }
-
-    onLoadLoginWithPin = async (PIN) => {
-        ////console.log("login with pin ==> ", PIN)
-        let data = await LoginWithPinAPI(PIN, SharedPreference.FUNCTIONID_PIN)
-        code = data[0]
-        data = data[1]
-
-        console.log("onLoadLoginWithPin ==> ", data.code)
-        if (code.SUCCESS == data.code) {
-            this.setState({
-                isLoading: false
-            })
-            SharedPreference.calendarAutoSync = await this.saveAutoSyncCalendar.getAutoSyncCalendar()
-            await this.onLoadInitialMaster()
-        } else if (code.INVALID_USER_PASS == data.code) {
-
-            if (data.data.code == "MSC29132AERR") {
-                Alert.alert(
-                    StringText.ALERT_PIN_CANNOT_FIND_TITLE,
-                    StringText.ALERT_PIN_CANNOT_FIND_DESC,
-                    [
-                        {
-                            text: 'OK', onPress: () => {
-                                SharedPreference.profileObject = null
-                                this.saveProfile.setProfile(null)
-                                this.props.navigation.navigate('RegisterScreen')
-                            }
-                        }
-                    ],
-                    { cancelable: false }
-                )
-            } else {
-                Alert.alert(
-                    data.data.code,
-                    data.data.detail,
-                    [
-                        {
-                            text: 'OK', onPress: () => {
-                                SharedPreference.profileObject = null
-                                this.saveProfile.setProfile(null)
-                                this.props.navigation.navigate('RegisterScreen')
-                            }
-                        }
-                    ],
-                    { cancelable: false }
-                )
-
-            }
-
-        } else if (code.INVALID_AUTH_TOKEN == data.code) {
-            Alert.alert(
-                StringText.INVALID_AUTH_TOKEN_TITLE,
-                StringText.INVALID_AUTH_TOKEN_DESC,
-                [{
-                    text: 'OK', onPress: () => {
-                        SharedPreference.profileObject = null
-                        this.saveProfile.setProfile(null)
-                        this.props.navigation.navigate('RegisterScreen')
-                    }
-                }
-                ],
-                { cancelable: false })
-        } else if ((code.INTERNAL_SERVER_ERROR == data.code) || (code.ERROR == data.code)) {
-            Alert.alert(
-                StringText.ALERT_AUTHORLIZE_ERROR_TITLE,
-                StringText.ALERT_AUTHORLIZE_ERROR_MESSAGE,
-                [{
-                    text: 'OK', onPress: () => {
-                        SharedPreference.profileObject = null
-                        this.saveProfile.setProfile(null)
-                        this.props.navigation.navigate('RegisterScreen')
-                    }
-                }
-                ],
-                { cancelable: false })
-
-        } else if (code.NETWORK_ERROR == data.code) {
-            Alert.alert(
-                StringText.ALERT_CANNOT_CONNECT_NETWORK_TITLE,
-                StringText.ALERT_CANNOT_CONNECT_NETWORK_DESC,
-                [{
-                    text: 'OK', onPress: () => {
-                        SharedPreference.profileObject = null
-                        this.saveProfile.setProfile(null)
-                        this.props.navigation.navigate('RegisterScreen')
-                    }
-                }
-                ],
-                { cancelable: false })
-        } else {
-            if (this.state.failPin == 4) {
-                this.setState({
-                    isLoading: false
-                })
-                Alert.alert(
-                    StringText.ALERT_PIN_TITLE_NOT_CORRECT,
-                    StringText.ALERT_PIN_DESC_TOO_MANY_NOT_CORRECT,
-                    [{
-                        text: 'OK', onPress: () => {
-                            SharedPreference.profileObject = null
-                            this.saveProfile.setProfile(null)
-                            this.props.navigation.navigate('RegisterScreen')
-                        }
-                    }],
-                    { cancelable: false }
-                )
-            } else {
-                this.setState({
-                    isLoading: false
-                })
-                Alert.alert(
-                    StringText.ALERT_PIN_TITLE_NOT_CORRECT,
-                    StringText.ALERT_PIN_DESC_NOT_CORRECT,
-                    [{
-                        text: 'OK', onPress: () => {
-                            let origin = this.state.failPin + 1
                             this.setState({
-                                failPin: origin,
-                                pin: ''
+                                isLoading: false
                             })
                         }
-                    },
-                    ],
-                    { cancelable: false }
-                )
-            }
+                    }
+                ],
+                { cancelable: false }
+            )
+        } else if ((code.INVALID_USER_PASS == data.code) || (code.FAILED == data.code)) {
+
+            console.log("11 statusText ==> code ==> ", data.data.code)
+            console.log("11 statusText ==> detail ==> ", data.data.detail)
+            Alert.alert(
+                data.data.code,
+                data.data.detail,
+                [
+                    {
+                        text: 'OK', onPress: () => {
+                            this.setState({
+                                isLoading: false
+                            })
+                        }
+                    }
+                ],
+                { cancelable: false }
+            )
+
+        } else if (code.NETWORK_ERROR == data.code) {
+            Alert.alert(
+                StringText.ALERT_CANNOT_CONNECT_NETWORK_TITLE,
+                StringText.ALERT_CANNOT_CONNECT_NETWORK_DESC,
+                [
+                    {
+                        text: 'OK', onPress: () => {
+                            this.setState({
+                                isLoading: false
+                            })
+                        }
+                    }
+                ],
+                { cancelable: false }
+            )
+        } else {
+            Alert.alert(
+                data.data.code,
+                data.data.detail,
+                [
+                    {
+                        text: 'OK', onPress: () => {
+                            console.log('OK Pressed')
+                        }
+                    }
+                ],
+                { cancelable: false }
+            )
         }
     }
 
 
-    onLoadLoginWithPin = async (PIN) => {
+    onCheckPINWithChangePIN = async (PIN1, PIN2) => {
 
-        let data = await LoginWithPinAPI(PIN, SharedPreference.FUNCTIONID_PIN)
+        let data = await LoginChangePinAPI(PIN1, PIN2, SharedPreference.FUNCTIONID_PIN)
         code = data[0]
         data = data[1]
+
+        // console.log("LoginChangePinAPI code ==> ", data.code)
+        // console.log("LoginChangePinAPI data ==> ", data.data)
 
         if (code.DUPLICATE_DATA == data.code) {//409
             this.onOpenPinActivity()
-        } else if (code.INVALID_USER_PASS == data.code) {//401
-
-            if (data.data.code == "MSC29132AERR") {
+            this.setState({
+                isLoading: false
+            })
+        } else if (code.INVALID_DATA == data.code) {//401
+            if (data.data.code == "MHF00301ACRI") {
                 this.setState({
-                    showCreatePin: true
+                    showCreatePin: true,
+                    isLoading: false
                 })
             }
 
@@ -285,7 +167,6 @@ export default class RegisterActivity extends Component {
                 [
                     {
                         text: 'OK', onPress: () => {
-                            //console.log('OK Pressed') },
                         }
                     }
                 ],
@@ -294,18 +175,25 @@ export default class RegisterActivity extends Component {
         }
     }
 
+
     onSetPin = async () => {
 
         let data = await SetPinAPI(this.state.pin2, SharedPreference.FUNCTIONID_PIN)
         code = data[0]
         data = data[1]
 
+
+        this.setState({
+            isLoading: false
+        })
+        
         // TODO 
         if (code.SUCCESS == data.code) {
             // await this.savePIN.setPin(this.state.pin2)
             this.setState({
                 showCreatePinSuccess: true,
-                showCreatePin: false
+                showCreatePin: false,
+
             })
 
         } else {
@@ -315,7 +203,7 @@ export default class RegisterActivity extends Component {
                 [
                     {
                         text: 'OK', onPress: () => {
-                            //console.log('OK Pressed') },
+
                         }
                     }
                 ],
@@ -455,16 +343,16 @@ export default class RegisterActivity extends Component {
                     isLoading: true
                 })
                 // this.timer = setTimeout(() => {
-                    this.setState({
-                        pin: [],
-                        pin1: origin,
-                        pintitle: 'Confirm Pin',
-                        isLoading: false
-                    })
-                    this.state.pin = []
-                    this.state.pin1 = origin
-                    this.state.pintitle = 'Confirm Pin'
-                    this.state.isLoading = false
+                this.setState({
+                    pin: [],
+                    pin1: origin,
+                    pintitle: 'Confirm Pin',
+                    isLoading: false
+                })
+                this.state.pin = []
+                this.state.pin1 = origin
+                this.state.pintitle = 'Confirm Pin'
+                this.state.isLoading = false
                 // }, 1000);
             } else {
                 this.setState({
@@ -635,7 +523,7 @@ export default class RegisterActivity extends Component {
                 </View>)
         }
     }
-    
+
     renderProgressView() {
         if (this.state.isLoading) {
             return (
@@ -711,6 +599,19 @@ export default class RegisterActivity extends Component {
         </View>)
 
     }
+    renderProgressView() {
+        if (this.state.isLoading) {
+            return (
+                <View style={styles.alertDialogContainer}>
+                    <View style={styles.alertDialogBackgroudAlpha} />
+                    {/* bg */}
+                    <View style={styles.alertDialogContainer}>
+                        <ActivityIndicator />
+                    </View>
+                </View>
+            )
+        }
+    }
 
     render() {
         return (
@@ -728,7 +629,7 @@ export default class RegisterActivity extends Component {
                             <View style={styles.registTextContainer}>
                                 <Image style={[styles.registetImageContainer, { height: 20, width: 20, }]}
                                     source={require('../resource/regist/regist_location.png')} />
-                                <Text style={[styles.registText, { color: Colors.grayTextColor,marginTop:15 }]}>TDEM</Text>
+                                <Text style={[styles.registText, { color: Colors.grayTextColor, marginTop: 15 }]}>TDEM</Text>
                             </View>
                             <View style={styles.registLine} />
 
@@ -738,7 +639,7 @@ export default class RegisterActivity extends Component {
                                     source={require('../resource/regist/regist_user.png')} />
                                 <TextInput
                                     onSubmitEditing={Keyboard.dismiss}
-                                    autoCapitalize = 'none'
+                                    autoCapitalize='none'
                                     underlineColorAndroid="transparent"
                                     selectionColor='black'
                                     style={styles.registText}
@@ -754,7 +655,7 @@ export default class RegisterActivity extends Component {
                                     source={require('../resource/regist/regist_locked.png')} />
                                 <TextInput
                                     onSubmitEditing={Keyboard.dismiss}
-                                    autoCapitalize = 'none'
+                                    autoCapitalize='none'
                                     underlineColorAndroid="transparent"
                                     secureTextEntry={true}
                                     selectionColor='black'
@@ -765,8 +666,8 @@ export default class RegisterActivity extends Component {
                             </View>
 
                             <View style={styles.registLine} />
-                            <TouchableOpacity 
-                           onPress={() => this.onRegister()}
+                            <TouchableOpacity
+                                onPress={() => this.onRegister()}
                             >
                                 <View style={styles.registButton}>
                                     <Text style={styles.registTextButton}>
@@ -785,6 +686,9 @@ export default class RegisterActivity extends Component {
                 </View >
                 {this.renderCreatePin()}
                 {this.renderCreatePinSuccess()}
+
+                {this.renderProgressView()}
+
             </View >
         );
     }

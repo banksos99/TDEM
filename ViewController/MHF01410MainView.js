@@ -218,8 +218,7 @@ export default class HMF01011MainView extends Component {
                     })
             }
         }
-
-        console.log("onLoadInAppNoti ==> ", SharedPreference.PULL_NOTIFICATION_API + lastTime)
+        // console.log("onLoadInAppNoti ==> ", SharedPreference.PULL_NOTIFICATION_API + lastTime)
 
         FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, 1, SharedPreference.profileObject.client_token)
         return fetch(SharedPreference.PULL_NOTIFICATION_API + lastTime, {
@@ -233,10 +232,10 @@ export default class HMF01011MainView extends Component {
         })
             .then((response) => response.json())
             .then((responseJson) => {
-                console.log("onLoadInAppNoti")
-                console.log("responseJson ==> ", responseJson)
+                // console.log("onLoadInAppNoti")
+                // console.log("responseJson ==> ", responseJson)
                 try {
-                    console.log("onLoadInAppNoti ==> responseJson ", responseJson)
+                    // console.log("onLoadInAppNoti ==> responseJson ", responseJson)
                     if (responseJson.status == 403) {
 
                         this.onAutenticateErrorAlertDialog()

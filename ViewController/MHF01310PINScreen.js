@@ -40,6 +40,7 @@ export default class PinActivity extends Component {
         data = data[1]
 
         console.log("onLoadLoginWithPin ==> ", data.code)
+
         if (code.SUCCESS == data.code) {
             this.setState({
                 isLoading: false
