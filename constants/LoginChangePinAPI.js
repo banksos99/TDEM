@@ -20,9 +20,9 @@ export default async function changePin(oldPin, newPin, functionID) {
     }
 
     FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, functionID, SharedPreference.profileObject.client_token)
-    console.log("changePin ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
-    console.log("changePin ==> oldPin  : ", oldPin)
-    console.log("changePin ==> newPin  : ", newPin)
+    // console.log("changePin ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
+    // console.log("changePin ==> oldPin  : ", oldPin)
+    // console.log("changePin ==> newPin  : ", newPin)
 
     return fetch(SharedPreference.SET_PIN_API, {
         method: 'POST',
@@ -40,7 +40,7 @@ export default async function changePin(oldPin, newPin, functionID) {
     })
         .then((response) => response.json())
         .then((responseJson) => {
-            console.log("changePin ==> callback success : ", responseJson)
+            // console.log("changePin ==> callback success : ", responseJson)
             let object
             if (responseJson.status == code.SUCCESS) {
                 object = [code, {

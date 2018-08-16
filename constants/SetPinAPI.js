@@ -18,10 +18,10 @@ export default async function getRestAPI(pin, functionID) {
         UPDATE_APPLICATION: "600",
         CUT_JSON: "700",
     }
-
+    // console.log("setPinAPI ==> URL  : ", SharedPreference.SET_PIN_API)
     //console.log("setPinAPI ==>  functionID : ", functionID)
     FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, functionID, SharedPreference.profileObject.client_token)
-    console.log("setPinAPI ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
+    // console.log("setPinAPI ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
 
     return fetch(SharedPreference.SET_PIN_API, {
         method: 'POST',

@@ -25,9 +25,9 @@ export default async function getRestAPI(url, functionID) {
         functionID = 1
     }
     
-    console.log("RestAPI ==> getRestAPI  : ", url)
+    // console.log("RestAPI ==> getRestAPI  : ", url)
     FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, functionID, SharedPreference.profileObject.client_token)
-    console.log("RestAPI ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
+    // console.log("RestAPI ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
 
     return fetch(url, {
         method: 'GET',
@@ -39,7 +39,7 @@ export default async function getRestAPI(url, functionID) {
     })
         .then((response) => response.json())
         .then((responseJson) => {
-            // //console.log("RestAPI success : ", responseJson)
+            console.log("RestAPI success : ", responseJson.status)
             let object
             if (responseJson.status == code.SUCCESS) {
                 object = [code, {

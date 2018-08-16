@@ -30,6 +30,7 @@ export default class PinActivity extends Component {
         }
         firebase.analytics().setCurrentScreen(SharedPreference.SCREEN_PIN)
         SharedPreference.currentNavigator = SharedPreference.SCREEN_PIN
+        console.log("PinScreen")
 
     }
 
@@ -47,41 +48,6 @@ export default class PinActivity extends Component {
             })
             SharedPreference.calendarAutoSync = await this.saveAutoSyncCalendar.getAutoSyncCalendar()
             await this.onLoadInitialMaster()
-        } else if (code.INVALID_USER_PASS == data.code) {
-
-            if (data.data.code == "MSC29132AERR") {
-                Alert.alert(
-                    StringText.ALERT_PIN_CANNOT_FIND_TITLE,
-                    StringText.ALERT_PIN_CANNOT_FIND_DESC,
-                    [
-                        {
-                            text: 'OK', onPress: () => {
-                                SharedPreference.profileObject = null
-                                this.saveProfile.setProfile(null)
-                                this.props.navigation.navigate('RegisterScreen')
-                            }
-                        }
-                    ],
-                    { cancelable: false }
-                )
-            } else {
-                Alert.alert(
-                    data.data.code,
-                    data.data.detail,
-                    [
-                        {
-                            text: 'OK', onPress: () => {
-                                SharedPreference.profileObject = null
-                                this.saveProfile.setProfile(null)
-                                this.props.navigation.navigate('RegisterScreen')
-                            }
-                        }
-                    ],
-                    { cancelable: false }
-                )
-
-            }
-
         } else if (code.INVALID_AUTH_TOKEN == data.code) {
             Alert.alert(
                 StringText.INVALID_AUTH_TOKEN_TITLE,
