@@ -56,11 +56,13 @@ export default class PayslipDetail extends Component {
             datadetail: this.props.navigation.getParam("Datadetail", ""),
             rollid: this.props.navigation.getParam("rollid", ""),
             havePermission: false,
-            yearArray: ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"]
+            yearArray: ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"],
+            selectedindex:this.props.navigation.getParam("selectedindex", ""),
         }
         firebase.analytics().setCurrentScreen(SharedPreference.SCREEN_PAYSLIP_DETAIL)
         console.log('yearlist => ',this.state.yearlist) 
         console.log('datadetail => ',this.state.datadetail) 
+        console.log('roll ID => ',this.state.yearlist[this.state.selectedindex]) 
     }
 
     componentWillMount() {
@@ -236,17 +238,19 @@ export default class PayslipDetail extends Component {
 
     getPayslipDetailfromAPI = async () => {
 
-        this.state.rollid = 0
+        console.log()
 
-        for (let i = 0; i < this.state.yearlist[this.state.yearselected].monthlistdata.length; i++) {
+        // this.state.rollid = 0
 
-            //console.log(' loop  rollid :', this.state.yearlist[this.state.yearselected].monthlistdata[i].id)
+        // for (let i = 0; i < this.state.yearlist[this.state.yearselected].monthlistdata.length; i++) {
 
-            if (this.state.yearlist[this.state.yearselected].monthlistdata[i].month === this.state.monthselected + 1) {
+        //     //console.log(' loop  rollid :', this.state.yearlist[this.state.yearselected].monthlistdata[i].id)
 
-                this.state.rollid = this.state.yearlist[this.state.yearselected].monthlistdata[i].id
-            }
-        }
+        //     if (this.state.yearlist[this.state.yearselected].monthlistdata[i].month === this.state.monthselected + 1) {
+
+        //         this.state.rollid = this.state.yearlist[this.state.yearselected].monthlistdata[i].id
+        //     }
+        // }
         //console.log('rollid :', this.state.rollid)
 
         FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, SharedPreference.FUNCTIONID_PAYSLIP, SharedPreference.profileObject.client_token)
@@ -255,8 +259,8 @@ export default class PayslipDetail extends Component {
 
         if (this.state.rollid) {
 
-            let host = SharedPreference.PAYSLIP_DETAIL_API + this.state.rollid
-
+            let host = SharedPreference.PAYSLIP_DETAIL_API + this.state.yearlist[this.state.selectedindex].rollID
+            console.log('host :', host)
             return fetch(host, {
                 method: 'GET',
                 headers: {
@@ -337,14 +341,15 @@ export default class PayslipDetail extends Component {
     nextmonth() {
 
         this.setState({
-            monthselected: this.state.monthselected + 1,
+            //monthselected: this.state.monthselected + 1,
+            selectedindex:this.state.selectedindex + 1
 
         }, function () {
 
-            if (this.state.monthselected > 11) {
-                this.state.monthselected = 0;
-                this.state.yearselected -= 1;
-            }
+            // if (this.state.monthselected > 11) {
+            //     this.state.monthselected = 0;
+            //     this.state.yearselected -= 1;
+            // }
 
             //console.log('nextmonth monthselected : ', this.state.monthselected);
 
@@ -356,15 +361,15 @@ export default class PayslipDetail extends Component {
     previousmonth() {
 
         this.setState({
-            monthselected: this.state.monthselected - 1,
-
+          //  monthselected: this.state.monthselected - 1,
+selectedindex:this.state.selectedindex - 1
         }, function () {
 
 
-            if (this.state.monthselected < 0) {
-                this.state.monthselected = 11;
-                this.state.yearselected += 1;
-            }
+            // if (this.state.monthselected < 0) {
+            //     this.state.monthselected = 11;
+            //     this.state.yearselected += 1;
+            // }
 
             //console.log('monthselected : ', this.state.monthselected);
             //console.log('yearselected : ', this.state.yearselected);
@@ -394,7 +399,8 @@ export default class PayslipDetail extends Component {
     }
     nextmonthbuttonrender() {
 
-        if (!this.state.yearlist) {
+       // if (!this.state.yearlist) {
+        if (this.state.yearlist.length <= this.state.selectedindex) {
             return (
                 <View style={{ flex: 1 }}>
                     <Image
@@ -431,9 +437,10 @@ export default class PayslipDetail extends Component {
     }
 
     previoousbuttonrender() {
-        if (!this.state.yearlist) {
-            return (
 
+        if (0 == this.state.selectedindex){
+            
+            return (
 
                 <Image
                     style={{ width: 45, height: 45 }}
@@ -443,18 +450,19 @@ export default class PayslipDetail extends Component {
 
             )
 
-        } else if (this.state.yearselected === 2 && this.state.monthselected === 0) {
-            return (
-                // <TouchableOpacity style={{ flex: 1 }}>y
+         } 
+        //else if (this.state.yearselected === 2 && this.state.monthselected === 0) {
+        //     return (
+        //         // <TouchableOpacity style={{ flex: 1 }}>y
 
-                <Image
-                    style={{ width: 45, height: 45 }}
-                    source={require('./../resource/images/previous_dis.png')}
-                // resizeMode='center'
-                />
-                // </TouchableOpacity>
-            )
-        }
+        //         <Image
+        //             style={{ width: 45, height: 45 }}
+        //             source={require('./../resource/images/previous_dis.png')}
+        //         // resizeMode='center'
+        //         />
+        //         // </TouchableOpacity>
+        //     )
+        // }
         return (
             <View style={{ flex: 1 }}>
                 <TouchableOpacity onPress={(this.previousmonth.bind(this))}>
@@ -546,29 +554,32 @@ export default class PayslipDetail extends Component {
 
     renderdeatilincome() {
 
-        if (this.state.datadetail.data.detail.income.length) {
+        if (this.state.datadetail.data) {
 
-            return (
-                <View style={{ flex: 1 }} >
-                    <ScrollView style={{ flex: 1 }}>
-                        {
-                            this.state.datadetail.data.detail.income.map((item, index) => (
-                                <View style={{ flex: 1, flexDirection: 'row' }} key={index}>
-                                    <View style={{ flex: 1, justifyContent: 'center', }}>
-                                        <Text style={styles.payslipDetailTextLeft}>
-                                            {item.key}
-                                        </Text>
+            if (this.state.datadetail.data.detail.income.length) {
+
+                return (
+                    <View style={{ flex: 1 }} >
+                        <ScrollView style={{ flex: 1 }}>
+                            {
+                                this.state.datadetail.data.detail.income.map((item, index) => (
+                                    <View style={{ flex: 1, flexDirection: 'row' }} key={index}>
+                                        <View style={{ flex: 1, justifyContent: 'center', }}>
+                                            <Text style={styles.payslipDetailTextLeft}>
+                                                {item.key}
+                                            </Text>
+                                        </View>
+                                        <View style={{ flex: 1, justifyContent: 'center', }}>
+                                            <Text style={styles.payslipDetailTextRight}>
+                                                {(Decryptfun.decrypt(item.value))}
+                                            </Text>
+                                        </View>
                                     </View>
-                                    <View style={{ flex: 1, justifyContent: 'center', }}>
-                                        <Text style={styles.payslipDetailTextRight}>
-                                            {(Decryptfun.decrypt(item.value))}
-                                        </Text>
-                                    </View>
-                                </View>
-                            ))}
-                    </ScrollView>
-                </View>
-            )
+                                ))}
+                        </ScrollView>
+                    </View>
+                )
+            }
         }
         return (
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', }}>
@@ -580,28 +591,31 @@ export default class PayslipDetail extends Component {
 
     renderdetaildeduct() {
 
-        if (this.state.datadetail.data.detail.deduct.length) {
-            return (
-                <View style={{ flex: 1 }}>
-                    <ScrollView style={{ flex: 1 }}>
-                        {
-                            this.state.datadetail.data.detail.deduct.map((item, index) => (
-                                <View style={{ flex: 1, flexDirection: 'row' }} key={index}>
-                                    <View style={{ flex: 1, justifyContent: 'center', }}>
-                                        <Text style={styles.payslipDetailTextLeft}> {item.key}</Text>
-                                    </View>
-                                    <View style={{ flex: 1, justifyContent: 'center', }}>
-                                        <Text style={styles.payslipDetailTextRight}>
-                                            {(Decryptfun.decrypt(item.value))}
-                                        </Text>
-                                    </View>
-                                </View>
-                            ))}
-                    </ScrollView>
-                </View>
+        if (this.state.datadetail.data) {
 
-            )
+            if (this.state.datadetail.data.detail.deduct.length) {
+                return (
+                    <View style={{ flex: 1 }}>
+                        <ScrollView style={{ flex: 1 }}>
+                            {
+                                this.state.datadetail.data.detail.deduct.map((item, index) => (
+                                    <View style={{ flex: 1, flexDirection: 'row' }} key={index}>
+                                        <View style={{ flex: 1, justifyContent: 'center', }}>
+                                            <Text style={styles.payslipDetailTextLeft}> {item.key}</Text>
+                                        </View>
+                                        <View style={{ flex: 1, justifyContent: 'center', }}>
+                                            <Text style={styles.payslipDetailTextRight}>
+                                                {(Decryptfun.decrypt(item.value))}
+                                            </Text>
+                                        </View>
+                                    </View>
+                                ))}
+                        </ScrollView>
+                    </View>
 
+                )
+
+            }
         }
         return (
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', }}>
@@ -673,7 +687,7 @@ export default class PayslipDetail extends Component {
 
         }
         let yearstr = this.state.initialyear - this.state.yearselected
-        date_text = Months.monthNames[this.state.monthselected] + ' ' + yearstr.toString()
+        date_text = this.state.yearlist[this.state.selectedindex].month +'-'+ this.state.yearlist[this.state.selectedindex].year//Months.monthNames[this.state.monthselected] + ' ' + yearstr.toString()
 
         if (!this.state.yearlist) {
 

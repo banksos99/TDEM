@@ -262,6 +262,8 @@ export default class OTSummaryBarChart extends Component {
     }
     select_month() {
 
+        tempannouncementType = this.state.announcementType;
+
         this.setState({
 
             loadingtype: 0,
@@ -272,7 +274,7 @@ export default class OTSummaryBarChart extends Component {
             this.setState(this.renderloadingscreen())
         });
     }
-    select_announce_all_type = () => {
+    select_month_ios = () => {
 
         this.setState({
 
@@ -280,6 +282,9 @@ export default class OTSummaryBarChart extends Component {
             loadingtype: 1,
             isscreenloading: true,
             // isscreenloading: false,
+            announcementTypetext:initannouncementTypetext,
+
+            
 
         }, function () {
 
@@ -299,6 +304,20 @@ export default class OTSummaryBarChart extends Component {
         });
 
     }
+
+    selected_cancle_month = () => {
+
+        this.setState({
+
+            isscreenloading: false,
+            announcementType:tempannouncementType
+
+        }, function () {
+
+        });
+
+    }
+
     selected_month(monthselected) {
 
         ////console.log('monthselected : ',monthselected)
@@ -338,6 +357,9 @@ export default class OTSummaryBarChart extends Component {
         //     )
 
         // } else 
+
+        
+
         if (this.state.loadingtype == 0) {
 
             if (Platform.OS === 'android') {
@@ -377,11 +399,12 @@ export default class OTSummaryBarChart extends Component {
                             selectedValue={this.state.announcementType}
                             onValueChange={(itemValue, itemIndex) => this.setState({
                                 announcementType: itemValue,
-                                announcementTypetext: this.state.months[itemIndex],
+                               // announcementTypetext: this.state.months[itemIndex],
                             }, function () {
 
                                 initannouncementType = itemValue;
-                                initannouncementTypetext = itemValue;
+                                
+                                initannouncementTypetext = this.state.months[itemIndex];
 
                             })}>{
                                 this.state.months.map((item, index) => (
@@ -390,15 +413,20 @@ export default class OTSummaryBarChart extends Component {
                                 ))}
                            
                         </Picker>
-                        <View style={{ flexDirection: 'row', height: 50, alignItems: 'center',backgroundColor:'blue' }}>
-                            <TouchableOpacity style={styles.button} onPress={(this.select_announce_all_type)}>
-                                <Text style={{ textAlign: 'center', color: Colors.redTextColor, fontSize: 18, width: 80, height: 30, alignItems: 'center' }}> OK</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.button}
-                                onPress={() => { this.selected_month(item) }}
+                        <View style={{ flexDirection: 'row', height: 40, alignItems: 'center' }}>
+                        <TouchableOpacity style={styles.button}
+                                onPress={(this.selected_cancle_month)}
+
                             >
-                               <Text style={{ textAlign: 'center', color: Colors.redTextColor, fontSize: 18, width: 80, height: 30, alignItems: 'center' }}> cancel</Text>
+                                <Text style={{flex:1, textAlign: 'center', color: Colors.redTextColor, fontSize: 18, width: 80, height: 30, alignItems: 'center' }}> cancel</Text>
                             </TouchableOpacity>
+                            <View style={{flex:2}}/>
+                            <TouchableOpacity style={styles.button}
+                                onPress={(this.select_month_ios)}
+                            >
+                                <Text style={{flex:1, textAlign: 'center', color: Colors.redTextColor, fontSize: 18, width: 80, height: 30, alignItems: 'center' }}> OK</Text>
+                            </TouchableOpacity>
+                            
                         </View>
                     </View>
                 </View>

@@ -63,40 +63,91 @@ export default class PaySlipActivity extends Component {
     }
 
     componentDidMount() {
-  
+        yearlistdata=[]
         if (this.state.DataResponse) {
 
             dataSource = this.state.DataResponse;
+            let yearnow = new Date().getFullYear();
+            let monthnow = new Date().getMonth();
 
-            for (let i = 0; i < this.state.DataResponse.years.length; i++) {
+            for (let i = 0; i < this.state.selectYearArray.length; i++) {
 
-                yearnumber = this.state.DataResponse.years[i].year;
+                let first = false;
+                for (let j = 0; j < this.state.DataResponse.years.length; j++) {
+                    
+                    if (this.state.DataResponse.years[j].year === this.state.selectYearArray[i]) {
 
-                if (this.state.DataResponse.years[i].detail) {
+                        // console.log('selectYearArray : ', this.state.selectYearArray[i], this.state.DataResponse.years[j].detail)
+                        for (let k = 0; k < 12; k++) {
 
-                    for (let j = this.state.DataResponse.years[i].detail.length - 1; j >= 0; j--) {
+                            let rollID = 0;
+                            for (let l = 0; l < this.state.DataResponse.years[j].detail.length; l++) {
+                                if (this.state.DataResponse.years[j].detail[l].month_no === k+1) {
+                                    rollID = this.state.DataResponse.years[j].detail[l].payroll_id
 
-                        if (i == 0 && j == 0) {
+                                }
 
-                            initialyear = yearnumber;
+                            }
+
+                            yearlistdata.push({
+                                rollID: rollID,
+                                month:Month.monthNamesShort[k],
+                                year:this.state.selectYearArray[i]
+                            })
 
                         }
+                        first = true;
 
-                        monthlistdata.push({
-                            year: this.state.DataResponse.years[i].year,
-                            month: this.state.DataResponse.years[i].detail[j].month_no,
-                            id: this.state.DataResponse.years[i].detail[j].payroll_id
+                    } else if(!first){
 
-                        })
+                        for (let k = 0; k < 12; k++) {
+                            let rollID = 0;
+                            yearlistdata.push({
+                                rollID: rollID,
+                                month:Month.monthNamesShort[k],
+                                year:this.state.selectYearArray[i]
+                            })
+
+                        }
+                        first = true;
                     }
+
                 }
-
-                yearlistdata.push({
-                    monthlistdata
-
-                })
-                monthlistdata = [];
             }
+
+            console.log('yearlistdata : ', yearlistdata)
+
+            this.savedata()
+
+            // for (let i = 0; i < this.state.DataResponse.years.length; i++) {
+
+            //     yearnumber = this.state.DataResponse.years[i].year;
+
+            //     if (this.state.DataResponse.years[i].detail) {
+
+            //         for (let j = this.state.DataResponse.years[i].detail.length - 1; j >= 0; j--) {
+
+            //             if (i == 0 && j == 0) {
+
+            //                 initialyear = yearnumber;
+
+            //             }
+
+            //             monthlistdata.push({
+            //                 year: this.state.DataResponse.years[i].year,
+            //                 month: this.state.DataResponse.years[i].detail[j].month_no,
+            //                 id: this.state.DataResponse.years[i].detail[j].payroll_id
+
+            //             })
+            //         }
+            //     }
+
+            //     yearlistdata.push({
+            //         monthlistdata
+
+            //     })
+            //     monthlistdata = [];
+            // }
 
             this.setState({
 
@@ -207,7 +258,6 @@ export default class PaySlipActivity extends Component {
                             <TouchableOpacity style={{ width: '100%',height:'100%' }}
                                 onPress={() => { this.onDetail(indexselectyear, i) }}
                             >
-
                                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', }}>
                                     <Text style={i === this.state.currentmonth && indexselectyear === 0 ? styles.payslipitemmoneyred : styles.payslipitemdetail}>
                                         {Month.monthNamesShort[i]}
@@ -224,6 +274,9 @@ export default class PaySlipActivity extends Component {
                                     </Text>
                                 </View>
                             </TouchableOpacity>
+                            {/* <View style={styles.badgeIconpayslip}>
+                                <Text style={{color:'white'}}>18</Text>
+                            </View> */}
                         </View>
                     )
                 }
@@ -409,8 +462,7 @@ export default class PaySlipActivity extends Component {
 
         // pay_date_str = dataSource.years[this.state.indexselectyear].detail[index].pay_date;
 
-        //console.log('detail', pay_date_str)
-
+        
         this.setState({
 
             isscreenloading: true,
@@ -420,7 +472,7 @@ export default class PaySlipActivity extends Component {
             // //console.log(this.state.indexselectyear)
             // this.setState(this.renderloadingscreen())
 
-            this.getPayslipDetailfromAPI(year, index)
+            this.getPayslipDetailfromAPI(this.state.selectYearArray[year], index)
 
         });
 
@@ -521,14 +573,35 @@ this.savedata()
 
         let rollid;
 
-        for (let i = 0; i < yearlistdata[year].monthlistdata.length; i++) {
+        for (let i = 0; i < dataSource.years.length; i++) {
 
-            if (yearlistdata[year].monthlistdata[i].month === index + 1) {
-                rollid = yearlistdata[year].monthlistdata[i].id
+            if (dataSource.years[i].year == year) {
+
+                for (let j = 0; j < dataSource.years[i].detail.length; j++) {
+
+                    let realindex = index + 1;
+
+                    if (dataSource.years[i].detail[j].month_no === realindex) {
+
+                        rollid = dataSource.years[i].detail[j].payroll_id;
+
+                        break
+                    }
+
+                }
+
             }
+
         }
+        // for (let i = 0; i < yearlistdata[year].monthlistdata.length; i++) {
+
+        //     if (yearlistdata[year].monthlistdata[i].month === index + 1) {
+        //         rollid = yearlistdata[year].monthlistdata[i].id
+        //     }
+        // }
         let host = SharedPreference.PAYSLIP_DETAIL_API + rollid
         // console
+        console.log('host :', host)
 
         //console.log('host : ', host);
         FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, SharedPreference.FUNCTIONID_PAYSLIP, SharedPreference.profileObject.client_token)
@@ -562,6 +635,7 @@ this.savedata()
                             initialyear: initialyear,
                             initialmonth: 0,
                             monthselected: index,
+                            selectedindex: ((indexselectyear) * 12) + index,
                             yearselected: year,
                             Datadetail: this.state.dataSource,
                             rollid: rollid
