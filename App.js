@@ -165,15 +165,15 @@ export default class mainview extends Component {
           notiBody: notification._body
         });
 
-        if (notification._data.type === 'Payroll') {
+        // if (notification._data.type === 'Payroll') {
 
-          SharedPreference.notipayslipID = notification._data.id
+        //   SharedPreference.notipayslipID = notification._data.id
 
-        } else if (notification._data.type === 'Emergency Announcement') {
+        // } else if (notification._data.type === 'Emergency Announcement') {
 
-          SharedPreference.notiAnnounceMentID = notification._data.id
+        //   SharedPreference.notiAnnounceMentID = notification._data.id
 
-        }
+        // }
       });
 
   }

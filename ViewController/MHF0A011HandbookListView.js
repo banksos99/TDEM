@@ -36,6 +36,16 @@ class BookCover extends Component {
         };
     }
 
+    componentDidMount() {
+        //console.log('[BookCover] componentDidMount');
+        this.refresh();
+    }
+
+    componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
+        this.terminated = true;
+        this.task.cancel();
+    }
 
     updateSource(newUrl) {
         //console.log("Book updateSource : " + newUrl);
@@ -54,7 +64,7 @@ class BookCover extends Component {
         //console.log('[BookCover] Refresh');
 
         let dirs = RNFetchBlob.fs.dirs
-        let filename = this.props.bookName + '.png'
+        let filename = this.props.bookName + '.jpeg'
         let targetFile = dirs.DocumentDir + '/cover/' + filename;
 
         let hasFile = false;
@@ -78,8 +88,7 @@ class BookCover extends Component {
                         // response data will be saved to this path if it has access right.
                         path: targetFile
                     })
-                    //.fetch('GET', 'https://facebook.github.io/react-native/img/header_logo.png', {
-
+                  
                     .fetch('GET', this.props.coverUrl, {
                         //some headers ..
                         'Content-Type': 'image/png;base64',
@@ -108,15 +117,7 @@ class BookCover extends Component {
 
     }
 
-    componentDidMount() {
-        //console.log('[BookCover] componentDidMount');
-        this.refresh();
-    }
-
-    componentWillUnmount() {
-        this.terminated = true;
-        this.task.cancel();
-    }
+    
 
     render() {
         return (
@@ -127,7 +128,7 @@ class BookCover extends Component {
     }
 }
 
-export default class Handbookctivity extends Component {
+export default class HandbookActivity extends Component {
 
     constructor(props) {
         super(props);
@@ -138,7 +139,9 @@ export default class Handbookctivity extends Component {
 
         this.updateToken()
         this.checkDataFormat(this.props.navigation.getParam("DataResponse", ""));
+
         firebase.analytics().setCurrentScreen(SharedPreference.SCREEN_HANDBOOK_LIST)
+
     }
 
     componentWillMount() {
@@ -156,8 +159,9 @@ export default class Handbookctivity extends Component {
 
 
     updateToken() {
+
         FUNCTION_TOKEN = Authorization.convert(SharedPreference.profileObject.client_id, 1, SharedPreference.profileObject.client_token)
-        //console.log('[Handbookctivity] FUNCTION_TOKEN :', FUNCTION_TOKEN)
+        console.log('[Handbookctivity] FUNCTION_TOKEN :', FUNCTION_TOKEN)
     }
 
     checkDataFormat(DataResponse) {
@@ -171,11 +175,11 @@ export default class Handbookctivity extends Component {
                 dataSource = DataResponse;
 
             } else {
-                //console.log('inappdata :', inappdata.dataSource.data.detail)
+          
                 dataSource = inappdata.dataSource.data.detail.items;
 
             }
-console.log('dataSource :', dataSource)
+
             this.createShelfHandbook();
         }
     }
@@ -203,7 +207,6 @@ console.log('dataSource :', dataSource)
         temphandbookData = [];
 
         dataSource.map((item, i) => {
-
 
             this.state.temparray.push(
 

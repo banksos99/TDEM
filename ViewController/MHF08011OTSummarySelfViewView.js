@@ -676,7 +676,7 @@ export default class OTSummaryDetail extends Component {
                         <View style={{ flex: 1, backgroundColor: Colors.lightred, borderRadius: 5 }}>
                             <View style={{ flex: 2, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                                 <Text style={[styles.otsummarybodytitle, { flex: 1 }]}>Date</Text>
-                                <Text style={[styles.otsummarybodytitle, { flex: 2 }]}>Shift</Text>
+                                <Text style={[styles.otsummarybodytitle, { flex: 2 }]}>Time</Text>
                                 <View style={{ flex: 4, flexDirection: 'column', }}>
                                     <View style={{ flex: 1, flexDirection: 'row', alignItems: 'flex-end' }}>
                                         <Text style={[styles.otsummarybodytitle, { flex: 1 }]}>OT Hour</Text>

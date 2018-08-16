@@ -74,9 +74,7 @@ export default class HandbookViewer extends Component {
 
            handbook_file: this.props.navigation.getParam("handbook_file", ""),
            FUNCTION_TOKEN: this.props.navigation.getParam("FUNCTION_TOKEN", ""),
-        // handbook_file:'/api/v1/handbooks/download?file=00045' ,
-        // FUNCTION_TOKEN: 'Bearer NjUuSEYwQzAxLjIzYjFjNmVhMjE2OGU5ZGI3ZmRjNjc0Yzc0MTgwYzNiYjRlMzVlMDQwM2Q5YmM1MDY2ZGFhODE4ODcyZjk3YTM1MjU1Yjg3MWM1OGNhNWFiMmMzODk1YmM4M2MwOTY0YTU4ZTE5ZDFiYzRhZTM5MDcyZDM4OWMyNDgxYTY3Mjk5'
-          
+      
         };
 
         this.streamer = new Streamer();
@@ -88,8 +86,6 @@ export default class HandbookViewer extends Component {
     componentDidMount() {
 
         this.downloadEpubFile(SharedPreference.HOST + this.state.handbook_file);
-        //console.log("this.state.handbook_file :", this.state.handbook_file)
-        //console.log("SharedPreference.Handbook:", SharedPreference.Handbook)
         HandbookHighlightList = [];
         HandbookMarkList = [];
         for (let i = 0; i < SharedPreference.Handbook.length; i++) {
@@ -98,19 +94,16 @@ export default class HandbookViewer extends Component {
                 HandbookMarkList = SharedPreference.Handbook[i].handbook_mark
             }
         }
-
-        //console.log("HandbookHighlightList :", HandbookHighlightList)
-
     }
 
     componentWillMount() {
-        //console.log("componentWillMount")
+
         BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
 
     }
 
     handleBackButtonClick() {
-        //console.log("handleBackButtonClick")
+
         this.onBack()
         return true;
     }
@@ -147,8 +140,6 @@ export default class HandbookViewer extends Component {
 
         SharedPreference.Handbook = tempHB
 
-        //console.log("componentWillUnmount Handbook : ", SharedPreference.Handbook)
-
         if (this.streamer)
             this.streamer.kill();
     }
@@ -165,50 +156,41 @@ export default class HandbookViewer extends Component {
                 // response data will be saved to this path if it has access right.
                 path: targetFile
             })
-            //.fetch('GET', 'https://facebook.github.io/react-native/img/header_logo.png', {
+     
             .fetch('GET', bookUrl, {
 
                 Authorization: this.state.FUNCTION_TOKEN
 
             })
             .then((res) => {
-                // the path should be dirs.DocumentDir + 'path-to-file.anything'
-                //console.log('The file saved to ', res.path())
-                /*RNFetchBlob.fs.readFile(res.path(), 'utf8')
-                        .then((data) => {
-                          //console.log(data);
-                        })*/
-
+               
                 let target = { url: Platform.OS === 'android' ? '' + res.path() : '' + res.path() }
                 this.startStreamer(target.url);
-                //this.startStreamer(this.state.url);
+            
             });
 
     }
 
     startStreamer(epubPath) {
-        //console.log('Start Streamer and locating path ', epubPath)
+       
         this.streamer.start()
             .then((origin) => {
                 this.setState({ origin })
-                //return this.streamer.get(this.state.url);
+              
                 return this.streamer.get(epubPath);
             })
             .then((src) => {
-                //console.log('Loading source ', src)
+              
                 return this.setState({ src });
             }).catch((err) => {
-                // scan file error
-                //console.log('[HandBookDetail] Catch Error', err);
-
+            
                 this.streamer.stop();
                 if (this.reloadCount < 3) {
-                    //console.log('[HandBookDetail] url', SharedPreference.HOST + this.state.handbook_file);
+                   
                     this.downloadEpubFile(SharedPreference.HOST + this.state.handbook_file)
                     this.reloadCount++;
                 } else {
-                    //console.log('[HandBookDetail] Reload count reach', err);
-                    //this.props.navigation.navigate("Handbooklist");
+                  
                     Alert.alert("Handbook Error", "Cannot download handbook file.", [
                         {
                             text: 'OK', onPress: () => {
@@ -559,26 +541,7 @@ export default class HandbookViewer extends Component {
                             </View>
                         </View>
                     </View>
-                    {/* <View style={{ height: 40, backgroundColor: 'blue', flexDirection: 'row' }}>
-                        <TouchableOpacity style={{ flex: 1 }}
-                            onPress={(this.onSelecteTable.bind(this))}
-                        >
-                            <View style={{ flex: 1, backgroundColor: 'red', justifyContent: 'center', alignItems: 'center' }}>
-
-                                <Text style={{ color: 'white' }}>Table Of Content</Text>
-
-                            </View>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={{ flex: 1 }}
-                            onPress={(this.onSelecteHilight.bind(this))}
-                        >
-                            <View style={{ flex: 1, backgroundColor: 'green', justifyContent: 'center', alignItems: 'center' }}>
-
-                                <Text style={{ color: 'white' }}>Hightlight</Text>
-
-                            </View>
-                        </TouchableOpacity>
-                    </View> */}
+                   
                     {this.renderTableContent()}
                 </View>
             )
@@ -612,8 +575,8 @@ export default class HandbookViewer extends Component {
 
         }
         //console.log('this.state.hilightList :', this.state.HandbookMarkList)
-        let item = item.date.split(' ')
-        let time = item[2] + item[1] + item[3]
+        // let item = item.date.split(' ')
+        // let time = item[2] + item[1] + item[3]
         return (
 
             <ScrollView style={{ height: '40%' }}>
@@ -624,7 +587,7 @@ export default class HandbookViewer extends Component {
                             key={index + 100}>
                             <View style={{ justifyContent: 'center', height: 40, marginLeft: 20, marginRight: 20 }}>
                                 <View style={{ flex: 1, ustifyContent: 'center', flexDirection: 'column' }}>
-                                    <Text style={styles.epubHighlightdateText} numberOfLines={1}> {time}</Text>
+                                    <Text style={styles.epubHighlightdateText} numberOfLines={1}> date</Text>
                                     <Text style={styles.epubHighlighttitleText} numberOfLines={1}> {item.title}</Text>
                                 </View>
                             </View>
@@ -640,11 +603,6 @@ export default class HandbookViewer extends Component {
     }
     render() {
 
-        // if (this.state.flow === "paginated") {
-        //   this.setState({flow: "scrolled-continuous"});
-        // } else {
-        //   this.setState({flow: "paginated"});
-        // }
         return (
             <View style={{ flex: 1 }}>
 
@@ -742,41 +700,17 @@ export default class HandbookViewer extends Component {
                     onSelected={(cfiRange, rendition, selected) => {
 
                         let datatext = ''
-                        // this.state.book.getRange(cfiRange).then((range) => {
-                        //     if (range) {
-                        //         datatext = range.startContainer.data.slice(range.startOffset, range.endOffset)
-
-                        //         let newdate = new Date().toString()
-                        //         let timearr = newdate.split('')
-
-                        //         HandbookHighlightList.push(
-                        //             {
-                        //                 link: cfiRange,
-                        //                 title: datatext,
-                        //                 date: newdate
-                        //             }
-                        //         )
-
-                        //     }
-
-                        // });
-
-                        //console.log("cfiRange", cfiRange)
-
                         HandbookHighlightList.push(
                             cfiRange
                         )
-
-
                         // Add marker
+                        rendition.highlight(cfiRange, {});
 
-                          rendition.highlight(cfiRange, {});
-                      //  this.epub.rendition.highlight(cfiRange, {});
 
                     }}
                     
                     onMarkClicked={(cfiRange) => {
-                        //console.log("mark clicked", cfiRange)
+                       
 
                         Alert.alert(
                             'SAVE',
@@ -811,31 +745,6 @@ export default class HandbookViewer extends Component {
 
                     }}
 
-                    themes={{
-                        tan: {
-                            body: {
-                                //  "-webkit-user-select": "none",
-                                //"user-select": "none",
-                                //"background-color": "tan",
-                                'color': 'black',
-                                //  'background-color':'black',
-                                //'fill': 'red',
-                                //'font-family': 'cursive',
-                                // 'highlight': 'green'
-                                // 'font-size':'50%'
-                            }
-                        }
-                    }}
-                    theme="tan"
-                    // highlights={{
-
-                    // }}
-                    // regenerateLocations={true}
-                    // generateLocations={true}
-                    origin={this.state.origin}
-                    onError={(message) => {
-                        //console.log("EPUBJS-Webview", message);
-                    }}
                 />
 
 

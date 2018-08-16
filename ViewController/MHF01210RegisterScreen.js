@@ -45,8 +45,30 @@ export default class RegisterActivity extends Component {
         console.log("RegisterScreen")
     }
 
+    async componentDidMount() {
 
+        this.getfirebasetoken()
+    }
+    async getfirebasetoken() {
+
+        if (!SharedPreference.deviceInfo.firebaseToken) {
+            const fcmToken = await firebase.messaging().getToken();
+
+            if (fcmToken) {
+                // user has a device token
+                SharedPreference.deviceInfo.firebaseToken = fcmToken
+
+            } else {
+                // user doesn't have a device token yet
+            }
+
+        }
+
+    }
     onRegister = async () => {
+
+        this.getfirebasetoken()
+        ////console.log("onRegister")
         this.setState({
             isLoading: true
         })
@@ -286,17 +308,7 @@ export default class RegisterActivity extends Component {
             pin2: [],
         })
     }
-    async componentDidMount() {
-        const fcmToken = await firebase.messaging().getToken();
-
-        if (fcmToken) {
-            // user has a device token
-            SharedPreference.deviceInfo.firebaseToken = fcmToken
-
-        } else {
-            // user doesn't have a device token yet
-        }
-    }
+    
 
     componentWillMount() {
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow.bind(this));

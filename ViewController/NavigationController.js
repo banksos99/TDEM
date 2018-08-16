@@ -148,10 +148,10 @@ export default class rootNavigation extends Component {
     async componentWillMount() {
         // number = await this.getPINFromDevice()
         profile = await this.getProfileObject()
-        console.log("rootNavigation ==> showPin ==> ",this.state.showPin)
+        console.log("rootNavigation ==> showPin ==> ", this.state.showPin)
     }
     componentDidMount() {
-this.inappTimeInterval()
+       // this.inappTimeInterval()
     }
     getProfileObject = async () => {
         profileObject = await this.saveProfile.getProfile()

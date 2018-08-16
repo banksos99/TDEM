@@ -44,6 +44,7 @@ let settingstatus = 'Y';
 let rolemanagementEmpoyee = [0, 0, 0, 0, 0, 0, 0, 0];
 let rolemanagementManager = [0, 0, 0, 0];
 let timerstatus = false;
+let loadingannouncement = false
 
 import moment from 'moment'
 
@@ -184,7 +185,7 @@ export default class HMF01011MainView extends Component {
 
     async componentDidMount() {
 
-        this.inappTimeInterval()
+       //this.inappTimeInterval()
   
         NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectivityChange);
 
@@ -329,9 +330,9 @@ export default class HMF01011MainView extends Component {
                         })
 
                     }
-                    if (inappTimeIntervalStatus) {
-                        this.inappTimeInterval()
-                    }
+
+                    this.inappTimeInterval()
+                    
                     
 
                 } catch (error) {
@@ -347,10 +348,12 @@ export default class HMF01011MainView extends Component {
 
     inappTimeInterval() {
 
-        this.timer = setTimeout(() => {
-            this.onLoadInAppNoti()
-           }, SharedPreference.timeinterval);
-      
+        if (inappTimeIntervalStatus) {
+            this.timer = setTimeout(() => {
+                this.onLoadInAppNoti()
+            }, SharedPreference.timeinterval);
+        }
+
     };
 
     componentWillUnmount() {
@@ -453,7 +456,7 @@ export default class HMF01011MainView extends Component {
                         announcepage: 0,
                         annrefresh: false
                     }, function () {
-
+                        loadingannouncement = true
                         console.log("loadAnnouncementfromAPI responseJson => ", responseJson)
                         if (responseJson.status === 200) {
                             this.setState(this.renderloadingscreen());
@@ -1981,8 +1984,12 @@ export default class HMF01011MainView extends Component {
     renderannouncementbody() {
 
         return (
-            <View style={{ backgroundColor: 'green', flex: 1 }}>
-
+            <View style={{ flex: 1 }}>
+                <View style={{ width: '100%', height: '100%', position: 'absolute', justifyContent: 'center' }}>
+                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                        <Text style={loadingannouncement === false ? { fontSize: 25, textAlign: 'center', color: 'transparent' } : { fontSize: 25, textAlign: 'center', color: 'black' }}> No Data</Text>
+                    </View>
+                </View>
                 <ScrollView
                     ref="announcescrollView"
                     style={{ backgroundColor: 'lightgray' }}
@@ -2063,15 +2070,7 @@ export default class HMF01011MainView extends Component {
                         ))
                     }
                 </ScrollView>
-                <View style={tempannouncementData.length === 0
-                    ? { width: '100%', height: '100%', position: 'absolute', }
-                    : { width: 1, height: 1, position: 'absolute', }}>
-                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                        <Text style={tempannouncementData.length === 0 ? { fontSize: 25, textAlign: 'center', color: 'transparent' } : { fontSize: 25, textAlign: 'center', color: 'black' }}> No Data</Text>
-
-
-                    </View>
-                </View>
+               
             </View>
         );
     }
@@ -2296,6 +2295,7 @@ export default class HMF01011MainView extends Component {
     signout() {
 
         page = 0
+        loadingannouncement=false
         timerstatus = false
         SharedPreference.Handbook = []
         SharedPreference.profileObject = null
@@ -2368,6 +2368,7 @@ export default class HMF01011MainView extends Component {
         })
 
         if (code.SUCCESS == data.code) {
+            loadingannouncement=false;
             page = 0
             timerstatus = false
             SharedPreference.Handbook = []

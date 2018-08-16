@@ -90,6 +90,17 @@ export const styles = StyleSheet.create({
         height: 18,
         backgroundColor: '#2b78e4',
     },
+    badgeIconpayslip: {
+        top: -4* scale ,
+        right: -4* scale,
+        width: 18* scale,
+        height: 18* scale,
+        borderRadius: 9* scale,
+        backgroundColor: 'red',
+        position: 'absolute',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
     icon: {
         width: 40,
         height: 40
