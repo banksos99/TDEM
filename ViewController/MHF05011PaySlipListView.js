@@ -63,9 +63,11 @@ export default class PaySlipActivity extends Component {
     }
 
     componentDidMount() {
-        yearlistdata=[]
-        if (this.state.DataResponse) {
 
+        
+
+        if (this.state.DataResponse) {
+            yearlistdata=[]
             dataSource = this.state.DataResponse;
             let yearnow = new Date().getFullYear();
             let monthnow = new Date().getMonth();

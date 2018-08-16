@@ -1984,8 +1984,12 @@ export default class HMF01011MainView extends Component {
     renderannouncementbody() {
 
         return (
-            <View style={{ backgroundColor: 'green', flex: 1 }}>
-
+            <View style={{ flex: 1 }}>
+                <View style={{ width: '100%', height: '100%', position: 'absolute', justifyContent: 'center' }}>
+                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                        <Text style={loadingannouncement === false ? { fontSize: 25, textAlign: 'center', color: 'transparent' } : { fontSize: 25, textAlign: 'center', color: 'black' }}> No Data</Text>
+                    </View>
+                </View>
                 <ScrollView
                     ref="announcescrollView"
                     style={{ backgroundColor: 'lightgray' }}
@@ -2066,15 +2070,7 @@ export default class HMF01011MainView extends Component {
                         ))
                     }
                 </ScrollView>
-                <View style={tempannouncementData.length === 0
-                    ? { width: '100%', height: '100%', position: 'absolute', }
-                    : { width: 1, height: 1, position: 'absolute', }}>
-                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                        <Text style={loadingannouncement === false ? { fontSize: 25, textAlign: 'center', color: 'transparent' } : { fontSize: 25, textAlign: 'center', color: 'black' }}> No Data</Text>
-
-
-                    </View>
-                </View>
+               
             </View>
         );
     }
