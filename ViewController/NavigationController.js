@@ -49,10 +49,8 @@ import SharedPreference from './../SharedObject/SharedPreference';
 let mon = ['Jan', 'Feb', 'Mar', 'Apl', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
 import ChangePINScreen from "./ChangePINScreen"
-import Authorization from '../SharedObject/Authorization'
 
 const AppNavigatorPin = createSwitchNavigator({
-    //TestView: { screen: TestView },
     RegisterScreen: { screen: registerScreen },
     PinScreen: { screen: pinScreen },
     HomeScreen: { screen: homeScreen },
@@ -66,7 +64,6 @@ const AppNavigatorPin = createSwitchNavigator({
     OTSummarySelfView: { screen: OTSummarySelfView },
     Handbooklist: { screen: handbookList },
     HandbookDetail: { screen: handbookDetail },
-    //  OrganizationStruct: { screen: OrganizationStruct },
     OrgStructure: { screen: OrganizationStruct },
     calendarYearView: { screen: calendarYearView },
     calendarYearView2: { screen: calendarYearView2 },
@@ -81,6 +78,7 @@ const AppNavigatorPin = createSwitchNavigator({
     EmployeeList: { screen: EmployeeList },
 }, {
         initialRouteName: 'PinScreen',
+        // initialRouteName: 'calendarYearView',
         headerMode: 'none',
         transitionConfig: () => ({
             transitionSpec: {
@@ -141,18 +139,15 @@ export default class rootNavigation extends Component {
             number: "111111",
             notiMessage: this.props.pushstatus,
         };
-    
+
     }
 
 
     async componentWillMount() {
-        // number = await this.getPINFromDevice()
         profile = await this.getProfileObject()
         console.log("rootNavigation ==> showPin ==> ", this.state.showPin)
     }
-    componentDidMount() {
-       // this.inappTimeInterval()
-    }
+    
     getProfileObject = async () => {
         profileObject = await this.saveProfile.getProfile()
         //console.log("NavigationController ==> ", profileObject)
@@ -173,18 +168,6 @@ export default class rootNavigation extends Component {
         }
     }
 
-    // getCurrentRouteName(navigationState) {
-    //     if (!navigationState) {
-    //       return null;
-    //     }
-    //     const route = navigationState.routes[navigationState.index];
-    //     // dive into nested navigators
-    //     if (route.routes) {
-    //       return this.getCurrentRouteName(route);
-    //     }
-    //     return route.routeName;
-    //   }
-
     inappTimeInterval() {
         this.timer = setTimeout(() => {
             this.onLoadInAppNoti()
@@ -194,7 +177,6 @@ export default class rootNavigation extends Component {
 
     onLoadInAppNoti() {
         console.log('onLoadInAppNoti')
-
         this.inappTimeInterval()
     }
     render() {

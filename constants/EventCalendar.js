@@ -15,54 +15,80 @@ export default class EventCalendar {
         await AsyncStorage.removeItem(this.state.calendarName);
     }
 
-    _deleteEventCalendar = async () => {
+
+    _deleteEventCalendar = async (selectYear) => {
         let array = await this.getEventIDFromDevice()
-        //console.log("DeleteEventCalendar : ", array)
+        // let currentyear = new Date().getFullYear();
+        console.log("deleteEventCalendar ==> selectYear ==> ", selectYear)
 
         if (array != null) {
             array = JSON.parse(array)
-            // //console.log("DeleteEventCalendar ==> if array : ", array)
             for (let index = 0; index < array.length; index++) {
                 const eventID = array[index];
-                // //console.log("DeleteEventCalendar ==> eventID : ", eventID)
                 await RNCalendarEvents.removeEvent(eventID).then(event => {
-                    //console.log("deleteEventCalendar ==> Success : ", eventID);
+                    console.log("deleteEventCalendar ==> Success : ", eventID);
                 })
                     .catch(error => {
-                        //console.log("deleteEventCalendar ==> Error ");
+                        console.log("deleteEventCalendar ==> Error ");
                     });
             }
         }
-
         try {
-            //console.log("DeleteEventCalendar ==> 1 ==> ", this.state.calendarName)
-
             let emptyUser = []
             await AsyncStorage.setItem(this.state.calendarName, JSON.stringify(emptyUser));
-
-            // await AsyncStorage.setItem(this.state.calendarName, JSON.stringify(value));
-
-            //console.log("DeleteEventCalendar ==> 2")
-
             let arrayTest = await this.getEventIDFromDevice()
-            //console.log("DeleteEventCalendar ==> 3 ==> ", arrayTest)
+            console.log("arrayTest ==> ", arrayTest)
 
         } catch (error) {
             //console.log("DeleteEventCalendar ==> error ==> ", error)
-
         }
 
+        await this._deleteEventFromCalendar(selectYear)
+    }
+
+
+
+    _deleteEventFromCalendar = async (selectYear) => {
+        let startTime = (selectYear - 1) + '-12-30T01:01:00.000Z'
+        let endTime = (selectYear + 1) + '-01-01T01:01:00.000Z'
+
+        console.log("_deleteEventFromCalendar ==> startTime ==> ", startTime)
+        console.log("_deleteEventFromCalendar ==> endTime ==> ", endTime)
+
+        RNCalendarEvents.fetchAllEvents(startTime, endTime)
+            .then(events => {
+                // handle events
+                console.log("_deleteEventFromCalendar ==> evnets ==> ", events.length)
+
+                for (let index = 0; index < events.length; index++) {
+                    const element = events[index];
+                    console.log("_deleteEventFromCalendar delete ==> ", element)
+                    console.log("_deleteEventFromCalendar ==> eventID : ", element.description)
+                    let desc = element.description
+                    // var checkFile = desc.indexOf("TDEM")
+                    // console.log("_deleteEventFromCalendar ==> checkFile ==> ", checkFile)
+
+                    // if (checkFile > -1) {
+                    RNCalendarEvents.removeEvent(element.id).then(event => {
+                        console.log("_deleteEventFromCalendar ==> Success ==> id ==> ",
+                            element.id, " ==> event ==> ", event);
+                    })
+                        .catch(error => {
+                            console.log("_deleteEventFromCalendar ==> Error ==> ", error);
+                        });
+                    // }
+                }
+            })
+            .catch(error => {
+                // handle error
+                console.log("RNCalendarEvents ==> error ==> ", error)
+            });
 
 
     }
 
-    _findEventCalendar = async () => {
-        calendarEvent = await RNCalendarEvents.findCalendars()
-        //console.log("calendarEvent ==> findEventCalendar ==> ", calendarEvent)
-    }
 
     _addEventsToCalendar = async (eventObject, location) => {
-        //console.log("AddEventsToCalendar ==> eventObject ==> ", eventObject)
         let format = 'YYYY-MM-DDTHH:mm:ss.sss'
         let momentStart = moment(eventObject.time_start).format(format);
         let momentEnd = moment(eventObject.time_end).format(format);
@@ -72,6 +98,9 @@ export default class EventCalendar {
             alldayBool = true
         }
 
+        // console.log("eventObject title : ", eventObject.title)
+        // console.log("eventObject.description : ", eventObject.description)
+
         title = eventObject.title
         let event = {
             startDate: momentStart + "Z",
@@ -79,22 +108,25 @@ export default class EventCalendar {
             location: location,
             timeZone: 'Asia/Bangkok',
             allDay: alldayBool,
-            notes: eventObject.description
+            description: 'TDEM : ' + eventObject.description
         }
 
+
+        console.log("eventObject add caledar title : ", title)
+        console.log("eventObject add caledar event : ", event)
+
+
         await RNCalendarEvents.authorizationStatus().then(fulfilled => {
-            // //console.log("fulfilled ==> ",fulfilled)
             if (fulfilled !== 'authorized') {
-                // //console.log("RNCalendarEvents ==> if")
                 RNCalendarEvents.authorizeEventStore().then(fulfilled => {
                     if (fulfilled === 'authorized') {
                         RNCalendarEvents.saveEvent(title, event).then(id => {
                             this.addDataToEventID(id)
-                            // //console.log("addEventsToCalendar ==> success ==> ID  : ", id);
+                            console.log("addEventsToCalendar ==> success ==> ID  : ", id);
                         }, error => {
-                            // //console.log("addEventsToCalendar ==> error ==> error  : ", error);
+                            console.log("addEventsToCalendar ==> error ==> error  : ", error);
                         }).catch(error => {
-                            // console.warn(error);
+                            console.warn(error);
                         });
                     }
                 });
@@ -150,24 +182,19 @@ export default class EventCalendar {
             .catch(error => {
                 //console.log('error!'))
             });
-}
-
-fetchData() {
-    RNCalendarEvents
-        .fetchAllEvents(
-            '2016-01-01T00:00:00.000Z',
-            '2016-12-30T23:00:00.000Z',
-            events => this.setState({ cEvents: events })
-        )
-
-}
-
-synchronizeCalendar = async (eventObject, location) => {
-    try {
-        await this._addEventsToCalendar(eventObject, location)
-
-    } catch (e) {
-        //console.log("syn/chronizeCalendar  error ", e)
     }
-}
+
+
+    synchronizeCalendar = async (eventObject, location) => {
+        try {
+
+            console.log("synchronizeCalendar ==> eventObject ==> ",eventObject)
+            console.log("synchronizeCalendar ==> location ==> ",location)
+
+            await this._addEventsToCalendar(eventObject, location)
+
+        } catch (e) {
+            //console.log("syn/chronizeCalendar  error ", e)
+        }
+    }
 }

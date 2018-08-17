@@ -181,14 +181,14 @@ export default class HMF01011MainView extends Component {
         })
         SharedPreference.calendarAutoSync = autoSyncCalendarBool
 
-       this.onLoadInAppNoti()
+        this.onLoadInAppNoti()
 
     }
 
     async componentDidMount() {
 
-       //this.inappTimeInterval()
-  
+        //this.inappTimeInterval()
+
         NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectivityChange);
 
         if (SharedPreference.notipayslipID) {
@@ -206,7 +206,6 @@ export default class HMF01011MainView extends Component {
     }
 
     onLoadInAppNoti = async () => {
-        //TODO bell
         let lastTime = await this.saveTimeNonPayroll.getTimeStamp()
 
         if ((lastTime == null) || (lastTime == undefined)) {
@@ -328,10 +327,10 @@ export default class HMF01011MainView extends Component {
                                     notiAnnounceMentBadge: parseInt(dataReceive.badge_count) + parseInt(this.state.notiAnnounceMentBadge)
                                 })
 
-                        
+
 
                             }
-                       
+
                         }
 
                         //console.log("MainView ==> time ==> ", dataCustomArray)
@@ -341,9 +340,11 @@ export default class HMF01011MainView extends Component {
 
                     }
 
-                  //  this.inappTimeInterval()
                     
-                    
+
+                    this.inappTimeInterval()
+
+
 
                 } catch (error) {
                     //console.log('erreo1 :', error);
@@ -439,7 +440,7 @@ export default class HMF01011MainView extends Component {
         }
 
         // //console.log("calendarPDFAPI ==>  functionID : ", functionID)
-        
+
         FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, SharedPreference.FUNCTIONID_ANNOUCEMENT, SharedPreference.profileObject.client_token)
         console.log("calendarPDFAPI ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
         // console.log("client_id  : ", SharedPreference.profileObject.client_id)
@@ -447,7 +448,7 @@ export default class HMF01011MainView extends Component {
         if (ascendingSort) {
             hostApi = SharedPreference.ANNOUNCEMENT_DSC_API + '&offset=0&limit=' + totalroll
         }
-        console.log("loadAnnouncementfromAPI ",hostApi)
+        console.log("loadAnnouncementfromAPI ", hostApi)
         return fetch(hostApi, {
             method: 'GET',
             headers: {
@@ -653,10 +654,8 @@ export default class HMF01011MainView extends Component {
     }
 
     APIAnnouncementListCallback(data, rount, index) {
-        console.log('APIAnnouncementListCallback ==> data ==> ', data)
         code = data[0]
         data = data[1]
-
         this.setState({
 
             isscreenloading: false,
@@ -1160,19 +1159,15 @@ export default class HMF01011MainView extends Component {
         } else {
             //inter net not connect
             Alert.alert(
-                // 'MHF00002ACRI',
-                // 'System Error (API). Please contact system administrator.',
                 'MHF00500AERR',
                 'Cannot connect to the internet.',
                 [{
                     text: 'OK', onPress: () => {
-                        ////console.log("onLoadErrorAlertDialog")
                     }
                 }],
                 { cancelable: false }
             )
         }
-        ////console.log("error : ", error)
     }
 
 
@@ -1223,13 +1218,19 @@ export default class HMF01011MainView extends Component {
 
         code = data[0]
         data = data[1]
-        ////console.log("calendarCallback : ", data)
-        this.props.navigation.navigate('calendarYearView', {
-            dataResponse: data,
-            selectYear: new Date().getFullYear(),
-            location: company,
-            page: 1
-        });
+        console.log("calendarCallback ==> code : ", data.code)
+
+        if (code.ERROR == data.code) {
+            this.onLoadErrorAlertDialog(data, "calendar")
+        } else {
+            this.props.navigation.navigate('calendarYearView', {
+                dataResponse: data,
+                selectYear: new Date().getFullYear(),
+                location: company,
+                page: 1
+            });
+        }
+
     }
 
     //*****************************************************************************
@@ -2080,7 +2081,7 @@ export default class HMF01011MainView extends Component {
                         ))
                     }
                 </ScrollView>
-               
+
             </View>
         );
     }
@@ -2305,7 +2306,7 @@ export default class HMF01011MainView extends Component {
     signout() {
 
         page = 0
-        loadingannouncement=false
+        loadingannouncement = false
         timerstatus = false
         SharedPreference.Handbook = []
         SharedPreference.profileObject = null
@@ -2378,7 +2379,7 @@ export default class HMF01011MainView extends Component {
         })
 
         if (code.SUCCESS == data.code) {
-            loadingannouncement=false;
+            loadingannouncement = false;
             page = 0
             timerstatus = false
             SharedPreference.Handbook = []
@@ -2445,12 +2446,27 @@ export default class HMF01011MainView extends Component {
     }
 
     onChangePIN() {
-        this.props.navigation.navigate('ChangePINScreen')
+
+        if (this.state.isConnected) {
+            this.props.navigation.navigate('ChangePINScreen')
+        } else {
+            //TODO Bell
+            Alert.alert(
+                StringText.ALERT_CANNOT_CONNECT_NETWORK_TITLE,
+                StringText.ALERT_CANNOT_CONNECT_NETWORK_DESC,
+                [{
+                    text: 'OK', onPress: () => {
+
+                    }
+                }],
+                { cancelable: false }
+            )
+        }
     }
+
 
     renderpickerview() {
         if (this.state.loadingtype == 1) {
-
             if (Platform.OS === 'android') {
                 return (
                     <View style={{ height: '100%', width: '100%', justifyContent: 'center', alignItems: 'center', position: 'absolute', }} >
@@ -2640,10 +2656,7 @@ export default class HMF01011MainView extends Component {
 
     }
 
-
-
     renderloadingscreen() {
-
         if (this.state.isscreenloading) {
             return (
                 <View style={{ height: '100%', width: '100%', position: 'absolute', }}>
@@ -2655,9 +2668,8 @@ export default class HMF01011MainView extends Component {
         }
 
     }
-    pushnodetailscreen() {
 
-        //  if (this.state.isscreenloading) {
+    pushnodetailscreen() {
         return (
             <View style={{ height: '100%', width: '100%', position: 'absolute', }}>
                 <View style={{ backgroundColor: 'black', height: '100%', width: '100%', position: 'absolute', opacity: 0.7 }}>
