@@ -298,7 +298,18 @@ export default class OTSummaryDetail extends Component {
             this.setState(this.renderloadingscreen())
         });
     }
-
+    cancel_select_change_month_andr(){
+        
+        // console.log('tempannouncementType =>', tempannouncementType)
+ 
+         this.setState({
+           // announcementType: tempannouncementType,
+             loadingtype: 1,
+             isscreenloading: false,
+ 
+         })
+ 
+     }
     cancel_select_change_month = () => {
         
         console.log('tempannouncementType =>', tempannouncementType)
@@ -408,6 +419,14 @@ export default class OTSummaryDetail extends Component {
                                         </TouchableOpacity>
                                     ))}
                             </ScrollView>
+                            <View style={{ flexDirection: 'row', height: 40, }}>
+                                <View style={{ flex: 2 }} />
+                                <TouchableOpacity style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+                                    onPress={() => { this.cancel_select_change_month_andr() }}
+                                >
+                                    <Text style={{ fontSize: 16, color: Colors.redTextColor, textAlign: 'center' }}> Cancel</Text>
+                                </TouchableOpacity>
+                            </View>
                         </View>
                     </View>
                 )

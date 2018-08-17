@@ -35,7 +35,7 @@ let temparray = [];
 let monthdictionary = {};
 let offine = 0;
 let pay_date_str = 0;
-let indexselectyear = 0;
+//let indexselectyear = 0;
 let tempdatadetail = []
 let tempdatabody = []
 
@@ -55,6 +55,8 @@ export default class PaySlipActivity extends Component {
             updatedHeight: 50,
             dataSource: [],
             selectYearArray: [],
+            yearselected:0,
+            indexselectyear:0,
             DataResponse:this.props.navigation.getParam("DataResponse", ""),
             yearlistdata : []
         };
@@ -65,7 +67,6 @@ export default class PaySlipActivity extends Component {
 
     componentDidMount() {
 
-        
 
         if (this.state.DataResponse) {
             this.state.yearlistdata=[]
@@ -75,19 +76,22 @@ export default class PaySlipActivity extends Component {
 
             for (let i = 0; i < this.state.selectYearArray.length; i++) {
 
-                let first = false;
+                let havedatamonth = false;
                 for (let j = 0; j < this.state.DataResponse.years.length; j++) {
                     
                     if (this.state.DataResponse.years[j].year === this.state.selectYearArray[i]) {
-
+                        havedatamonth = true;
                         // console.log('selectYearArray : ', this.state.selectYearArray[i], this.state.DataResponse.years[j].detail)
                         for (let k = 0; k < 12; k++) {
 
                             let rollID = 0;
+                            let paydate = 0;
+                            let netsalary = 0;
                             for (let l = 0; l < this.state.DataResponse.years[j].detail.length; l++) {
-                                if (this.state.DataResponse.years[j].detail[l].month_no === k+1) {
+                                if (this.state.DataResponse.years[j].detail[l].month_no === k + 1) {
                                     rollID = this.state.DataResponse.years[j].detail[l].payroll_id
-
+                                    paydate = this.state.DataResponse.years[j].detail[l].pay_date
+                                    netsalary = this.state.DataResponse.years[j].detail[l].net_salary
                                 }
 
                             }
@@ -95,62 +99,36 @@ export default class PaySlipActivity extends Component {
                             this.state.yearlistdata.push({
                                 rollID: rollID,
                                 month:Month.monthNamesShort[k],
-                                year:this.state.selectYearArray[i]
+                                year:this.state.selectYearArray[i],
+                                paydate:paydate,
+                                netsalary:netsalary
                             })
 
                         }
                         first = true;
 
-                    } else if(!first){
+                    } 
 
-                        for (let k = 0; k < 12; k++) {
-                            let rollID = 0;
-                            this.state.yearlistdata.push({
-                                rollID: rollID,
-                                month:Month.monthNamesShort[k],
-                                year:this.state.selectYearArray[i]
-                            })
+                }
+                if(!havedatamonth){
+                    for (let k = 0; k < 12; k++) {
+                        let rollID = 0;
+                        this.state.yearlistdata.push({
+                            rollID: rollID,
+                            month:Month.monthNamesShort[k],
+                            year:this.state.selectYearArray[i]
+                        })
 
-                        }
-                        first = true;
                     }
 
                 }
             }
 
-            console.log('yearlistdata : ', this.state.yearlistdata)
+         
 
             this.savedata()
 
-            // for (let i = 0; i < this.state.DataResponse.years.length; i++) {
-
-            //     yearnumber = this.state.DataResponse.years[i].year;
-
-            //     if (this.state.DataResponse.years[i].detail) {
-
-            //         for (let j = this.state.DataResponse.years[i].detail.length - 1; j >= 0; j--) {
-
-            //             if (i == 0 && j == 0) {
-
-            //                 initialyear = yearnumber;
-
-            //             }
-
-            //             monthlistdata.push({
-            //                 year: this.state.DataResponse.years[i].year,
-            //                 month: this.state.DataResponse.years[i].detail[j].month_no,
-            //                 id: this.state.DataResponse.years[i].detail[j].payroll_id
-
-            //             })
-            //         }
-            //     }
-
-            //     yearlistdata.push({
-            //         monthlistdata
-
-            //     })
-            //     monthlistdata = [];
-            // }
+            
 
             this.setState({
 
@@ -163,7 +141,7 @@ export default class PaySlipActivity extends Component {
 
         }
 
-        this.createPayslipItem();
+       // this.createPayslipItem();
     }
 
     
@@ -223,14 +201,14 @@ export default class PaySlipActivity extends Component {
                         havedata = tempdatabody[j]
 
                         //console.log('payslip data =>',dataSource.years[indexselectyear].detail,indexselectyear)
-                        console.log('payslip data =>',havedata,indexselectyear)
+                        console.log('payslip data =>',havedata,this.state.indexselectyear)
                         break
 
                     }
 
                 }
 
-                if (i > this.state.currentmonth && indexselectyear == 0) {
+                if (i > this.state.currentmonth && this.state.indexselectyear == 0) {
 
 
 
@@ -255,24 +233,24 @@ export default class PaySlipActivity extends Component {
                     return (
 
                         //have data
-                        <View style={i === this.state.currentmonth && indexselectyear === 0 ?
+                        <View style={i === this.state.currentmonth && this.state.indexselectyear === 0 ?
                             styles.payslipitemlast :
-                            i > this.state.currentmonth && indexselectyear === 0 ? styles.payslipitemdisable : styles.payslipitem} key={i}>
+                            i > this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemdisable : styles.payslipitem} key={i}>
                             <TouchableOpacity style={{ width: '100%',height:'100%' }}
-                                onPress={() => { this.onDetail(indexselectyear, i) }}
+                                onPress={() => { this.onDetail(this.state.indexselectyear, i) }}
                             >
                                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', }}>
-                                    <Text style={i === this.state.currentmonth && indexselectyear === 0 ? styles.payslipitemmoneyred : styles.payslipitemdetail}>
+                                    <Text style={i === this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemmoneyred : styles.payslipitemdetail}>
                                         {Month.monthNamesShort[i]}
                                     </Text>
                                 </View>
                                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                                    <Text style={i === this.state.currentmonth && indexselectyear === 0 ? styles.payslipitemmoneyred : styles.payslipincome}>
+                                    <Text style={i === this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemmoneyred : styles.payslipincome}>
                                         {(netsalary)}
                                     </Text>
                                 </View>
                                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', }}>
-                                    <Text style={i === this.state.currentmonth && indexselectyear === 0 ? styles.payslipitemmoneyred : styles.payslipitemdetail}>
+                                    <Text style={i === this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemmoneyred : styles.payslipitemdetail}>
                                         {pay_date}
                                     </Text>
                                 </View>
@@ -286,22 +264,22 @@ export default class PaySlipActivity extends Component {
 
                 let net = '0.00';
 
-                if (this.state.currentmonth < i && indexselectyear === 0) {
+                if (this.state.currentmonth < i && this.state.indexselectyear === 0) {
 
                     net = '';
 
                     return (
-                        <View style={i === this.state.currentmonth && indexselectyear === 0 ?
+                        <View style={i === this.state.currentmonth && this.state.indexselectyear === 0 ?
                             styles.payslipitemlast :
                             styles.payslipitemdisable}
                             key={i}>
 
 
                             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', }}>
-                                <Text style={i === this.state.currentmonth && indexselectyear === 0 ? styles.payslipitemmoneyred : styles.payslipitemdetail}>{Month.monthNamesShort[i]}</Text>
+                                <Text style={i === this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemmoneyred : styles.payslipitemdetail}>{Month.monthNamesShort[i]}</Text>
                             </View>
                             <View style={{ flex: 2, justifyContent: 'center', alignItems: 'center' }}>
-                                <Text style={i === this.state.currentmonth && indexselectyear === 0 ? styles.payslipitemmoneyred : styles.payslipitemdetail}>{net}</Text>
+                                <Text style={i === this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemmoneyred : styles.payslipitemdetail}>{net}</Text>
                             </View>
                             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', }}>
 
@@ -313,18 +291,18 @@ export default class PaySlipActivity extends Component {
 
                 }
                 return (
-                    <View style={i === this.state.currentmonth && indexselectyear === 0 ?
+                    <View style={i === this.state.currentmonth && this.state.indexselectyear === 0 ?
                         styles.payslipitemlast :
                         styles.payslipitemdisable}
                         key={i}>
                         <TouchableOpacity style={{ width: '100%',height:'100%' }}
-                            onPress={() => { this.onNoDataDetail(indexselectyear, i) }}
+                            onPress={() => { this.onNoDataDetail(this.state.indexselectyear, i) }}
                         >
                             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', }}>
-                                <Text style={i === this.state.currentmonth && indexselectyear === 0 ? styles.payslipitemmoneyred : styles.payslipitemdetail}>{Month.monthNamesShort[i]}</Text>
+                                <Text style={i === this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemmoneyred : styles.payslipitemdetail}>{Month.monthNamesShort[i]}</Text>
                             </View>
                             <View style={{ flex: 2, justifyContent: 'center', alignItems: 'center' }}>
-                                <Text style={i === this.state.currentmonth && indexselectyear === 0 ? styles.payslipitemmoneyred : styles.payslipitemdetail}>{net}</Text>
+                                <Text style={i === this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemmoneyred : styles.payslipitemdetail}>{net}</Text>
                             </View>
                             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', }}>
 
@@ -337,7 +315,7 @@ export default class PaySlipActivity extends Component {
         }
 
         return (
-            <View style={i === this.state.currentmonth && indexselectyear === 0 ?
+            <View style={i === this.state.currentmonth && this.state.indexselectyear === 0 ?
                 styles.payslipitemlast :
                 styles.payslipitemdisable}
                 key={i}>
@@ -347,17 +325,17 @@ export default class PaySlipActivity extends Component {
                     }}
                 >
                     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', }}>
-                        <Text style={i > this.state.currentmonth && indexselectyear === 0 ?
+                        <Text style={i > this.state.currentmonth && this.state.indexselectyear === 0 ?
                             styles.payslipitemdetailHide :
-                            i === this.state.currentmonth && indexselectyear === 0 ?
+                            i === this.state.currentmonth && this.state.indexselectyear === 0 ?
                                 styles.payslipitemcurrentdetail : styles.payslipitemdetail}>
                             {Month.monthNamesShort[i]}
                         </Text>
                     </View>
                     <View style={{ flex: 2, justifyContent: 'center', alignItems: 'center' }}>
-                        <Text style={i > this.state.currentmonth && indexselectyear === 0 ?
+                        <Text style={i > this.state.currentmonth && this.state.indexselectyear === 0 ?
                             styles.payslipitemdetailHide :
-                            i === this.state.currentmonth && indexselectyear === 0 ?
+                            i === this.state.currentmonth && this.state.indexselectyear === 0 ?
                                 styles.payslipitemcurrentdetail : styles.payslipitemdetail}>
                             0.00
                         </Text>
@@ -491,8 +469,8 @@ export default class PaySlipActivity extends Component {
 
             console.log('tempdatadetail => ', dataSource.years)
             for (let i = 0; i < dataSource.years.length; i++) {
-                console.log('dataSource.years[i].year: => ', dataSource.years[i].year, this.state.selectYearArray[indexselectyear])
-                if (dataSource.years[i].year == this.state.selectYearArray[indexselectyear]) {
+                console.log('dataSource.years[i].year: => ', dataSource.years[i].year, this.state.selectYearArray[this.state.indexselectyear])
+                if (dataSource.years[i].year == this.state.selectYearArray[this.state.indexselectyear]) {
 
                     tempdatadetail = dataSource.years[i].header
                     tempdatabody = dataSource.years[i].detail
@@ -515,15 +493,15 @@ export default class PaySlipActivity extends Component {
 
     onCurrentYear() {
 
-        indexselectyear = 0
+      
 
-this.savedata()
+        this.savedata()
 
         this.setState({
-
+            indexselectyear:0,
             expand: false,
             updatedHeight: 50,
-
+            yearselected:this.state.indexselectyear
         }, function () {
 
             this.setState(this.createPayslipItem)
@@ -533,14 +511,15 @@ this.savedata()
     }
     
     onLastYear() {
-        indexselectyear = 1
+        // this.state.indexselectyear = 1
 
         this.savedata()
         this.setState({
 
             expand: false,
             updatedHeight: 50,
-
+            indexselectyear:1,
+            yearselected:this.state.indexselectyear
         }, function () {
             this.setState(this.createPayslipItem)
             this.setState(this.PayslipItem())
@@ -549,14 +528,15 @@ this.savedata()
     }
 
     onLast2Year() {
-        indexselectyear = 2
+        // this.state.indexselectyear = 2
 
         this.savedata()
         this.setState({
 
             expand: false,
             updatedHeight: 50,
-
+            indexselectyear:2,
+            yearselected:this.state.indexselectyear
         }, function () {
             this.setState(this.createPayslipItem)
             this.setState(this.PayslipItem())
@@ -602,7 +582,8 @@ this.savedata()
         //         rollid = yearlistdata[year].monthlistdata[i].id
         //     }
         // }
-        let host = SharedPreference.PAYSLIP_DETAIL_API + rollid
+        console.log('rollid :', this.state.yearlistdata[(this.state.indexselectyear * 12)+index])
+        let host = SharedPreference.PAYSLIP_DETAIL_API + this.state.yearlistdata[(this.state.indexselectyear * 12)+index].rollID
         // console
         console.log('host :', host)
 
@@ -632,17 +613,31 @@ this.savedata()
                         //console.log('payslip detail DataResponse : ', this.state.dataSource, rollid);
                         // //console.log('DataResponse year : ',dataSource.data.years[year].year);
                         // this.setState(this.renderloadingscreen())
+                        // this.props.navigation.navigate('PayslipDetail', {
+                        //     // DataResponse:dataSource,
+                        //     yearlist: this.state.yearlistdata,
+                        //     initialyear: initialyear,
+                        //     initialmonth: 0,
+                        //     monthselected: index,
+                        //     selectedindex: ((this.state.indexselectyear) * 12) + index,
+                        //     yearselected: year,
+                        //     Datadetail: this.state.dataSource,
+                        //     rollid: rollid,
+
+                        // });
+
                         this.props.navigation.navigate('PayslipDetail', {
-                            // DataResponse:dataSource,
+                            DataResponse:this.state.DataResponse,
                             yearlist: this.state.yearlistdata,
                             initialyear: initialyear,
                             initialmonth: 0,
                             monthselected: index,
-                            selectedindex: ((indexselectyear) * 12) + index,
+                            selectedindex: ((this.state.indexselectyear) * 12) + index,
                             yearselected: year,
                             Datadetail: this.state.dataSource,
                             rollid: rollid
                         });
+
                     } else {
 
                         Alert.alert(
@@ -715,8 +710,6 @@ this.savedata()
 
         }
 
-
-
         return (
 
             <View style={{ height: this.state.updatedHeight, backgroundColor: 'gray', flexDirection: 'column', overflow: 'hidden', marginLeft: 5, marginRight: 5, borderRadius: 5 }}>
@@ -776,6 +769,251 @@ this.savedata()
 
         )
     }
+    PayslipBody() {
+        
+        let net1 = '0.00'; let pay1 = '-';
+        let net2 = '0.00'; let pay2 = '-';
+        let net3 = '0.00'; let pay3 = '-';
+        let net4 = '0.00'; let pay4 = '-';
+        let net5 = '0.00'; let pay5 = '-';
+        let net6 = '0.00'; let pay6 = '-';
+        let net7 = '0.00'; let pay7 = '-';
+        let net8 = '0.00'; let pay8 = '-';
+        let net9 = '0.00'; let pay9 = '-';
+        let net10 = '0.00'; let pay10 = '-';
+        let net11 = '0.00'; let pay11 = '-';
+        let net12 = '0.00'; let pay12 = '-';
+       
+        
+    
+        if (this.state.yearlistdata.length) {
+            console.log('yearlistdata =>', this.state.yearlistdata)
+            // let netsalary =  this.state.yearlistdata[(this.state.yearselected * 12) + 5].netsalary
+            // console.log('netsalary =>', netsalary)
+            // console.log('client_secret =>', SharedPreference.profileObject.client_secret)
+            // console.log('Dcryptfun =>', Dcryptfun.decrypt(netsalary))
+            let tnet1 = this.state.yearlistdata[(this.state.indexselectyear * 12) + 0].netsalary;  let tpay1 = this.state.yearlistdata[(this.state.indexselectyear * 12) + 0].paydate;
+            if (tpay1) {let apay1 = tpay1.split('-'); pay1 = apay1[2] + ' ' + Month.monthNamesShort[apay1[1] - 1] + ' ' + apay1[0];net1 = Dcryptfun.decrypt(tnet1);}
+            let tnet2 = this.state.yearlistdata[(this.state.indexselectyear * 12) + 1].netsalary;  let tpay2 = this.state.yearlistdata[(this.state.indexselectyear * 12) + 1].paydate;
+            if (tpay2) {let apay2 = tpay2.split('-'); pay2 = apay2[2] + ' ' + Month.monthNamesShort[apay2[1] - 1] + ' ' + apay2[0];net2 = Dcryptfun.decrypt(tnet2);}
+            let tnet3 = this.state.yearlistdata[(this.state.indexselectyear * 12) + 2].netsalary;  let tpay3 = this.state.yearlistdata[(this.state.indexselectyear * 12) + 2].paydate;
+            if (tpay3) {let apay3 = tpay3.split('-'); pay3 = apay3[2] + ' ' + Month.monthNamesShort[apay3[1] - 1] + ' ' + apay3[0];net3 = Dcryptfun.decrypt(tnet3);}
+            let tnet4 = this.state.yearlistdata[(this.state.indexselectyear * 12) + 3].netsalary;  let tpay4 = this.state.yearlistdata[(this.state.indexselectyear * 12) + 3].paydate;
+            if (tpay4) {let apay4 = tpay4.split('-'); pay4 = apay4[2] + ' ' + Month.monthNamesShort[apay4[1] - 1] + ' ' + apay4[0];net4 = Dcryptfun.decrypt(tnet4);}
+            let tnet5 = this.state.yearlistdata[(this.state.indexselectyear * 12) + 4].netsalary;  let tpay5 = this.state.yearlistdata[(this.state.indexselectyear * 12) + 4].paydate;
+            if (tpay5) {let apay5 = tpay5.split('-'); pay5 = apay5[2] + ' ' + Month.monthNamesShort[apay5[1] - 1] + ' ' + apay5[0];net5 = Dcryptfun.decrypt(tnet5);}
+            let tnet6 = this.state.yearlistdata[(this.state.indexselectyear * 12) + 5].netsalary;  let tpay6 = this.state.yearlistdata[(this.state.indexselectyear * 12) + 5].paydate;
+            if (tpay6) {let apay6 = tpay6.split('-'); pay6 = apay6[2] + ' ' + Month.monthNamesShort[apay6[1] - 1] + ' ' + apay6[0];net6 = Dcryptfun.decrypt(tnet6);}
+            let tnet7 = this.state.yearlistdata[(this.state.indexselectyear * 12) + 6].netsalary;  let tpay7 = this.state.yearlistdata[(this.state.indexselectyear * 12) + 6].paydate;
+            if (tpay7) {let apay7 = tpay7.split('-'); pay7 = apay7[2] + ' ' + Month.monthNamesShort[apay7[1] - 1] + ' ' + apay7[0];net7 = Dcryptfun.decrypt(tnet7);}
+            let tnet8 = this.state.yearlistdata[(this.state.indexselectyear * 12) + 7].netsalary;  let tpay8 = this.state.yearlistdata[(this.state.indexselectyear * 12) + 7].paydate;
+            if (tpay8) {let apay8 = tpay8.split('-'); pay8 = apay8[2] + ' ' + Month.monthNamesShort[apay8[1] - 1] + ' ' + apay8[0];net8 = Dcryptfun.decrypt(tnet8);}
+            let tnet9 = this.state.yearlistdata[(this.state.indexselectyear * 12) + 8].netsalary;  let tpay9 = this.state.yearlistdata[(this.state.indexselectyear * 12) + 8].paydate;
+            if (tpay9) {let apay9 = tpay9.split('-'); pay9 = apay9[2] + ' ' + Month.monthNamesShort[apay9[1] - 1] + ' ' + apay9[0];net9 = Dcryptfun.decrypt(tnet9);}
+            let tnet10 = this.state.yearlistdata[(this.state.indexselectyear * 12) + 9].netsalary;  let tpay10 = this.state.yearlistdata[(this.state.indexselectyear * 12) + 9].paydate;
+            if (tpay10) {let apay10 = tpay10.split('-'); pay10 = apay10[2] + ' ' + Month.monthNamesShort[apay10[1] - 1] + ' ' + apay10[0];net10 = Dcryptfun.decrypt(tnet10);}
+            let tnet11 = this.state.yearlistdata[(this.state.indexselectyear * 12) + 10].netsalary;  let tpay11 = this.state.yearlistdata[(this.state.indexselectyear * 12) + 10].paydate;
+            if (tpay11) {let apay11 = tpay11.split('-'); pay11 = apay11[2] + ' ' + Month.monthNamesShort[apay11[1] - 1] + ' ' + apay11[0];net11 = Dcryptfun.decrypt(tnet11);}
+            let tnet12 = this.state.yearlistdata[(this.state.indexselectyear * 12) + 11].netsalary;  let tpay12 = this.state.yearlistdata[(this.state.indexselectyear * 12) + 11].paydate;
+            if (tpay12) {let apay12 = tpay12.split('-'); pay12 = apay12[2] + ' ' + Month.monthNamesShort[apay12[1] - 1] + ' ' + apay12[0];net12 = Dcryptfun.decrypt(tnet12);}
+        }
+        let badge1 = 0;if(SharedPreference.payslipBadgeList.length>((this.state.indexselectyear) * 12) + 0){badge1 = SharedPreference.payslipBadgeList[((this.state.indexselectyear) * 12) + 0];}
+        let badge2 = 0;if(SharedPreference.payslipBadgeList.length>((this.state.indexselectyear) * 12) + 1){badge2 = SharedPreference.payslipBadgeList[((this.state.indexselectyear) * 12) + 1];}
+        let badge3 = 0;if(SharedPreference.payslipBadgeList.length>((this.state.indexselectyear) * 12) + 2){badge3 = SharedPreference.payslipBadgeList[((this.state.indexselectyear) * 12) + 2];}
+        let badge4 = 0;if(SharedPreference.payslipBadgeList.length>((this.state.indexselectyear) * 12) + 3){badge4 = SharedPreference.payslipBadgeList[((this.state.indexselectyear) * 12) + 3];}
+        let badge5 = 0;if(SharedPreference.payslipBadgeList.length>((this.state.indexselectyear) * 12) + 4){badge5 = SharedPreference.payslipBadgeList[((this.state.indexselectyear) * 12) + 4];}
+        let badge6 = 0;if(SharedPreference.payslipBadgeList.length>((this.state.indexselectyear) * 12) + 5){badge6 = SharedPreference.payslipBadgeList[((this.state.indexselectyear) * 12) + 5];}
+        let badge7 = 0;if(SharedPreference.payslipBadgeList.length>((this.state.indexselectyear) * 12) + 6){badge7 = SharedPreference.payslipBadgeList[((this.state.indexselectyear) * 12) + 6];}
+        let badge8 = 0;if(SharedPreference.payslipBadgeList.length>((this.state.indexselectyear) * 12) + 7){badge8 = SharedPreference.payslipBadgeList[((this.state.indexselectyear) * 12) + 7];}
+        let badge9 = 0;if(SharedPreference.payslipBadgeList.length>((this.state.indexselectyear) * 12) + 8){badge9 = SharedPreference.payslipBadgeList[((this.state.indexselectyear) * 12) + 8];}
+        let badge10 = 0;if(SharedPreference.payslipBadgeList.length>((this.state.indexselectyear) * 12) + 9){badge10 = SharedPreference.payslipBadgeList[((this.state.indexselectyear) * 12) + 9];}
+        let badge11 = 0;if(SharedPreference.payslipBadgeList.length>((this.state.indexselectyear) * 12) + 10){badge11 = SharedPreference.payslipBadgeList[((this.state.indexselectyear) * 12) + 10];}
+        let badge12 = 0;if(SharedPreference.payslipBadgeList.length>((this.state.indexselectyear) * 12) + 11){badge12 = SharedPreference.payslipBadgeList[((this.state.indexselectyear) * 12) + 11];}
+        
+
+        return (
+            <View style={{ flex: 1, margin: 3, }}>
+
+                <View style={{ flex: 1, flexDirection: 'column' }}>
+                    <View style={{ flex: 1, flexDirection: 'row' }}>
+                        <View style={{ flex: 1 }}>
+                            <TouchableOpacity style={0 === this.state.currentmonth && this.state.indexselectyear === 0 ?
+                                styles.payslipitemlast :
+                                net1 == 0 ? styles.payslipitemdisable : styles.payslipitem}
+                                onPress={() => { this.onPayslipDetail(0, net1) }} >
+                                <View style={{ flex: 1, justifyContent: 'center' }}><Text style={0 === this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemcurrentdMonth : styles.payslipiteMonth}>{Month.monthNamesShort[0]}</Text></View>
+                                <View style={{ flex: 1, justifyContent: 'center' }}><Text style={0 === this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemcurrentdNet : 0 > this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemdetailHide : styles.payslipitemmoney}>{net1}</Text></View>
+                                <View style={{ flex: 1, justifyContent: 'center' }}><Text style={0 === this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemcurrentdetail : 0 > this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemdetailHide : styles.payslipitemdate}>{pay1}</Text></View>
+                            </TouchableOpacity>
+                            <View style={badge1 ? styles.badgeIconpayslip :styles.badgeIconpayslipDisable}><Text style={badge1 ? { color: 'white' } : { color: 'transparent' }}>{badge1}</Text></View>
+                        </View>
+                        <View style={{ flex: 1 }}>
+                            <TouchableOpacity style={1 === this.state.currentmonth && this.state.indexselectyear === 0 ?
+                                styles.payslipitemlast :
+                                net2 == 0 ? styles.payslipitemdisable : styles.payslipitem}
+                                onPress={() => { this.onPayslipDetail(1, net2) }} >
+                                <View style={{ flex: 1, justifyContent: 'center' }}><Text style={1 === this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemcurrentdMonth : styles.payslipiteMonth}>{Month.monthNamesShort[1]}</Text></View>
+                                <View style={{ flex: 1, justifyContent: 'center' }}><Text style={1 === this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemcurrentdNet : 1 > this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemdetailHide : styles.payslipitemmoney}>{net2}</Text></View>
+                                <View style={{ flex: 1, justifyContent: 'center' }}><Text style={1 === this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemcurrentdetail : 1 > this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemdetailHide : styles.payslipitemdate}>{pay2}</Text></View>
+                            </TouchableOpacity>
+                            <View style={badge2 ? styles.badgeIconpayslip :styles.badgeIconpayslipDisable}><Text style={badge2 ? { color: 'white' } : { color: 'transparent' }}>{badge2}</Text></View>
+                        </View>
+                        <View style={{ flex: 1 }}>
+                            <TouchableOpacity style={2 === this.state.currentmonth && this.state.indexselectyear === 0 ?
+                                styles.payslipitemlast :
+                                net3 == 0 ? styles.payslipitemdisable : styles.payslipitem}
+                                onPress={() => { this.onPayslipDetail(2, net3) }} >
+                                <View style={{ flex: 1, justifyContent: 'center' }}><Text style={2 === this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemcurrentdMonth : styles.payslipiteMonth}>{Month.monthNamesShort[2]}</Text></View>
+                                <View style={{ flex: 1, justifyContent: 'center' }}><Text style={2 === this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemcurrentdNet : 2 > this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemdetailHide : styles.payslipitemmoney}>{net3}</Text></View>
+                                <View style={{ flex: 1, justifyContent: 'center' }}><Text style={2 === this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemcurrentdetail : 2 > this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemdetailHide : styles.payslipitemdate}>{pay3}</Text></View>
+                            </TouchableOpacity>
+                            <View style={badge3 ? styles.badgeIconpayslip :styles.badgeIconpayslipDisable}><Text style={badge3 ? { color: 'white' } : { color: 'transparent' }}>{badge3}</Text></View>
+                        </View>
+                    </View>
+                    <View style={{ flex: 1, flexDirection: 'row' }}>
+                        <View style={{ flex: 1 }}>
+                            <TouchableOpacity style={3 === this.state.currentmonth && this.state.indexselectyear === 0 ?
+                                styles.payslipitemlast :
+                                net4 == 0 ? styles.payslipitemdisable : styles.payslipitem}
+                                onPress={() => { this.onPayslipDetail(3, net4) }} >
+                                <View style={{ flex: 1, justifyContent: 'center' }}><Text style={3 === this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemcurrentdMonth : styles.payslipiteMonth}>{Month.monthNamesShort[3]}</Text></View>
+                                <View style={{ flex: 1, justifyContent: 'center' }}><Text style={3 === this.state.currentmonth && this.state.indexselectyear === 0 ?styles.payslipitemcurrentdNet : 3 > this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemdetailHide : styles.payslipitemmoney}>{net4}</Text></View>
+                                <View style={{ flex: 1, justifyContent: 'center' }}><Text style={3 === this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemcurrentdetail : 3 > this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemdetailHide : styles.payslipitemdate}>{pay4}</Text></View>
+
+                            </TouchableOpacity>
+                            <View style={badge4 ? styles.badgeIconpayslip :styles.badgeIconpayslipDisable}><Text style={badge4 ? { color: 'white' } : { color: 'transparent' }}>{badge4}</Text></View>
+                        </View>
+                        <View style={{ flex: 1 }}>
+                            <TouchableOpacity style={4 === this.state.currentmonth && this.state.indexselectyear === 0 ?
+                                styles.payslipitemlast :
+                                net5 == 0 ? styles.payslipitemdisable : styles.payslipitem}
+                                onPress={() => { this.onPayslipDetail(4, net5) }} >
+                                <View style={{ flex: 1, justifyContent: 'center' }}><Text style={4 === this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemcurrentdMonth : styles.payslipiteMonth}>{Month.monthNamesShort[4]}</Text></View>
+                                <View style={{ flex: 1, justifyContent: 'center' }}><Text style={4 === this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemcurrentdNet : 4 > this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemdetailHide : styles.payslipitemmoney}>{net5}</Text></View>
+                                <View style={{ flex: 1, justifyContent: 'center' }}><Text style={4 === this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemcurrentdetail : 4 > this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemdetailHide : styles.payslipitemdate}>{pay5}</Text></View>
+                            </TouchableOpacity>
+                            <View style={badge5 ? styles.badgeIconpayslip :styles.badgeIconpayslipDisable}><Text style={badge5 ? { color: 'white' } : { color: 'transparent' }}>{badge5}</Text></View>
+                        </View>
+                        <View style={{ flex: 1 }}>
+                            <TouchableOpacity style={5 === this.state.currentmonth && this.state.indexselectyear === 0 ?
+                                styles.payslipitemlast :
+                                net6 == 0 ? styles.payslipitemdisable : styles.payslipitem}
+                                onPress={() => { this.onPayslipDetail(5, net6) }} >
+                                <View style={{ flex: 1, justifyContent: 'center' }}><Text style={5 === this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemcurrentdMonth : styles.payslipiteMonth}>{Month.monthNamesShort[5]}</Text></View>
+                                <View style={{ flex: 1, justifyContent: 'center' }}><Text style={5 === this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemcurrentdNet : 5 > this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemdetailHide : styles.payslipitemmoney}>{net6}</Text></View>
+                                <View style={{ flex: 1, justifyContent: 'center' }}><Text style={5 === this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemcurrentdetail : 5 > this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemdetailHide : styles.payslipitemdate}>{pay6}</Text></View>
+
+                            </TouchableOpacity>
+                            <View style={badge6 ? styles.badgeIconpayslip :styles.badgeIconpayslipDisable}><Text style={badge6 ? { color: 'white' } : { color: 'transparent' }}>{badge6}</Text></View>
+                        </View>
+                    </View>
+                    <View style={{ flex: 1, flexDirection: 'row' }}>
+                        <View style={{ flex: 1 }}>
+                            <TouchableOpacity style={6 === this.state.currentmonth && this.state.indexselectyear === 0 ?
+                                styles.payslipitemlast :
+                                net7 == 0 ? styles.payslipitemdisable : styles.payslipitem}
+                                onPress={() => { this.onPayslipDetail(6, net7) }} >
+                                <View style={{ flex: 1, justifyContent: 'center' }}><Text style={6 === this.state.currentmonth && this.state.indexselectyear === 0 ?styles.payslipitemcurrentdMonth : styles.payslipiteMonth}>{Month.monthNamesShort[6]}</Text></View>
+                                <View style={{ flex: 1, justifyContent: 'center' }}><Text style={6 === this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemcurrentdNet : 6 > this.state.currentmonth && this.state.indexselectyear === 0 ?styles.payslipitemdetailHide : styles.payslipitemmoney}>{net7}</Text></View>
+                                <View style={{ flex: 1, justifyContent: 'center' }}><Text style={6 === this.state.currentmonth && this.state.indexselectyear === 0 ?styles.payslipitemcurrentdetail : 6 > this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemdetailHide : styles.payslipitemdate}>{pay7}</Text></View>
+                            </TouchableOpacity>
+                            <View style={badge7 ? styles.badgeIconpayslip :styles.badgeIconpayslipDisable}><Text style={badge7 ? { color: 'white' } : { color: 'transparent' }}>{badge7}</Text></View>
+                        </View>
+                        <View style={{ flex: 1 }}>
+                            <TouchableOpacity style={7 === this.state.currentmonth && this.state.indexselectyear === 0 ?
+                                styles.payslipitemlast :
+                                net8 == 0 ? styles.payslipitemdisable : styles.payslipitem}
+                                onPress={() => { this.onPayslipDetail(7, net8) }} >
+                                <View style={{ flex: 1, justifyContent: 'center' }}><Text style={7 === this.state.currentmonth && this.state.indexselectyear === 0 ?styles.payslipitemcurrentdMonth : styles.payslipiteMonth}>{Month.monthNamesShort[7]}</Text></View>
+                                <View style={{ flex: 1, justifyContent: 'center' }}><Text style={7 === this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemcurrentdNet : 7 > this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemdetailHide : styles.payslipitemmoney}>{net8}</Text></View>
+                                <View style={{ flex: 1, justifyContent: 'center' }}><Text style={7 === this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemcurrentdetail : 7 > this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemdetailHide : styles.payslipitemdate}>{pay8}</Text></View>
+                            </TouchableOpacity>
+                            <View style={badge8 ? styles.badgeIconpayslip :styles.badgeIconpayslipDisable}><Text style={badge8 ? { color: 'white' } : { color: 'transparent' }}>{badge8}</Text></View>
+                        </View>
+                        <View style={{ flex: 1 }}>
+                            <TouchableOpacity style={8 === this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemlast : net9 == 0 ? styles.payslipitemdisable : styles.payslipitem}
+                                onPress={() => { this.onPayslipDetail(8, net9) }} >
+                                <View style={{ flex: 1, justifyContent: 'center' }}><Text style={8 === this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemcurrentdMonth : styles.payslipiteMonth}>{Month.monthNamesShort[8]}</Text></View>
+                                <View style={{ flex: 1, justifyContent: 'center' }}><Text style={8 === this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemcurrentdNet : 8 > this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemdetailHide : styles.payslipitemmoney}>{net9}</Text></View>
+                                <View style={{ flex: 1, justifyContent: 'center' }}><Text style={8 === this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemcurrentdetail : 8 > this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemdetailHide : styles.payslipitemdate}>{pay9}</Text></View>
+
+                            </TouchableOpacity>
+                            <View style={badge9 ? styles.badgeIconpayslip :styles.badgeIconpayslipDisable}><Text style={badge9 ? { color: 'white' } : { color: 'transparent' }}>{badge9}</Text></View>
+                        </View>
+                    </View>
+                    <View style={{ flex: 1, flexDirection: 'row' }}>
+                        <View style={{ flex: 1 }}>
+                            <TouchableOpacity style={9 === this.state.currentmonth && this.state.indexselectyear === 0 ?
+                                styles.payslipitemlast :
+                                net10 == 0 ? styles.payslipitemdisable : styles.payslipitem}
+                                onPress={() => { this.onPayslipDetail(9, net10) }} >
+                                <View style={{ flex: 1, justifyContent: 'center' }}><Text style={9 === this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemcurrentdMonth :styles.payslipiteMonth}>{Month.monthNamesShort[9]}</Text></View>
+                                <View style={{ flex: 1, justifyContent: 'center' }}><Text style={9 === this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemcurrentdNet : 9 > this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemdetailHide : styles.payslipitemmoney}>{net10}</Text></View>
+                                <View style={{ flex: 1, justifyContent: 'center' }}><Text style={9 === this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemcurrentdetail: 9 > this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemdetailHide : styles.payslipitemdate}>{pay10}</Text></View>
+                            </TouchableOpacity>
+                            <View style={badge10 ? styles.badgeIconpayslip : styles.badgeIconpayslipDisable}><Text style={badge10 ? { color: 'white' } : { color: 'transparent' }}>{badge10}</Text></View>
+                        </View>
+                        <View style={{ flex: 1 }}>
+                            <TouchableOpacity style={10 === this.state.currentmonth && this.state.indexselectyear === 0 ?
+                                styles.payslipitemlast :
+                                net11 == 0 ? styles.payslipitemdisable : styles.payslipitem}
+                                onPress={() => { this.onPayslipDetail(10, net11) }} >
+                                <View style={{ flex: 1, justifyContent: 'center' }}><Text style={10 === this.state.currentmonth && this.state.indexselectyear === 0 ?styles.payslipitemcurrentdMonth : styles.payslipiteMonth}>{Month.monthNamesShort[10]}</Text></View>
+                                <View style={{ flex: 1, justifyContent: 'center' }}><Text style={10 === this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemcurrentdNet : 10 > this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemdetailHide : styles.payslipitemmoney}>{net11}</Text></View>
+                                <View style={{ flex: 1, justifyContent: 'center' }}><Text style={10 === this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemcurrentdetail : 10 > this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemdetailHide : styles.payslipitemdate}>{pay11}</Text></View>
+                            </TouchableOpacity>
+                            <View style={badge11 ? styles.badgeIconpayslip :styles.badgeIconpayslipDisable}><Text style={badge11 ? { color: 'white' } : { color: 'transparent' }}>{badge11}</Text></View>
+                        </View>
+                        <View style={{ flex: 1 }}>
+                            <TouchableOpacity style={11 === this.state.currentmonth && this.state.indexselectyear === 0 ?
+                                styles.payslipitemlast :
+                                net12 == 0 ? styles.payslipitemdisable : styles.payslipitem}
+                                onPress={() => { this.onPayslipDetail(11, net12) }} >
+                                <View style={{ flex: 1, justifyContent: 'center' }}><Text style={11 === this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemcurrentdMonth : styles.payslipiteMonth}>{Month.monthNamesShort[11]}</Text></View>
+                                <View style={{ flex: 1, justifyContent: 'center' }}><Text style={11 === this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemcurrentdNet : 11 > this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemdetailHide : styles.payslipitemmoney}>{net12}</Text></View>
+                                <View style={{ flex: 1, justifyContent: 'center' }}><Text style={11 === this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemcurrentdetail : 11 > this.state.currentmonth && this.state.indexselectyear === 0 ? styles.payslipitemdetailHide : styles.payslipitemdate}>{pay12}</Text></View>
+                            </TouchableOpacity>
+                            <View style={badge12 ? styles.badgeIconpayslip :styles.badgeIconpayslipDisable}><Text style={badge12 ? { color: 'white' } : { color: 'transparent' }}>{badge12}</Text></View>
+                        </View>
+                    </View>
+                </View>
+            </View>
+
+        )
+    }
+
+    onPayslipDetail(index, data) {
+
+        if (index > this.state.currentmonth && this.state.indexselectyear === 0) {
+            return
+        } else if (data === '0.00') {
+            Alert.alert(
+                'HAVE NO DATA',
+                'No Data',
+                [{
+                    text: StringText.ALERT_NONPAYROLL_NODATA_BUTTON, onPress: () => {
+                        // ////console.log("onLoadAlertDialog")
+                    }
+                },
+                ],
+                { cancelable: false }
+            )
+
+        } else {
+            this.setState({
+
+                isscreenloading: true,
+                loadingtype: 3
+
+            }, function () {
+
+                this.getPayslipDetailfromAPI(this.state.selectYearArray[this.state.indexselectyear], index)
+
+            });
+
+        }
+
+    }
 
     renderloadingscreen() {
 
@@ -826,8 +1064,8 @@ this.savedata()
                                 onPress={(this.onLast2Year.bind(this)
 
                                 )}>
-                                <View style={indexselectyear === 2 ? styles.nonpayrolltabBG_ena : styles.nonpayrolltabBG_dis}>
-                                    <Text style={indexselectyear === 2 ? styles.leaveYearButton_ena : styles.leaveYearButton_dis}>{this.state.selectYearArray[2]}</Text>
+                                <View style={this.state.indexselectyear === 2 ? styles.nonpayrolltabBG_ena : styles.nonpayrolltabBG_dis}>
+                                    <Text style={this.state.indexselectyear === 2 ? styles.leaveYearButton_ena : styles.leaveYearButton_dis}>{this.state.selectYearArray[2]}</Text>
                                 </View>
                             </TouchableOpacity>
 
@@ -835,16 +1073,16 @@ this.savedata()
                                 style={{ flex: 1 }}
                                 onPress={(this.onLastYear.bind(this))}
                             >
-                                <View style={indexselectyear === 1 ? styles.nonpayrolltabBG_ena : styles.nonpayrolltabBG_dis}>
-                                    <Text style={indexselectyear === 1 ? styles.leaveYearButton_ena : styles.leaveYearButton_dis}>{this.state.selectYearArray[1]}</Text>
+                                <View style={this.state.indexselectyear === 1 ? styles.nonpayrolltabBG_ena : styles.nonpayrolltabBG_dis}>
+                                    <Text style={this.state.indexselectyear === 1 ? styles.leaveYearButton_ena : styles.leaveYearButton_dis}>{this.state.selectYearArray[1]}</Text>
                                 </View>
                             </TouchableOpacity>
 
                             <TouchableOpacity
                                 style={{ flex: 1 }}
                                 onPress={(this.onCurrentYear.bind(this))}>
-                                <View style={indexselectyear === 0 ? styles.nonpayrolltabBG_ena : styles.nonpayrolltabBG_dis}>
-                                    <Text style={indexselectyear === 0 ? styles.leaveYearButton_ena : styles.leaveYearButton_dis}>{this.state.selectYearArray[0]}</Text>
+                                <View style={this.state.indexselectyear === 0 ? styles.nonpayrolltabBG_ena : styles.nonpayrolltabBG_dis}>
+                                    <Text style={this.state.indexselectyear === 0 ? styles.leaveYearButton_ena : styles.leaveYearButton_dis}>{this.state.selectYearArray[0]}</Text>
                                 </View>
                             </TouchableOpacity>
                             <View style={{ flex: 1, backgroundColor: Colors.backgroundcolor }} />
@@ -857,7 +1095,7 @@ this.savedata()
                 <View style={{ flex: 1, backgroundColor: Colors.backgroundcolor, flexDirection: 'column' }}>
 
                     {this.PayslipDetail()}
-                    {this.PayslipItem()}
+                    {this.PayslipBody()}
 
                 </View>
                 {this.renderloadingscreen()}

@@ -58,6 +58,7 @@ export default class PayslipDetail extends Component {
             havePermission: false,
             yearArray: ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"],
             selectedindex:this.props.navigation.getParam("selectedindex", ""),
+            DataResponse: this.props.navigation.getParam("DataResponse", ""),
         }
         firebase.analytics().setCurrentScreen(SharedPreference.SCREEN_PAYSLIP_DETAIL)
         // console.log('yearlist => ',this.state.yearlist) 
@@ -86,8 +87,10 @@ export default class PayslipDetail extends Component {
 
         // if (this.state.yearlist) {
 
-            this.props.navigation.navigate('PayslipList');
-
+           
+            this.props.navigation.navigate('PayslipList', {
+                DataResponse:this.state.DataResponse,
+            })
         // } else {
 
         //     this.props.navigation.navigate('HomeScreen');
@@ -662,7 +665,7 @@ selectedindex:this.state.selectedindex - 1
                 deduct = (Decryptfun.decrypt(this.state.datadetail.data.header.sum_deduct));
                 let tincome = parseFloat(income.replace(',', ''));
                 let tdeduct = parseFloat(deduct.replace(',', ''));
-                netincome = tincome - tdeduct;
+                netincome = parseInt(parseFloat(tincome - tdeduct)*100)/100  ;
                 let datearr = this.state.datadetail.data.header.pay_date.split('-');
                 pay_date_str = datearr[2] + ' ' + Months.monthNamesShort[parseInt(datearr[1]) - 1] + ' ' + datearr[0]
                 bank_name_str = this.state.datadetail.data.header.bank_name;
@@ -681,13 +684,13 @@ selectedindex:this.state.selectedindex - 1
                 }
 
                 let tdatearr = this.state.datadetail.data.header.pay_date.split('-');
-                date_text = Months.monthNames[this.state.monthselected] + ' ' + tdatearr[0]
+                // date_text = Months.monthNames[this.state.monthselected] + ' ' + tdatearr[0]
             }
             
 
         }
         let yearstr = this.state.initialyear - this.state.yearselected
-        //date_text = this.state.yearlist[this.state.selectedindex].month +'-'+ this.state.yearlist[this.state.selectedindex].year//Months.monthNames[this.state.monthselected] + ' ' + yearstr.toString()
+        date_text = this.state.yearlist[this.state.selectedindex].month +'-'+ this.state.yearlist[this.state.selectedindex].year//Months.monthNames[this.state.monthselected] + ' ' + yearstr.toString()
 
         if (!this.state.yearlist) {
 
@@ -695,7 +698,7 @@ selectedindex:this.state.selectedindex - 1
 
             let temp = pay_date_str.split(' ')
 
-            date_text = temp[1] + ' ' + temp[2]
+            // date_text = temp[1] + ' ' + temp[2]
 
         }
 

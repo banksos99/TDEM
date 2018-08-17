@@ -221,10 +221,15 @@ export default class HMF01011MainView extends Component {
                     })
             }
         }
-        // console.log("onLoadInAppNoti ==> ", SharedPreference.PULL_NOTIFICATION_API + lastTime)
+        console.log("onLoadInAppNoti ==> ", SharedPreference.PULL_NOTIFICATION_API + SharedPreference.lastdatetimeinterval)
+
+        this.timer = setTimeout(() => {
+            this.onLoadInAppNoti()
+        }, SharedPreference.timeinterval);
 
         FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, 1, SharedPreference.profileObject.client_token)
-        return fetch(SharedPreference.PULL_NOTIFICATION_API + lastTime, {
+
+        return fetch(SharedPreference.PULL_NOTIFICATION_API + SharedPreference.lastdatetimeinterval, {
 
             method: 'GET',
             headers: {
@@ -236,9 +241,9 @@ export default class HMF01011MainView extends Component {
             .then((response) => response.json())
             .then((responseJson) => {
                 // console.log("onLoadInAppNoti")
-                // console.log("responseJson ==> ", responseJson)
+                console.log("responseJson ==> ", responseJson)
                 try {
-                    // console.log("onLoadInAppNoti ==> responseJson ", responseJson)
+                    
                     if (responseJson.status == 403) {
 
                         this.onAutenticateErrorAlertDialog()
@@ -246,6 +251,9 @@ export default class HMF01011MainView extends Component {
                         inappTimeIntervalStatus = false
 
                     } else if (responseJson.status == 200) {
+
+                        SharedPreference.lastdatetimeinterval = responseJson.meta.request_date;
+                        // console.log("onLoadInAppNoti ==> responseJson ", responseJson)
 
                         let dataArray = responseJson.data
                         let currentyear = new Date().getFullYear();
@@ -333,7 +341,7 @@ export default class HMF01011MainView extends Component {
 
                     }
 
-                    this.inappTimeInterval()
+                  //  this.inappTimeInterval()
                     
                     
 
@@ -350,11 +358,11 @@ export default class HMF01011MainView extends Component {
 
     inappTimeInterval() {
 
-        if (inappTimeIntervalStatus) {
+      //  if (inappTimeIntervalStatus) {
             this.timer = setTimeout(() => {
                 this.onLoadInAppNoti()
             }, SharedPreference.timeinterval);
-        }
+       // }
 
     };
 
@@ -433,7 +441,7 @@ export default class HMF01011MainView extends Component {
         // //console.log("calendarPDFAPI ==>  functionID : ", functionID)
         
         FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, SharedPreference.FUNCTIONID_ANNOUCEMENT, SharedPreference.profileObject.client_token)
-        //console.log("calendarPDFAPI ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
+        console.log("calendarPDFAPI ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
         // console.log("client_id  : ", SharedPreference.profileObject.client_id)
         let hostApi = SharedPreference.ANNOUNCEMENT_ASC_API + '&offset=0&limit=' + totalroll
         if (ascendingSort) {

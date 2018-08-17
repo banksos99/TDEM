@@ -98,7 +98,7 @@ class BookCover extends Component {
                 this.task.then((res) => {
                     // the path should be dirs.DocumentDir + 'path-to-file.anything'
 
-                    //console.log('load cover TOKEN ', FUNCTION_TOKEN)
+                    console.log('load cover TOKEN ', FUNCTION_TOKEN)
                     //console.log('The file saved to ', res.path())
                     if (this.terminated) {
                         return;

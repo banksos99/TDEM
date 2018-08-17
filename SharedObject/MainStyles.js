@@ -91,12 +91,23 @@ export const styles = StyleSheet.create({
         backgroundColor: '#2b78e4',
     },
     badgeIconpayslip: {
-        top: -4* scale ,
-        right: -4* scale,
+        top: scale ,
+        right: scale,
         width: 18* scale,
         height: 18* scale,
         borderRadius: 9* scale,
         backgroundColor: 'red',
+        position: 'absolute',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    badgeIconpayslipDisable: {
+        top: scale ,
+        right: scale,
+        width: 18* scale,
+        height: 18* scale,
+        borderRadius: 9* scale,
+        backgroundColor: 'transparent',
         position: 'absolute',
         justifyContent: 'center',
         alignItems: 'center'
@@ -688,7 +699,7 @@ export const styles = StyleSheet.create({
         fontFamily: font_medium
     },
     payslipitemmoney: {
-        fontSize: 12 * scale,
+        fontSize: 15 * scale,
         color: Colors.thingrayTextColor,
         fontFamily: font_medium
     },
@@ -696,7 +707,24 @@ export const styles = StyleSheet.create({
         fontSize: 12 * scale,
         color: Colors.thingrayTextColor,
         fontFamily: font_medium
+    },payslipiteMonth: {
+        fontSize: 15 * scale,
+        color: Colors.thingrayTextColor,
+        fontFamily: font_medium
     },
+    payslipitemcurrentdMonth:{
+        fontSize: 15 * scale,
+        color: 'white',
+        fontFamily: font_medium
+
+    },
+    payslipitemcurrentdNet:{
+        fontSize: 16 * scale,
+        color: 'white',
+        fontFamily: font_medium
+
+    },
+
     payslipitemdetailred: {
         fontSize: 12 * scale,
         color: 'white',
