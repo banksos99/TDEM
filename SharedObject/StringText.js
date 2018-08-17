@@ -89,8 +89,8 @@ export default {
   ALERT_PAYSLIP_CANNOT_DOWNLOAD_TITLE: 'Sorry',
   ALERT_PAYSLIP_CANNOT_DOWNLOAD_DESC: 'Cannot download file.',
 
-  ALERT_CANNOT_CONNECT_NETWORK_TITLE: 'Sorry',
-  ALERT_CANNOT_CONNECT_NETWORK_DESC: 'Cannot connect network.',
+  ALERT_CANNOT_CONNECT_NETWORK_TITLE: 'MHF00500AERR',
+  ALERT_CANNOT_CONNECT_NETWORK_DESC: 'Cannot connect to the internet.',
 
   ALERT_PLEASE_FILL_TITLE: 'Sorry',
   ALERT_PLEASE_FILL_DESC: 'Please fill in your username or password.',

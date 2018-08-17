@@ -46,15 +46,8 @@ export default class mainview extends Component {
   }
 
   onInactivity = (timeWentInactive) => {
-    // //console.log("onInactivity : ", timeWentInactive)
-    // //console.log("onInactivity ==> SessionTimeoutBool : ", SharedPreference.sessionTimeoutBool)
-
     if (timeWentInactive != null) {
-
-      //console.log("SharedPreference.currentNavigator 11 ==> ", SharedPreference.currentNavigator)
       if (SharedPreference.currentNavigator == SharedPreference.SCREEN_MAIN) {
-        //console.log("SharedPreference.currentNavigator 22 ==> ", SharedPreference.currentNavigator)
-
         Alert.alert(
           StringText.ALERT_SESSION_TIMEOUT_TITILE,
           StringText.ALERT_SESSION_TIMEOUT_DESC,
@@ -70,31 +63,6 @@ export default class mainview extends Component {
         )
       }
     }
-
-    // if (this.state.sessionTimeoutBool == false) {
-
-    //   // this.setState({
-    //   //   sessionTimeoutBool: true
-    //   // })
-
-    //   //console.log("onInactivity : show alert Dialog")
-
-
-
-    //   Alert.alert(
-    //     StringText.ALERT_SESSION_TIMEOUT_TITILE,
-    //     StringText.ALERT_SESSION_TIMEOUT_DESC,
-    //     [{
-    //       text: 'OK', onPress: () => {
-    //         this.setState({
-    //           showpin: true,
-    //           // sessionTimeoutBool: true
-    //         });
-    //       }
-    //     }],
-    //     { cancelable: false }
-    //   )
-    // }
 
   }
 
@@ -164,16 +132,6 @@ export default class mainview extends Component {
           notiTitle: notification._title,
           notiBody: notification._body
         });
-
-        // if (notification._data.type === 'Payroll') {
-
-        //   SharedPreference.notipayslipID = notification._data.id
-
-        // } else if (notification._data.type === 'Emergency Announcement') {
-
-        //   SharedPreference.notiAnnounceMentID = notification._data.id
-
-        // }
       });
 
   }
@@ -298,7 +256,6 @@ export default class mainview extends Component {
 
   onReset = async () => {
     SharedPreference.profileObject = await this.saveProfile.getProfile()
-    // SharedPreference.TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, '1', SharedPreference.profileObject.client_token)
     this.onLoginResetPinAPI()
   }
 
@@ -527,7 +484,7 @@ export default class mainview extends Component {
     code = data[0]
     data = data[1]
 
-    //console.log("onLoadLoginWithPin ==> ", data.code)
+    console.log("onLoadLoginWithPin ==> ", data.code)
     if (code.SUCCESS == data.code) {
       this.setState({
         isLoading: false,

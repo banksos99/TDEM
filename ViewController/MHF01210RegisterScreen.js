@@ -68,17 +68,14 @@ export default class RegisterActivity extends Component {
     onRegister = async () => {
 
         this.getfirebasetoken()
-        ////console.log("onRegister")
         this.setState({
             isLoading: true
         })
-        console.log("onRegister")
         Keyboard.dismiss()
         let data = await RegisterAPI(this.state.username, this.state.password)
         code = data[0]
         data = data[1]
 
-        console.log("onRegister ==> ", data)
         this.setState({
             datastatus: data.code
         })
@@ -92,7 +89,6 @@ export default class RegisterActivity extends Component {
             })
 
         } else if (code.DOES_NOT_EXISTS == data.code) {
-            console.log("onRegister ==> DOES_NOT_EXISTS")
 
             Alert.alert(
                 StringText.REGISTER_INVALID_TITLE,
@@ -109,9 +105,6 @@ export default class RegisterActivity extends Component {
                 { cancelable: false }
             )
         } else if ((code.INVALID_USER_PASS == data.code) || (code.FAILED == data.code)) {
-
-            console.log("11 statusText ==> code ==> ", data.data.code)
-            console.log("11 statusText ==> detail ==> ", data.data.detail)
             Alert.alert(
                 data.data.code,
                 data.data.detail,
@@ -308,7 +301,7 @@ export default class RegisterActivity extends Component {
             pin2: [],
         })
     }
-    
+
 
     componentWillMount() {
         clearTimeout(this.timer);
