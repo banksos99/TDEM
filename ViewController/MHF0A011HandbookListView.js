@@ -23,6 +23,8 @@ import SharedPreference from "./../SharedObject/SharedPreference"
 import StringText from '../SharedObject/StringText';
 import firebase from 'react-native-firebase';
 
+import HandBookCover from "./BookCover";
+
 let dataSource = [];
 let temphandbookData = [];
 let FUNCTION_TOKEN;
@@ -67,17 +69,17 @@ class BookCover extends Component {
         let filename = this.props.bookName + '.jpeg'
         let targetFile = dirs.DocumentDir + '/cover/' + filename;
 
-        let hasFile = false;
+       // let hasFile = false;
 
         RNFetchBlob.fs.exists(targetFile)
             .then((exist) => {
-                hasFile = exist;
+               // hasFile = exist;
                 //console.log("======================");
                 //console.log("Has file : " + hasFile);
                 //console.log("======================");
                 //console.log("======================");
 
-                hasFile = false
+              //  hasFile = false
                 //   if (hasFile) {
                 //     this.updateSource(targetFile);
                 //   } else {
@@ -91,7 +93,7 @@ class BookCover extends Component {
                   
                     .fetch('GET', this.props.coverUrl, {
                         //some headers ..
-                        'Content-Type': 'image/png;base64',
+                        'Content-Type': 'image/jpeg;base64',
                         Authorization: FUNCTION_TOKEN
 
                     });
@@ -166,11 +168,11 @@ export default class HandbookActivity extends Component {
 
     checkDataFormat(DataResponse) {
         
-        if (dataSource.length == 0) {
+       if (dataSource.length == 0) {
 
             if (DataResponse) {
 
-                //console.log('Handbookctivity DataResponse :', DataResponse)
+                console.log('Handbookctivity DataResponse :', DataResponse)
                 // dataSource = DataResponse.data;
                 dataSource = DataResponse;
 
@@ -182,10 +184,11 @@ export default class HandbookActivity extends Component {
 
             this.createShelfHandbook();
         }
-    }
+   }
 
 
     onBack() {
+        dataSource=[]
         this.props.navigation.navigate('HomeScreen');
     }
 
@@ -245,7 +248,7 @@ export default class HandbookActivity extends Component {
 
 
     createcomponent(i) {
-
+        console.log('handbook_cover',dataSource[i].handbook_cover.split('=')[1])
         return (
             <View style={styles.handbookItem} key={i}>
                 <TouchableOpacity style={{ flex: 1 }}
@@ -254,10 +257,11 @@ export default class HandbookActivity extends Component {
                     <View style={{ flex: 5, }}>
                         <View style={{ flex: 1, margin: 5, justifyContent: 'center', alignItems: 'center' }}>
 
-                            <BookCover
-                                placeholderUrl={'https://facebook.github.io/react/logo-og.png'}
+                            <HandBookCover
+                                // placeholderUrl={'https://facebook.github.io/react/logo-og.png'}
                                 coverUrl={SharedPreference.HOST + dataSource[i].handbook_cover}
-                                bookName={new Date().getTime()}
+                                bookName={dataSource[i].handbook_cover.split('=')[1]}
+                            // bookName={new Date().getUTCMilliseconds()}
                             />
 
                         </View>

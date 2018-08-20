@@ -679,7 +679,7 @@ export default class PayslipDetail extends Component {
 
         }
         let yearstr = this.state.initialyear - this.state.yearselected
-        date_text = this.state.yearlist[this.state.selectedindex].month +'-'+ this.state.yearlist[this.state.selectedindex].year//Months.monthNames[this.state.monthselected] + ' ' + yearstr.toString()
+        date_text = this.state.yearlist[this.state.selectedindex].monthfull +' '+ this.state.yearlist[this.state.selectedindex].year//Months.monthNames[this.state.monthselected] + ' ' + yearstr.toString()
 
         if (!this.state.yearlist) {
 

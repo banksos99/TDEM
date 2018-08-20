@@ -107,6 +107,7 @@ export default class PaySlipActivity extends Component {
                             this.state.yearlistdata.push({
                                 rollID: rollID,
                                 month:Month.monthNamesShort[k],
+                                monthfull:Month.monthNames[k],
                                 year:this.state.selectYearArray[i],
                                 paydate:paydate,
                                 netsalary:netsalary,
@@ -125,6 +126,7 @@ export default class PaySlipActivity extends Component {
                         this.state.yearlistdata.push({
                             rollID: rollID,
                             month:Month.monthNamesShort[k],
+                            monthfull:Month.monthNames[k],
                             year:this.state.selectYearArray[i],
                             badge:0
                         })
@@ -646,6 +648,26 @@ export default class PaySlipActivity extends Component {
                             Datadetail: this.state.dataSource,
                             rollid: rollid
                         });
+
+                    } else if (code.INVALID_AUTH_TOKEN == data.code) {
+                        Alert.alert(
+                            StringText.ALERT_AUTHORLIZE_ERROR_TITLE,
+                            StringText.ALERT_AUTHORLIZE_ERROR_MESSAGE,
+                            [{
+                                text: 'OK', onPress: () => {
+                            
+                                    SharedPreference.Handbook = []
+                                    SharedPreference.profileObject = null
+                                    this.saveProfile.setProfile(null)
+                                    this.setState({
+                                        isscreenloading: false
+                                    })
+                                    this.props.navigation.navigate('RegisterScreen')
+
+                                }
+                            }],
+                            { cancelable: false }
+                        )
 
                     } else {
 

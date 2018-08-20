@@ -14,7 +14,7 @@ var Decrypt = {
             try {
 
                 let secretkey = sha512.digest(SharedPreference.profileObject.client_secret).slice(0, 16);
-
+                // console.log("secretkey : ",SharedPreference.profileObject.client_secret, sha512.digest(SharedPreference.profileObject.client_secret),secretkey)
                 let enc = base64.decode(base64.decode(enc64));
 
                 var target = [];
@@ -25,9 +25,9 @@ var Decrypt = {
                 var decryptedBytes = aesEcb.decrypt(target);
                 var decryptedText = aesjs.utils.utf8.fromBytes(decryptedBytes);
                 var result = decryptedText.split('.')[0];
-                let numberstr = base64.decode(result).split('.');
+                // let numberstr = base64.decode(result).split('.');
                 // let resouce = parseInt(numberstr[0]).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + '.' + numberstr[1];
-                return (numberstr)
+                return base64.decode(result)
             } catch (error) {
                 return ''
             }

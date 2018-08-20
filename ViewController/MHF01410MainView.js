@@ -1105,24 +1105,20 @@ export default class HMF01011MainView extends Component {
             [{
                 text: 'OK', onPress: () => {
                     // this.select_sign_out()/
-                    page = 0
-                    timerstatus = false
-                    SharedPreference.Handbook = []
-                    SharedPreference.profileObject = null
-                    this.saveProfile.setProfile(null)
-                    this.setState({
-                        isscreenloading: false
-                    })
-                    this.props.navigation.navigate('RegisterScreen')
+                    // page = 0
+                    // timerstatus = false
+                    // SharedPreference.Handbook = []
+                    // SharedPreference.profileObject = null
+                    // this.saveProfile.setProfile(null)
+                    // this.setState({
+                    //     isscreenloading: false
+                    // })
+                    // this.props.navigation.navigate('RegisterScreen')
+                    this.signout()
                 }
             }],
             { cancelable: false }
         )
-
-        //console.log("error : ", error)
-
-
-
     }
 
     onNodataExistErrorAlertDialog() {

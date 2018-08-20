@@ -236,16 +236,16 @@ export default class EmpInfoDetail extends Component {
     renderProfilePersonalDetail() {
 
         let t = Decryptfun.decrypt(empinfodetail.personal_id);
-        console.log('personal_id', empinfodetail)
-        console.log('Decryptfun ==>', Decryptfun.decrypt(empinfodetail.personal_id))
-        let cardid = 'x-xxxx-xxxxx-xx-x';
+        console.log('personal_id', empinfodetail.personal_id)
+        console.log('Decryptfun ==>', t)
+        let cardid = '-';
         let address = '-';
         if (empinfodetail.address) address = empinfodetail.address
         let birthdate = '_';
         if (empinfodetail.birth_date) birthdate = this.convertdate(empinfodetail.birth_date.split(' ')[0]);
         if (t) {
             //cardid = t
-            // cardid = t[0] + '-' + t[1] + t[2] + t[3] + t[4] + '-' + t[5] + t[6] + t[7] + t[8] + t[9] + '-' + t[10] + t[11] + '-' + t[12]
+            cardid = t[0] + '-' + t[1] + t[2] + t[3] + t[4] + '-' + t[5] + t[6] + t[7] + t[8] + t[9] + '-' + t[10] + t[11] + '-' + t[12]
 
         }
 
@@ -442,7 +442,7 @@ export default class EmpInfoDetail extends Component {
                         </View>
                     </View>
                     <View style={{ height: 1, justifyContent: 'center', backgroundColor: Colors.calendarLocationBoxColor }} />
-                    <View style={{ height: 30, justifyContent: 'center', backgroundColor: Colors.calendarGrayBackgroundColor, flexDirection: 'row' }}>
+                    <View style={{ justifyContent: 'center', backgroundColor: Colors.calendarGrayBackgroundColor, flexDirection: 'row' }}>
                         <View style={{ flex: 2, justifyContent: 'center' }}>
                             <Text style={styles.empinfoDetailRedText} >Division</Text>
                         </View>
@@ -451,7 +451,7 @@ export default class EmpInfoDetail extends Component {
                         </View>
                     </View>
                     <View style={{ height: 1, justifyContent: 'center', backgroundColor: Colors.calendarLocationBoxColor }} />
-                    <View style={{ height: 30, justifyContent: 'center', backgroundColor: Colors.calendarGrayBackgroundColor, flexDirection: 'row' }}>
+                    <View style={{ justifyContent: 'center', backgroundColor: Colors.calendarGrayBackgroundColor, flexDirection: 'row' }}>
                         <View style={{ flex: 2, justifyContent: 'center' }}>
                             <Text style={styles.empinfoDetailRedText} >Department</Text>
                         </View>
@@ -460,7 +460,7 @@ export default class EmpInfoDetail extends Component {
                         </View>
                     </View>
                     <View style={{ height: 1, justifyContent: 'center', backgroundColor: Colors.calendarLocationBoxColor }} />
-                    <View style={{  justifyContent: 'center', backgroundColor: Colors.calendarGrayBackgroundColor, flexDirection: 'row' }}>
+                    <View style={{ justifyContent: 'center', backgroundColor: Colors.calendarGrayBackgroundColor, flexDirection: 'row' }}>
                         <View style={{ flex: 2, justifyContent: 'center' }}>
                             <Text style={styles.empinfoDetailRedText} >Section</Text>
                         </View>
@@ -469,7 +469,7 @@ export default class EmpInfoDetail extends Component {
                         </View>
                     </View>
                     <View style={{ height: 1, justifyContent: 'center', backgroundColor: Colors.calendarLocationBoxColor }} />
-                    <View style={{  justifyContent: 'center', backgroundColor: Colors.calendarGrayBackgroundColor, flexDirection: 'row' }}>
+                    <View style={{ justifyContent: 'center', backgroundColor: Colors.calendarGrayBackgroundColor, flexDirection: 'row' }}>
                         <View style={{ flex: 2, justifyContent: 'center' }}>
                             <Text style={styles.empinfoDetailRedText} >Cost Center</Text>
                         </View>
@@ -478,7 +478,7 @@ export default class EmpInfoDetail extends Component {
                         </View>
                     </View>
                     <View style={{ height: 1, justifyContent: 'center', backgroundColor: Colors.calendarLocationBoxColor }} />
-                    <View style={{  justifyContent: 'center', backgroundColor: Colors.calendarGrayBackgroundColor, flexDirection: 'row' }}>
+                    <View style={{ justifyContent: 'center', backgroundColor: Colors.calendarGrayBackgroundColor, flexDirection: 'row' }}>
                         <View style={{ flex: 2, justifyContent: 'center' }}>
                             <Text style={styles.empinfoDetailRedText} >Location</Text>
                         </View>
@@ -489,16 +489,16 @@ export default class EmpInfoDetail extends Component {
                     <View style={{ height: 1, justifyContent: 'center', backgroundColor: Colors.calendarLocationBoxColor }} />
                     <View style={{ justifyContent: 'center', backgroundColor: Colors.calendarGrayBackgroundColor, flexDirection: 'row' }}>
                         <View style={{ flex: 2, justifyContent: 'center' }}>
-                            <Text style={styles.empinfoDetailRedText} >Latest section</Text>
+                            <Text style={styles.empinfoDetailRedText} >Latest Section</Text>
                         </View>
                         <View style={{ flex: 3, justifyContent: 'center' }}>
                             <Text style={styles.empinfoDetailText}>{date_in_dept + ' (' + period_in_dept + ')'}</Text>
                         </View>
                     </View>
                     <View style={{ height: 1, justifyContent: 'center', backgroundColor: Colors.calendarLocationBoxColor }} />
-                    <View style={{  justifyContent: 'center', backgroundColor: Colors.calendarGrayBackgroundColor, flexDirection: 'row' }}>
+                    <View style={{ justifyContent: 'center', backgroundColor: Colors.calendarGrayBackgroundColor, flexDirection: 'row' }}>
                         <View style={{ flex: 2, justifyContent: 'center' }}>
-                            <Text style={styles.empinfoDetailRedText} >Latest position</Text>
+                            <Text style={styles.empinfoDetailRedText} >Latest Position</Text>
                         </View>
                         <View style={{ flex: 3, justifyContent: 'center' }}>
                             <Text style={styles.empinfoDetailText}>{date_in_position + ' (' + period_in_position + ')'}</Text>

@@ -12,7 +12,6 @@ var Decrypt = {
         if (enc64) {
 
             try {
-
                 let secretkey = sha512.digest(SharedPreference.profileObject.client_secret).slice(0, 16);
 
                 let enc = base64.decode(base64.decode(enc64));

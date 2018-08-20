@@ -1382,6 +1382,8 @@ export const styles = StyleSheet.create({
         fontFamily: font_medium
     },
     empinfoDetailText: {
+        marginTop:5,
+        marginBottom:5,
         color: Colors.grayTextColor,
         flexWrap: 'wrap',
         fontFamily: font_medium,
@@ -1447,10 +1449,10 @@ export const styles = StyleSheet.create({
 
         marginLeft: 20 * scale,
         marginTop: 10 * scale,
-        textAlign: 'left',
+      //  textAlign: 'left',
         color: 'black',
         fontSize: 15 * scale,
-        fontWeight: 'bold',
+      //  fontWeight: 'bold',
         fontFamily: font_medium
     },
     buttonpicker: {
