@@ -30,7 +30,6 @@ import EventCalendar from "../constants/EventCalendar"
 import SaveProfile from "../constants/SaveProfile"
 import CalendarPDFAPI from "../constants/CalendarPDFAPI"
 import firebase from 'react-native-firebase';
-import { platform } from 'os';
 
 
 export default class calendarYearView extends Component {
@@ -94,10 +93,6 @@ export default class calendarYearView extends Component {
     componentWillMount() {
         BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
     }
-
-    // componentWillUnmount() {
-    //     BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
-    // }
 
     handleBackButtonClick() {
         this.onBack()
@@ -1019,7 +1014,7 @@ export default class calendarYearView extends Component {
                             } else {
                                 timeEnd = daysArray[f].date + ' 10:59:00'
                             }
-                            
+
                             const copy = {
                                 ...eventObject, time_end: timeEnd
                             };

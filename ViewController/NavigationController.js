@@ -42,13 +42,9 @@ import announcementdetail from "./MHF02011AnnouncementDetailView"
 
 import EmployeeList from "./MHF0B012EmployeeList"
 
-import SharedPreference from './../SharedObject/SharedPreference';
-
-//import TestView from "./TestView";
-
-let mon = ['Jan', 'Feb', 'Mar', 'Apl', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-
 import ChangePINScreen from "./ChangePINScreen"
+import SharedPreference from "../SharedObject/SharedPreference"
+
 
 const AppNavigatorPin = createSwitchNavigator({
     RegisterScreen: { screen: registerScreen },
@@ -78,7 +74,6 @@ const AppNavigatorPin = createSwitchNavigator({
     EmployeeList: { screen: EmployeeList },
 }, {
         initialRouteName: 'PinScreen',
-        // initialRouteName: 'calendarYearView',
         headerMode: 'none',
         transitionConfig: () => ({
             transitionSpec: {
@@ -89,7 +84,6 @@ const AppNavigatorPin = createSwitchNavigator({
         })
     }
 );
-
 
 const AppNavigatorRegister = createSwitchNavigator({
     RegisterScreen: { screen: registerScreen },
@@ -137,26 +131,52 @@ export default class rootNavigation extends Component {
         this.state = {
             hasPin: false,
             number: "111111",
-            notiMessage: this.props.pushstatus,
+            pageSelect: this.props.pageSelect,
+            changePage: 0,
+            type: 0
         };
-
     }
-
 
     async componentWillMount() {
         profile = await this.getProfileObject()
-        console.log("rootNavigation ==> showPin ==> ", this.state.showPin)
     }
-    
+
+    componentWillUpdate() {
+        if (SharedPreference.gotoRegister == true) {
+            SharedPreference.gotoRegister = false
+
+            if (this.state.hasPin == false) {
+
+                this.setState({
+                    hasPin: true
+                })
+
+                this.timer = setTimeout(() => {
+                    this.setState({
+                        hasPin: false
+                    })
+                }, 300);
+
+            } else {
+
+                this.setState({
+                    hasPin: false
+                })
+            }
+
+
+        }
+    }
+
     getProfileObject = async () => {
         profileObject = await this.saveProfile.getProfile()
-        //console.log("NavigationController ==> ", profileObject)
         if (profileObject) {
             this.setState({
                 hasPin: true
             })
         }
     }
+
     rendertagNotification() {
         if (this.state.notiAnnounceMentBadge) {
             return (
@@ -171,7 +191,6 @@ export default class rootNavigation extends Component {
     inappTimeInterval() {
         this.timer = setTimeout(() => {
             this.onLoadInAppNoti()
-            // }, 2000);
         }, 20000);
     };
 
@@ -184,14 +203,16 @@ export default class rootNavigation extends Component {
             return (
                 <AppNavigatorRegister
                     onNavigationStateChange={(prevState, currentState) => {
+                        console.log("AppNavigatorRegister ==> prevState = ", prevState)
+                        console.log("AppNavigatorRegister ==> currentState = ", currentState)
                     }} />
             );
         } else {
             return (
                 <AppNavigatorPin
                     onNavigationStateChange={(prevState, currentState) => {
-                        // const currentScreen = currentState.routes[navigationState.index];
-                        //console.log('statec change',currentState)
+                        console.log("AppNavigatorRegister ==> prevState = ", prevState)
+                        console.log("AppNavigatorRegister ==> currentState = ", currentState)
                     }} />
             );
         }

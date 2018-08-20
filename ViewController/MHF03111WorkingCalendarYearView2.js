@@ -30,7 +30,6 @@ import EventCalendar from "../constants/EventCalendar"
 import SaveProfile from "../constants/SaveProfile"
 import CalendarPDFAPI from "../constants/CalendarPDFAPI"
 import firebase from 'react-native-firebase';
-import { platform } from 'os';
 
 
 export default class calendarYearView extends Component {
