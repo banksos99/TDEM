@@ -55,7 +55,6 @@ export default class mainview extends Component {
             text: 'OK', onPress: () => {
               this.setState({
                 showpin: true,
-                // sessionTimeoutBool: true
               });
             }
           }],
@@ -337,9 +336,6 @@ export default class mainview extends Component {
 
   renderPINScreen() {
     if (this.state.showpin) {
-
-      //console.log("SharedPreference.currentNavigator : ", SharedPreference.currentNavigator);
-      // if (SharedPreference.currentNavigator == SharedPreference.SCREEN_MAIN) {
       return (
         <View style={styles.alertDialogContainer}>
           <View style={styles.alertDialogContainer}>
@@ -444,11 +440,6 @@ export default class mainview extends Component {
           </View>
           {this.renderProgressView()}
         </View>)
-      // } else {
-      //   this.setState({
-      //     showpin: false
-      //   })
-      // }
     }
   }
 
@@ -464,9 +455,11 @@ export default class mainview extends Component {
     } else {
       origin = origin + num
     }
+
     this.setState({
       pin: origin,
     })
+    
     this.state.pin = origin
 
     if (this.state.pin.length == 6) {
