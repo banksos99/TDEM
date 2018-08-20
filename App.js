@@ -20,6 +20,7 @@ import UserInactivity from 'react-native-user-inactivity';
 
 import { styles } from "./SharedObject/MainStyles"
 import LoginWithPinAPI from "./constants/LoginWithPinAPI"
+// import registerScreen from "./ViewController/MHF01210RegisterScreen";
 
 export default class mainview extends Component {
 
@@ -41,8 +42,10 @@ export default class mainview extends Component {
       failPin: 0,
       savePin: '',
       isLoading: false,
-      sessionTimeoutBool: false
+      sessionTimeoutBool: false,
+      pageSelect: ''
     }
+    console.log("this.props.navigation ==> ", this.props.navigation)
   }
 
   onInactivity = (timeWentInactive) => {
@@ -55,7 +58,6 @@ export default class mainview extends Component {
             text: 'OK', onPress: () => {
               this.setState({
                 showpin: true,
-                // sessionTimeoutBool: true
               });
             }
           }],
@@ -63,7 +65,6 @@ export default class mainview extends Component {
         )
       }
     }
-
   }
 
 
@@ -79,7 +80,6 @@ export default class mainview extends Component {
         await firebase.messaging().requestPermission();
         //console.log("firebase ==> User has authorised")
       } catch (error) {
-
       }
     }
 
@@ -266,15 +266,14 @@ export default class mainview extends Component {
     code = data[0]
     data = data[1]
 
-    ////console.log("onLoginResetPinAPI : ", data.code)
-
+    // console.log("onLoginResetPinAPI : ", data.code)
     if (code.SUCCESS == data.code) {
-      SharedPreference.profileObject = null
-      this.saveProfile.setProfile(null)
-      // this.props.navigation.navigate('RegisterScreen')
+
+      SharedPreference.gotoRegister = true
       this.setState({
         showpin: false
       })
+
     } else if (code.INVALID_AUTH_TOKEN == data.code) {
       Alert.alert(
         StringText.ALERT_AUTHORLIZE_ERROR_TITLE,
@@ -284,8 +283,10 @@ export default class mainview extends Component {
             SharedPreference.profileObject = null
             this.saveProfile.setProfile(null)
             // this.props.navigation.navigate('RegisterScreen')
+            SharedPreference.gotoRegister = true
+            // console.log("SharedPreference.gotoRegister : ", SharedPreference.gotoRegister)
             this.setState({
-              showpin: false
+              showpin: false,
             })
           }
         }
@@ -300,7 +301,11 @@ export default class mainview extends Component {
           text: 'OK', onPress: () => {
             SharedPreference.profileObject = null
             this.saveProfile.setProfile(null)
-            this.props.navigation.navigate('RegisterScreen')
+            SharedPreference.gotoRegister = true
+            // console.log("SharedPreference.gotoRegister : ", SharedPreference.gotoRegister)
+            this.setState({
+              showpin: false,
+            })
           }
         }
         ],
@@ -327,7 +332,11 @@ export default class mainview extends Component {
           text: 'OK', onPress: () => {
             SharedPreference.profileObject = null
             this.saveProfile.setProfile(null)
-            this.props.navigation.navigate('RegisterScreen')
+            SharedPreference.gotoRegister = true
+            // console.log("SharedPreference.gotoRegister : ", SharedPreference.gotoRegister)
+            this.setState({
+              showpin: false,
+            })
           }
         }
         ],
@@ -338,9 +347,6 @@ export default class mainview extends Component {
 
   renderPINScreen() {
     if (this.state.showpin) {
-
-      //console.log("SharedPreference.currentNavigator : ", SharedPreference.currentNavigator);
-      // if (SharedPreference.currentNavigator == SharedPreference.SCREEN_MAIN) {
       return (
         <View style={styles.alertDialogContainer}>
           <View style={styles.alertDialogContainer}>
@@ -445,11 +451,6 @@ export default class mainview extends Component {
           </View>
           {this.renderProgressView()}
         </View>)
-      // } else {
-      //   this.setState({
-      //     showpin: false
-      //   })
-      // }
     }
   }
 
@@ -465,9 +466,11 @@ export default class mainview extends Component {
     } else {
       origin = origin + num
     }
+
     this.setState({
       pin: origin,
     })
+
     this.state.pin = origin
 
     if (this.state.pin.length == 6) {
@@ -492,42 +495,7 @@ export default class mainview extends Component {
         showpin: false,
         failPin: 0,
         pin: ''
-
       })
-    } else if (code.INVALID_USER_PASS == data.code) {
-      if (data.data.code == "MSC29132AERR") {
-        Alert.alert(
-          StringText.ALERT_PIN_CANNOT_FIND_TITLE,
-          StringText.ALERT_PIN_CANNOT_FIND_DESC,
-          [
-            {
-              text: 'OK', onPress: () => {
-                SharedPreference.profileObject = null
-                this.saveProfile.setProfile(null)
-                this.props.navigation.navigate('RegisterScreen')
-              }
-            }
-          ],
-          { cancelable: false }
-        )
-      } else {
-        Alert.alert(
-          data.data.code,
-          data.data.detail,
-          [
-            {
-              text: 'OK', onPress: () => {
-                SharedPreference.profileObject = null
-                this.saveProfile.setProfile(null)
-                this.props.navigation.navigate('RegisterScreen')
-              }
-            }
-          ],
-          { cancelable: false }
-        )
-
-      }
-
     } else if (code.INVALID_AUTH_TOKEN == data.code) {
       Alert.alert(
         StringText.INVALID_AUTH_TOKEN_TITLE,
@@ -536,7 +504,11 @@ export default class mainview extends Component {
           text: 'OK', onPress: () => {
             SharedPreference.profileObject = null
             this.saveProfile.setProfile(null)
-            this.props.navigation.navigate('RegisterScreen')
+            SharedPreference.gotoRegister = true
+            // console.log("SharedPreference.gotoRegister : ", SharedPreference.gotoRegister)
+            this.setState({
+              showpin: false,
+            })
           }
         }
         ],
@@ -549,7 +521,11 @@ export default class mainview extends Component {
           text: 'OK', onPress: () => {
             SharedPreference.profileObject = null
             this.saveProfile.setProfile(null)
-            this.props.navigation.navigate('RegisterScreen')
+            SharedPreference.gotoRegister = true
+            // console.log("SharedPreference.gotoRegister : ", SharedPreference.gotoRegister)
+            this.setState({
+              showpin: false,
+            })
           }
         }
         ],
@@ -563,7 +539,11 @@ export default class mainview extends Component {
           text: 'OK', onPress: () => {
             SharedPreference.profileObject = null
             this.saveProfile.setProfile(null)
-            this.props.navigation.navigate('RegisterScreen')
+            SharedPreference.gotoRegister = true
+            // console.log("SharedPreference.gotoRegister : ", SharedPreference.gotoRegister)
+            this.setState({
+              showpin: false,
+            })
           }
         }
         ],
@@ -580,7 +560,11 @@ export default class mainview extends Component {
             text: 'OK', onPress: () => {
               SharedPreference.profileObject = null
               this.saveProfile.setProfile(null)
-              this.props.navigation.navigate('RegisterScreen')
+              SharedPreference.gotoRegister = true
+              // console.log("SharedPreference.gotoRegister : ", SharedPreference.gotoRegister)
+              this.setState({
+                showpin: false,
+              })
             }
           }],
           { cancelable: false }
@@ -608,7 +592,6 @@ export default class mainview extends Component {
     }
   }
 
-
   render() {
     if (this.state.inactive) {
       return (
@@ -622,8 +605,7 @@ export default class mainview extends Component {
           />
           <View style={styles.container} >
             <View style={styles.container} >
-              <RootViewController />
-              {/* {this.rendernotificationlabel()} */}
+              <RootViewController pushstatus={this.state.pageSelect} />
             </View>
             {this.renderPINScreen()}
           </View>

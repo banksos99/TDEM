@@ -28,7 +28,7 @@ export default class NonpayrollDetailView extends Component {
         this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
         this.state = {
             dataSource: "",
-            monthYear: 'April 2018',
+            monthYear: '',
             isLoading: false,
             dataObject: this.props.navigation.getParam("dataObject", ""),
             selectYear: this.props.navigation.getParam("selectYear", ""),

@@ -11,7 +11,6 @@ import SaveProfile from "./../constants/SaveProfile"
 import SharedPreference from "../SharedObject/SharedPreference";
 import SaveTOKEN from "./../constants/SaveToken"
 
-import LoginWithPinAPI from "./../constants/LoginWithPinAPI"
 import LoginChangePinAPI from "./../constants/LoginChangePinAPI"
 
 import RestAPI from "./../constants/RestAPI"
@@ -43,13 +42,8 @@ export default class RegisterActivity extends Component {
         firebase.analytics().setCurrentScreen(SharedPreference.SCREEN_REGISTER)
         SharedPreference.currentNavigator = SharedPreference.SCREEN_REGISTER
 
-        console.log("RegisterScreen")
     }
 
-    async componentDidMount() {
-
-      //  this.getfirebasetoken()
-    }
     async getfirebasetoken() {
 
         if (!SharedPreference.deviceInfo.firebaseToken) {
@@ -83,7 +77,7 @@ export default class RegisterActivity extends Component {
 
     }
 
-    loginAuto(){
+    loginAuto() {
 
         this.onRegister();
 
@@ -91,11 +85,12 @@ export default class RegisterActivity extends Component {
 
     onRegister = async () => {
 
-       // this.getfirebasetoken()
+        // this.getfirebasetoken()
         this.setState({
             isLoading: true
         })
         Keyboard.dismiss()
+
         let data = await RegisterAPI(this.state.username, this.state.password)
         code = data[0]
         data = data[1]
@@ -104,9 +99,8 @@ export default class RegisterActivity extends Component {
             datastatus: data.code
         })
 
-        let loginsuccess = false;
-        let autoregisterCount = 0;
-        
+        // let loginsuccess = false;
+        // let autoregisterCount = 0;
         if (code.SUCCESS == data.code) {
             this.saveProfile.setProfile(data.data)
             loginsuccess = true;

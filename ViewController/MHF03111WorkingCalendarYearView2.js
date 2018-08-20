@@ -549,7 +549,7 @@ export default class calendarYearView extends Component {
 
         if (code.SUCCESS == data.code) {
 
-            this.props.navigation.navigate('calendarYearView', {
+            this.props.navigation.navigate('calendarYearView2', {
                 dataResponse: data,
                 selectYear: this.state.selectYear,
                 location: location
@@ -984,14 +984,13 @@ export default class calendarYearView extends Component {
 
         let duplicateEventArray = []
 
-        console.log("addEventOnCalendar ==> this.state.calendarEventData ", this.state.calendarEventData.length)
+        // console.log("addEventOnCalendar ==> this.state.calendarEventData ", this.state.calendarEventData.length)
 
         if (this.state.calendarEventData.code == 200) {
             let holidayArray = this.state.calendarEventData.data.holidays;
-            console.log("addEventOnCalendar ==> holidayArray ", holidayArray.length)
-
+            // console.log("addEventOnCalendar ==> holidayArray ", holidayArray.length)
+            // for (let index = 0; index < holidayArray.length; index++) {
             for (let index = 0; index < holidayArray.length; index++) {
-
                 const daysArray = holidayArray[index].days
                 for (let f = 0; f < daysArray.length; f++) {
                     const eventDetailArray = daysArray[f].events;
@@ -1013,7 +1012,13 @@ export default class calendarYearView extends Component {
                         }
 
                         if (eventObject.time_end == null) {
-                            let timeEnd = daysArray[f].date + ' 23:59:00'
+                            let timeEnd
+                            if (Platform.OS === 'android') {
+                                timeEnd = daysArray[f].date + ' 23:59:00'
+                            } else {
+                                timeEnd = daysArray[f].date + ' 10:59:00'
+                            }
+                            
                             const copy = {
                                 ...eventObject, time_end: timeEnd
                             };
@@ -1033,11 +1038,9 @@ export default class calendarYearView extends Component {
                                 duplicateEventArray.push(eventObject.event_id)
                                 await this.eventCalendar.synchronizeCalendar(eventObject, this.state.showLocation);
                             } else {
-
                                 let data = await this.checkDuplicateEventCalendar(duplicateEventArray, eventObject.event_id)
                                 let checkFlag = data[0]
                                 duplicateEventArray = data[1]
-
                                 if (checkFlag == false) {
                                     await this.eventCalendar.synchronizeCalendar(eventObject, this.state.showLocation);
                                 }

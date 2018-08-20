@@ -3,6 +3,7 @@ import RNCalendarEvents from 'react-native-calendar-events';
 
 import moment from 'moment'
 import SharedPreference from '../SharedObject/SharedPreference';
+import DeviceInfo from 'react-native-device-info';
 
 export default class EventCalendar {
 
@@ -89,9 +90,15 @@ export default class EventCalendar {
 
 
     _addEventsToCalendar = async (eventObject, location) => {
+        console.log("eventObject  : ", eventObject)
+
         let format = 'YYYY-MM-DDTHH:mm:ss.sss'
         let momentStart = moment(eventObject.time_start).format(format);
         let momentEnd = moment(eventObject.time_end).format(format);
+
+        // let momentStart = moment("2018-01-01 00:00:01").format(format);
+        // let momentEnd = moment("2018-01-01 00:00:10").format(format);
+
         let alldayBool = false
 
         if (eventObject.all_day == 'Y') {
@@ -106,15 +113,13 @@ export default class EventCalendar {
             startDate: momentStart + "Z",
             endDate: momentEnd + "Z",
             location: location,
+            // timeZone: "America/New_York",
             timeZone: 'Asia/Bangkok',
             allDay: alldayBool,
             description: 'TDEM : ' + eventObject.description
         }
-
-
-        console.log("eventObject add caledar title : ", title)
+        console.log("Timezone ==> ", DeviceInfo.getTimezone());   //   'America/New_York'
         console.log("eventObject add caledar event : ", event)
-
 
         await RNCalendarEvents.authorizationStatus().then(fulfilled => {
             if (fulfilled !== 'authorized') {
@@ -188,8 +193,8 @@ export default class EventCalendar {
     synchronizeCalendar = async (eventObject, location) => {
         try {
 
-            console.log("synchronizeCalendar ==> eventObject ==> ",eventObject)
-            console.log("synchronizeCalendar ==> location ==> ",location)
+            console.log("synchronizeCalendar ==> eventObject ==> ", eventObject)
+            console.log("synchronizeCalendar ==> location ==> ", location)
 
             await this._addEventsToCalendar(eventObject, location)
 

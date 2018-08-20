@@ -94,10 +94,6 @@ export default class calendarYearView extends Component {
         BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
     }
 
-    // componentWillUnmount() {
-    //     BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
-    // }
-
     handleBackButtonClick() {
         this.onBack()
         return true;
@@ -1012,7 +1008,13 @@ export default class calendarYearView extends Component {
                         }
 
                         if (eventObject.time_end == null) {
-                            let timeEnd = daysArray[f].date + ' 23:59:00'
+                            let timeEnd
+                            if (Platform.OS === 'android') {
+                                timeEnd = daysArray[f].date + ' 23:59:00'
+                            } else {
+                                timeEnd = daysArray[f].date + ' 10:59:00'
+                            }
+
                             const copy = {
                                 ...eventObject, time_end: timeEnd
                             };
