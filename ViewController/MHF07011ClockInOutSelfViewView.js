@@ -608,7 +608,7 @@ export default class ClockInOutSelfView extends Component {
                             <TouchableOpacity style={{ flex: 2, justifyContent: 'flex-start' }}
                                 onPress={(this.cancel_select_change_month)}>
                                 >
-                                <Text style={styles.buttonpicker}> cancel</Text>
+                                <Text style={styles.buttonpicker}> Cancel</Text>
                             </TouchableOpacity>
                             <View style={{ flex: 3, justifyContent: 'center' }} />
                             <TouchableOpacity style={{ flex: 2, justifyContent: 'flex-end' }} onPress={(this.select_month_clockinout.bind(this))}>
@@ -618,8 +618,8 @@ export default class ClockInOutSelfView extends Component {
                     </View>
                 </View>
             )
-
         }
+
         return (
             <View style={{ height: '100%', width: '100%', justifyContent: 'center', alignItems: 'center', position: 'absolute', }} >
                 <ActivityIndicator />

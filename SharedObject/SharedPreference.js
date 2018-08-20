@@ -63,10 +63,10 @@ export default {
     notiAnnounceMentID: 0,
     notiAnnounceMentBadge: 0,
     setHomeViewStatus: 0,
-
-    timeinterval: 20000,
+    notiPayslipBadge:[],
+    timeinterval: 40000,
     lastdatetimeinterval: 0,
-    payslipBadgeList: [1,0,2,0,0,0,1],
+    payslipBadgeList: [],
 
     HandbookHighlightList: [],
     Handbook: [],

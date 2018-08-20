@@ -43,6 +43,17 @@ export default class PinActivity extends Component {
         return Months.monthNameStr[month - 1] + '-' + year
 
     }
+    shiftmonth(date, shift) {
+        let year = date.substring(2, 4);
+        let month = parseInt(date.substring(4, 6))+shift;
+        console.log('month :', month)
+        if (month > 12) {
+            month = parseInt(month) - 12
+            year = parseInt(year) + 1
+        }
+        return Months.monthNameStr[month - 1] + '-' + year
+
+    }
 
     render() {
         //console.log('data list :', this.props.datalist)
@@ -58,8 +69,9 @@ export default class PinActivity extends Component {
         let max = 200;
         let shiftdown = 50 * scale
         let shiftRight = 70 * scale
-        let ratio = Math.floor(200 / Math.floor(tmax));
-        //console.log('ratio :', ratio)
+        let ratio = (200 / Math.floor(tmax));
+        console.log('tmax :', tmax)
+        console.log('ratio :', ratio)
 
        
 
@@ -86,7 +98,7 @@ export default class PinActivity extends Component {
         }
         let p2 = (rowhight * 6) + shiftdown;
         let ot2 = 0;
-        let month2 = '-';
+        let month2 = this.shiftmonth(this.props.datalist[0].year_month,1);
         if (this.props.datalist.length > 1) {
             ot2 = this.props.datalist[1].total_ot
             p2 = max - (ot2 * ratio) + shiftdown;
@@ -94,7 +106,7 @@ export default class PinActivity extends Component {
         }
         let p3 = (rowhight * 6) + shiftdown;
         let ot3 = 0;
-        let month3 = '-';
+        let month3 = this.shiftmonth(this.props.datalist[0].year_month,2);
         if (this.props.datalist.length > 2) {
             ot3 = this.props.datalist[2].total_ot
             p3 = max - (ot3 * ratio) + shiftdown;
@@ -102,7 +114,7 @@ export default class PinActivity extends Component {
         }
         let p4 = (rowhight * 6) + shiftdown;
         let ot4 = 0;
-        let month4 = '-';
+        let month4 = this.shiftmonth(this.props.datalist[0].year_month,3);
         if (this.props.datalist.length > 3) {
             ot4 = this.props.datalist[3].total_ot
             p4 = max - (ot4 * ratio) + shiftdown;
@@ -110,7 +122,7 @@ export default class PinActivity extends Component {
         }
         let p5 = (rowhight * 6) + shiftdown;
         let ot5 = 0;
-        let month5 = '-';
+        let month5 = this.shiftmonth(this.props.datalist[0].year_month,4);
         if (this.props.datalist.length > 4) {
             ot5 = this.props.datalist[4].total_ot
             p5 = max - (ot5 * ratio) + shiftdown;
@@ -118,7 +130,7 @@ export default class PinActivity extends Component {
         }
         let p6 = (rowhight * 6) + shiftdown;
         let ot6 = 0;
-        let month6 = '-';
+        let month6 = this.shiftmonth(this.props.datalist[0].year_month,5);
         if (this.props.datalist.length > 5) {
             ot6 = this.props.datalist[5].total_ot
             p6 = max - (ot6 * ratio) + shiftdown;
@@ -126,7 +138,7 @@ export default class PinActivity extends Component {
         }
         let p7 = (rowhight * 6) + shiftdown;
         let ot7 = 0;
-        let month7 = '-';
+        let month7 = this.shiftmonth(this.props.datalist[0].year_month,6);
         if (this.props.datalist.length > 6) {
             ot7 = this.props.datalist[6].total_ot
             p7 = max - (ot7 * ratio) + shiftdown;
@@ -134,7 +146,7 @@ export default class PinActivity extends Component {
         }
         let p8 = (rowhight * 6) + shiftdown;
         let ot8 = 0;
-        let month8 = '-';
+        let month8 = this.shiftmonth(this.props.datalist[0].year_month,7);
         if (this.props.datalist.length > 7) {
             ot8 = this.props.datalist[7].total_ot
             p8 = max - (ot8 * ratio) + shiftdown;
@@ -142,7 +154,7 @@ export default class PinActivity extends Component {
         }
         let p9 = (rowhight * 6) + shiftdown;
         let ot9 = 0;
-        let month9 = '-';
+        let month9 = this.shiftmonth(this.props.datalist[0].year_month,8);
         if (this.props.datalist.length > 8) {
             ot9 = this.props.datalist[8].total_ot
             p9 = max - (ot9 * ratio) + shiftdown;
@@ -150,7 +162,7 @@ export default class PinActivity extends Component {
         }
         let p10 = (rowhight * 6) + shiftdown;
         let ot10 = 0;
-        let month10 = '-';
+        let month10 = this.shiftmonth(this.props.datalist[0].year_month,9);
         if (this.props.datalist.length > 9) {
             ot10 = this.props.datalist[9].total_ot
             p10 = max - (ot10 * ratio) + shiftdown;
@@ -158,7 +170,7 @@ export default class PinActivity extends Component {
         }
         let p11 = (rowhight * 6) + shiftdown;
         let ot11 = 0;
-        let month11 = '-';
+        let month11 = this.shiftmonth(this.props.datalist[0].year_month,10);
         if (this.props.datalist.length > 10) {
             ot11 = this.props.datalist[10].total_ot
             p11 = max - (ot11 * ratio) + shiftdown;
@@ -166,7 +178,7 @@ export default class PinActivity extends Component {
         }
         let p12 = (rowhight * 6) + shiftdown;
         let ot12 = 0;
-        let month12 = '-';
+        let month12 = this.shiftmonth(this.props.datalist[0].year_month,11);
         if (this.props.datalist.length > 11) {
             ot12 = this.props.datalist[11].total_ot
             p12 = max - (ot12 * ratio) + shiftdown;
@@ -174,12 +186,12 @@ export default class PinActivity extends Component {
         }
         let p13 = (rowhight * 6) + shiftdown;
         let ot13 = 0;
-        let month13 = '-';
+        let month13 = this.shiftmonth(this.props.datalist[0].year_month,12);
         if (this.props.datalist.length > 12) {
-            ot13 = this.props.datalist[12].total_ot
-            p13 = max - (ot13 * ratio) + shiftdown;
+           ot13 = this.props.datalist[12].total_ot
+           p13 = max - (ot13 * ratio) + shiftdown;
             month13 = this.conv(this.props.datalist[12].year_month)
-        }
+       }
 
 
         return (
@@ -253,7 +265,8 @@ export default class PinActivity extends Component {
                     <Text x={(w * 10) + shiftRight} y={rowhight} fill="red" fontSize="10" textAnchor="start">{ot10}</Text>
                 </G>
                 <Line x1={(w * 11) + shiftRight} y1={p11} x2={(w * 12) + shiftRight} y2={p12} stroke={linecolor} strokeWidth="1" />
-                <Circle cx={(w * 11) + shiftRight} cy={p11} r="2" strokeWidth="2" stroke="red" fill="red" onPress={() => alert('Press on Circle')} />
+                <Circle cx={(w * 11) + shiftRight} cy={p11} r="2" strokeWidth="2" stroke="red" fill="red" />
+                {/* onPress={() => alert('Press on Circle')} /> */}
                 <G rotation="315" origin={(w * 11) + shiftRight + ',' + rowhight}>
                     <Text x={(w * 11) + shiftRight} y={rowhight} fill="red" fontSize="10" textAnchor="start">{ot11}</Text>
                 </G>
@@ -313,7 +326,7 @@ export default class PinActivity extends Component {
                 </G>
                 <G rotation="315" origin={(w * 12) + shiftRight + ',' + bottomlabel}>
                     <Text x={(w * 12) + shiftRight} y={bottomlabel} fill="#555555" fontSize="10" fontFamily='Prompt-Regular' textAnchor="end">
-                    {month12}</Text>
+                        {month12}</Text>
                 </G>
                 <G rotation="315" origin={(w * 13) + shiftRight + ',' + bottomlabel}>
                     <Text x={(w * 13) + shiftRight} y={bottomlabel} fill="#555555" fontSize="10" fontFamily='Prompt-Regular' textAnchor="end">

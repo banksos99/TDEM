@@ -17,7 +17,9 @@ import { styles } from "./../SharedObject/MainStyles"
 // import AnnounceTable from "../../components/TableviewCell"
 import PayslipDataDetail from "./../InAppData/Payslipdatadetail2"
 import SharedPreference from "./../SharedObject/SharedPreference"
-import Decryptfun from "./../SharedObject/Decryptfun"
+//import Decryptfun from "./../SharedObject/Decryptfun"
+import Decryptfun from "./../SharedObject/DecryptID"
+//import Dcryptfun from "./../SharedObject/Decryptfun"
 import Months from "./../constants/Month"
 import firebase from 'react-native-firebase';
 
@@ -87,10 +89,6 @@ export default class EmpInfoDetail extends Component {
     componentWillMount() {
         BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
     }
-
-    // componentWillUnmount() {
-    //     BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
-    // }
 
     handleBackButtonClick() {
         this.onBack()
@@ -210,7 +208,7 @@ export default class EmpInfoDetail extends Component {
             <View >
                 <View style={{ height: 40 }}>
 
-                    <TouchableOpacity style={{ flex: 1, marginLeft: 10, marginRight: 10, marginTop: 5, marginBottom: 5, backgroundColor: Colors.calendarGrayBackgroundColor, flexDirection: 'row' }}
+                    <TouchableOpacity style={{ flex: 1, marginLeft: 10, marginRight: 10, marginTop: 5, marginBottom: 5, backgroundColor: Colors.DisableGray, flexDirection: 'row' }}
                         onPress={() => { this.onExpandPersonal() }}
                     >
                         <View style={{ justifyContent: 'center', flex: 20 }}>
@@ -237,20 +235,32 @@ export default class EmpInfoDetail extends Component {
 
     renderProfilePersonalDetail() {
 
-        let t = empinfodetail.personal_id;
-
-        let cardid = '-';
-
+        let t = Decryptfun.decrypt(empinfodetail.personal_id);
+        console.log('personal_id', empinfodetail)
+        console.log('Decryptfun ==>', Decryptfun.decrypt(empinfodetail.personal_id))
+        let cardid = 'x-xxxx-xxxxx-xx-x';
+        let address = '-';
+        if (empinfodetail.address) address = empinfodetail.address
+        let birthdate = '_';
+        if (empinfodetail.birth_date) birthdate = this.convertdate(empinfodetail.birth_date.split(' ')[0]);
         if (t) {
-
-            cardid = t[0] + '-' + t[1] + t[2] + t[3] + t[4] + '-' + t[5] + t[6] + t[7] + t[8] + t[9] + '-' + t[10] + t[11] + '-' + t[12]
+            //cardid = t
+            // cardid = t[0] + '-' + t[1] + t[2] + t[3] + t[4] + '-' + t[5] + t[6] + t[7] + t[8] + t[9] + '-' + t[10] + t[11] + '-' + t[12]
 
         }
+
         let mobileno = '-'
         if (empinfodetail.mobile_number) {
             mobileno = empinfodetail.mobile_number;
 
         }
+
+        let employee_code = '-'
+        if (empinfodetail.employee_code) employee_code = empinfodetail.employee_code;
+
+        let full_name_th = '-'
+        if (empinfodetail.full_name_th) full_name_th = empinfodetail.full_name_th
+
         if (this.state.personalexpand) {
 
             return (
@@ -261,7 +271,7 @@ export default class EmpInfoDetail extends Component {
                             <Text style={styles.empinfoDetailRedText} >Emp Code</Text>
                         </View>
                         <View style={{ flex: 3, justifyContent: 'center' }}>
-                            <Text style={styles.empinfoDetailText}>{empinfodetail.employee_code}</Text>
+                            <Text style={styles.empinfoDetailText}>{employee_code}</Text>
                         </View>
                     </View>
                     <View style={{ height: 1, justifyContent: 'center', backgroundColor: Colors.calendarLocationBoxColor }} />
@@ -270,7 +280,7 @@ export default class EmpInfoDetail extends Component {
                             <Text style={styles.empinfoDetailRedText}>Name (Thai)</Text>
                         </View>
                         <View style={{ flex: 3, justifyContent: 'center' }}>
-                            <Text style={styles.empinfoDetailText}>{empinfodetail.full_name_th}</Text>
+                            <Text style={styles.empinfoDetailText}>{full_name_th}</Text>
                         </View>
                     </View>
                     <View style={{ height: 1, justifyContent: 'center', backgroundColor: Colors.calendarLocationBoxColor }} />
@@ -279,7 +289,7 @@ export default class EmpInfoDetail extends Component {
                             <Text style={[styles.empinfoDetailRedText,{alignItems:'flex-start'}]}>Address</Text>
                         </View>
                         <View style={{ flex: 3, justifyContent: 'center' }}>
-                            <Text style={styles.empinfoDetailText}>{empinfodetail.address}</Text>
+                            <Text style={styles.empinfoDetailText}>{address}</Text>
                         </View>
                     </View>
                     {/* <View style={{ height: 30, justifyContent: 'center', backgroundColor: Colors.calendarGrayBackgroundColor, flexDirection: 'row' }}>
@@ -294,7 +304,7 @@ export default class EmpInfoDetail extends Component {
                             <Text style={styles.empinfoDetailRedText} >Birth Date</Text>
                         </View>
                         <View style={{ flex: 3, justifyContent: 'center' }}>
-                            <Text style={styles.empinfoDetailText}>{this.convertdate(empinfodetail.birth_date.split(' ')[0])}</Text>
+                            <Text style={styles.empinfoDetailText}>{birthdate}</Text>
                         </View>
                     </View>
                     <View style={{ height: 1, justifyContent: 'center', backgroundColor: Colors.calendarLocationBoxColor }} />
@@ -345,7 +355,7 @@ export default class EmpInfoDetail extends Component {
             <View >
                 <View style={{ height: 40 }}>
 
-                    <TouchableOpacity style={{ flex: 1, marginLeft: 10, marginRight: 10, marginTop: 5, marginBottom: 5, backgroundColor: Colors.calendarGrayBackgroundColor, flexDirection: 'row' }}
+                    <TouchableOpacity style={{ flex: 1, marginLeft: 10, marginRight: 10, marginTop: 5, marginBottom: 5, backgroundColor: Colors.DisableGray, flexDirection: 'row' }}
                         onPress={() => { this.onExpandCurrentJob() }}
                     >
                         <View style={{ justifyContent: 'center', flex: 20 }}>
@@ -385,22 +395,20 @@ export default class EmpInfoDetail extends Component {
         let date_in_position = '-'
         let period_in_position = '-'
         if (empinfodetail.career_paths) {
-
-            hiring_date = this.convertdate(empinfodetail.career_paths[0].hiring_date)
-            position = empinfodetail.career_paths[0].position
-            org_group = empinfodetail.career_paths[0].org_group
-            org_division = empinfodetail.career_paths[0].org_division
-            org_department = empinfodetail.career_paths[0].org_department
-            org_section = empinfodetail.career_paths[0].org_section
-            org_cost_center = empinfodetail.career_paths[0].org_cost_center
-            company_location = empinfodetail.career_paths[0].company_location
-            date_in_dept = this.convertdate(empinfodetail.career_paths[0].date_in_dept)
-            period_in_dept = empinfodetail.career_paths[0].period_in_dept
-            date_in_position = this.convertdate(empinfodetail.career_paths[0].date_in_position)
-            period_in_position = empinfodetail.career_paths[0].period_in_position
+            let cc = empinfodetail.career_paths[0];
+            if (cc.hiring_date) hiring_date = this.convertdate(cc.hiring_date);
+            if (cc.position) position = cc.position
+            if (cc.org_group) org_group = cc.org_group
+            if (cc.org_division) org_division = cc.org_division
+            if (cc.org_department) org_department = cc.org_department
+            if (cc.org_section) org_section = cc.org_section
+            if (cc.org_cost_center) org_cost_center = cc.org_cost_center
+            if (cc.company_location) company_location = cc.company_location
+            if (cc.date_in_dept) date_in_dept = this.convertdate(cc.date_in_dept)
+            if (cc.period_in_dept) period_in_dept = cc.period_in_dept
+            if (cc.date_in_position) date_in_position = this.convertdate(cc.date_in_position)
+            if (cc.period_in_position) period_in_position = cc.period_in_position
         }
-
-
 
         if (this.state.currentjobexpand) {
 
@@ -508,7 +516,7 @@ export default class EmpInfoDetail extends Component {
             <View >
                 <View style={{ height: 40 }}>
 
-                    <TouchableOpacity style={{ flex: 1, marginLeft: 10, marginRight: 10, marginTop: 5, marginBottom: 5, backgroundColor: Colors.calendarGrayBackgroundColor, flexDirection: 'row' }}
+                    <TouchableOpacity style={{ flex: 1, marginLeft: 10, marginRight: 10, marginTop: 5, marginBottom: 5, backgroundColor: Colors.DisableGray, flexDirection: 'row' }}
                         onPress={() => { this.onExpandEducation() }}
                     >
                         <View style={{ justifyContent: 'center', flex: 20 }}>

@@ -81,7 +81,7 @@ export default class OTSummaryLineChart extends Component {
             }
 
             this.state.tdataSource = DataResponse;
-            //console.log('tosummary data : ', this.state.tdataSource)
+            console.log('tosummary data : ', this.state.tdataSource)
 
         }
     }

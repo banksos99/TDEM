@@ -285,7 +285,7 @@ export default class PayslipDetail extends Component {
                     }, function () {
 
                         // //console.log('data response : ', this.state.datadetail.data.detail.deduct);
-                        //console.log('data detail :', responseJson)
+                        console.log('data detail :', responseJson)
 
                         this.setState(this.renderloadingscreen())
                     }
@@ -364,8 +364,8 @@ export default class PayslipDetail extends Component {
     previousmonth() {
 
         this.setState({
-          //  monthselected: this.state.monthselected - 1,
-selectedindex:this.state.selectedindex - 1
+            //  monthselected: this.state.monthselected - 1,
+            selectedindex: this.state.selectedindex - 1
         }, function () {
 
 
@@ -375,7 +375,7 @@ selectedindex:this.state.selectedindex - 1
             // }
 
             //console.log('monthselected : ', this.state.monthselected);
-            //console.log('yearselected : ', this.state.yearselected);
+            console.log('selectedindex : ', this.state.selectedindex);
 
             this.onChangeMonth()
         });
@@ -403,9 +403,9 @@ selectedindex:this.state.selectedindex - 1
     nextmonthbuttonrender() {
 
        // if (!this.state.yearlist) {
-        if (this.state.yearlist.length <= this.state.selectedindex) {
+        if (this.state.yearlist.length <= this.state.selectedindex + 1) {
             return (
-                <View style={{ flex: 1 }}>
+                <View style={{ flex: 1 ,justifyContent: 'center'}}>
                     <Image
                         style={{ width: 45, height: 45 }}
                         source={require('./../resource/images/next_dis.png')}
@@ -416,7 +416,7 @@ selectedindex:this.state.selectedindex - 1
 
         } else if (this.state.yearselected === 0 && this.state.monthselected === currentmonth) {
             return (
-                <View style={{ flex: 1 }}>
+                <View style={{ flex: 1 ,justifyContent: 'center'}}>
                     <Image
                         style={{ width: 45, height: 45 }}
                         source={require('./../resource/images/next_dis.png')}
@@ -426,7 +426,7 @@ selectedindex:this.state.selectedindex - 1
             )
         }
         return (
-            <View style={{ flex: 1 }}>
+            <View style={{ flex: 1 ,justifyContent: 'center'}}>
                 <TouchableOpacity onPress={(this.nextmonth.bind(this))}>
                     <Image
                         style={{ width: 45, height: 45 }}
@@ -441,33 +441,22 @@ selectedindex:this.state.selectedindex - 1
 
     previoousbuttonrender() {
 
-        if (0 == this.state.selectedindex){
-            
+        if (0 == this.state.selectedindex) {
+
             return (
+                <View style={{ flex: 1, justifyContent: 'center' }}>
+                    <Image
+                        style={{ width: 45, height: 45 }}
+                        source={require('./../resource/images/previous_dis.png')}
 
-                <Image
-                    style={{ width: 45, height: 45 }}
-                    source={require('./../resource/images/previous_dis.png')}
-
-                />
-
+                    />
+                </View>
             )
 
-         } 
-        //else if (this.state.yearselected === 2 && this.state.monthselected === 0) {
-        //     return (
-        //         // <TouchableOpacity style={{ flex: 1 }}>y
+        }
 
-        //         <Image
-        //             style={{ width: 45, height: 45 }}
-        //             source={require('./../resource/images/previous_dis.png')}
-        //         // resizeMode='center'
-        //         />
-        //         // </TouchableOpacity>
-        //     )
-        // }
         return (
-            <View style={{ flex: 1 }}>
+            <View style={{ flex: 1,justifyContent:'center' }}>
                 <TouchableOpacity onPress={(this.previousmonth.bind(this))}>
 
                     <Image
@@ -739,8 +728,8 @@ selectedindex:this.state.selectedindex - 1
 
 
                 <View style={{ flex: 1, backgroundColor: Colors.backgroundColor, flexDirection: 'column', marginLeft: 15, marginRight: 15 }}>
-                    <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center' }}>
-                        <View style={{ flex: 2, flexDirection: 'row' }}>
+                    <View style={{ flex: 0.7, flexDirection: 'column', justifyContent: 'center' }}>
+                        <View style={{  flexDirection: 'row', justifyContent: 'center' }}>
                             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                                 {this.previoousbuttonrender()}
                             </View>
@@ -759,13 +748,13 @@ selectedindex:this.state.selectedindex - 1
                             </View>
                             <View style={{ flex: 6 }}></View>
                         </View>
-                        <View style={{ flex: 1, }}>
+                    </View>
+
+                    <View style={{ flex: 0.5, justifyContent: 'center', }}>
                             <Text style={styles.payslipDetailTextLeft}>
                                 (Paydate : {pay_date_str})
                             </Text>
                         </View>
-
-                    </View>
                     <View style={{ flex: 1, flexDirection: 'row' }}>
                         <View style={{ flex: 1, justifyContent: 'center' }}>
                             <Image
@@ -773,7 +762,6 @@ selectedindex:this.state.selectedindex - 1
                                 source={bankicon}
                                 resizeMode='contain'
                             />
-
                         </View>
                         <View style={{ flex: 5, flexDirection: 'column', justifyContent: 'center' }}>
                             <Text style={styles.payslipDetailTextLeft}>
@@ -803,11 +791,11 @@ selectedindex:this.state.selectedindex - 1
                     <View style={{ flex: 1, flexDirection: 'row' }}>
                         <View style={{ flex: 1, marginTop: 5, marginRight: 5, borderRadius: 5, backgroundColor: this.state.incomeBG, flexDirection: 'column', }}>
                             <TouchableOpacity style={{ flex: 1 }} onPress={(this.onShowIncomeView.bind(this))}>
-                                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: 10 }}>
+                                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center',  }}>
 
                                     <Text style={this.state.showincome ? styles.payslipTextCente_income_ena : styles.payslipTextCente_income_dis}>INCOME</Text>
                                 </View>
-                                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginBottom: 10 }}>
+                                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center',  }}>
                                     <Text style={this.state.showincome ? styles.payslipTextCente_income_ena : styles.payslipTextCente_income_dis}>
                                         {sum_income_str}
                                     </Text>
@@ -816,10 +804,10 @@ selectedindex:this.state.selectedindex - 1
                         </View>
                         <View style={{ flex: 1, marginTop: 5, marginLeft: 5, borderRadius: 5, backgroundColor: this.state.deductBG, flexDirection: 'column', }}>
                             <TouchableOpacity style={{ flex: 1 }} onPress={(this.onShowDeductView.bind(this))}>
-                                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: 10 * scale }}>
+                                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center',  }}>
                                     <Text style={this.state.showincome ? styles.payslipTextCente_deduct_dis : styles.payslipTextCente_deduct_ena}>DEDUCT</Text>
                                 </View>
-                                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginBottom: 10 * scale }}>
+                                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center',  }}>
                                     <Text style={this.state.showincome ? styles.payslipTextCente_deduct_dis : styles.payslipTextCente_deduct_ena}>
                                         {sum_deduct_str}
                                     </Text>
