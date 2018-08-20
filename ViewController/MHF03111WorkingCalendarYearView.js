@@ -926,7 +926,7 @@ export default class calendarYearView extends Component {
             [
                 {
                     text: 'Cancel', onPress: () => {
-                        this.deleteEventOnCalendar()
+                        // this.deleteEventOnCalendar()
                     }, style: 'cancel'
                 },
                 {

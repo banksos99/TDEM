@@ -233,7 +233,7 @@ export default class HandbookViewer extends Component {
             });
 
         }
-        this.epub.fontSize = '150%'
+    //    this.epub.fontSize = '150%'
         // this.setState({});
     }
 
@@ -575,6 +575,7 @@ export default class HandbookViewer extends Component {
 
         }
         //console.log('this.state.hilightList :', this.state.HandbookMarkList)
+       // if(item.date){}
         // let item = item.date.split(' ')
         // let time = item[2] + item[1] + item[3]
         return (
@@ -587,7 +588,7 @@ export default class HandbookViewer extends Component {
                             key={index + 100}>
                             <View style={{ justifyContent: 'center', height: 40, marginLeft: 20, marginRight: 20 }}>
                                 <View style={{ flex: 1, ustifyContent: 'center', flexDirection: 'column' }}>
-                                    <Text style={styles.epubHighlightdateText} numberOfLines={1}> date</Text>
+                                    <Text style={styles.epubHighlightdateText} numberOfLines={1}> {item.date}</Text>
                                     <Text style={styles.epubHighlighttitleText} numberOfLines={1}> {item.title}</Text>
                                 </View>
                             </View>
@@ -638,7 +639,7 @@ export default class HandbookViewer extends Component {
                 {this.renderexpand()}
 
                 <Epub style={styles.epubreader}
-                    ref={component => this.epub = component}
+                  //  ref={component => this.epub = component}
                     src={this.state.src}
 
                     flow={"paginated"}
@@ -725,12 +726,12 @@ export default class HandbookViewer extends Component {
                                             if (range) {
                                                 datatext = range.startContainer.data.slice(range.startOffset, range.endOffset)
                                                 let newdate = new Date().toString()
-                                                let timearr = newdate.split('')
+                                                let timearr = newdate.split(' ')
 
                                                 HandbookMarkList.push({
                                                     link: cfiRange,
                                                     title: datatext,
-                                                    date: newdate
+                                                    date: timearr[2] + ' ' + timearr[1] + ' ' + timearr[3] + ' at ' + timearr[4]
                                                 })
 
                                             }

@@ -100,6 +100,7 @@ export default class mainview extends Component {
           "deviceOS": deviceOS,
           "deviceOSVersion": deviceOSVersion,
           "firebaseToken": token,
+          // "firebaseToken": '23211321',
           "appVersion": appVersion,
           "buildNumber": buildNumber
         }

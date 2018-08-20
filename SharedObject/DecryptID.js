@@ -26,8 +26,8 @@ var Decrypt = {
                 var decryptedText = aesjs.utils.utf8.fromBytes(decryptedBytes);
                 var result = decryptedText.split('.')[0];
                 let numberstr = base64.decode(result).split('.');
-                let resouce = parseInt(numberstr[0]).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + '.' + numberstr[1];
-                return resouce
+                // let resouce = parseInt(numberstr[0]).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + '.' + numberstr[1];
+                return (numberstr)
             } catch (error) {
                 return ''
             }

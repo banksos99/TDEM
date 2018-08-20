@@ -23,7 +23,7 @@ import SaveProfile from "../constants/SaveProfile"
 let dataSource = [];
 let option = 0;
 let org_code = '';
-
+let beginlebel = 0;
 export default class OrganizationStruct extends Component {
 
     constructor(props) {
@@ -68,23 +68,24 @@ export default class OrganizationStruct extends Component {
 
     checkDataFormat(DataResponse) {
         if (DataResponse) {
+            console.log('data.data.org_lst2 :', DataResponse)
             dataSource = [];
             ////console.log(DataResponse[0].data)
             // dataSource = DataResponse.org_lst;
             org_code = DataResponse.org_code
             //console.log('org_code :', org_code)
             //console.log('DataResponse :', DataResponse)
-
-            dataSource.push({
-
-                org_code: DataResponse.org_code,
-                org_name: DataResponse.org_name,
-                org_level: DataResponse.org_level,
-                next_level: 'true',
-                expand: 0,
+            for (let i = 0 ; i < DataResponse.length;i++) {
+                beginlebel = parseInt(DataResponse[0].org_level) - 10;
+                dataSource.push({
+                    org_code: DataResponse[i].org_code,
+                    org_name: DataResponse[i].org_name,
+                    org_level: DataResponse[i].org_level,
+                    next_level: 'true',
+                    expand: 0,
+                })
             }
 
-            )
 
 
             // DataResponse.org_emp.map((item) => (
@@ -144,13 +145,12 @@ export default class OrganizationStruct extends Component {
     }
 
     onClickOrgStruct(item, index) {
-
-        //console.log('item :', item)
+        
+        //console.log('org_code :', item.org_code)
 
         if (item.org_code == 0) {
 
             // *** select emp info detail
-            //console.log('load empinfo  :', item.emp_id)
             this.setState({
 
                 isscreenloading: true,
@@ -161,15 +161,17 @@ export default class OrganizationStruct extends Component {
 
             }, function () {
 
-                this.loadOrgStructureDetailAPI()
+                this.loadOrgStructureDetailAPI(item.org_code)
             });
 
         } else {
-
+            
+            // console.log('next_level :', item.next_level)
             if (item.next_level === 'true') {
 
                 if (item.expand === 0) {
                     // *** select expand
+                    // console.log('expand :', item.expand)
                     this.setState({
 
                         isscreenloading: true,
@@ -178,7 +180,7 @@ export default class OrganizationStruct extends Component {
                         index_org_code: index
 
                     }, function () {
-                        this.loadOrgStructureAPI()
+                        this.loadOrgStructureAPI(item.org_code)
                     });
 
                 } else {
@@ -194,50 +196,82 @@ export default class OrganizationStruct extends Component {
                     });
                     let temparr = []
                     let statuscol = 1;
-                    // let org_level = 0;
 
                     for (let i = 0; i < dataSource.length; i++) {
 
                         if (statuscol == 0) {
-
-                            if (parseInt(item.org_level) >= parseInt(dataSource[i].org_level)) {
+    
+                            if (dataSource[i].org_level <= item.org_level) {
 
                                 statuscol = 1;
+
                             }
-                        }
 
-                        if (i === index) {
-                            statuscol = 0;
-                            //  org_level =  dataSource[i].org_level;
-                            temparr.push({
-                                org_code: dataSource[i].org_code,
-                                org_name: dataSource[i].org_name,
-                                org_level: dataSource[i].org_level,
-                                next_level: dataSource[i].next_level,
-                                expand: 0
+                        } if (statuscol == 1) {
 
-                            })
+                            if (dataSource[i].org_code === item.org_code) {
+                                temparr.push({
+                                    org_code: dataSource[i].org_code,
+                                    org_name: dataSource[i].org_name,
+                                    org_level: dataSource[i].org_level,
+                                    next_level: dataSource[i].next_level,
+                                    expand: 0
+    
+                                })
+                                statuscol = 0;
 
-                            i = i + dataSource[i].expand;
+                            }else{
 
-                        } else if (statuscol == 0) {
+                                temparr.push(
+                                    dataSource[i]
+                                )
 
-                        } else {
-
-                            temparr.push(
-                                dataSource[i]
-                            )
+                            }
 
                         }
-
                     }
+
+
+
+                    //     if (statuscol == 0) {
+
+                    //         if (parseInt(item.org_level) >= parseInt(dataSource[i].org_level)) {
+
+                    //             statuscol = 1;
+                    //         }
+                    //     }
+
+                    //     if (i === index) {
+                    //         statuscol = 0;
+                    //         //  org_level =  dataSource[i].org_level;
+                    //         temparr.push({
+                    //             org_code: dataSource[i].org_code,
+                    //             org_name: dataSource[i].org_name,
+                    //             org_level: dataSource[i].org_level,
+                    //             next_level: dataSource[i].next_level,
+                    //             expand: 0
+
+                    //         })
+
+                    //         i = i + dataSource[i].expand;
+
+                    //     } else if (statuscol == 0) {
+
+                    //     } else {
+
+                    //         temparr.push(
+                    //             dataSource[i]
+                    //         )
+
+                    //     }
+
+                    // }
                     dataSource = temparr;
 
                     this.setState({
                         isscreenloading: false,
                     })
                 }
-
             } else {
                 // *** select employee list
                 this.setState({
@@ -248,18 +282,16 @@ export default class OrganizationStruct extends Component {
 
                 }, function () {
 
-                    this.loadEmployeeListAPI()
+                    this.loadEmployeeListAPI(item.org_code)
                 });
-
 
             }
         }
     }
 
 
-
-    loadOrgStructureAPI = async () => {
-        let url = SharedPreference.ORGANIZ_STRUCTURE_API + this.state.org_code
+    loadOrgStructureAPI = async (org_code) => {
+        let url = SharedPreference.ORGANIZ_STRUCTURE_API + org_code
         this.APICallback(await RestAPI(url, SharedPreference.FUNCTIONID_ORGANIZ_STRUCTURE))
     }
 
@@ -267,85 +299,131 @@ export default class OrganizationStruct extends Component {
 
         code = data[0]
         data = data[1]
-
+        // console.log('APICallback data :', data)
         if (code.SUCCESS == data.code) {
-            //console.log('data.data.org_lst2 :', data.data.org_lst)
-            //console.log('dataSource :', dataSource)
+            // console.log('APICallback :', data.data)
+            // console.log('dataSource :', dataSource.length)
+            // console.log('index_org_code :', this.state.index_org_code)
             // if (data.data.org_lst) {
 
-            if (data.data.org_lst) {
+            // if (data.data.org_lst) {
 
                 let temparr = []
 
                 for (let i = 0; i < dataSource.length; i++) {
 
                     if (i === this.state.index_org_code) {
-                        // let exp = 1
-                        // if (data.data.org_lst) {
-                        //     if (data.data.org_lst.length) {
-                        //         exp = data.data.org_lst.length
-                        //     }
-                        // }
                         temparr.push({
                             org_code: dataSource[i].org_code,
                             org_name: dataSource[i].org_name,
                             org_level: dataSource[i].org_level,
                             next_level: dataSource[i].next_level,
-                            expand: data.data.org_lst.length,
+                           // expand: data.data.org_lst.length,
 
                         })
-                        if (data.data.org_emp) {
-                            data.data.org_emp.map((item) => (
-                                temparr.push(
-                                    {
-                                        org_code: 0,
-                                        org_name: item.employee_name,
-                                        org_level: parseInt(dataSource[i].org_level) + 10,
-                                        next_level: 'false',
-                                        emp_id: item.employee_id,
-                                        position: item.employee_position,
-                                        expand: 0,
 
-                                    }
-                                )
+                        for (let j = 0; j < data.data.length; j++) {
 
-                            ))
+                            if (data.data[j].org_emp) {
+                                data.data[j].org_emp.map((item) => (
+                                    temparr.push(
+                                        {
+                                            org_code: 0,
+                                            org_name: item.employee_name,
+                                            org_level: parseInt(dataSource[i].org_level) + 10,
+                                            next_level: 'false',
+                                            emp_id: item.employee_id,
+                                            position: item.employee_position,
+                                            expand: 0,
+
+                                        }
+                                    )
+                                ))
+                            }
+                            if (data.data[j].org_lst) {
+                                data.data[j].org_lst.map((item) => (
+                                    temparr.push(
+                                        {
+                                            org_code: item.org_code,
+                                            org_name: item.org_name,
+                                            org_level: item.org_level,
+                                            next_level: item.next_level,
+                                            expand: 0
+
+                                        }
+                                    )
+
+                                ))
+                            }
+
                         }
-                        if (data.data.org_lst) {
-                            data.data.org_lst.map((item) => (
-                                temparr.push(
-                                    {
-                                        org_code: item.org_code,
-                                        org_name: item.org_name,
-                                        org_level: item.org_level,
-                                        next_level: item.next_level,
-                                        expand: 0
 
-                                    }
-                                )
 
-                            ))
-                        }
-                    } else {
+                    }else{
+
                         temparr.push(
                             dataSource[i]
                         )
 
+
                     }
+                    //     for (let j = 0; j < data.data.length; j++) {
+                    //         //expand org
+                    //         if (data.data[j].org_emp) {
+                    //             data.data[j].org_emp.map((item) => (
+                    //                 temparr.push(
+                    //                     {
+                    //                         org_code: 0,
+                    //                         org_name: item.employee_name,
+                    //                         org_level: parseInt(dataSource[i].org_level) + 10,
+                    //                         next_level: 'false',
+                    //                         emp_id: item.employee_id,
+                    //                         position: item.employee_position,
+                    //                         expand: 0,
+
+                    //                     }
+                    //                 )
+
+                    //             ))
+                    //         }
+
+                    //         if (data.data[j].org_lst) {
+                    //             data.data[j].org_lst.map((item) => (
+                    //                 temparr.push(
+                    //                     {
+                    //                         org_code: item.org_code,
+                    //                         org_name: item.org_name,
+                    //                         org_level: item.org_level,
+                    //                         next_level: item.next_level,
+                    //                         expand: 0
+
+                    //                     }
+                    //                 )
+
+                    //             ))
+                    //         }
+                    //     }
+
+                    // } else {
+                    //     temparr.push(
+                    //         dataSource[i]
+                    //     )
+
+                    // }
 
                 }
                 dataSource = temparr;
-                //console.log('dataSource :', dataSource)
+                // console.log('dataSource :', dataSource)
 
-            } else {
+            // } else {
 
-                this.props.navigation.navigate('EmployeeList', {
-                    DataResponse: data,
-                    Option: option
-                });
+            //     this.props.navigation.navigate('EmployeeList', {
+            //         DataResponse: data,
+            //         Option: option
+            //     });
 
-                this.setState({ isscreenloading: false })
-            }
+            //     this.setState({ isscreenloading: false })
+            // }
 
             // } else {
             //     Alert.alert(
@@ -625,13 +703,13 @@ export default class OrganizationStruct extends Component {
                                                     <View style={{ flex: 1, flexDirection: 'column' }}>
                                                         <View style={{ flex: 1, justifyContent: 'center' }} >
                                                             <Text style={item.expand === 0 ?
-                                                                { marginLeft: (parseInt(item.org_level)) * 2, color: Colors.grayTextColor, fontFamily: 'Prompt-Regular' } :
-                                                                { marginLeft: (parseInt(item.org_level)) * 2, color: Colors.redTextColor, fontFamily: 'Prompt-Regular' }}
+                                                                { marginLeft: (parseInt(item.org_level-beginlebel)) * 2, color: Colors.grayTextColor, fontFamily: 'Prompt-Regular' } :
+                                                                { marginLeft: (parseInt(item.org_level-beginlebel)) * 2, color: Colors.redTextColor, fontFamily: 'Prompt-Regular' }}
 
                                                             >{item.org_name}</Text>
                                                         </View>
                                                         <View style={item.org_code === 0 ? { height: 20, justifyContent: 'center' } : { height: 0, justifyContent: 'center' }} >
-                                                            <Text style={{ marginLeft: (parseInt(item.org_level)) * 2, color: Colors.grayTextColor, fontFamily: 'Prompt-Regular', fontSize: 10 }}
+                                                            <Text style={{ marginLeft: (parseInt(item.org_level-beginlebel)) * 2, color: Colors.grayTextColor, fontFamily: 'Prompt-Regular', fontSize: 10 }}
                                                             >{item.position}</Text>
                                                         </View>
                                                     </View>

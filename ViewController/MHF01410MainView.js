@@ -76,7 +76,7 @@ export default class HMF01011MainView extends Component {
             announcetypelist: ['All', 'Company Announcement', 'Emergency Announcement', 'Event Announcement', 'General Announcement'],
             announcestatuslist: ['All', 'Read', 'Unread'],
             notiAnnounceMentBadge: SharedPreference.notiAnnounceMentBadge,
-            notiPayslipBadge: 0,
+            notiPayslipBadge: SharedPreference.notiPayslipBadge.length,
             nonPayrollBadgeFirstTime: true
             //  page: 0
         }
@@ -170,7 +170,6 @@ export default class HMF01011MainView extends Component {
 
     }
 
-
     loadData = async () => {
         let autoSyncCalendarBool = await this.saveAutoSyncCalendar.getAutoSyncCalendar()
         if (autoSyncCalendarBool == null) {
@@ -204,7 +203,18 @@ export default class HMF01011MainView extends Component {
         await this.loadData()
 
     }
+    componentWillUnmount() {
 
+       clearTimeout(this.timer);
+
+        SharedPreference.notiAnnounceMentBadge = this.state.notiAnnounceMentBadge;
+
+        NetInfo.isConnected.removeEventListener('connectionChange', this.handleConnectivityChange);
+
+        //SharedPreference.notipayslipID = 0
+
+        //SharedPreference.notiAnnounceMentID = 0
+    }
     onLoadInAppNoti = async () => {
         let lastTime = await this.saveTimeNonPayroll.getTimeStamp()
 
@@ -220,10 +230,22 @@ export default class HMF01011MainView extends Component {
                     })
             }
         }
-        // console.log("onLoadInAppNoti ==> ", SharedPreference.PULL_NOTIFICATION_API + lastTime)
+        console.log("onLoadInAppNoti ==> ", lastTime)
+
+        this.timer = setTimeout(() => {
+            this.onLoadInAppNoti()
+        }, SharedPreference.timeinterval);
+
+        if (!SharedPreference.lastdatetimeinterval) {
+            let today = new Date()
+            const _format = 'YYYY-MM-DD hh:mm:ss'
+            const newdate = moment(today).format(_format).valueOf();
+            SharedPreference.lastdatetimeinterval = newdate
+        }
 
         FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, 1, SharedPreference.profileObject.client_token)
-        return fetch(SharedPreference.PULL_NOTIFICATION_API + lastTime, {
+
+        return fetch(SharedPreference.PULL_NOTIFICATION_API + SharedPreference.lastdatetimeinterval, {
 
             method: 'GET',
             headers: {
@@ -235,9 +257,9 @@ export default class HMF01011MainView extends Component {
             .then((response) => response.json())
             .then((responseJson) => {
                 // console.log("onLoadInAppNoti")
-                // console.log("responseJson ==> ", responseJson)
+                console.log("responseJson ==> ", responseJson)
                 try {
-                    // console.log("onLoadInAppNoti ==> responseJson ", responseJson)
+
                     if (responseJson.status == 403) {
 
                         this.onAutenticateErrorAlertDialog()
@@ -246,6 +268,8 @@ export default class HMF01011MainView extends Component {
 
                     } else if (responseJson.status == 200) {
 
+                        SharedPreference.lastdatetimeinterval = responseJson.meta.request_date;
+               
                         let dataArray = responseJson.data
                         let currentyear = new Date().getFullYear();
 
@@ -319,22 +343,28 @@ export default class HMF01011MainView extends Component {
                                     notiAnnounceMentBadge: parseInt(dataReceive.badge_count) + parseInt(this.state.notiAnnounceMentBadge)
                                 })
 
+                            } else if (dataReceive.function_id == 'PHF05010') {
+                                console.log('new payslip arrive')
+                                this.setState({
+                                    notiPayslipBadge: parseInt(dataReceive.badge_count) + this.state.notiPayslipBadge
+                                }, function () {
+                                    dataReceive.data_list.map((item, i) => {
 
+                                        SharedPreference.notiPayslipBadge.push(item)
+                                        // = dataReceive.data_list
 
+                                    })
+                                })
+                                console.log('notiPayslipBadge',SharedPreference.notiPayslipBadge)
                             }
 
                         }
 
-                        //console.log("MainView ==> time ==> ", dataCustomArray)
                         this.setState({
                             nonPayrollBadge: dataCustomArray
                         })
 
                     }
-
-                    this.inappTimeInterval()
-
-
 
                 } catch (error) {
                     //console.log('erreo1 :', error);
@@ -349,26 +379,15 @@ export default class HMF01011MainView extends Component {
 
     inappTimeInterval() {
 
-        if (inappTimeIntervalStatus) {
+      //  if (inappTimeIntervalStatus) {
             this.timer = setTimeout(() => {
                 this.onLoadInAppNoti()
             }, SharedPreference.timeinterval);
-        }
+       // }
 
     };
 
-    componentWillUnmount() {
-
-        clearTimeout(this.timer);
-
-        SharedPreference.notiAnnounceMentBadge = this.state.notiAnnounceMentBadge;
-
-        NetInfo.isConnected.removeEventListener('connectionChange', this.handleConnectivityChange);
-
-        //SharedPreference.notipayslipID = 0
-
-        //SharedPreference.notiAnnounceMentID = 0
-    }
+    
 
     handleConnectivityChange = isConnected => {
         this.setState({ isConnected });
@@ -432,7 +451,7 @@ export default class HMF01011MainView extends Component {
         // //console.log("calendarPDFAPI ==>  functionID : ", functionID)
 
         FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, SharedPreference.FUNCTIONID_ANNOUCEMENT, SharedPreference.profileObject.client_token)
-        //console.log("calendarPDFAPI ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
+        console.log("calendarPDFAPI ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
         // console.log("client_id  : ", SharedPreference.profileObject.client_id)
         let hostApi = SharedPreference.ANNOUNCEMENT_ASC_API + '&offset=0&limit=' + totalroll
         if (ascendingSort) {
@@ -922,7 +941,7 @@ export default class HMF01011MainView extends Component {
         })
         console.log('datadetail => ', data)
         if (code.SUCCESS == data.code) {
-
+           // SharedPreference.notiPayslipBadge = [];
             this.props.navigation.navigate(rount, {
                 DataResponse: data.data,
             });
@@ -940,7 +959,6 @@ export default class HMF01011MainView extends Component {
     }
 
     loadClockInOutDetailfromAPI = async () => {
-
 
         let today = new Date();
         let url = SharedPreference.CLOCK_IN_OUT_API + SharedPreference.profileObject.employee_id + '&month=0' + parseInt(today.getMonth() + 1) + '&year=' + today.getFullYear()
@@ -1751,8 +1769,8 @@ export default class HMF01011MainView extends Component {
                                 <View style={styles.mainmenuTextButton}>
                                     <Text style={styles.mainmenuTextname}>Pay Slip</Text>
                                 </View>
-
-
+                                {/* notiPayslipBadge */}
+                                <View style={this.state.notiPayslipBadge ? styles.badgeIconpayslip :styles.badgeIconpayslipDisable}><Text style={this.state.notiPayslipBadge ? { color: 'white' } : { color: 'transparent' }}>{this.state.notiPayslipBadge}</Text></View>
 
                             </View>
                         </TouchableOpacity>
@@ -1986,11 +2004,7 @@ export default class HMF01011MainView extends Component {
 
         return (
             <View style={{ flex: 1 }}>
-                <View style={{ width: '100%', height: '100%', position: 'absolute', justifyContent: 'center' }}>
-                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                        <Text style={loadingannouncement === false ? { fontSize: 25, textAlign: 'center', color: 'transparent' } : { fontSize: 25, textAlign: 'center', color: 'black' }}> No Data</Text>
-                    </View>
-                </View>
+                
                 <ScrollView
                     ref="announcescrollView"
                     style={{ backgroundColor: 'lightgray' }}
@@ -2071,7 +2085,11 @@ export default class HMF01011MainView extends Component {
                         ))
                     }
                 </ScrollView>
-
+                <View style={{ width: '100%', height: '100%', position: 'absolute', justifyContent: 'center' }}>
+                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                        <Text style={tempannouncementData.length|!loadingannouncement ? { fontSize: 25, textAlign: 'center', color: 'transparent' } : { fontSize: 25, textAlign: 'center', color: 'black' }}> No Data</Text>
+                    </View>
+                </View>
             </View>
         );
     }
@@ -2454,6 +2472,16 @@ export default class HMF01011MainView extends Component {
         }
     }
 
+    cancel_select_change_month_andr(){
+        
+         this.setState({
+          
+             loadingtype: 1,
+             isscreenloading: false,
+ 
+         })
+ 
+     }
 
     renderpickerview() {
         if (this.state.loadingtype == 1) {
@@ -2478,33 +2506,14 @@ export default class HMF01011MainView extends Component {
                                         </TouchableOpacity>
                                     ))}
                             </ScrollView>
-                            {/* <TouchableOpacity style={styles.button}
-                                onPress={(this.select_announce_all_type)}
-
-                            >
-                                <View style={{ justifyContent: 'center', height: 50, alignItems: 'center', }}>
-                                    <Text style={{ textAlign: 'center', fontSize: 18, width: '100%', height: 30, alignItems: 'center' }}>All</Text>
-                                </View>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.button}
-
-                                onPress={(this.select_announce_read_type)}
-                            >
-
-                                <View style={{ justifyContent: 'center', height: 50, alignItems: 'center', }}>
-                                    <Text style={{ textAlign: 'center', fontSize: 18, width: '100%', height: 30, alignItems: 'center' }}>Read</Text>
-                                </View>
-                            </TouchableOpacity>
-
-                            <TouchableOpacity style={styles.button}
-                                onPress={(this.select_announce_unread_status)}
-
-                            >
-                                <View style={{ justifyContent: 'center', height: 50, alignItems: 'center', }}>
-                                    <Text style={{ textAlign: 'center', fontSize: 18, width: '100%', height: 30, alignItems: 'center' }}>Unread</Text>
-                                </View>
-                            </TouchableOpacity> */}
-
+                            <View style={{ flexDirection: 'row', height: 40, }}>
+                                <View style={{ flex: 2 }} />
+                                <TouchableOpacity style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+                                    onPress={() => { this.cancel_select_change_month_andr() }}
+                                >
+                                    <Text style={{ fontSize: 16, color: Colors.redTextColor, textAlign: 'center' }}> Cancel</Text>
+                                </TouchableOpacity>
+                            </View>
                         </View>
                     </View>
                 )
@@ -2564,46 +2573,17 @@ export default class HMF01011MainView extends Component {
                                         </TouchableOpacity>
                                     ))}
                             </ScrollView>
-
-                            {/* <TouchableOpacity style={styles.button}
-                                onPress={(this.select_announce_all_type)}
-                            >
-                                <View style={{ justifyContent: 'center', height: 50, alignItems: 'center', }}>
-                                    <Text style={{ textAlign: 'center', fontSize: 18, width: 80, height: 30, alignItems: 'center' }}> All</Text>
-                                </View>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.button}
-                                onPress={(this.select_announce_company_type)}
-                            >
-                                <View style={{ justifyContent: 'center', height: 50, alignItems: 'center', }}>
-                                    <Text style={{ textAlign: 'center', fontSize: 16, width: '100%', height: 30, alignItems: 'center' }}>Company Announcement</Text>
-                                </View>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.button}
-                                onPress={(this.select_announce_emergency_type)}
-                            >
-                                <View style={{ justifyContent: 'center', height: 50, alignItems: 'center', }}>
-                                    <Text style={{ textAlign: 'center', fontSize: 16, width: '100%', height: 30, alignItems: 'center' }}>Emergency Announcement</Text>
-                                </View>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.button}
-                                onPress={(this.select_announce_event_type)}
-                            >
-                                <View style={{ justifyContent: 'center', height: 50, alignItems: 'center', }}>
-                                    <Text style={{ textAlign: 'center', fontSize: 16, width: '100%', height: 30, alignItems: 'center' }}>Event Announcement</Text>
-                                </View>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.button}
-                                onPress={(this.select_announce_general_type)}
-                            >
-                                <View style={{ justifyContent: 'center', height: 50, alignItems: 'center', }}>
-                                    <Text style={{ textAlign: 'center', fontSize: 16, width: '100%', height: 30, alignItems: 'center' }}> General Announcement</Text>
-                                </View>
-                            </TouchableOpacity> */}
+                            <View style={{ flexDirection: 'row', height: 40, }}>
+                                <View style={{ flex: 2 }} />
+                                <TouchableOpacity style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+                                    onPress={() => { this.cancel_select_change_month_andr() }}
+                                >
+                                    <Text style={{ fontSize: 16, color: Colors.redTextColor, textAlign: 'center' }}> Cancel</Text>
+                                </TouchableOpacity>
+                            </View>
                         </View>
                     </View>
                 )
-
             }
             return (
                 <View style={{ height: '100%', width: '100%', justifyContent: 'center', alignItems: 'center', position: 'absolute', }} >

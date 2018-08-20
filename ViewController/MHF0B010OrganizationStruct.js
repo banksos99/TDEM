@@ -24,7 +24,7 @@ import SaveProfile from "../constants/SaveProfile"
 let dataSource = [];
 let option = 0;
 let org_code = '';
-
+let beginlebel = 0;
 export default class OrganizationStruct extends Component {
 
     constructor(props) {
@@ -65,14 +65,30 @@ export default class OrganizationStruct extends Component {
         if (DataResponse) {
             org_code = DataResponse.org_code
             dataSource = [];
-            dataSource.push({
+            // dataSource.push({
 
-                org_code: DataResponse.org_code,
-                org_name: DataResponse.org_name,
-                org_level: DataResponse.org_level,
-                next_level: 'true',
-                expand: 0,
-            })
+            //     org_code: DataResponse.org_code,
+            //     org_name: DataResponse.org_name,
+            //     org_level: DataResponse.org_level,
+            //     next_level: 'true',
+            //     expand: 0,
+            // })
+
+            
+
+            for (let i = 0; i < DataResponse.length; i++) {
+
+                beginlebel = DataResponse[0].org_level - 10;
+                console.log('beginlebel :', beginlebel)
+                dataSource.push({
+                    org_code: DataResponse[i].org_code,
+                    org_name: DataResponse[i].org_name,
+                    org_level: DataResponse[i].org_level,
+                    next_level: 'true',
+                    expand: 0,
+                })
+            }
+
         } else {
             //console.log('orgdata : ', orgdata)
         }
@@ -84,7 +100,7 @@ export default class OrganizationStruct extends Component {
 
     onOrgStruct(item, index) {
 
-        //console.log('item :', item)
+        console.log('item :', item)
 
         if (item.org_code == 0) {
 
@@ -109,11 +125,9 @@ export default class OrganizationStruct extends Component {
 
                 }
 
-
             });
 
         } else {
-
 
             if (item.next_level === 'true') {
 
@@ -486,13 +500,13 @@ export default class OrganizationStruct extends Component {
                                                     <View style={{ flex: 1, flexDirection: 'column' }}>
                                                         <View style={{ flex: 1, justifyContent: 'center' }} >
                                                             <Text style={item.expand === 0 ?
-                                                                { marginLeft: (parseInt(item.org_level)) * 2, color: Colors.grayTextColor, fontFamily: 'Prompt-Regular' } :
-                                                                { marginLeft: (parseInt(item.org_level)) * 2, color: Colors.redTextColor, fontFamily: 'Prompt-Regular' }}
+                                                                { marginLeft: (parseInt(item.org_level - beginlebel)) * 2, color: Colors.grayTextColor, fontFamily: 'Prompt-Regular' } :
+                                                                { marginLeft: (parseInt(item.org_level - beginlebel)) * 2, color: Colors.redTextColor, fontFamily: 'Prompt-Regular' }}
 
                                                             >{item.org_name}</Text>
                                                         </View>
                                                         <View style={item.org_code === 0 ? { height: 20, justifyContent: 'center' } : { height: 0, justifyContent: 'center' }} >
-                                                            <Text style={{ marginLeft: (parseInt(item.org_level)) * 2, color: Colors.grayTextColor, fontFamily: 'Prompt-Regular', fontSize: 10 }}
+                                                            <Text style={{ marginLeft: (parseInt(item.org_level - beginlebel)) * 2, color: Colors.grayTextColor, fontFamily: 'Prompt-Regular', fontSize: 10 }}
                                                             >{item.position}</Text>
                                                         </View>
                                                     </View>

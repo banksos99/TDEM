@@ -91,12 +91,23 @@ export const styles = StyleSheet.create({
         backgroundColor: '#2b78e4',
     },
     badgeIconpayslip: {
-        top: -4* scale ,
-        right: -4* scale,
+        top: scale ,
+        right: scale,
         width: 18* scale,
         height: 18* scale,
         borderRadius: 9* scale,
         backgroundColor: 'red',
+        position: 'absolute',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    badgeIconpayslipDisable: {
+        top: scale ,
+        right: scale,
+        width: 18* scale,
+        height: 18* scale,
+        borderRadius: 9* scale,
+        backgroundColor: 'transparent',
         position: 'absolute',
         justifyContent: 'center',
         alignItems: 'center'
@@ -688,7 +699,7 @@ export const styles = StyleSheet.create({
         fontFamily: font_medium
     },
     payslipitemmoney: {
-        fontSize: 12 * scale,
+        fontSize: 15 * scale,
         color: Colors.thingrayTextColor,
         fontFamily: font_medium
     },
@@ -696,7 +707,24 @@ export const styles = StyleSheet.create({
         fontSize: 12 * scale,
         color: Colors.thingrayTextColor,
         fontFamily: font_medium
+    },payslipiteMonth: {
+        fontSize: 15 * scale,
+        color: Colors.thingrayTextColor,
+        fontFamily: font_medium
     },
+    payslipitemcurrentdMonth:{
+        fontSize: 15 * scale,
+        color: 'white',
+        fontFamily: font_medium
+
+    },
+    payslipitemcurrentdNet:{
+        fontSize: 16 * scale,
+        color: 'white',
+        fontFamily: font_medium
+
+    },
+
     payslipitemdetailred: {
         fontSize: 12 * scale,
         color: 'white',
@@ -1147,33 +1175,33 @@ export const styles = StyleSheet.create({
         fontFamily: font_medium
 
     }, payslipTitleTextLeft: {
-        fontSize: 15,
-        marginLeft: 10,
+        fontSize: 14* scale,
+        marginLeft: 10* scale,
         textAlign: 'left',
         color: Colors.grayTextColor,
         fontFamily: font_medium
 
     }, payslipDetailTextLeft: {
-        fontSize: 15,
-        marginLeft: 10,
-        textAlign: 'left',
+        fontSize: 14 * scale,
+        marginLeft: 10 * scale,
+       // textAlign: 'left',
         color: Colors.lightGrayTextColor,
         fontFamily: font_medium
 
     }, payslipDetailTextRight: {
-        fontSize: 15,
-        marginRight: 10,
+        fontSize: 15* scale,
+        marginRight: 10* scale,
         color: Colors.lightGrayTextColor,
         textAlign: 'right',
         fontFamily: font_medium
 
     }, payslipDetailTextCenter: {
-        fontSize: 15,
-        marginRight: 10,
+        
+        marginRight: 10* scale,
         color: Colors.lightGrayTextColor,
         textAlign: 'center',
         fontFamily: font_medium,
-        fontSize: 13,
+        fontSize: 13* scale,
         fontWeight: 'bold'
     },
     pinText: {
@@ -1360,6 +1388,8 @@ export const styles = StyleSheet.create({
         fontSize: 12 * scale
     },
     empinfoDetailRedText: {
+        marginTop:5,
+        marginBottom:5,
         color: Colors.redTextColor,
         marginLeft: 20 * scale,
         fontFamily: font_medium

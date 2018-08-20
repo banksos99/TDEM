@@ -17,6 +17,7 @@ import LoginChangePinAPI from "./../constants/LoginChangePinAPI"
 import RestAPI from "./../constants/RestAPI"
 import firebase from 'react-native-firebase';
 
+let countgettokenFB = 0;
 export default class RegisterActivity extends Component {
 
     savePIN = new SavePIN()
@@ -47,7 +48,7 @@ export default class RegisterActivity extends Component {
 
     async componentDidMount() {
 
-        this.getfirebasetoken()
+      //  this.getfirebasetoken()
     }
     async getfirebasetoken() {
 
@@ -57,17 +58,40 @@ export default class RegisterActivity extends Component {
             if (fcmToken) {
                 // user has a device token
                 SharedPreference.deviceInfo.firebaseToken = fcmToken
+                countgettokenFB = 0;
+                this.onRegister();
 
             } else {
                 // user doesn't have a device token yet
+                if (countgettokenFB < 3) {
+
+                    countgettokenFB = countgettokenFB + 1
+                    this.getfirebasetoken()
+
+                } else {
+
+                    countgettokenFB = 0
+                    this.setState({
+                        isLoading: false
+                    })
+
+                }
+
             }
 
         }
 
     }
+
+    loginAuto(){
+
+        this.onRegister();
+
+    }
+
     onRegister = async () => {
 
-        this.getfirebasetoken()
+       // this.getfirebasetoken()
         this.setState({
             isLoading: true
         })
@@ -80,8 +104,12 @@ export default class RegisterActivity extends Component {
             datastatus: data.code
         })
 
+        let loginsuccess = false;
+        let autoregisterCount = 0;
+        
         if (code.SUCCESS == data.code) {
             this.saveProfile.setProfile(data.data)
+            loginsuccess = true;
             SharedPreference.profileObject = await this.saveProfile.getProfile()
             await this.onCheckPINWithChangePIN('1111', '2222')
             this.setState({
@@ -105,20 +133,30 @@ export default class RegisterActivity extends Component {
                 { cancelable: false }
             )
         } else if ((code.INVALID_USER_PASS == data.code) || (code.FAILED == data.code)) {
-            Alert.alert(
-                data.data.code,
-                data.data.detail,
-                [
-                    {
-                        text: 'OK', onPress: () => {
-                            this.setState({
-                                isLoading: false
-                            })
+
+            if (data.data.detail === 'MHF00602AERR: Parameter firebase_tokens value are missing.') {
+                //get firebase token gain
+                console.log('get token again')
+                this.getfirebasetoken()
+
+            } else {
+                Alert.alert(
+                    data.data.code,
+                    data.data.detail,
+                    [
+                        {
+                            text: 'OK', onPress: () => {
+                                this.setState({
+                                    isLoading: false
+                                })
+                            }
                         }
-                    }
-                ],
-                { cancelable: false }
-            )
+                    ],
+                    { cancelable: false }
+                )
+
+            }
+
 
         } else if (code.NETWORK_ERROR == data.code) {
             Alert.alert(
@@ -149,6 +187,8 @@ export default class RegisterActivity extends Component {
                 { cancelable: false }
             )
         }
+
+
     }
 
 

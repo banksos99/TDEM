@@ -573,7 +573,7 @@ export default class ClockInOutSelfView extends Component {
                                 <TouchableOpacity style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
                                     onPress={() => { this.cancel_select_change_month_andr() }}
                                 >
-                                    <Text style={{ fontSize: 16, color: Colors.redTextColor, textAlign: 'center' }}> cancel</Text>
+                                    <Text style={{ fontSize: 16, color: Colors.redTextColor, textAlign: 'center' }}> Cancel</Text>
                                 </TouchableOpacity>
                             </View>
                         </View>
@@ -608,7 +608,7 @@ export default class ClockInOutSelfView extends Component {
                             <TouchableOpacity style={{ flex: 2, justifyContent: 'flex-start' }}
                                 onPress={(this.cancel_select_change_month)}>
                                 >
-                                <Text style={styles.buttonpicker}> cancel</Text>
+                                <Text style={styles.buttonpicker}> Cancel</Text>
                             </TouchableOpacity>
                             <View style={{ flex: 3, justifyContent: 'center' }} />
                             <TouchableOpacity style={{ flex: 2, justifyContent: 'flex-end' }} onPress={(this.select_month_clockinout.bind(this))}>
@@ -618,8 +618,8 @@ export default class ClockInOutSelfView extends Component {
                     </View>
                 </View>
             )
-
         }
+
         return (
             <View style={{ height: '100%', width: '100%', justifyContent: 'center', alignItems: 'center', position: 'absolute', }} >
                 <ActivityIndicator />
@@ -705,7 +705,7 @@ export default class ClockInOutSelfView extends Component {
                                         <Text style={styles.clockinoutweakdayalphatext} />
                                         <Text style={index > currentday && (this.state.initialmonth + 2 === this.state.monthselected) ? styles.clockinoutbodyhidetext : item.actualstart === '-' && item.workstart != '-' ?
                                             styles.clockinoutbodyredtext :
-                                            item.late === 1 ? styles.clockinoutbodyredtext : styles.clockinoutbodytext}>
+                                            item.late === 1 && item.datetype === 'W'? styles.clockinoutbodyredtext : styles.clockinoutbodytext}>
 
                                             {this.conv(item.actualstart)}</Text>
                                     </View>
@@ -716,7 +716,7 @@ export default class ClockInOutSelfView extends Component {
                                             styles.clockinoutbodyhidetext :
                                             item.actualend === '-' && item.workend != '-' ?
                                                 styles.clockinoutbodyredtext :
-                                                item.early === 1 ? styles.clockinoutbodyredtext :
+                                                item.early === 1 && item.datetype === 'W'? styles.clockinoutbodyredtext :
                                                     styles.clockinoutbodytext}>
 
                                             {this.conv(item.actualend)}</Text>
