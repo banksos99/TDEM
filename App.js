@@ -67,6 +67,11 @@ export default class mainview extends Component {
     }
   }
 
+  componentWillUnmount() {
+
+    clearTimeout(this.timer);
+
+  }
 
   async componentDidMount() {
 
@@ -137,14 +142,14 @@ export default class mainview extends Component {
 
   }
 
-  inactivecounting() {
-    this.timer = setTimeout(() => {
-      this.setState({
-        inactive: true,
-        modalVisible: true
-      });
-    }, 1000);
-  }
+  // inactivecounting() {
+  //   this.timer = setTimeout(() => {
+  //     this.setState({
+  //       inactive: true,
+  //       modalVisible: true
+  //     });
+  //   }, 1000);
+  // }
 
   closelabelnoti() {
     this.timer = setTimeout(() => {
@@ -156,7 +161,7 @@ export default class mainview extends Component {
 
   rendernotificationlabel() {
     if (this.state.notiMessage) {
-      this.closelabelnoti();
+     this.closelabelnoti();
       return (
         <View style={{ width: '100%', height: 120, position: 'absolute', backgroundColor: 'transparent' }}>
           <View style={{ flex: 1, borderRadius: 10, backgroundColor: 'white', justifyContent: 'center', margin: 10 }}>

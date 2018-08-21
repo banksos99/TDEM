@@ -640,7 +640,7 @@ export default class HandbookViewer extends Component {
                 {this.renderexpand()}
 
                 <Epub style={styles.epubreader}
-                  //  ref={component => this.epub = component}
+                   ref={component => this.epub = component}
                     src={this.state.src}
 
                     flow={"paginated"}
@@ -683,12 +683,12 @@ export default class HandbookViewer extends Component {
                     }}
 
                     onPress={(cfi, position, rendition) => {
-                        this.toggleBars();
-                        //console.log("press", cfi);
+                        
                     }}
 
                     onLongPress={(cfi, rendition, cfiRange) => {
                         //console.log("longpress", cfiRange);
+                        
                     }}
 
                     onViewAdded={(index) => {
@@ -707,13 +707,10 @@ export default class HandbookViewer extends Component {
                         )
                         // Add marker
                         rendition.highlight(cfiRange, {});
-
-
                     }}
                     
                     onMarkClicked={(cfiRange) => {
                        
-
                         Alert.alert(
                             'SAVE',
                             'Do you want a save Marker',
@@ -746,9 +743,9 @@ export default class HandbookViewer extends Component {
                         )
 
                     }}
-
+                    regenerateLocations={true}
+                    generateLocations={true}
                 />
-
 
                 <View style={{ height: 30, justifyContent: 'center' }}>
                     <Text style={{ textAlign: 'center', }}>{this.state.currentpage + ' / ' + this.state.totalpage}</Text>

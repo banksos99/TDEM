@@ -196,7 +196,7 @@ export default class rootNavigation extends Component {
 
     onLoadInAppNoti() {
         console.log('onLoadInAppNoti')
-        this.inappTimeInterval()
+       // this.inappTimeInterval()
     }
     render() {
         if (this.state.hasPin == false) {

@@ -337,12 +337,13 @@ export default class RegisterActivity extends Component {
 
 
     componentWillMount() {
-        clearTimeout(this.timer);
+        
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow.bind(this));
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide.bind(this));
     }
 
     componentWillUnmount() {
+        clearTimeout(this.timer);
         this.keyboardDidShowListener.remove();
         this.keyboardDidHideListener.remove();
     }
@@ -395,7 +396,7 @@ export default class RegisterActivity extends Component {
                     this.setState({
                         pin: [],
                         pin2: origin,
-                    })
+                    },300)
                     // this.state.pin = []
                     // this.state.pin2 = origin
                     if (this.state.pin1 == this.state.pin2) {

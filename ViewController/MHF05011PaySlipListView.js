@@ -58,7 +58,8 @@ export default class PaySlipActivity extends Component {
          //   yearselected:0,
             indexselectyear:2,
             DataResponse:this.props.navigation.getParam("DataResponse", ""),
-            yearlistdata : []
+            yearlistdata : [],
+            inappTimeIntervalStatus:true
         };
 
        // firebase.analytics().setCurrentScreen(SharedPreference.SCREEN_PAYSLIP_LIST)
@@ -168,9 +169,11 @@ export default class PaySlipActivity extends Component {
         await this.getArrayOfYear()
         BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
         NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectivityChange);
+        this.onLoadInAppNoti()
     }
 
     componentWillUnmount() {
+        clearTimeout(this.timer);
         BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
         NetInfo.isConnected.removeEventListener('connectionChange', this.handleConnectivityChange);
 
@@ -187,12 +190,7 @@ export default class PaySlipActivity extends Component {
 
     onLoadInAppNoti = async () => {
         
-        if (inappTimeIntervalStatus) {
-            this.timer = setTimeout(() => {
-                this.onLoadInAppNoti()
-            }, SharedPreference.timeinterval);
-        }
-
+    
         if (!SharedPreference.lastdatetimeinterval) {
             let today = new Date()
             const _format = 'YYYY-MM-DD hh:mm:ss'
@@ -200,139 +198,100 @@ export default class PaySlipActivity extends Component {
             SharedPreference.lastdatetimeinterval = newdate
         }
 
-        let FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, 1, SharedPreference.profileObject.client_token)
+        this.APIInAppallback(await RestAPI(SharedPreference.PULL_NOTIFICATION_API + SharedPreference.lastdatetimeinterval,1))
 
-        return fetch(SharedPreference.PULL_NOTIFICATION_API + SharedPreference.lastdatetimeinterval, {
-
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                Authorization: FUNCTION_TOKEN,
-            },
-        })
-            .then((response) => response.json())
-            .then((responseJson) => {
-                // console.log("onLoadInAppNoti")
-                console.log("responseJson ==> ", responseJson)
-                try {
-
-                    if (responseJson.status == 403) {
-
-                        this.onAutenticateErrorAlertDialog()
-
-                        inappTimeIntervalStatus = false
-
-                    } else if (responseJson.status == 200) {
-
-                        SharedPreference.lastdatetimeinterval = responseJson.meta.request_date;
-               
-                        let dataArray = responseJson.data
-                        let currentyear = new Date().getFullYear();
-
-                        let monthArray = []
-                        for (let index = 0; index < 12; index++) {
-                            monthData = {
-                                "month": index + 1,
-                                "badge": 0
-                            }
-                            monthArray.push(monthData)
-                        }
-
-                        let dataCustomArray = [
-                            {
-                                "year": currentyear - 1,
-                                "detail": monthArray
-                            },
-                            {
-                                "year": currentyear,
-                                "detail": monthArray
-                            },
-                        ]
-
-                        for (let index = 0; index < dataArray.length; index++) {
-                            const dataReceive = dataArray[index];
-                            // //console.log("element ==> ", dataReceive.function_id)
-
-                            if (dataReceive.function_id == "PHF06010") {//if nonPayroll
-                                dataListArray = dataReceive.data_list
-
-                                // //console.log("dataListArray ==> ", dataListArray)
-                                for (let index = 0; index < dataListArray.length; index++) {
-                                    const str = dataListArray[index];
-                                    // //console.log("str ==> ", str)
-                                    var res = str.split("|");
-                                    // //console.log("res ==> ", res[1])
-                                    var data = res[1]
-
-                                    var monthYear = data.split("-");
-                                    // //console.log("dataListArray ==> monthYear ==> ", monthYear)
-
-                                    var year = monthYear[0]
-                                    var month = monthYear[1]
-
-                                    for (let index = 0; index < dataCustomArray.length; index++) {
-                                        const data = dataCustomArray[index];
-                                        // //console.log("dataCustomArray data ==> ", data)
-                                        // //console.log("dataCustomArray year ==> ", data.year)
-
-                                        if (year == data.year) {
-                                            const detail = data.detail
-                                            // //console.log("detail ==> ", detail)
-                                            // //console.log("month select  ==> ", month)
-
-                                            let element = detail.find((p) => {
-                                                return p.month === JSON.parse(month)
-                                            });
-                                            // //console.log("element ==> ", element)
-
-                                            element.badge = element.badge + 1
-                                            //console.log("detail badge ==> ", element.badge)
-                                        }
-                                    }
-                                }
-                            } else if (dataReceive.function_id == "PHF02010") {
-
-                                console.log("announcement badge ==> ", dataReceive.badge_count)
-
-                                this.setState({
-
-                                    notiAnnounceMentBadge: parseInt(dataReceive.badge_count) + parseInt(this.state.notiAnnounceMentBadge)
-                                })
-
-                            } else if (dataReceive.function_id == 'PHF05010') {
-                                console.log('new payslip arrive')
-                                this.setState({
-                                    notiPayslipBadge: parseInt(dataReceive.badge_count) + this.state.notiPayslipBadge
-                                }, function () {
-                                    dataReceive.data_list.map((item, i) => {
-
-                                        SharedPreference.notiPayslipBadge.push(item)
-                                        // = dataReceive.data_list
-
-                                    })
-                                })
-                                console.log('notiPayslipBadge',SharedPreference.notiPayslipBadge)
-                            }
-
-                        }
-
-                        this.setState({
-                            nonPayrollBadge: dataCustomArray
-                        })
-
-                    }
-
-                } catch (error) {
-                    //console.log('erreo1 :', error);
-                }
-            })
-            .catch((error) => {
-
-                //console.log('error :', error)
-
-            });
     }
+
+    APIInAppallback(data) {
+        code = data[0]
+        data = data[1]
+
+
+        if (code.INVALID_AUTH_TOKEN == data.code) {
+
+            this.onAutenticateErrorAlertDialog()
+
+        } else if (code.SUCCESS == data.code) {
+
+            this.timer = setTimeout(() => {
+                this.onLoadInAppNoti()
+            }, SharedPreference.timeinterval);
+
+        }
+
+    }
+
+    //     return fetch(SharedPreference.PULL_NOTIFICATION_API + SharedPreference.lastdatetimeinterval, {
+
+    //         method: 'GET',
+    //         headers: {
+    //             'Accept': 'application/json',
+    //             'Content-Type': 'application/json',
+    //             Authorization: FUNCTION_TOKEN,
+    //         },
+    //     })
+    //         .then((response) => response.json())
+    //         .then((responseJson) => {
+    //             // console.log("onLoadInAppNoti")
+    //             console.log("responseJson ==> ", responseJson)
+    //             try {
+
+    //                 if (responseJson.status == 403) {
+
+    //                     this.onAutenticateErrorAlertDialog()
+    //                     // clearTimeout(this.timer);
+    //                     // this.setState({
+
+    //                     //     inappTimeIntervalStatus:false
+    //                     // })
+                        
+
+    //                 } else if (responseJson.status == 200) {
+
+    //                     this.timer = setTimeout(() => {
+    //                         this.onLoadInAppNoti()
+    //                     }, SharedPreference.timeinterval);
+
+    //                 }
+
+    //             } catch (error) {
+    //                 //console.log('erreo1 :', error);
+    //             }
+    //         })
+    //         .catch((error) => {
+
+    //             //console.log('error :', error)
+
+    //         });
+    // }
+
+    onAutenticateErrorAlertDialog(error) {
+
+        timerstatus = false;
+        this.setState({
+            isscreenloading: false,
+        })
+
+        Alert.alert(
+            StringText.ALERT_AUTHORLIZE_ERROR_TITLE,
+            StringText.ALERT_AUTHORLIZE_ERROR_MESSAGE,
+            [{
+                text: 'OK', onPress: () => {
+
+                    page = 0
+                    SharedPreference.Handbook = []
+                    SharedPreference.profileObject = null
+                    this.setState({
+                        isscreenloading: false
+                    })
+                    this.props.navigation.navigate('RegisterScreen')
+
+                }
+            }],
+            { cancelable: false }
+        )
+    }
+
 
 
     getArrayOfYear() {
