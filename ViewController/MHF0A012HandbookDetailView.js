@@ -640,6 +640,7 @@ export default class HandbookViewer extends Component {
                 {this.renderexpand()}
 
                 <Epub style={styles.epubreader}
+                    ref={(c) => this.epub = c}
                   //  ref={component => this.epub = component}
                     src={this.state.src}
 
