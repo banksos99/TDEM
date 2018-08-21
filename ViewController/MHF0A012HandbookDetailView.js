@@ -18,7 +18,8 @@ import {
     ActivityIndicator,
     Picker,
     Alert,
-    BackHandler
+    BackHandler,
+    Dimensions
 } from 'react-native';
 
 import { Epub, Streamer } from 'epubjs-rn';
@@ -72,6 +73,9 @@ export default class HandbookViewer extends Component {
             typeTOC: 1,
             showTOC: 1,
             titleTOC: 'Table Of Content',
+            calTop: parseInt( Dimensions.get('window').height * 0.01),
+            calWidth: parseInt( Dimensions.get('window').width),
+            calHeight: parseInt( Dimensions.get('window').height * 0.85),
 
            handbook_file: this.props.navigation.getParam("handbook_file", ""),
            FUNCTION_TOKEN: this.props.navigation.getParam("FUNCTION_TOKEN", ""),
@@ -497,7 +501,12 @@ export default class HandbookViewer extends Component {
         if (this.state.isscreenloading) {
 
             return (
-                <View style={{ height: '100%', width: '100%', position: 'absolute', }}>
+                <View style={{ 
+                    top: -1,
+                    height: Dimensions.get('window').height, 
+                    width: '100%', 
+                    position: 'absolute', 
+                    }}>
                     <View style={{ backgroundColor: 'black', height: '100%', width: '100%', position: 'absolute', opacity: 0.7 }}>
 
                     </View>
@@ -604,9 +613,17 @@ export default class HandbookViewer extends Component {
 
     }
     render() {
-
+        
         return (
-            <View style={{ flex: 1 }}>
+            <View style={{ 
+                
+                position:'absolute',
+                top: 0, 
+                left: 0,
+                width: this.state.calWidth,
+                height: this.state.calHeight 
+            
+            }}>
 
                 <View style={[styles.navContainer, { flexDirection: 'column' }]}>
                     <View style={styles.statusbarcontainer} />
@@ -758,7 +775,13 @@ export default class HandbookViewer extends Component {
                 {this.renderloadingscreen()}
 
             </View>
+
+            
+
+
         );
+
+
     }
 }
 
