@@ -32,6 +32,7 @@ import SharedPreference from '../SharedObject/SharedPreference';
 
 let fontsizearr = ['50%', '80%', '100%', '120%', '150%', '180%'];
 let fontname = ['times', 'courier', 'arial', 'serif', 'cursive', 'fantasy', 'monospace'];
+let fonttext = ['Times', 'Courier', 'Arial', 'Serif', 'Cursive', 'Fantasy', 'Monospace'];
 let HandbookHighlightList = [];
 let HandbookMarkList = [];
 
@@ -587,7 +588,7 @@ export default class HandbookViewer extends Component {
                             onPress={() => this._onhilight(item)}
                             key={index + 100}>
                             <View style={{ justifyContent: 'center', height: 40, marginLeft: 20, marginRight: 20 }}>
-                                <View style={{ flex: 1, ustifyContent: 'center', flexDirection: 'column' }}>
+                                <View style={{ flex: 1, justifyContent: 'center', flexDirection: 'column' }}>
                                     <Text style={styles.epubHighlightdateText} numberOfLines={1}> {item.date}</Text>
                                     <Text style={styles.epubHighlighttitleText} numberOfLines={1}> {item.title}</Text>
                                 </View>
@@ -647,7 +648,7 @@ export default class HandbookViewer extends Component {
                     height='100%'
                     fontSize={fontsizearr[this.state.fontsizelivel]}
                     flow={this.state.flow}
-                    location={this.state.location}
+                   // location={this.state.location}
                     onLocationChange={(visibleLocation) => {
                         //console.log("locationChanged : ", visibleLocation.start.displayed)
                         this.setState({

@@ -77,8 +77,8 @@ export default class PinActivity extends Component {
 
         } else if (code.NETWORK_ERROR == data.code) {
             Alert.alert(
-                StringText.ALERT_CANNOT_CONNECT_NETWORK_TITLE,
-                StringText.ALERT_CANNOT_CONNECT_NETWORK_DESC,
+                'section time out',
+                'please try again',
                 [{
                     text: 'OK', onPress: () => {
                         SharedPreference.profileObject = null

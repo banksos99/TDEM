@@ -184,6 +184,157 @@ export default class PaySlipActivity extends Component {
     }
 
 
+
+    onLoadInAppNoti = async () => {
+        
+        if (inappTimeIntervalStatus) {
+            this.timer = setTimeout(() => {
+                this.onLoadInAppNoti()
+            }, SharedPreference.timeinterval);
+        }
+
+        if (!SharedPreference.lastdatetimeinterval) {
+            let today = new Date()
+            const _format = 'YYYY-MM-DD hh:mm:ss'
+            const newdate = moment(today).format(_format).valueOf();
+            SharedPreference.lastdatetimeinterval = newdate
+        }
+
+        let FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, 1, SharedPreference.profileObject.client_token)
+
+        return fetch(SharedPreference.PULL_NOTIFICATION_API + SharedPreference.lastdatetimeinterval, {
+
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                Authorization: FUNCTION_TOKEN,
+            },
+        })
+            .then((response) => response.json())
+            .then((responseJson) => {
+                // console.log("onLoadInAppNoti")
+                console.log("responseJson ==> ", responseJson)
+                try {
+
+                    if (responseJson.status == 403) {
+
+                        this.onAutenticateErrorAlertDialog()
+
+                        inappTimeIntervalStatus = false
+
+                    } else if (responseJson.status == 200) {
+
+                        SharedPreference.lastdatetimeinterval = responseJson.meta.request_date;
+               
+                        let dataArray = responseJson.data
+                        let currentyear = new Date().getFullYear();
+
+                        let monthArray = []
+                        for (let index = 0; index < 12; index++) {
+                            monthData = {
+                                "month": index + 1,
+                                "badge": 0
+                            }
+                            monthArray.push(monthData)
+                        }
+
+                        let dataCustomArray = [
+                            {
+                                "year": currentyear - 1,
+                                "detail": monthArray
+                            },
+                            {
+                                "year": currentyear,
+                                "detail": monthArray
+                            },
+                        ]
+
+                        for (let index = 0; index < dataArray.length; index++) {
+                            const dataReceive = dataArray[index];
+                            // //console.log("element ==> ", dataReceive.function_id)
+
+                            if (dataReceive.function_id == "PHF06010") {//if nonPayroll
+                                dataListArray = dataReceive.data_list
+
+                                // //console.log("dataListArray ==> ", dataListArray)
+                                for (let index = 0; index < dataListArray.length; index++) {
+                                    const str = dataListArray[index];
+                                    // //console.log("str ==> ", str)
+                                    var res = str.split("|");
+                                    // //console.log("res ==> ", res[1])
+                                    var data = res[1]
+
+                                    var monthYear = data.split("-");
+                                    // //console.log("dataListArray ==> monthYear ==> ", monthYear)
+
+                                    var year = monthYear[0]
+                                    var month = monthYear[1]
+
+                                    for (let index = 0; index < dataCustomArray.length; index++) {
+                                        const data = dataCustomArray[index];
+                                        // //console.log("dataCustomArray data ==> ", data)
+                                        // //console.log("dataCustomArray year ==> ", data.year)
+
+                                        if (year == data.year) {
+                                            const detail = data.detail
+                                            // //console.log("detail ==> ", detail)
+                                            // //console.log("month select  ==> ", month)
+
+                                            let element = detail.find((p) => {
+                                                return p.month === JSON.parse(month)
+                                            });
+                                            // //console.log("element ==> ", element)
+
+                                            element.badge = element.badge + 1
+                                            //console.log("detail badge ==> ", element.badge)
+                                        }
+                                    }
+                                }
+                            } else if (dataReceive.function_id == "PHF02010") {
+
+                                console.log("announcement badge ==> ", dataReceive.badge_count)
+
+                                this.setState({
+
+                                    notiAnnounceMentBadge: parseInt(dataReceive.badge_count) + parseInt(this.state.notiAnnounceMentBadge)
+                                })
+
+                            } else if (dataReceive.function_id == 'PHF05010') {
+                                console.log('new payslip arrive')
+                                this.setState({
+                                    notiPayslipBadge: parseInt(dataReceive.badge_count) + this.state.notiPayslipBadge
+                                }, function () {
+                                    dataReceive.data_list.map((item, i) => {
+
+                                        SharedPreference.notiPayslipBadge.push(item)
+                                        // = dataReceive.data_list
+
+                                    })
+                                })
+                                console.log('notiPayslipBadge',SharedPreference.notiPayslipBadge)
+                            }
+
+                        }
+
+                        this.setState({
+                            nonPayrollBadge: dataCustomArray
+                        })
+
+                    }
+
+                } catch (error) {
+                    //console.log('erreo1 :', error);
+                }
+            })
+            .catch((error) => {
+
+                //console.log('error :', error)
+
+            });
+    }
+
+
     getArrayOfYear() {
 
         let currentYear = new Date().getFullYear()
@@ -599,7 +750,7 @@ export default class PaySlipActivity extends Component {
         console.log('host :', host)
 
         //console.log('host : ', host);
-        FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, SharedPreference.FUNCTIONID_PAYSLIP, SharedPreference.profileObject.client_token)
+        let FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, SharedPreference.FUNCTIONID_PAYSLIP, SharedPreference.profileObject.client_token)
 
 
         // //console.log('rollid', rollid)
@@ -619,7 +770,7 @@ export default class PaySlipActivity extends Component {
                     // datadetail: PayslipDataDetail.detail[dataSource.years[year].detail[index].payroll_id]
 
                 }, function () {
-                    //console.log('status : ', this.state.dataSource.status);
+                    console.log('status : ', this.state.dataSource);
                     if (this.state.dataSource.status === 200) {
                         //console.log('payslip detail DataResponse : ', this.state.dataSource, rollid);
                         // //console.log('DataResponse year : ',dataSource.data.years[year].year);
@@ -649,7 +800,7 @@ export default class PaySlipActivity extends Component {
                             rollid: rollid
                         });
 
-                    } else if (code.INVALID_AUTH_TOKEN == data.code) {
+                    } else if (this.state.dataSource.status == 403) {
                         Alert.alert(
                             StringText.ALERT_AUTHORLIZE_ERROR_TITLE,
                             StringText.ALERT_AUTHORLIZE_ERROR_MESSAGE,
@@ -658,7 +809,7 @@ export default class PaySlipActivity extends Component {
                             
                                     SharedPreference.Handbook = []
                                     SharedPreference.profileObject = null
-                                    this.saveProfile.setProfile(null)
+                                   // this.saveProfile.setProfile(null)
                                     this.setState({
                                         isscreenloading: false
                                     })
@@ -672,7 +823,7 @@ export default class PaySlipActivity extends Component {
                     } else {
 
                         Alert.alert(
-                            this.state.dataSource.errors[0].code,
+                            'error',
                             this.state.dataSource.errors[0].detail,
                             [
                                 {

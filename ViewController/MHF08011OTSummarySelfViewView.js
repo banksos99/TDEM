@@ -405,7 +405,7 @@ export default class OTSummaryDetail extends Component {
                     <View style={{ height: '100%', width: '100%', justifyContent: 'center', alignItems: 'center', position: 'absolute', }} >
                         <View style={{ width: '80%', backgroundColor: 'white' }}>
                             <View style={{ height: 50, width: '100%', justifyContent: 'center', }}>
-                                <Text style={styles.alertDialogBoxText}>Select Month</Text>
+                                <Text style={styles.alertDialogBoxText}>Select Month and Year</Text>
                             </View>
                             <ScrollView style={{ height: '40%' }}>
                                 {
@@ -439,7 +439,7 @@ export default class OTSummaryDetail extends Component {
                 <View style={{ height: '100%', width: '100%', justifyContent: 'center', alignItems: 'center', position: 'absolute', }} >
                     <View style={{ width: '80%', backgroundColor: 'white' }}>
                         <View style={{ height: 50, width: '100%', justifyContent: 'center', }}>
-                            <Text style={styles.titlepicker}>Select Date</Text>
+                            <Text style={styles.titlepicker}>Select Month and Year</Text>
                         </View>
                         <Picker
                          
@@ -462,7 +462,7 @@ export default class OTSummaryDetail extends Component {
                             <TouchableOpacity style={{ flex: 2, justifyContent: 'flex-start' }}
                                 onPress={(this.cancel_select_change_month)}>
                             >
-                                <Text style={styles.buttonpicker}> cancel</Text>
+                                <Text style={styles.buttonpicker}> Cancel</Text>
                             </TouchableOpacity>
                             <View style={{ flex: 3, justifyContent: 'center' }} />
                             <TouchableOpacity style={{ flex: 2, justifyContent: 'flex-end' }}

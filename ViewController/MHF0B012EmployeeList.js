@@ -52,13 +52,13 @@ export default class OrganizationStruct extends Component {
     checkDataFormat(DataResponse) {
         
         if (DataResponse) {
-
-            dataSource = DataResponse;
+            console.log('DataResponse : ', DataResponse.data[0].org_emp)
+            dataSource = DataResponse.data[0];
 
             
         } else {
 
-            //console.log('orgdata : ', orgdata)
+        //    console.log('orgdata : ', orgdata)
 
         }
     }
@@ -241,14 +241,14 @@ export default class OrganizationStruct extends Component {
                     <View style={{ flex: 1, flexDirection: 'column', }}>
                         <View style={{ height: 50, justifyContent: 'center' }}>
                             <Text style={{ marginLeft: 50, color: Colors.redTextColor, fontFamily: 'Prompt-Regular', fontSize: 15 }}
-                            >{dataSource.data.org_name}
+                            >{dataSource.org_name}
                             </Text>
                         </View>
                         <View style={{ height: 1, backgroundColor: 'lightgray', justifyContent: 'flex-end' }} />
                         <View style={{ flex: 10 }}>
                             <ScrollView>
                                 {
-                                    dataSource.data.org_emp.map((item, index) => (
+                                    dataSource.org_emp.map((item, index) => (
                                         <View style={{ height: 50 }} key={'m' + index}
 
                                         >

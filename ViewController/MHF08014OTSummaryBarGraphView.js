@@ -418,7 +418,7 @@ export default class OTSummaryBarChart extends Component {
                                 onPress={(this.selected_cancle_month)}
 
                             >
-                                <Text style={{flex:1, textAlign: 'center', color: Colors.redTextColor, fontSize: 18, width: 80, height: 30, alignItems: 'center' }}> cancel</Text>
+                                <Text style={{flex:1, textAlign: 'center', color: Colors.redTextColor, fontSize: 18, width: 80, height: 30, alignItems: 'center' }}> Cancel</Text>
                             </TouchableOpacity>
                             <View style={{flex:2}}/>
                             <TouchableOpacity style={styles.button}

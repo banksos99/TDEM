@@ -166,8 +166,22 @@ export default class OrganizationStruct extends Component {
 
         } else {
             
-            // console.log('next_level :', item.next_level)
-            if (item.next_level === 'true') {
+            console.log('item => :', item)
+
+         if (item.org_level === 40){
+            // *** select employee list
+            this.setState({
+
+                isscreenloading: true,
+                loadingtype: 3,
+                org_code: item.org_code,
+
+            }, function () {
+
+                this.loadEmployeeListAPI(item.org_code)
+            });
+
+        }else  {
 
                 if (item.expand === 0) {
                     // *** select expand
@@ -200,7 +214,7 @@ export default class OrganizationStruct extends Component {
                     for (let i = 0; i < dataSource.length; i++) {
 
                         if (statuscol == 0) {
-    
+
                             if (dataSource[i].org_level <= item.org_level) {
 
                                 statuscol = 1;
@@ -216,11 +230,11 @@ export default class OrganizationStruct extends Component {
                                     org_level: dataSource[i].org_level,
                                     next_level: dataSource[i].next_level,
                                     expand: 0
-    
+
                                 })
                                 statuscol = 0;
 
-                            }else{
+                            } else {
 
                                 temparr.push(
                                     dataSource[i]
@@ -272,19 +286,6 @@ export default class OrganizationStruct extends Component {
                         isscreenloading: false,
                     })
                 }
-            } else {
-                // *** select employee list
-                this.setState({
-
-                    isscreenloading: true,
-                    loadingtype: 3,
-                    org_code: item.org_code,
-
-                }, function () {
-
-                    this.loadEmployeeListAPI(item.org_code)
-                });
-
             }
         }
     }
@@ -492,7 +493,6 @@ export default class OrganizationStruct extends Component {
             isscreenloading: false,
 
         })
-
 
     }
 

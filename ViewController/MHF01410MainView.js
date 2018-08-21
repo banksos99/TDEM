@@ -205,7 +205,7 @@ export default class HMF01011MainView extends Component {
     }
     componentWillUnmount() {
 
-       clearTimeout(this.timer);
+      clearTimeout(this.timer);
 
         SharedPreference.notiAnnounceMentBadge = this.state.notiAnnounceMentBadge;
 
@@ -231,10 +231,13 @@ export default class HMF01011MainView extends Component {
             }
         }
         console.log("onLoadInAppNoti ==> ", lastTime)
+        console.log("inappTimeIntervalStatus ==> ", inappTimeIntervalStatus)
+        if (inappTimeIntervalStatus) {
+            this.timer = setTimeout(() => {
+                this.onLoadInAppNoti()
+            }, SharedPreference.timeinterval);
+        }
 
-        this.timer = setTimeout(() => {
-            this.onLoadInAppNoti()
-        }, SharedPreference.timeinterval);
 
         if (!SharedPreference.lastdatetimeinterval) {
             let today = new Date()
@@ -377,15 +380,15 @@ export default class HMF01011MainView extends Component {
             });
     }
 
-    inappTimeInterval() {
+    // inappTimeInterval() {
 
-      //  if (inappTimeIntervalStatus) {
-            this.timer = setTimeout(() => {
-                this.onLoadInAppNoti()
-            }, SharedPreference.timeinterval);
-       // }
+    //   //  if (inappTimeIntervalStatus) {
+    //         this.timer = setTimeout(() => {
+    //             this.onLoadInAppNoti()
+    //         }, SharedPreference.timeinterval);
+    //    // }
 
-    };
+    // };
 
     
 
@@ -608,6 +611,10 @@ export default class HMF01011MainView extends Component {
                         } else if (this.state.dataSource.status === 403) {
 
                             this.onAutenticateErrorAlertDialog()
+
+                        } else {
+
+                            this.setState(this.renderannouncementbody());
                         }
                     });
                 } catch (error) {
@@ -819,7 +826,7 @@ export default class HMF01011MainView extends Component {
     loadEmployeeInfoformAPI = async () => {
 
         ////console.log("loadEmployeeInfoformAPI :", SharedPreference.profileObject.employee_id)
-        this.APICallback(await RestAPI(SharedPreference.EMP_INFO_CAREERPATH_API + SharedPreference.profileObject.employee_id, SharedPreference.FUNCTIONID_EMPLOYEE_INFORMATION), 'EmployeeInfoDetail')
+        this.APICallback(await RestAPI(SharedPreference.EMP_INFO_CAREERPATH_API, SharedPreference.FUNCTIONID_EMPLOYEE_INFORMATION), 'EmployeeInfoDetail')
 
     }
 
@@ -2081,7 +2088,7 @@ export default class HMF01011MainView extends Component {
                         ))
                     }
                 </ScrollView>
-                <View style={{ width: '100%', height: '100%', position: 'absolute', justifyContent: 'center' }}>
+                <View style={tempannouncementData.length|!loadingannouncement ?{height:0}:{ width: '100%', height: '100%', position: 'absolute', justifyContent: 'center' }}>
                     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                         <Text style={tempannouncementData.length|!loadingannouncement ? { fontSize: 25, textAlign: 'center', color: 'transparent' } : { fontSize: 25, textAlign: 'center', color: 'black' }}> No Data</Text>
                     </View>

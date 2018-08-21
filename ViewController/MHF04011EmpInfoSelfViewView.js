@@ -72,7 +72,7 @@ export default class EmpInfoDetail extends Component {
     }
 
     checkDataFormat(DataResponse) {
-        //console.log('DataResponse :', DataResponse)
+        console.log('DataResponse :', DataResponse)
 
         if (DataResponse) {
 
@@ -250,16 +250,16 @@ export default class EmpInfoDetail extends Component {
         }
 
         let mobileno = '-'
-        if (empinfodetail.mobile_number) {
-            mobileno = empinfodetail.mobile_number;
-
-        }
+        if (empinfodetail.mobile_number) mobileno = empinfodetail.mobile_number;
 
         let employee_code = '-'
         if (empinfodetail.employee_code) employee_code = empinfodetail.employee_code;
 
         let full_name_th = '-'
-        if (empinfodetail.full_name_th) full_name_th = empinfodetail.full_name_th
+        if (empinfodetail.full_name_th) full_name_th = empinfodetail.full_name_th;
+
+        let marital_status = '-'
+        if (empinfodetail.marital_status) marital_status = empinfodetail.marital_status;
 
         if (this.state.personalexpand) {
 
@@ -324,7 +324,7 @@ export default class EmpInfoDetail extends Component {
                             <Text style={styles.empinfoDetailRedText} >Maritial Status</Text>
                         </View>
                         <View style={{ flex: 3, justifyContent: 'center' }}>
-                            <Text style={styles.empinfoDetailText}>{empinfodetail.marital_status}</Text>
+                            <Text style={styles.empinfoDetailText}>{marital_status}</Text>
                         </View>
                     </View>
                     <View style={{ height: 1, justifyContent: 'center', backgroundColor: Colors.calendarLocationBoxColor }} />

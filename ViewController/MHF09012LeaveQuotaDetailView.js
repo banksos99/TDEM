@@ -5,7 +5,8 @@ import {
     View,
     TouchableOpacity,
     Image,
-    BackHandler
+    BackHandler,
+    ScrollView
 } from 'react-native';
 
 import Colors from "./../SharedObject/Colors"
@@ -108,7 +109,8 @@ export default class LeaveQuotaActivity extends Component {
                     <View style={styles.navRightContainer}>
                     </View>
                 </View>
-                <View style={styles.leaveQuotaDetailContainer}>
+                <ScrollView style={styles.leaveQuotaDetailContainer}>
+                {/* <View style={styles.leaveQuotaDetailContainer}> */}
                     {/* container */}
                     <View style={styles.leaveQuotaContainer}>
 
@@ -172,7 +174,8 @@ export default class LeaveQuotaActivity extends Component {
                         <Text style={styles.leaveQuotaContentGrayText}>Regulation   </Text>
                         <Text style={styles.leaveQuotaDescText}>{this.state.item.leave_regulation}</Text>
                     </View >
-                </View>
+                {/* </View> */}
+                </ScrollView>
             </View >
         );
     }
