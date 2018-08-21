@@ -88,9 +88,30 @@ export default class HandbookViewer extends Component {
 
     }
 
+    loadHighlights = async () => {
+        // return await AsyncStorage.getItem('pin');
+        const value = await AsyncStorage.getItem('handbook_marks');
+        console.log("load Highlights ========> ")
+        return value
+    }
+
+    saveHighlights() {
+        return AsyncStorage.setItem('handbook_marks', SharedPreference.Handbook)
+            .then(json => {
+                console.log('Save Highlights success!')
+            })
+            .catch(error => { console.log('Save Highlights failed!')
+            });
+    }
+
     componentDidMount() {
 
         this.downloadEpubFile(SharedPreference.HOST + this.state.handbook_file);
+        let value = loadHighlights();
+
+        if(value)
+            SharedPreference.Handbook = value;
+
         HandbookHighlightList = [];
         HandbookMarkList = [];
         for (let i = 0; i < SharedPreference.Handbook.length; i++) {
@@ -144,6 +165,8 @@ export default class HandbookViewer extends Component {
         })
 
         SharedPreference.Handbook = tempHB
+
+        this.saveHighlights();
 
         if (this.streamer)
             this.streamer.kill();
@@ -752,12 +775,12 @@ export default class HandbookViewer extends Component {
                                                     title: datatext,
                                                     date: timearr[2] + ' ' + timearr[1] + ' ' + timearr[3] + ' at ' + timearr[4]
                                                 })
-
+                                                saveHighlights();
                                             }
 
                                         })
                                     }
-                                },{ text: 'Cancle', onPress: () => { } }
+                                },{ text: 'Cancel', onPress: () => { } }
 
                             ],
                             { cancelable: false }
