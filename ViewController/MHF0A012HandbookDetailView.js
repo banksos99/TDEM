@@ -90,14 +90,21 @@ export default class HandbookViewer extends Component {
         
     }
 
-    loadHighlights = async () => {
+    loadHighlights(){
         // return await AsyncStorage.getItem('pin');
-        const value = await AsyncStorage.getItem('handbook_marks_'+this.getEmpID());
         
 
-        let json = JSON.parse(value);
-        console.log("load Highlights ========> " + value)
-        return json;
+     
+        return AsyncStorage.getItem('handbook_marks_'+this.getEmpID())
+            .then(json => {
+                console.log('Load Highlights success! ' + json);
+                let value = JSON.parse(json);
+                return value;
+            })
+            .catch(error => { console.log('Load Highlights failed! ' + error)
+                let value =  JSON.parse("{}");
+                return value;
+            });
     }
 
     saveHighlights() {
@@ -121,12 +128,13 @@ export default class HandbookViewer extends Component {
         return empId;
     }
 
-    async componentDidMount()  {
+    componentDidMount()  {
 
         this.downloadEpubFile(SharedPreference.HOST + this.state.handbook_file);
 
         //console.log('SharedPreference.profileObject =====>' + JSON.stringify(SharedPreference.profileObject));
-        let value = await this.loadHighlights();
+        let value = this.loadHighlights();
+        //let value = null;
 
         if(value){ 
             SharedPreference.Handbook = value;
@@ -757,16 +765,16 @@ export default class HandbookViewer extends Component {
                     }}
 
                     onViewAdded={(index) => {
-                        console.log("added", index)
+                        //console.log("added", index)
                     }}
 
                     beforeViewRemoved={(index) => {
-                        console.log("removed", index)
+                        //console.log("removed", index)
                     }}
 
                     onSelected={(cfiRange, rendition, selected) => {
 
-                        console.log("onSelected", rendition)
+                        //console.log("onSelected", rendition)
 
                         let datatext = ''
                         HandbookHighlightList.push(
