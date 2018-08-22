@@ -203,16 +203,16 @@ export default class rootNavigation extends Component {
             return (
                 <AppNavigatorRegister
                     onNavigationStateChange={(prevState, currentState) => {
-                        console.log("AppNavigatorRegister ==> prevState = ", prevState)
-                        console.log("AppNavigatorRegister ==> currentState = ", currentState)
+                        // console.log("AppNavigatorRegister ==> prevState = ", prevState)
+                        // console.log("AppNavigatorRegister ==> currentState = ", currentState)
                     }} />
             );
         } else {
             return (
                 <AppNavigatorPin
                     onNavigationStateChange={(prevState, currentState) => {
-                        console.log("AppNavigatorRegister ==> prevState = ", prevState)
-                        console.log("AppNavigatorRegister ==> currentState = ", currentState)
+                        // console.log("AppNavigatorRegister ==> prevState = ", prevState)
+                        // console.log("AppNavigatorRegister ==> currentState = ", currentState)
                     }} />
             );
         }
