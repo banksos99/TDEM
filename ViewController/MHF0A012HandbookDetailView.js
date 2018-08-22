@@ -97,8 +97,16 @@ export default class HandbookViewer extends Component {
      
         return AsyncStorage.getItem('handbook_marks_'+this.getEmpID())
             .then(json => {
-                console.log('Load Highlights success! ' + json);
+                
                 let value = JSON.parse(json);
+                console.log('Load Highlights success! value : ' + value);
+                console.log('Load Highlights success! json : ' + json);
+                console.log('Load Highlights success! stringfify : ' + JSON.stringify(value));
+
+                SharedPreference.Handbook = value;
+                this.reloadHighlight();
+
+
                 return value;
             })
             .catch(error => { console.log('Load Highlights failed! ' + error)
@@ -138,11 +146,15 @@ export default class HandbookViewer extends Component {
 
         if(value){ 
             SharedPreference.Handbook = value;
-            console.log('SharedPreference.Handbook set')
+            console.log('SharedPreference.Handbook set ' + value)
         }else{
             console.log('SharedPreference.Handbook cannot load')
         }
 
+        this.reloadHighlight();
+    }
+
+    reloadHighlight(){
         HandbookHighlightList = [];
         HandbookMarkList = [];
         for (let i = 0; i < SharedPreference.Handbook.length; i++) {
