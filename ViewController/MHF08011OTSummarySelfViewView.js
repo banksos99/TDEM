@@ -194,9 +194,7 @@ export default class OTSummaryDetail extends Component {
                 headerdataSource: data.data.header,
            
             })
-            // this.props.navigation.navigate('OTSummarySelfView', {
-            //     dataResponse: data.data,
-            // });
+
         } else if (code.NODATA == data.code) {
 
             Alert.alert(
@@ -216,6 +214,12 @@ export default class OTSummaryDetail extends Component {
                 tdataSource: [],
                 headerdataSource: []
             })
+
+        } else if (code.INVALID_AUTH_TOKEN == data.code) {
+
+            this.onAutenticateErrorAlertDialog(data)
+
+
         } else {
             this.onLoadErrorAlertDialog(data)
         }
@@ -223,6 +227,33 @@ export default class OTSummaryDetail extends Component {
            
             isscreenloading: false,
         })
+    }
+
+    onAutenticateErrorAlertDialog(error) {
+
+        timerstatus = false;
+        this.setState({
+            isscreenloading: false,
+        })
+
+        Alert.alert(
+            StringText.ALERT_AUTHORLIZE_ERROR_TITLE,
+            StringText.ALERT_AUTHORLIZE_ERROR_MESSAGE,
+            [{
+                text: 'OK', onPress: () => {
+
+                    page = 0
+                    SharedPreference.Handbook = []
+                    SharedPreference.profileObject = null
+                    this.setState({
+                        isscreenloading: false
+                    })
+                    this.props.navigation.navigate('RegisterScreen')
+
+                }
+            }],
+            { cancelable: false }
+        )
     }
 
     onLoadErrorAlertDialog(error) {

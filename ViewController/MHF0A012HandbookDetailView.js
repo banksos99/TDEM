@@ -93,9 +93,7 @@ export default class HandbookViewer extends Component {
 
     loadHighlights(){
         // return await AsyncStorage.getItem('pin');
-        
-
-     
+    
         return AsyncStorage.getItem('handbook_marks_'+this.getEmpID())
             .then(json => {
                 
@@ -103,9 +101,9 @@ export default class HandbookViewer extends Component {
                 console.log('Load Highlights success! value : ' + value);
                 console.log('Load Highlights success! json : ' + json);
                 console.log('Load Highlights success! stringfify : ' + JSON.stringify(value));
-
-                SharedPreference.Handbook = value;
-                this.reloadHighlight();
+                // if (value)
+                //     SharedPreference.Handbook = value;
+                // this.reloadHighlight();
 
 
                 return value;

@@ -763,7 +763,7 @@ export default class ClockInOutSelfView extends Component {
                                             {Months.dayNamesShortMonthView[(firstday + index) % 7]}</Text>
                                     </View>
                                     <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
-                                        <Text style={styles.clockinoutweakdayalphatext}>WORK</Text>
+                                        <Text style={styles.clockinoutweakdayalphatext}>SHIFT</Text>
                                         <Text style={styles.clockinoutweakdayalphatext} />
                                         <Text style={styles.clockinoutweakdayalphatext}>ACTUAL</Text>
                                     </View>
