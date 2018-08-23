@@ -362,17 +362,27 @@ export default class OrganizationStruct extends Component {
         //console.log('data  :', data)
         code = data[0]
         data = data[1]
+
         if (code.SUCCESS == data.code) {
             this.props.navigation.navigate(path, {
                 DataResponse: data.data,
                 org_name: this.state.org_name,
                 org_code: this.state.org_code
             });
+
+        } else if (code.NODATA == data.code) {
+
+            this.props.navigation.navigate(path, {
+                DataResponse: data.data,
+                org_name: this.state.org_name,
+                org_code: this.state.org_code
+            });
+
         } else if (code.INVALID_AUTH_TOKEN == data.code) {
 
             this.onAutenticateErrorAlertDialog(data)
 
-        
+
         } else {
             this.onLoadErrorAlertDialog(data)
         }

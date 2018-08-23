@@ -428,7 +428,9 @@ export const styles = StyleSheet.create({
         margin: 5,
         backgroundColor: 'white',
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+     
+        
     },
     buttonContainer: {
         flex: 1,
@@ -447,7 +449,7 @@ export const styles = StyleSheet.create({
     },
     mainmenuImageButton: {
         flex: 3,
-        alignSelf: 'center',
+       // alignSelf: 'center',
         // backgroundColor: 'green',
         justifyContent: 'center', // Used to set Text Component Vertically Center
         alignItems: 'center' // Us
@@ -579,8 +581,8 @@ export const styles = StyleSheet.create({
     leaveQuotaDetailContainer: {
         flex: 1, flexDirection: 'column',
         backgroundColor: 'white',
-        marginLeft: 10,
-        marginRight: 10
+       // marginLeft: 10,
+       // marginRight: 10
     },
     leaveQuotaDetailContentContainer: {
         backgroundColor: Colors.calendarGrayBackgroundColor,
@@ -626,7 +628,9 @@ export const styles = StyleSheet.create({
         paddingRight: 30,
         backgroundColor: Colors.calendarGrayBackgroundColor,
         marginTop: 5,
-        marginBottom: 5
+        marginBottom: 5,
+    //     marginLeft: 10,
+    //    marginRight: 10
     },
     leaveQuotaDetailItemTopContainer: {
         flex: 1, flexDirection: 'column', justifyContent: 'center',
@@ -707,9 +711,15 @@ export const styles = StyleSheet.create({
         fontSize: 12 * scale,
         color: Colors.thingrayTextColor,
         fontFamily: font_medium
-    },payslipiteMonth: {
+
+    }, payslipiteMonth: {
         fontSize: 15 * scale,
         color: Colors.thingrayTextColor,
+        fontFamily: font_medium
+    },
+    payslipiteMonthHide: {
+        fontSize: 15 * scale,
+        color: 'transparent',
         fontFamily: font_medium
     },
     payslipitemcurrentdMonth:{
@@ -877,23 +887,28 @@ export const styles = StyleSheet.create({
         flexDirection: 'row',
         alignSelf: 'flex-start',
         paddingRight: 100,
-        marginBottom: 10
+        marginBottom: 10,
+      
     },
     nonPayRollRightContainer: {
         flexDirection: 'row',
         alignSelf: 'flex-end',
         position: 'absolute',
+       // marginRight:20
     },
     nonPayRollTitleText: {
         color: Colors.redTextColor,
         fontSize: 15,
         marginTop: 10,
-        marginBottom: 10
+        marginBottom: 10,
+         marginLeft: 20,
     }, nonPayRolldateYearText: {
         color: Colors.redTextColor,
         fontSize: 20,
         marginTop: 10,
-        marginBottom: 10
+        marginBottom: 10,
+        marginLeft: 20, 
+        marginRight: 20
     }, nonPayRolldateDetailText: {
         color: Colors.grayTextColor,
         fontSize: 14,

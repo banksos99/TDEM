@@ -23,10 +23,11 @@ import Svg, {
     Stop
 } from 'react-native-svg';
 
+import moment from 'moment'
 let scale = Layout.window.width / 375;
 //monthNameStr
 //let monthstr = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-export default class PinActivity extends Component {
+export default class LineChart extends Component {
 
     constructor(props) {
         super(props);
@@ -35,6 +36,8 @@ export default class PinActivity extends Component {
             pin: '',
             failPin: 0
         }
+
+        console.log('datalist :', this.props.datalist)
     }
 
     conv(date) {
@@ -43,6 +46,7 @@ export default class PinActivity extends Component {
         return Months.monthNameStr[month - 1] + '-' + year
 
     }
+
     shiftmonth(date, shift) {
         let year = date.substring(2, 4);
         let month = parseInt(date.substring(4, 6))+shift;
@@ -58,12 +62,16 @@ export default class PinActivity extends Component {
     render() {
         //console.log('data list :', this.props.datalist)
         let tmax = 0
-        for (let i = 0; i < this.props.datalist.length; i++) {
-            //console.log('datalist :', this.props.datalist[i].total_ot)
-            if (parseInt(this.props.datalist[i].total_ot) > tmax) {
-                tmax = this.props.datalist[i].total_ot
-            }
+        if (this.props.datalist) {
 
+
+            for (let i = 0; i < this.props.datalist.length; i++) {
+                //console.log('datalist :', this.props.datalist[i].total_ot)
+                if (parseInt(this.props.datalist[i].total_ot) > tmax) {
+                    tmax = this.props.datalist[i].total_ot
+                }
+
+            }
         }
         //console.log('dmax value :', tmax)
         let max = 200;
@@ -73,7 +81,15 @@ export default class PinActivity extends Component {
         console.log('tmax :', tmax)
         console.log('ratio :', ratio)
 
-       
+        let today = new Date();
+
+       // const currentday = today.getDate() - 1;
+        const currentmonth = today.getMonth();
+        const currentyear = today.getFullYear() - 2001;
+    //    const _format = 'YYYY-MM'
+    //    const currentmonth = moment(today).format(_format).valueOf();
+
+       console.log('currentmonth :', currentmonth)
 
         let linecolor = Colors.redTextColor;
 
@@ -90,110 +106,212 @@ export default class PinActivity extends Component {
 
         let p1 = (rowhight * 6) + shiftdown;
         let ot1 = 0;
-        let month1 = '-';
+        let month1 = Months.monthNameStr[(currentmonth + 0) % 12] + '-' + (currentyear + parseInt(currentmonth / 12)) ;
+        let p2 = (rowhight * 6) + shiftdown;
+        let ot2 = 0;
+        let month2 =Months.monthNameStr[(currentmonth + 1) % 12] + '-' + (currentyear + parseInt((currentmonth  + 1)/ 12)) ;
+        let p3 = (rowhight * 6) + shiftdown;
+        let ot3 = 0;
+        let month3 = Months.monthNameStr[(currentmonth + 2) % 12] + '-' +(currentyear+ parseInt((currentmonth  + 2) / 12)) ;
+        let p4 = (rowhight * 6) + shiftdown;
+        let ot4 = 0;
+        let month4 = Months.monthNameStr[(currentmonth + 3) % 12] + '-' +(currentyear+ parseInt((currentmonth  + 3) / 12)) ;
+        let p5 = (rowhight * 6) + shiftdown;
+        let ot5 = 0;
+        let month5 = Months.monthNameStr[(currentmonth + 4) % 12] + '-' +(currentyear+ parseInt((currentmonth  + 4) / 12)) ;
+        let p6 = (rowhight * 6) + shiftdown;
+        let ot6 = 0;
+        let month6 = Months.monthNameStr[(currentmonth + 5) % 12] + '-' +(currentyear+ parseInt((currentmonth  + 5) / 12)) ;
+        let p7 = (rowhight * 6) + shiftdown;
+        let ot7 = 0;
+        let month7 = Months.monthNameStr[(currentmonth + 6) % 12] + '-' +(currentyear+ parseInt((currentmonth  + 6) / 12)) ;
+        let p8 = (rowhight * 6) + shiftdown;
+        let ot8 = 0;
+        let month8 = Months.monthNameStr[(currentmonth + 7) % 12] + '-' +(currentyear+ parseInt((currentmonth  + 7) / 12)) ;
+        let p9 = (rowhight * 6) + shiftdown;
+        let ot9 = 0;
+        let month9 = Months.monthNameStr[(currentmonth + 8) % 12] + '-' +(currentyear+ parseInt((currentmonth  + 8) / 12)) ;
+        let p10 = (rowhight * 6) + shiftdown;
+        let ot10 = 0;
+        let month10 = Months.monthNameStr[(currentmonth + 9) % 12] + '-' +(currentyear+ parseInt((currentmonth  + 9) / 12)) ;
+        let p11 = (rowhight * 6) + shiftdown;
+        let ot11 = 0;
+        let month11 = Months.monthNameStr[(currentmonth + 10) % 12] + '-' +(currentyear+ parseInt((currentmonth  + 10) / 12)) ;
+        let p12 = (rowhight * 6) + shiftdown;
+        let ot12 = 0;
+        let month12 = Months.monthNameStr[(currentmonth + 11) % 12] + '-' +(currentyear+ parseInt((currentmonth  + 11) / 12)) ;
+        let p13 = (rowhight * 6) + shiftdown;
+        let ot13 = 0;
+        let month13 = Months.monthNameStr[(currentmonth + 12) % 12] + '-' +(currentyear + parseInt((currentmonth  + 12) / 12)) ;
+
+        let mm1 = (today.getFullYear() + parseInt((currentmonth  + 0) / 12)-1).toString()+(((currentmonth + 0) % 12)+1).toString()
+        if(((currentmonth + 0) % 12)+2 <= 10){mm1 = (today.getFullYear() + parseInt((currentmonth  + 0) / 12)-1).toString()+'0'+(((currentmonth + 0) % 12)+1).toString()}
+        let mm2 = (today.getFullYear() + parseInt((currentmonth  + 1) / 12)-1).toString()+(((currentmonth + 1) % 12)+1).toString()
+        if(((currentmonth + 1) % 12)+2 <= 10){mm2 = (today.getFullYear() + parseInt((currentmonth  + 1) / 12)-1).toString()+'0'+(((currentmonth + 1) % 12)+1).toString()}
+        let mm3 = (today.getFullYear() + parseInt((currentmonth  + 2) / 12)-1).toString()+(((currentmonth + 2) % 12)+1).toString()
+        if(((currentmonth + 2) % 12)+2 <= 10){mm3 = (today.getFullYear() + parseInt((currentmonth  + 2) / 12)-1).toString()+'0'+(((currentmonth + 2) % 12)+1).toString()}
+        let mm4 = (today.getFullYear() + parseInt((currentmonth  + 3) / 12)-1).toString()+(((currentmonth + 3) % 12)+1).toString()
+        if(((currentmonth + 3) % 12)+1 <= 10){mm4 = (today.getFullYear() + parseInt((currentmonth  + 3) / 12)-1).toString()+'0'+(((currentmonth + 3) % 12)+1).toString()}
+        let mm5 = (today.getFullYear() + parseInt((currentmonth  + 4) / 12)-1).toString()+(((currentmonth + 4) % 12)+1).toString()
+        if(((currentmonth + 4) % 12)+1 <= 10){mm5 = (today.getFullYear() + parseInt((currentmonth  + 4) / 12)-1).toString()+'0'+(((currentmonth + 4) % 12)+1).toString()}
+        let mm6 = (today.getFullYear() + parseInt((currentmonth  + 5) / 12)-1).toString()+(((currentmonth + 5) % 12)+1).toString()
+        if(((currentmonth + 5) % 12) +1<= 10){mm6 = (today.getFullYear() + parseInt((currentmonth  + 5) / 12)-1).toString()+'0'+(((currentmonth + 5) % 12)+1).toString()}
+        let mm7 = (today.getFullYear() + parseInt((currentmonth  + 6) / 12)-1).toString()+(((currentmonth + 6) % 12)+1).toString()
+        if(((currentmonth + 6) % 12)+1 <= 10){mm7 = (today.getFullYear() + parseInt((currentmonth  + 6) / 12)-1).toString()+'0'+(((currentmonth + 6) % 12)+1).toString()}
+        let mm8 = (today.getFullYear() + parseInt((currentmonth  + 7) / 12)-1).toString()+(((currentmonth + 7) % 12)+1).toString()
+        if(((currentmonth + 7) % 12)+1 <= 10){mm8 = (today.getFullYear() + parseInt((currentmonth  + 7) / 12)-1).toString()+'0'+(((currentmonth + 7) % 12)+1).toString()}
+        let mm9 = (today.getFullYear() + parseInt((currentmonth  + 8) / 12)-1).toString()+(((currentmonth + 8) % 12)+1).toString()
+        if(((currentmonth + 8) % 12)+1 <= 10){mm9 = (today.getFullYear() + parseInt((currentmonth  + 8) / 12)-1).toString()+'0'+(((currentmonth + 8) % 12)+1).toString()}
+        let mm10 = (today.getFullYear() + parseInt((currentmonth  + 9) / 12)-1).toString()+(((currentmonth + 9) % 12)+1).toString()
+        if(((currentmonth + 9) % 12)+1 <= 10){mm10 = (today.getFullYear() + parseInt((currentmonth  + 9) / 12)-1).toString()+'0'+(((currentmonth + 9) % 12)+1).toString()}
+        let mm11 = (today.getFullYear() + parseInt((currentmonth  + 10) / 12)-1).toString()+(((currentmonth + 10) % 12)+1).toString()
+        if(((currentmonth + 10) % 12)+1 <= 10){mm11 = (today.getFullYear() + parseInt((currentmonth  + 10) / 12)-1).toString()+'0'+(((currentmonth + 10) % 12)+1).toString()}
+        let mm12 = (today.getFullYear() + parseInt((currentmonth  + 11) / 12)-1).toString()+(((currentmonth + 11) % 12)+1).toString()
+        if(((currentmonth + 11) % 12)+1 <= 10){mm12 = (today.getFullYear() + parseInt((currentmonth  + 11) / 12)-1).toString()+'0'+(((currentmonth + 11) % 12)+1).toString()}
+        let mm13 = (today.getFullYear() + parseInt((currentmonth  + 12) / 12)-1).toString()+(((currentmonth + 12) % 12)+1).toString()
+        if(((currentmonth + 12) % 12)+1 <= 10){mm13 = (today.getFullYear() + parseInt((currentmonth  + 12) / 12)-1).toString()+'0'+(((currentmonth + 12) % 12)+1).toString()}
+
+        console.log('dsdasdasd 13', mm1, mm2, mm3, mm4, mm5, mm6, mm7, mm8, mm9, mm10, mm11, mm12, mm13)
+
+        for (let i = 0; i < this.props.datalist.length; i++) {
+
+            if (this.props.datalist[i].year_month == mm1) {
+                ot1 = this.props.datalist[i].total_ot
+                p1 = max - (ot1 * ratio) + shiftdown;
+
+            } else if (this.props.datalist[i].year_month == mm2) {
+                ot2 = this.props.datalist[i].total_ot
+                p2 = max - (ot2 * ratio) + shiftdown;
+            } else if (this.props.datalist[i].year_month == mm3) {
+                ot3 = this.props.datalist[i].total_ot
+                p3 = max - (ot3 * ratio) + shiftdown;
+            } else if (this.props.datalist[i].year_month == mm4) {
+                ot4 = this.props.datalist[i].total_ot
+                p4 = max - (ot4 * ratio) + shiftdown;
+            } else if (this.props.datalist[i].year_month == mm5) {
+                ot5 = this.props.datalist[i].total_ot
+                p5 = max - (ot5 * ratio) + shiftdown;
+            } else if (this.props.datalist[i].year_month == mm6) {
+                ot6 = this.props.datalist[i].total_ot
+                p6 = max - (ot6 * ratio) + shiftdown;
+            } else if (this.props.datalist[i].year_month == mm7) {
+                ot7 = this.props.datalist[i].total_ot
+                p7 = max - (ot7 * ratio) + shiftdown;
+            } else if (this.props.datalist[i].year_month == mm8) {
+                ot8 = this.props.datalist[i].total_ot
+                p8 = max - (ot8 * ratio) + shiftdown;
+            } else if (this.props.datalist[i].year_month == mm9) {
+                ot9 = this.props.datalist[i].total_ot
+                p9 = max - (ot9 * ratio) + shiftdown;
+            } else if (this.props.datalist[i].year_month == mm10) {
+                ot10 = this.props.datalist[i].total_ot
+                p10 = max - (ot10 * ratio) + shiftdown;
+            } else if (this.props.datalist[i].year_month == mm11) {
+                ot11 = this.props.datalist[i].total_ot
+                p11 = max - (ot11 * ratio) + shiftdown;
+            } else if (this.props.datalist[i].year_month == mm12) {
+                ot12 = this.props.datalist[i].total_ot
+                p12 = max - (ot12 * ratio) + shiftdown;
+            }  else if (this.props.datalist[i].year_month == mm13) {
+                ot13 = this.props.datalist[i].total_ot
+                p13 = max - (ot13 * ratio) + shiftdown;
+            }  
+
+        }
+/*
+        if(this.props.datalist){
+
         if (this.props.datalist.length > 0) {
             ot1 = this.props.datalist[0].total_ot
             p1 = max - (ot1 * ratio) + shiftdown;
             month1 = this.conv(this.props.datalist[0].year_month)
         }
-        let p2 = (rowhight * 6) + shiftdown;
-        let ot2 = 0;
-        let month2 = this.shiftmonth(this.props.datalist[0].year_month,1);
+       
+         month2 = this.shiftmonth(this.props.datalist[0].year_month,1);
         if (this.props.datalist.length > 1) {
             ot2 = this.props.datalist[1].total_ot
             p2 = max - (ot2 * ratio) + shiftdown;
             month2 = this.conv(this.props.datalist[1].year_month)
         }
-        let p3 = (rowhight * 6) + shiftdown;
-        let ot3 = 0;
-        let month3 = this.shiftmonth(this.props.datalist[0].year_month,2);
+        
+        
         if (this.props.datalist.length > 2) {
             ot3 = this.props.datalist[2].total_ot
             p3 = max - (ot3 * ratio) + shiftdown;
             month3 = this.conv(this.props.datalist[2].year_month)
         }
-        let p4 = (rowhight * 6) + shiftdown;
-        let ot4 = 0;
-        let month4 = this.shiftmonth(this.props.datalist[0].year_month,3);
+        
+         month4 = this.shiftmonth(this.props.datalist[0].year_month,3);
         if (this.props.datalist.length > 3) {
             ot4 = this.props.datalist[3].total_ot
             p4 = max - (ot4 * ratio) + shiftdown;
             month4 = this.conv(this.props.datalist[3].year_month)
         }
-        let p5 = (rowhight * 6) + shiftdown;
-        let ot5 = 0;
-        let month5 = this.shiftmonth(this.props.datalist[0].year_month,4);
+        
+         month5 = this.shiftmonth(this.props.datalist[0].year_month,4);
         if (this.props.datalist.length > 4) {
             ot5 = this.props.datalist[4].total_ot
             p5 = max - (ot5 * ratio) + shiftdown;
             month5 = this.conv(this.props.datalist[4].year_month)
         }
-        let p6 = (rowhight * 6) + shiftdown;
-        let ot6 = 0;
-        let month6 = this.shiftmonth(this.props.datalist[0].year_month,5);
+       
+         month6 = this.shiftmonth(this.props.datalist[0].year_month,5);
         if (this.props.datalist.length > 5) {
             ot6 = this.props.datalist[5].total_ot
             p6 = max - (ot6 * ratio) + shiftdown;
             month6 = this.conv(this.props.datalist[5].year_month)
         }
-        let p7 = (rowhight * 6) + shiftdown;
-        let ot7 = 0;
-        let month7 = this.shiftmonth(this.props.datalist[0].year_month,6);
+       
+         month7 = this.shiftmonth(this.props.datalist[0].year_month,6);
         if (this.props.datalist.length > 6) {
             ot7 = this.props.datalist[6].total_ot
             p7 = max - (ot7 * ratio) + shiftdown;
             month7 = this.conv(this.props.datalist[6].year_month)
         }
-        let p8 = (rowhight * 6) + shiftdown;
-        let ot8 = 0;
-        let month8 = this.shiftmonth(this.props.datalist[0].year_month,7);
+        
+         month8 = this.shiftmonth(this.props.datalist[0].year_month,7);
         if (this.props.datalist.length > 7) {
             ot8 = this.props.datalist[7].total_ot
             p8 = max - (ot8 * ratio) + shiftdown;
             month8 = this.conv(this.props.datalist[7].year_month)
         }
-        let p9 = (rowhight * 6) + shiftdown;
-        let ot9 = 0;
-        let month9 = this.shiftmonth(this.props.datalist[0].year_month,8);
+        
+         month9 = this.shiftmonth(this.props.datalist[0].year_month,8);
         if (this.props.datalist.length > 8) {
             ot9 = this.props.datalist[8].total_ot
             p9 = max - (ot9 * ratio) + shiftdown;
             month9 = this.conv(this.props.datalist[8].year_month)
         }
-        let p10 = (rowhight * 6) + shiftdown;
-        let ot10 = 0;
-        let month10 = this.shiftmonth(this.props.datalist[0].year_month,9);
+        
+         month10 = this.shiftmonth(this.props.datalist[0].year_month,9);
         if (this.props.datalist.length > 9) {
             ot10 = this.props.datalist[9].total_ot
             p10 = max - (ot10 * ratio) + shiftdown;
             month10 = this.conv(this.props.datalist[9].year_month)
         }
-        let p11 = (rowhight * 6) + shiftdown;
-        let ot11 = 0;
-        let month11 = this.shiftmonth(this.props.datalist[0].year_month,10);
+        
+         month11 = this.shiftmonth(this.props.datalist[0].year_month,10);
         if (this.props.datalist.length > 10) {
             ot11 = this.props.datalist[10].total_ot
             p11 = max - (ot11 * ratio) + shiftdown;
             month11 = this.conv(this.props.datalist[10].year_month)
         }
-        let p12 = (rowhight * 6) + shiftdown;
-        let ot12 = 0;
-        let month12 = this.shiftmonth(this.props.datalist[0].year_month,11);
+        
+         month12 = this.shiftmonth(this.props.datalist[0].year_month,11);
         if (this.props.datalist.length > 11) {
             ot12 = this.props.datalist[11].total_ot
             p12 = max - (ot12 * ratio) + shiftdown;
             month12 = this.conv(this.props.datalist[11].year_month)
         }
-        let p13 = (rowhight * 6) + shiftdown;
-        let ot13 = 0;
-        let month13 = this.shiftmonth(this.props.datalist[0].year_month,12);
+        
+         month13 = this.shiftmonth(this.props.datalist[0].year_month,12);
         if (this.props.datalist.length > 12) {
            ot13 = this.props.datalist[12].total_ot
            p13 = max - (ot13 * ratio) + shiftdown;
             month13 = this.conv(this.props.datalist[12].year_month)
        }
-
-
+    }
+*/
         return (
             <Svg height="300" width="350">
 

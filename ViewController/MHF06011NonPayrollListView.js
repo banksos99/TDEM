@@ -6,7 +6,7 @@ import {
     Image,
     Alert,
     Platform,
-    BackHandler
+    BackHandler,NetInfo
 } from 'react-native';
 
 import StringText from './../SharedObject/StringText'
@@ -19,6 +19,7 @@ import Months from "./../constants/Month"
 import firebase from 'react-native-firebase';
 
 import SharedPreference from "./../SharedObject/SharedPreference"
+import RestAPI from "../constants/RestAPI"
 
 export default class NonpayrollActivity extends Component {
     constructor(props) {
@@ -36,6 +37,88 @@ export default class NonpayrollActivity extends Component {
 
         //console.log("badgeArray ==> ", this.state.badgeArray)
 
+    }
+
+    async componentWillMount() {
+        await this.getArrayOfYear()
+        BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
+        NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectivityChange);
+        this.settimerInAppNoti()
+    }
+
+    componentWillUnmount() {
+        clearTimeout(this.timer);
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
+        NetInfo.isConnected.removeEventListener('connectionChange', this.handleConnectivityChange);
+
+    }
+    
+    handleConnectivityChange = isConnected => {
+        this.setState({ isConnected });
+    };
+    settimerInAppNoti() {
+        this.timer = setTimeout(() => {
+            this.onLoadInAppNoti()
+        }, SharedPreference.timeinterval);
+
+    }
+
+    onLoadInAppNoti = async () => {
+        
+        if (!SharedPreference.lastdatetimeinterval) {
+            let today = new Date()
+            const _format = 'YYYY-MM-DD hh:mm:ss'
+            const newdate = moment(today).format(_format).valueOf();
+            SharedPreference.lastdatetimeinterval = newdate
+        }
+
+        this.APIInAppallback(await RestAPI(SharedPreference.PULL_NOTIFICATION_API + SharedPreference.lastdatetimeinterval,1))
+
+    }
+
+    APIInAppallback(data) {
+        code = data[0]
+        data = data[1]
+
+        if (code.INVALID_AUTH_TOKEN == data.code) {
+
+            this.onAutenticateErrorAlertDialog()
+
+        } else if (code.SUCCESS == data.code) {
+
+            this.timer = setTimeout(() => {
+                this.onLoadInAppNoti()
+            }, SharedPreference.timeinterval);
+
+        }
+
+    }
+
+    onAutenticateErrorAlertDialog(error) {
+
+        timerstatus = false;
+        this.setState({
+            isscreenloading: false,
+        })
+
+        Alert.alert(
+            StringText.ALERT_AUTHORLIZE_ERROR_TITLE,
+            StringText.ALERT_AUTHORLIZE_ERROR_MESSAGE,
+            [{
+                text: 'OK', onPress: () => {
+
+                    page = 0
+                    SharedPreference.Handbook = []
+                    SharedPreference.profileObject = null
+                    this.setState({
+                        isscreenloading: false
+                    })
+                    this.props.navigation.navigate('RegisterScreen')
+
+                }
+            }],
+            { cancelable: false }
+        )
     }
 
     onBack() {
@@ -141,6 +224,7 @@ export default class NonpayrollActivity extends Component {
                             <View style={styles.nonPayRollDetailContainer}>
                                 <Text style={[styles.payslipitemmoney, { color: 'white' }]}>{amount}</Text>
                             </View>
+                            <View style={styles.nonPayRollDetailContainer}/>
                         </TouchableOpacity>
                     </View>
                     {badge != 0 ?

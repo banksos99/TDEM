@@ -754,7 +754,7 @@ export default class calendarYearView extends Component {
     }
 
     onloadPDFFile = async () => {
-        // ////console.log("onloadPDFFile")
+        console.log("onloadPDFFile",this.state.selectYear)
         let data = await CalendarPDFAPI(this.state.selectYear, this.state.selectLocation)
         code = data[0]
         data = data[1]

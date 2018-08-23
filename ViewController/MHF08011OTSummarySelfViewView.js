@@ -166,7 +166,7 @@ export default class OTSummaryDetail extends Component {
 
         this.setState({
             loadingtype: 1,
-            isscreenloading: false,
+            isscreenloading: true,
         })
 
         let tmonth = omonth.toString();
@@ -191,7 +191,8 @@ export default class OTSummaryDetail extends Component {
             this.setState({
 
                 tdataSource: data.data.detail.items,
-                headerdataSource: data.data.header
+                headerdataSource: data.data.header,
+           
             })
             // this.props.navigation.navigate('OTSummarySelfView', {
             //     dataResponse: data.data,
@@ -218,6 +219,10 @@ export default class OTSummaryDetail extends Component {
         } else {
             this.onLoadErrorAlertDialog(data)
         }
+        this.setState({
+           
+            isscreenloading: false,
+        })
     }
 
     onLoadErrorAlertDialog(error) {
@@ -514,7 +519,7 @@ export default class OTSummaryDetail extends Component {
                                             {parseInt(item.ot_date.split('-')[2])}
                                         </Text>
                                         <Text style={[styles.otsummarybody, { flex: 2, }]}>{item.time}</Text>
-                                        <Text style={[styles.otsummarybody, { flex: 1 }]}>{item.x15}</Text>
+                                        <Text style={[styles.otsummarybody, { flex: 1 }]}>{item.x15 }</Text>
                                         <Text style={[styles.otsummarybody, { flex: 1 }]}>{item.x20}</Text>
                                         <Text style={[styles.otsummarybody, { flex: 1 }]}>{item.x30}</Text>
                                         <Text style={[styles.otsummarybody, { flex: 1 }]}>{item.total_ot}</Text>

@@ -196,6 +196,7 @@ export default class HandbookActivity extends Component {
 
         this.props.navigation.navigate('HandbookDetail', {
             handbook_file: dataSource[i].handbook_file,
+            handbook_title: dataSource[i].handbook_title,
             FUNCTION_TOKEN: FUNCTION_TOKEN,
         });
 

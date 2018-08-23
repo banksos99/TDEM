@@ -15,6 +15,8 @@ import Colors from "./../SharedObject/Colors"
 import SharedPreference from "./../SharedObject/SharedPreference"
 const font_medium = 'Prompt-Medium';
 import firebase from 'react-native-firebase';
+import StringText from '../SharedObject/StringText';
+import RestAPI from "../constants/RestAPI"
 
 export default class LeaveQuotaActivity extends Component {
 
@@ -32,16 +34,85 @@ export default class LeaveQuotaActivity extends Component {
 
     componentWillMount() {
         BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
+        this.settimerInAppNoti()
     }
 
-    // componentWillUnmount() {
-    //     BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
-    // }
+    componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
+        clearTimeout(this.timer);
+    }
 
     handleBackButtonClick() {
         this.onBack()
         return true;
     }
+
+    settimerInAppNoti() {
+        this.timer = setTimeout(() => {
+            this.onLoadInAppNoti()
+        }, SharedPreference.timeinterval);
+
+    }
+
+    onLoadInAppNoti = async () => {
+        
+        if (!SharedPreference.lastdatetimeinterval) {
+            let today = new Date()
+            const _format = 'YYYY-MM-DD hh:mm:ss'
+            const newdate = moment(today).format(_format).valueOf();
+            SharedPreference.lastdatetimeinterval = newdate
+        }
+
+        this.APIInAppallback(await RestAPI(SharedPreference.PULL_NOTIFICATION_API + SharedPreference.lastdatetimeinterval,1))
+
+    }
+
+    APIInAppallback(data) {
+        code = data[0]
+        data = data[1]
+
+        if (code.INVALID_AUTH_TOKEN == data.code) {
+
+            this.onAutenticateErrorAlertDialog()
+
+        } else if (code.SUCCESS == data.code) {
+
+            this.timer = setTimeout(() => {
+                this.onLoadInAppNoti()
+            }, SharedPreference.timeinterval);
+
+        }
+
+    }
+
+    onAutenticateErrorAlertDialog(error) {
+
+        timerstatus = false;
+        this.setState({
+            isscreenloading: false,
+        })
+
+        Alert.alert(
+            StringText.ALERT_AUTHORLIZE_ERROR_TITLE,
+            StringText.ALERT_AUTHORLIZE_ERROR_MESSAGE,
+            [{
+                text: 'OK', onPress: () => {
+
+                    page = 0
+                    SharedPreference.Handbook = []
+                    SharedPreference.profileObject = null
+                    this.setState({
+                        isscreenloading: false
+                    })
+                    this.props.navigation.navigate('RegisterScreen')
+
+                }
+            }],
+            { cancelable: false }
+        )
+    }
+
+    
 
     onBack() {
         this.props.navigation.navigate('HomeScreen');

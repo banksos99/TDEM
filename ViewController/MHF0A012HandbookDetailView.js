@@ -18,7 +18,8 @@ import {
     ActivityIndicator,
     Picker,
     Alert,
-    BackHandler
+    BackHandler,
+    Dimensions
 } from 'react-native';
 
 import { Epub, Streamer } from 'epubjs-rn';
@@ -72,15 +73,18 @@ export default class HandbookViewer extends Component {
             typeTOC: 1,
             showTOC: 1,
             titleTOC: 'Table Of Content',
+            calTop: parseInt( Dimensions.get('window').height * 0.01),
+            calWidth: parseInt( Dimensions.get('window').width),
+            calHeight: parseInt( Dimensions.get('window').height * 0.85),
 
            handbook_file: this.props.navigation.getParam("handbook_file", ""),
+           handbook_title: this.props.navigation.getParam("handbook_title", ""),
            FUNCTION_TOKEN: this.props.navigation.getParam("FUNCTION_TOKEN", ""),
       
         };
 
         this.streamer = new Streamer();
         this.reloadCount = 0;
-
 
     }
 
@@ -95,6 +99,8 @@ export default class HandbookViewer extends Component {
                 HandbookMarkList = SharedPreference.Handbook[i].handbook_mark
             }
         }
+
+        console.log('handbook_title : ',this.state.handbook_title)
     }
 
     componentWillMount() {
@@ -192,10 +198,10 @@ export default class HandbookViewer extends Component {
                     this.reloadCount++;
                 } else {
                   
-                    Alert.alert("Handbook Error", "Cannot download handbook file.", [
+                    Alert.alert("Error", "Cannot download handbook file. please try again", [
                         {
                             text: 'OK', onPress: () => {
-                                this.props.navigation.navigate("HomeScreen");
+                                this.props.navigation.navigate("Handbooklist");
                             }
                         }
 
@@ -497,7 +503,12 @@ export default class HandbookViewer extends Component {
         if (this.state.isscreenloading) {
 
             return (
-                <View style={{ height: '100%', width: '100%', position: 'absolute', }}>
+                <View style={{ 
+                    top: -1,
+                    height: Dimensions.get('window').height, 
+                    width: '100%', 
+                    position: 'absolute', 
+                    }}>
                     <View style={{ backgroundColor: 'black', height: '100%', width: '100%', position: 'absolute', opacity: 0.7 }}>
 
                     </View>
@@ -563,7 +574,7 @@ export default class HandbookViewer extends Component {
                                 key={index + 100}>
                                 <View style={{ justifyContent: 'center', height: 40, marginLeft: 20, marginRight: 20 }}>
                                     {/* <View style={{ flex: 1, ustifyContent: 'center', flexDirection: 'column' }}> */}
-                                    <Text style={styles.epubTocText} numberOfLines={1}> {item.label}</Text>
+                                    <Text style={styles.epubTocText} numberOfLines={1}> {item.label.split('\n')[1]}</Text>
                                     {/* <Text style={styles.epubHighlighttitleText} numberOfLines={1}> {item.title}</Text> */}
                                     {/* </View> */}
                                 </View>
@@ -604,9 +615,17 @@ export default class HandbookViewer extends Component {
 
     }
     render() {
-
+        
         return (
-            <View style={{ flex: 1 }}>
+            <View style={{ 
+                
+                position:'absolute',
+                top: 0, 
+                left: 0,
+                width: this.state.calWidth,
+                height: this.state.calHeight 
+            
+            }}>
 
                 <View style={[styles.navContainer, { flexDirection: 'column' }]}>
                     <View style={styles.statusbarcontainer} />
@@ -621,7 +640,7 @@ export default class HandbookViewer extends Component {
                             </TouchableOpacity>
                         </View>
                         <View style={{ flex: 3, justifyContent: 'center', alignItems: 'center' }}>
-                            <Text style={[styles.navTitleTextTop, { fontFamily: "Prompt-Regular" }]}>{this.state.title}</Text>
+                            <Text style={[styles.navTitleTextTop, { fontFamily: "Prompt-Regular" }]}>{this.state.handbook_title}</Text>
                         </View>
                         <View style={{ flex: 1, justifyContent: 'center' }}>
                             <TouchableOpacity
@@ -640,9 +659,9 @@ export default class HandbookViewer extends Component {
                 {this.renderexpand()}
 
                 <Epub style={styles.epubreader}
-                   ref={component => this.epub = component}
+                    ref={component => this.epub = component}
                     src={this.state.src}
-
+                   // highlights={HandbookHighlightList}
                     flow={"paginated"}
                     font={this.state.selectfontnametext}
                     height='100%'
@@ -655,6 +674,13 @@ export default class HandbookViewer extends Component {
                             currentpage: visibleLocation.start.displayed.page,
                             totalpage: visibleLocation.start.displayed.total
                         });
+                        // this.setState({ sliderDisabled: false });
+                        // for (let i = 0; i < HandbookHighlightList.length; i++) {
+                        
+                        //                             this.epub.rendition.highlight(HandbookHighlightList[i], {});
+                        
+                        //                         }
+                        
                     }}
 
                     onLocationsReady={(locations) => {
@@ -665,20 +691,18 @@ export default class HandbookViewer extends Component {
 
                     onReady={(book) => {
 
-                        // add old highlight
-                        for (let i = 0; i < HandbookHighlightList.length; i++) {
-
-                            this.epub.rendition.highlight(HandbookHighlightList[i], {});
-
-                        }
-
                         this.setState({
                             book: book,
                             title: book.package.metadata.title,
                             toc: book.navigation.toc,
                             isscreenloading: false
                         });
+                        // add old highlight
+                        for (let i = 0; i < HandbookHighlightList.length; i++) {
 
+                            this.epub.rendition.highlight(HandbookHighlightList[i], {});
+
+                        }
 
                     }}
 
@@ -736,7 +760,7 @@ export default class HandbookViewer extends Component {
 
                                         })
                                     }
-                                },{ text: 'Cancle', onPress: () => { } }
+                                },{ text: 'Cancel', onPress: () => { } }
 
                             ],
                             { cancelable: false }
@@ -754,7 +778,13 @@ export default class HandbookViewer extends Component {
                 {this.renderloadingscreen()}
 
             </View>
+
+            
+
+
         );
+
+
     }
 }
 

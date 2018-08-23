@@ -25,6 +25,7 @@ import SharedPreference from "./../SharedObject/SharedPreference"
 
 import { styles } from "./../SharedObject/MainStyles"
 import Months from "./../constants/Month"
+import StringText from '../SharedObject/StringText';
 import RestAPI from "../constants/RestAPI"
 import firebase from 'react-native-firebase';
 
@@ -99,17 +100,83 @@ export default class ClockInOutSelfView extends Component {
 
     componentWillMount() {
         BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
+        this.settimerInAppNoti()
     }
 
-    // componentWillUnmount() {
-    //     BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
-    // }
+    componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
+        clearTimeout(this.timer);
+    }
 
     handleBackButtonClick() {
         this.onBack()
         return true;
     }
 
+    settimerInAppNoti() {
+        this.timer = setTimeout(() => {
+            this.onLoadInAppNoti()
+        }, SharedPreference.timeinterval);
+
+    }
+
+    onLoadInAppNoti = async () => {
+        
+        if (!SharedPreference.lastdatetimeinterval) {
+            let today = new Date()
+            const _format = 'YYYY-MM-DD hh:mm:ss'
+            const newdate = moment(today).format(_format).valueOf();
+            SharedPreference.lastdatetimeinterval = newdate
+        }
+
+        this.APIInAppallback(await RestAPI(SharedPreference.PULL_NOTIFICATION_API + SharedPreference.lastdatetimeinterval,1))
+
+    }
+
+    APIInAppallback(data) {
+        code = data[0]
+        data = data[1]
+
+        if (code.INVALID_AUTH_TOKEN == data.code) {
+
+            this.onAutenticateErrorAlertDialog()
+
+        } else if (code.SUCCESS == data.code) {
+
+            this.timer = setTimeout(() => {
+                this.onLoadInAppNoti()
+            }, SharedPreference.timeinterval);
+
+        }
+
+    }
+
+    onAutenticateErrorAlertDialog(error) {
+
+        timerstatus = false;
+        this.setState({
+            isscreenloading: false,
+        })
+
+        Alert.alert(
+            StringText.ALERT_AUTHORLIZE_ERROR_TITLE,
+            StringText.ALERT_AUTHORLIZE_ERROR_MESSAGE,
+            [{
+                text: 'OK', onPress: () => {
+
+                    page = 0
+                    SharedPreference.Handbook = []
+                    SharedPreference.profileObject = null
+                    this.setState({
+                        isscreenloading: false
+                    })
+                    this.props.navigation.navigate('RegisterScreen')
+
+                }
+            }],
+            { cancelable: false }
+        )
+    }
 
     checkDataFormat(DataResponse) {
 
@@ -774,7 +841,7 @@ export default class ClockInOutSelfView extends Component {
                         <Text style={{ flex: 1, marginLeft: 20, color: 'white', fontFamily: 'Prompt-Regular' }}>{this.state.employee_name}</Text>
                         <Text style={{ flex: 1, marginLeft: 20, color: 'white', fontFamily: 'Prompt-Regular' }}>{this.state.employee_position}</Text>
                     </View>
-                    <TouchableOpacity style={{ backgroundColor: Colors.calendarLocationBoxColor, margin: 5, borderRadius: 5, justifyContent: 'center', alignItems: 'center', borderWidth: 1 }}
+                    <TouchableOpacity style={{ backgroundColor: Colors.calendarLocationBoxColor, margin: 5, borderRadius: 5, justifyContent: 'center', alignItems: 'center' }}
                         onPress={(this.select_month.bind(this))}
                     >
 

@@ -112,6 +112,7 @@ export default class LeaveQuotaActivity extends Component {
                 <ScrollView style={styles.leaveQuotaDetailContainer}>
                 {/* <View style={styles.leaveQuotaDetailContainer}> */}
                     {/* container */}
+                    <View style={{marginLeft:10,marginRight:10}}>
                     <View style={styles.leaveQuotaContainer}>
 
                         <View style={styles.leaveQuotaDetailItemTopContainer}>
@@ -175,6 +176,7 @@ export default class LeaveQuotaActivity extends Component {
                         <Text style={styles.leaveQuotaDescText}>{this.state.item.leave_regulation}</Text>
                     </View >
                 {/* </View> */}
+                </View>
                 </ScrollView>
             </View >
         );

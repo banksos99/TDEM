@@ -8,7 +8,7 @@ import {
     TouchableOpacity,
     Image,
     ActivityIndicator,
-    BackHandler
+    BackHandler,NetInfo,Alert
 } from 'react-native';
 
 import Colors from "./../SharedObject/Colors"
@@ -22,7 +22,8 @@ import Decryptfun from "./../SharedObject/DecryptID"
 //import Dcryptfun from "./../SharedObject/Decryptfun"
 import Months from "./../constants/Month"
 import firebase from 'react-native-firebase';
-
+import RestAPI from "../constants/RestAPI"
+import StringText from '../SharedObject/StringText';
 
 let month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 let martial = ['Single ', 'Married ', 'Widow ', 'Divorced ', 'No married ', 'Separated ', 'July ', 'Unknown'];
@@ -87,9 +88,20 @@ export default class EmpInfoDetail extends Component {
     }
 
     componentWillMount() {
+        this.settimerInAppNoti()
         BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
+        NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectivityChange);
+        
     }
+    componentWillUnmount() {
+        clearTimeout(this.timer);
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
+        NetInfo.isConnected.removeEventListener('connectionChange', this.handleConnectivityChange);
 
+    }
+    handleConnectivityChange = isConnected => {
+        this.setState({ isConnected });
+    };
     handleBackButtonClick() {
         this.onBack()
         return true;
@@ -111,6 +123,72 @@ export default class EmpInfoDetail extends Component {
 
         }
 
+    }
+
+    settimerInAppNoti() {
+        this.timer = setTimeout(() => {
+            this.onLoadInAppNoti()
+        }, SharedPreference.timeinterval);
+
+    }
+
+    onLoadInAppNoti = async () => {
+        
+        if (!SharedPreference.lastdatetimeinterval) {
+            let today = new Date()
+            const _format = 'YYYY-MM-DD hh:mm:ss'
+            const newdate = moment(today).format(_format).valueOf();
+            SharedPreference.lastdatetimeinterval = newdate
+        }
+
+        this.APIInAppallback(await RestAPI(SharedPreference.PULL_NOTIFICATION_API + SharedPreference.lastdatetimeinterval,1))
+
+    }
+
+    APIInAppallback(data) {
+        code = data[0]
+        data = data[1]
+
+
+        if (code.INVALID_AUTH_TOKEN == data.code) {
+
+            this.onAutenticateErrorAlertDialog()
+
+        } else if (code.SUCCESS == data.code) {
+
+            this.timer = setTimeout(() => {
+                this.onLoadInAppNoti()
+            }, SharedPreference.timeinterval);
+
+        }
+
+    }
+
+    onAutenticateErrorAlertDialog(error) {
+
+        timerstatus = false;
+        this.setState({
+            isscreenloading: false,
+        })
+
+        Alert.alert(
+            StringText.ALERT_AUTHORLIZE_ERROR_TITLE,
+            StringText.ALERT_AUTHORLIZE_ERROR_MESSAGE,
+            [{
+                text: 'OK', onPress: () => {
+
+                    page = 0
+                    SharedPreference.Handbook = []
+                    SharedPreference.profileObject = null
+                    this.setState({
+                        isscreenloading: false
+                    })
+                    this.props.navigation.navigate('RegisterScreen')
+
+                }
+            }],
+            { cancelable: false }
+        )
     }
 
     onShowCareerPathView() {

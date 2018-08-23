@@ -44,7 +44,7 @@ let settingstatus = 'Y';
 let rolemanagementEmpoyee = [0, 0, 0, 0, 0, 0, 0, 0];
 let rolemanagementManager = [0, 0, 0, 0];
 let timerstatus = false;
-let loadingannouncement = false
+
 
 import moment from 'moment'
 
@@ -77,7 +77,8 @@ export default class HMF01011MainView extends Component {
             announcestatuslist: ['All', 'Read', 'Unread'],
             notiAnnounceMentBadge: SharedPreference.notiAnnounceMentBadge,
             notiPayslipBadge: SharedPreference.notiPayslipBadge.length,
-            nonPayrollBadgeFirstTime: true
+            nonPayrollBadgeFirstTime: true,
+            loadingannouncement:false
             //  page: 0
         }
 
@@ -232,22 +233,18 @@ export default class HMF01011MainView extends Component {
         }
         console.log("onLoadInAppNoti ==> ", lastTime)
         console.log("inappTimeIntervalStatus ==> ", inappTimeIntervalStatus)
-        if (inappTimeIntervalStatus) {
-            this.timer = setTimeout(() => {
-                this.onLoadInAppNoti()
-            }, SharedPreference.timeinterval);
-        }
-
+        
 
         if (!SharedPreference.lastdatetimeinterval) {
             let today = new Date()
-            const _format = 'YYYY-MM-DD hh:mm:ss'
+            const _format = 'YYYY-MM-DD HH:mm:ss'
             const newdate = moment(today).format(_format).valueOf();
             SharedPreference.lastdatetimeinterval = newdate
+          //  SharedPreference.lastdatetimeinterval = '2018-08-22 15:07:00'
         }
-
+        console.log("lastdatetimeinterval ==> ", SharedPreference.PULL_NOTIFICATION_API + SharedPreference.lastdatetimeinterval)
         FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, 1, SharedPreference.profileObject.client_token)
-
+        console.log("FUNCTION_TOKEN ==> ", FUNCTION_TOKEN)
         return fetch(SharedPreference.PULL_NOTIFICATION_API + SharedPreference.lastdatetimeinterval, {
 
             method: 'GET',
@@ -271,8 +268,12 @@ export default class HMF01011MainView extends Component {
 
                     } else if (responseJson.status == 200) {
 
+                        this.timer = setTimeout(() => {
+                            this.onLoadInAppNoti()
+                        }, SharedPreference.timeinterval);
+
                         SharedPreference.lastdatetimeinterval = responseJson.meta.request_date;
-               
+
                         let dataArray = responseJson.data
                         let currentyear = new Date().getFullYear();
 
@@ -380,18 +381,6 @@ export default class HMF01011MainView extends Component {
             });
     }
 
-    // inappTimeInterval() {
-
-    //   //  if (inappTimeIntervalStatus) {
-    //         this.timer = setTimeout(() => {
-    //             this.onLoadInAppNoti()
-    //         }, SharedPreference.timeinterval);
-    //    // }
-
-    // };
-
-    
-
     handleConnectivityChange = isConnected => {
         this.setState({ isConnected });
     };
@@ -479,12 +468,12 @@ export default class HMF01011MainView extends Component {
                         announcepage: 0,
                         annrefresh: false
                     }, function () {
-                        loadingannouncement = true
+                        this.state.loadingannouncement = true
                         console.log("loadAnnouncementfromAPI responseJson => ", responseJson)
                         if (responseJson.status === 200) {
                             this.setState(this.renderloadingscreen());
 
-                            console.log('this.state.dataSource.data: ', responseJson.data)
+                           // console.log('this.state.dataSource.data: ', responseJson.data)
                             this.setState({
                                 notiAnnounceMentBadge: 0
                             })
@@ -680,7 +669,7 @@ export default class HMF01011MainView extends Component {
 
         if (code.SUCCESS == data.code) {
             this.setState(this.renderloadingscreen());
-            console.log('this.state.dataSource.data: ', responseJson.data)
+           // console.log('this.state.dataSource.data: ', responseJson.data)
             this.setState({
                 notiAnnounceMentBadge: 0
             })
@@ -1706,6 +1695,7 @@ export default class HMF01011MainView extends Component {
                         </View>
                     </View>
                 </View>
+                
                 <View style={{ flex: 1, backgroundColor: 'white' }} >
                     <View style={{ flex: 1, flexDirection: 'row' }}>
                         <TouchableOpacity
@@ -1717,10 +1707,10 @@ export default class HMF01011MainView extends Component {
                                 <View style={styles.mainmenuImageButton}>
                                     <Image
                                         style={rolemanagementEmpoyee[0] === 1 ?
-                                            { flex: 0.7, tintColor: Colors.redTextColor } :
-                                            { flex: 0.7, tintColor: Colors.lightGrayTextColor }}
+                                            { width: 50,height:50, tintColor: Colors.redTextColor } :
+                                            { width: 50,height:50, tintColor: Colors.lightGrayTextColor }}
                                         source={require('./../resource/images/MainMenu/MenuEmployee.png')}
-                                        resizeMode='contain'
+                                       // resizeMode='contain'
                                     />
                                 </View>
                                 <View style={styles.mainmenuTextButton}>
@@ -1742,10 +1732,10 @@ export default class HMF01011MainView extends Component {
                                 <View style={styles.mainmenuImageButton}>
                                     <Image
                                         style={rolemanagementEmpoyee[1] === 1 ?
-                                            { flex: 0.7, tintColor: Colors.redTextColor } :
-                                            { flex: 0.7, tintColor: Colors.lightGrayTextColor }}
+                                            { width: 50,height:50, tintColor: Colors.redTextColor } :
+                                            { width: 50,height:50, tintColor: Colors.lightGrayTextColor }}
                                         source={require('./../resource/images/MainMenu/MenuNonpayroll.png')}
-                                        resizeMode='contain'
+                                        //resizeMode='contain'
                                     />
                                 </View>
                                 <View style={styles.mainmenuTextButton}>
@@ -1763,10 +1753,10 @@ export default class HMF01011MainView extends Component {
                                 <View style={styles.mainmenuImageButton}>
                                     <Image
                                         style={rolemanagementEmpoyee[2] === 1 ?
-                                            { flex: 0.7, tintColor: Colors.redTextColor } :
-                                            { flex: 0.7, tintColor: Colors.lightGrayTextColor }}
+                                            { width: 50,height:50, tintColor: Colors.redTextColor } :
+                                            { width: 50,height:50, tintColor: Colors.lightGrayTextColor }}
                                         source={require('./../resource/images/MainMenu/MenuPayslip.png')}
-                                        resizeMode='contain'
+                                       // resizeMode='contain'
                                     />
                                 </View>
                                 <View style={styles.mainmenuTextButton}>
@@ -1790,10 +1780,10 @@ export default class HMF01011MainView extends Component {
                                 <View style={styles.mainmenuImageButton}>
                                     <Image
                                         style={rolemanagementEmpoyee[3] === 1 ?
-                                            { flex: 0.7, tintColor: Colors.redTextColor } :
-                                            { flex: 0.7, tintColor: Colors.lightGrayTextColor }}
+                                            { width: 50,height:50, tintColor: Colors.redTextColor } :
+                                            { width: 50,height:50, tintColor: Colors.lightGrayTextColor }}
                                         source={require('./../resource/images/MainMenu/MenuLeave.png')}
-                                        resizeMode='contain'
+                                        //resizeMode='contain'
                                     />
                                 </View>
                                 <View style={styles.mainmenuTextButton}>
@@ -1812,10 +1802,10 @@ export default class HMF01011MainView extends Component {
                                 <View style={styles.mainmenuImageButton}>
                                     <Image
                                         style={rolemanagementEmpoyee[4] === 1 ?
-                                            { flex: 0.7, tintColor: Colors.redTextColor } :
-                                            { flex: 0.7, tintColor: Colors.lightGrayTextColor }}
+                                            { width: 50,height:50, tintColor: Colors.redTextColor } :
+                                            {  width: 50,height:50,tintColor: Colors.lightGrayTextColor }}
                                         source={require('./../resource/images/MainMenu/MenuClock.png')}
-                                        resizeMode='contain'
+                                       // resizeMode='contain'
                                     />
                                 </View>
                                 <View style={styles.mainmenuTextButton}>
@@ -1834,10 +1824,10 @@ export default class HMF01011MainView extends Component {
                                 <View style={styles.mainmenuImageButton}>
                                     <Image
                                         style={rolemanagementEmpoyee[5] === 1 ?
-                                            { flex: 0.7, tintColor: Colors.redTextColor } :
-                                            { flex: 0.7, tintColor: Colors.lightGrayTextColor }}
+                                            { width: 50,height:50, tintColor: Colors.redTextColor } :
+                                            { width: 50,height:50, tintColor: Colors.lightGrayTextColor }}
                                         source={require('./../resource/images/MainMenu/MenuOT.png')}
-                                        resizeMode='contain'
+                                       // resizeMode='contain'
                                     />
                                 </View>
                                 <View style={styles.mainmenuTextButton}>
@@ -1859,10 +1849,10 @@ export default class HMF01011MainView extends Component {
                                 <View style={styles.mainmenuImageButton}>
                                     <Image
                                         style={rolemanagementEmpoyee[6] === 1 ?
-                                            { flex: 0.7, tintColor: Colors.redTextColor } :
-                                            { flex: 0.7, tintColor: Colors.lightGrayTextColor }}
+                                            { width: 50,height:50, tintColor: Colors.redTextColor } :
+                                            { width: 50,height:50, tintColor: Colors.lightGrayTextColor }}
                                         source={require('./../resource/images/MainMenu/MenuCalendar.png')}
-                                        resizeMode='contain'
+                                       // resizeMode='contain'
                                     />
                                 </View>
                                 <View style={styles.mainmenuTextButton}>
@@ -1881,10 +1871,10 @@ export default class HMF01011MainView extends Component {
                                 <View style={styles.mainmenuImageButton}>
                                     <Image
                                         style={rolemanagementEmpoyee[7] === 1 ?
-                                            { flex: 0.7, tintColor: Colors.redTextColor } :
-                                            { flex: 0.7, tintColor: Colors.lightGrayTextColor }}
+                                            { width: 50,height:50, tintColor: Colors.redTextColor } :
+                                            { width: 50,height:50, tintColor: Colors.lightGrayTextColor }}
                                         source={require('./../resource/images/MainMenu/MenuHandbook.png')}
-                                        resizeMode='contain'
+                                       // resizeMode='contain'
                                     />
                                 </View>
                                 <View style={styles.mainmenuTextButton}>
@@ -2088,9 +2078,9 @@ export default class HMF01011MainView extends Component {
                         ))
                     }
                 </ScrollView>
-                <View style={tempannouncementData.length|!loadingannouncement ?{height:0}:{ width: '100%', height: '100%', position: 'absolute', justifyContent: 'center' }}>
+                <View style={tempannouncementData.length|!this.state.loadingannouncement ?{height:0}:{ width: '100%', height: '100%', position: 'absolute', justifyContent: 'center' }}>
                     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                        <Text style={tempannouncementData.length|!loadingannouncement ? { fontSize: 25, textAlign: 'center', color: 'transparent' } : { fontSize: 25, textAlign: 'center', color: 'black' }}> No Data</Text>
+                        <Text style={tempannouncementData.length|!this.state.loadingannouncement ? { fontSize: 25, textAlign: 'center', color: 'transparent' } : { fontSize: 25, textAlign: 'center', color: 'black' }}> No Data</Text>
                     </View>
                 </View>
             </View>
@@ -2317,7 +2307,7 @@ export default class HMF01011MainView extends Component {
     signout() {
 
         page = 0
-        loadingannouncement = false
+        this.state.loadingannouncement = false
         timerstatus = false
         SharedPreference.Handbook = []
         SharedPreference.profileObject = null
@@ -2330,6 +2320,18 @@ export default class HMF01011MainView extends Component {
 
     select_sign_out() {
 
+        Alert.alert(
+            'Sign Out',
+            'Do you want to sign out ?',
+            [
+              {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+              {text: 'OK', onPress: () => { this.on_confire_signout() }},
+            ],
+            { cancelable: false }
+          )
+    }
+
+    on_confire_signout() {
 
         clearTimeout(this.timer);
 
@@ -2341,6 +2343,7 @@ export default class HMF01011MainView extends Component {
         this.loadSignOutAPI()
 
     }
+   
 
     notificationListener(badge) {
 
@@ -2390,7 +2393,7 @@ export default class HMF01011MainView extends Component {
         })
 
         if (code.SUCCESS == data.code) {
-            loadingannouncement = false;
+            this.state.loadingannouncement = false;
             page = 0
             timerstatus = false
             SharedPreference.Handbook = []
@@ -2404,55 +2407,77 @@ export default class HMF01011MainView extends Component {
             this.props.navigation.navigate('RegisterScreen')
 
         } else if (code.INVALID_USER_PASS == data.code) {
-            Alert.alert(
-                data.data.code,
-                data.data.detail,
-                [
-                    {
-                        text: 'OK', onPress: () => {
-                            page = 0
-                            timerstatus = false
-                            SharedPreference.Handbook = []
-                            announcementData = []
-                            tempannouncementData = []
-                            SharedPreference.profileObject = null
-                            this.saveProfile.setProfile(null)
-                            this.setState({
-                                isscreenloading: false
-                            })
-                            this.props.navigation.navigate('RegisterScreen')
 
-                        }
-                    }
-                ],
-                { cancelable: false }
-            )
+            page = 0
+            timerstatus = false
+            SharedPreference.Handbook = []
+            announcementData = []
+            tempannouncementData = []
+            SharedPreference.profileObject = null
+            this.saveProfile.setProfile(null)
+            this.setState({
+                isscreenloading: false
+            })
+            this.props.navigation.navigate('RegisterScreen')
+            // Alert.alert(
+            //     data.data.code,
+            //     data.data.detail,
+            //     [
+            //         {
+            //             text: 'OK', onPress: () => {
+            //                 page = 0
+            //                 timerstatus = false
+            //                 SharedPreference.Handbook = []
+            //                 announcementData = []
+            //                 tempannouncementData = []
+            //                 SharedPreference.profileObject = null
+            //                 this.saveProfile.setProfile(null)
+            //                 this.setState({
+            //                     isscreenloading: false
+            //                 })
+            //                 this.props.navigation.navigate('RegisterScreen')
+
+            //             }
+            //         }
+            //     ],
+            //     { cancelable: false }
+            // )
 
         } else {
-            Alert.alert(
-                StringText.ALERT_PIN_CANNOT_LOGOUT_TITILE,
-                StringText.ALERT_PIN_CANNOT_LOGOUT_DESC,
-                [
-                    {
-                        text: 'OK', onPress: () => {
-                            //TODO Log out
-                            // this.setState({
-                            //     isscreenloading: false
-                            // })
-                            page = 0
-                            timerstatus = false
-                            SharedPreference.Handbook = []
-                            SharedPreference.profileObject = null
-                            this.saveProfile.setProfile(null)
-                            this.setState({
-                                isscreenloading: false
-                            })
-                            this.props.navigation.navigate('RegisterScreen')
-                        }
-                    }
-                ],
-                { cancelable: false }
-            )
+
+            page = 0
+            timerstatus = false
+            SharedPreference.Handbook = []
+            SharedPreference.profileObject = null
+            this.saveProfile.setProfile(null)
+            this.setState({
+                isscreenloading: false
+            })
+            this.props.navigation.navigate('RegisterScreen')
+            // Alert.alert(
+            //     StringText.ALERT_PIN_CANNOT_LOGOUT_TITILE,
+            //     StringText.ALERT_PIN_CANNOT_LOGOUT_DESC,
+            //     [
+            //         {
+            //             text: 'OK', onPress: () => {
+            //                 //TODO Log out
+            //                 // this.setState({
+            //                 //     isscreenloading: false
+            //                 // })
+            //                 page = 0
+            //                 timerstatus = false
+            //                 SharedPreference.Handbook = []
+            //                 SharedPreference.profileObject = null
+            //                 this.saveProfile.setProfile(null)
+            //                 this.setState({
+            //                     isscreenloading: false
+            //                 })
+            //                 this.props.navigation.navigate('RegisterScreen')
+            //             }
+            //         }
+            //     ],
+            //     { cancelable: false }
+            // )
         }
     }
 

@@ -84,7 +84,7 @@ export default class RegisterActivity extends Component {
     }
 
     onRegister = async () => {
-
+        console.log('onRegister')
         // this.getfirebasetoken()
         this.setState({
             isLoading: true
@@ -101,6 +101,7 @@ export default class RegisterActivity extends Component {
 
         // let loginsuccess = false;
         // let autoregisterCount = 0;
+        
         if (code.SUCCESS == data.code) {
             this.saveProfile.setProfile(data.data)
             loginsuccess = true;
@@ -224,7 +225,7 @@ export default class RegisterActivity extends Component {
 
 
     onSetPin = async () => {
-
+console.log('onSetPin')
         let data = await SetPinAPI(this.state.pin2, SharedPreference.FUNCTIONID_PIN)
         code = data[0]
         data = data[1]
@@ -234,6 +235,8 @@ export default class RegisterActivity extends Component {
         })
 
         // TODO 
+
+        console.log('data : ',data)
         if (code.SUCCESS == data.code) {
             // await this.savePIN.setPin(this.state.pin2)
             this.setState({
@@ -361,6 +364,7 @@ export default class RegisterActivity extends Component {
     }
 
     setPIN(num) {
+        console.log("function setPIN")
         let origin = this.state.pin
 
         if (num == "-") {
@@ -376,6 +380,8 @@ export default class RegisterActivity extends Component {
 
 
         if (this.state.pin.length == 6) {
+            console.log("this.state.pin.length",this.state.pin.length)
+            console.log("this.state.pin1.length",this.state.pin1.length)
             if (this.state.pin1.length == 0) {
                 this.setState({
                     pin1: origin,
@@ -396,11 +402,15 @@ export default class RegisterActivity extends Component {
                     this.setState({
                         pin: [],
                         pin2: origin,
-                    },300)
+                    })
                     // this.state.pin = []
                     // this.state.pin2 = origin
+                    console.log("this.state.pin1",this.state.pin1)
+                    console.log("this.state.pin2",this.state.pin2)
                     if (this.state.pin1 == this.state.pin2) {
+                        console.log("on set pin again")
                         this.onSetPin()
+
                     } else {
                         Alert.alert(
                             StringText.REGISTER_PIN_ERROR_TITLE,

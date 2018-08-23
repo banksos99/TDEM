@@ -207,7 +207,7 @@ export default class OTSummaryLineChart extends Component {
                 </View>
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                     <Text style={{ color: '#555555', fontFamily: 'Prompt-Regular' }}>Total Overtime History</Text>
-                    <Text style={{ color: '#555555', fontFamily: 'Prompt-Regular' }}>{this.state.tdataSource.org_name}</Text>
+                    <Text style={{ color: '#555555', fontFamily: 'Prompt-Regular' }}>{this.state.org_name}</Text>
                 </View>
                 <View style={{ flex: 8, }}>
                     <View style={{ flex: 1, flexDirection: 'row' }}>
@@ -215,7 +215,8 @@ export default class OTSummaryLineChart extends Component {
                         <View style={{ flex: 5 }}>
 
                             <LineChartAerage
-                                datalist={this.state.tdataSource.items}
+                               datalist={this.state.tdataSource.items}
+                              
                             />
 
                         </View>

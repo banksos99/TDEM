@@ -119,12 +119,14 @@ export default class PayslipDetail extends Component {
         pdfPath = PAYSLIP_DOWNLOAD_API
 
 
-        yearSelect = this.state.initialyear - this.state.yearselected
+     //   let yearSelect = this.state.initialyear - this.state.yearselected
+     //   let yearstr = this.state.initialyear - this.state.yearselected
 
-        filename = "Payslip_" + this.state.yearArray[this.state.monthselected] + "_" + yearSelect + '.pdf'
+        filename = "Payslip_" + this.state.yearArray[this.state.monthselected] + "_" + this.state.yearlist[this.state.selectedindex].year + '.pdf'
         FUNCTION_TOKEN = await Authorization.convert(SharedPreference.profileObject.client_id, SharedPreference.FUNCTIONID_PAYSLIP, SharedPreference.profileObject.client_token)
-        // //console.log("calendarPDFAPI ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
-
+        console.log("FUNCTIONID_PAYSLIP ==> rollid  : ", this.state.rollid)
+        console.log("FUNCTIONID_PAYSLIP ==> filename  : ", filename)
+        console.log("FUNCTIONID_PAYSLIP ==> FUNCTION_TOKEN  : ", FUNCTION_TOKEN)
         if (Platform.OS === 'android') {
             RNFetchBlob
                 .config({

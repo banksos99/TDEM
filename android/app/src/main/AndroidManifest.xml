@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 package="com.toyotaasia.tdemconnect"
 
-android:versionCode="34"
-android:versionName="1.34">
+android:versionCode="36"
+android:versionName="1.36">
 
 
 <uses-permission android:name="android.permission.INTERNET" />

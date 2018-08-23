@@ -152,7 +152,7 @@ export default class NonpayrollDetailView extends Component {
                     subDetail.push(this.renderSection(detail, decodedString))
                 }
                 detail.push(subDetail);
-                detail.push(<View style={{ height: 1, backgroundColor: 'gray' }}></View>
+                detail.push(<View style={{ height: 1, backgroundColor: 'gray',marginLeft:20,marginRight:20 }}></View>
                 );
             }
 
@@ -174,7 +174,7 @@ export default class NonpayrollDetailView extends Component {
 
     renderSection(detail, money) {
         return (
-            <View>
+            <View style={{marginLeft:20,marginRight:20}}>
                 <View style={styles.nonPayRollLeftContainer}>
                     <Text style={styles.nonPayRolldateDetailText}>{detail}</Text>
                 </View>
@@ -228,10 +228,10 @@ export default class NonpayrollDetailView extends Component {
                         </TouchableOpacity>
                         <Text style={styles.navTitleText}>Non-Payroll Detail</Text>
                     </View>
+                    <Text style={styles.nonPayRolldateYearText}>{this.state.monthYear}</Text>
+                    <View style={{ height: 1, backgroundColor: 'gray',marginLeft: 20, marginRight: 20 }}></View>
+                    <ScrollView style={{ flex:1 }}>
 
-                    <ScrollView style={{ marginLeft: 20, marginRight: 20 }}>
-                        <Text style={styles.nonPayRolldateYearText}>{this.state.monthYear}</Text>
-                        <View style={{ height: 1, backgroundColor: 'gray' }}></View>
                         {this.getNonPayrollDetail()}
                     </ScrollView>
 
