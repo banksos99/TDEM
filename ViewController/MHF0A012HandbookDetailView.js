@@ -19,7 +19,8 @@ import {
     Picker,
     Alert,
     BackHandler,
-    Dimensions
+    Dimensions,
+    AsyncStorage
 } from 'react-native';
 
 import { Epub, Streamer } from 'epubjs-rn';
@@ -30,6 +31,7 @@ import Nav from '../component/Nav'
 import { styles } from "./../SharedObject/MainStyles"
 import Colors from '../SharedObject/Colors';
 import SharedPreference from '../SharedObject/SharedPreference';
+import SaveProfile from "./../constants/SaveProfile"
 
 let fontsizearr = ['50%', '80%', '100%', '120%', '150%', '180%'];
 let fontname = ['times', 'courier', 'arial', 'serif', 'cursive', 'fantasy', 'monospace'];
@@ -86,11 +88,74 @@ export default class HandbookViewer extends Component {
         this.streamer = new Streamer();
         this.reloadCount = 0;
 
+        
     }
 
-    componentDidMount() {
+    loadHighlights(){
+        // return await AsyncStorage.getItem('pin');
+        
+
+     
+        return AsyncStorage.getItem('handbook_marks_'+this.getEmpID())
+            .then(json => {
+                
+                let value = JSON.parse(json);
+                console.log('Load Highlights success! value : ' + value);
+                console.log('Load Highlights success! json : ' + json);
+                console.log('Load Highlights success! stringfify : ' + JSON.stringify(value));
+
+                SharedPreference.Handbook = value;
+                this.reloadHighlight();
+
+
+                return value;
+            })
+            .catch(error => { console.log('Load Highlights failed! ' + error)
+                let value =  JSON.parse("{}");
+                return value;
+            });
+    }
+
+    saveHighlights() {
+        let j = JSON.stringify(SharedPreference.Handbook);
+        return AsyncStorage.setItem('handbook_marks_'+this.getEmpID(), j)
+            .then(json => {
+                console.log('Save Highlights success! ' + j)
+            })
+            .catch(error => { console.log('Save Highlights failed! ' + error)
+            });
+    }
+
+    getEmpID(){
+        let empId = "default";
+        let json = JSON.parse( JSON.stringify(SharedPreference.profileObject));
+
+        if(json && json["employee_id"]){
+            empId = json["employee_id"];
+        }
+        console.log('getEmpID = ' + empId);
+        return empId;
+    }
+
+    componentDidMount()  {
 
         this.downloadEpubFile(SharedPreference.HOST + this.state.handbook_file);
+
+        //console.log('SharedPreference.profileObject =====>' + JSON.stringify(SharedPreference.profileObject));
+        let value = this.loadHighlights();
+        //let value = null;
+
+        if(value){ 
+            SharedPreference.Handbook = value;
+            console.log('SharedPreference.Handbook set ' + value)
+        }else{
+            console.log('SharedPreference.Handbook cannot load')
+        }
+
+        this.reloadHighlight();
+    }
+
+    reloadHighlight(){
         HandbookHighlightList = [];
         HandbookMarkList = [];
         for (let i = 0; i < SharedPreference.Handbook.length; i++) {
@@ -143,9 +208,11 @@ export default class HandbookViewer extends Component {
             handbook_hilight: HandbookHighlightList,
             handbook_mark: HandbookMarkList
 
-        })
+        }) 
 
         SharedPreference.Handbook = tempHB
+
+        this.saveHighlights();
 
         if (this.streamer)
             this.streamer.kill();
@@ -667,9 +734,9 @@ export default class HandbookViewer extends Component {
                     height='100%'
                     fontSize={fontsizearr[this.state.fontsizelivel]}
                     flow={this.state.flow}
-                   // location={this.state.location}
+                    location={this.state.location}
                     onLocationChange={(visibleLocation) => {
-                        //console.log("locationChanged : ", visibleLocation.start.displayed)
+                        console.log("locationChanged : ", visibleLocation.start.displayed)
                         this.setState({
                             currentpage: visibleLocation.start.displayed.page,
                             totalpage: visibleLocation.start.displayed.total
@@ -690,6 +757,14 @@ export default class HandbookViewer extends Component {
                     }}
 
                     onReady={(book) => {
+
+                        // add old highlight
+                        for (let i = 0; i < HandbookHighlightList.length; i++) {
+
+                           
+                            this.epub.rendition.highlight(HandbookHighlightList[i], {});
+
+                        }
 
                         this.setState({
                             book: book,
@@ -725,6 +800,8 @@ export default class HandbookViewer extends Component {
 
                     onSelected={(cfiRange, rendition, selected) => {
 
+                        //console.log("onSelected", rendition)
+
                         let datatext = ''
                         HandbookHighlightList.push(
                             cfiRange
@@ -755,7 +832,7 @@ export default class HandbookViewer extends Component {
                                                     title: datatext,
                                                     date: timearr[2] + ' ' + timearr[1] + ' ' + timearr[3] + ' at ' + timearr[4]
                                                 })
-
+                                                
                                             }
 
                                         })
